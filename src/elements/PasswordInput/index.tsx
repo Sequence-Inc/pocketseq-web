@@ -7,7 +7,11 @@ interface PasswordInputProps {
     className?: string;
     error?: boolean;
     errorMessage?: string;
-    rest?: any;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    tabIndex?: number;
+    showForgotPassword?: boolean;
+    hintText?: string;
 }
 
 const PasswordInput = (props: PasswordInputProps) => {
@@ -18,8 +22,8 @@ const PasswordInput = (props: PasswordInputProps) => {
         className,
         error,
         errorMessage,
-        // showForgotPassword,
-        // hintText,
+        showForgotPassword,
+        hintText,
         ...rest
     } = props;
     return (
@@ -31,24 +35,24 @@ const PasswordInput = (props: PasswordInputProps) => {
                 >
                     {label}
                 </label>
-                {/* {showForgotPassword && (
+                {showForgotPassword && (
                     <Link href="/forgot-password">
                         <a className="inline-block text-xs font-normal text-gray-500 hover:text-primary">
-                            {t("forgotPassword")}
+                            Forgot Password
                         </a>
                     </Link>
-                )} */}
-                {/* {hintText && (
+                )}
+                {hintText && (
                     <span className="text-xs text-gray-500">{hintText}</span>
-                )} */}
+                )}
             </div>
             <div className="relative mt-1 rounded-md">
                 <input
                     id={id}
                     type={type}
                     className={`appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm ${error
-                            ? "border-error focus:ring-error focus:border-error"
-                            : "border-gray-300 focus:ring-primary focus:border-primary"
+                        ? "border-error focus:ring-error focus:border-error"
+                        : "border-gray-300 focus:ring-primary focus:border-primary"
                         }`}
                     {...rest}
                 />

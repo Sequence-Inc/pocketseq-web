@@ -19,6 +19,7 @@ const Login = () => {
             <AuthLayout>
                 <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                     {/* <Logo /> */}
+                    Logo Here
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                         Login to your account
                     </h2>
@@ -26,35 +27,33 @@ const Login = () => {
                         <TextField
                             {...register("email")}
                             error={errors.email ? true : false}
-                            errorMessage={errors.email && "errorEmailRequired"}
+                            errorMessage={errors.email && "Email Address is required"}
                             label="Email Address"
                             placeholder="eg@eg.com"
                             id="email"
-                        // type="text"
-                        // disabled={isLoading}
-                        // autoFocus={true}
-                        // tabIndex={1}
+                            disabled={isLoading}
+                            autoFocus={true}
+                            tabIndex={1}
                         />
                         <PasswordInput
                             {...register("password")}
                             error={errors.password ? true : false}
                             errorMessage={
-                                errors.password && "errorPasswordRequired"
+                                errors.password && "Password is required"
                             }
                             label="Password"
                             id="password"
-                        // type="password"
-                        // disabled={isLoading}
-                        // showForgotPassword
-                        // tabIndex={2}
+                            disabled={isLoading}
+                            showForgotPassword
+                            tabIndex={2}
                         />
                         <Button
-                            // loadingText="loading"
+                            loadingText="loading"
                             variant="primary"
-                            // loading={isLoading}
+                            loading={isLoading}
                             type="submit"
                         >
-                            login
+                            Login
                         </Button>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>

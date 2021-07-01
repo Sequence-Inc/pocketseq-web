@@ -6,6 +6,8 @@ interface ButtonProps {
     type?: "button" | "submit";
     className?: string;
     children: React.ReactNode;
+    loadingText?: string;
+    loading?: boolean;
     onClick?: (e: any) => void;
 }
 

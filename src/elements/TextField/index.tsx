@@ -1,13 +1,17 @@
 import React from 'react';
+import clsx from "clsx";
 
 interface TextFieldProps {
     label: string;
     placeholder?: string;
+    type?: string;
     id?: string;
     className?: string;
     error?: boolean;
     errorMessage?: string;
-    rest?: any;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    tabIndex?: number;
 }
 
 const TextField = (props: TextFieldProps) => {
@@ -23,10 +27,13 @@ const TextField = (props: TextFieldProps) => {
             <div className="relative rounded-md ">
                 <input
                     id={id}
-                    className={`appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm  ${error
-                        ? 'border-error focus:ring-error focus:border-error'
-                        : 'border-gray-300 focus:ring-primary focus:border-primary'
-                        }`}
+                    className={clsx(
+                        'appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400',
+                        'focus:outline-none sm:text-sm', {
+                        'border-error focus:ring-error focus:border-error': error,
+                        'border-gray-300 focus:ring-primary focus:border-primary': !error
+                    }
+                    )}
                     {...rest}
                 />
 
@@ -37,5 +44,15 @@ const TextField = (props: TextFieldProps) => {
         </div>
     );
 };
+
+TextField.defaultProps = {
+    label: "",
+    placeholder: "",
+    type: "text",
+    id: "",
+    className: "",
+    error: false,
+    errorMessage: ""
+}
 
 export default TextField;

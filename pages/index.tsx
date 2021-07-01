@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Pill } from "@element";
 import { CategoryItem, ItemGrid, IItemGrid, SingleListItem } from "@comp";
+import Link from "next/link";
 
 const itemGridData: IItemGrid[] = [
   {
@@ -24,6 +25,13 @@ export default function Home() {
         <title>Space Rental</title>
       </Head>
       <main className="px-4 mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
+        <div className="my-10">
+          <Link href="/auth/login">
+            <a className="inline-block font-normal text-gray-500 hover:text-primary">
+              Login
+            </a>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
           {Array(8)
             .fill(0)

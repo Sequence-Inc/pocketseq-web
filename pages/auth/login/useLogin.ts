@@ -29,6 +29,7 @@ const useLogin = () => {
   // );
 
   const handleLogin = (formData) => {
+    router.replace('/');
     // delete formData.remember_me;
     // mutate(formData);
   };
