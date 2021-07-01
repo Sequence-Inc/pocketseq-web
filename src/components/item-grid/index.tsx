@@ -20,8 +20,8 @@ export interface ItemGridProps {
 
 const ItemGrid = ({ data }: ItemGridProps) => {
     return (
-        <div className="max-w-xxs px-2 pt-2 pb-3 bg-white rounded-xl">
-            <div className="w-full aspect-w-10 aspect-h-7 rounded-lg overflow-hidden">
+        <div className="px-2 pt-2 pb-3 bg-white max-w-xxs rounded-xl">
+            <div className="w-full overflow-hidden rounded-lg aspect-w-10 aspect-h-7">
                 <Image
                     src="/itemGrid.svg"
                     alt="category items"
@@ -40,7 +40,9 @@ const ItemGrid = ({ data }: ItemGridProps) => {
                     </div>
                     <div className="flex">
                         <StarIcon className="h-4 w-4 text-yellow-400 mr-0.5" />
-                        <p className="text-gray-600"><span className='font-bold'>{data?.rating}</span><span> ({data?.cases}件)</span></p>
+                        <p className="text-gray-600">
+                            <span className='font-bold'>{data?.rating}</span><span> ({data?.cases}件)</span>
+                        </p>
                     </div>
                 </div>
 
@@ -49,23 +51,23 @@ const ItemGrid = ({ data }: ItemGridProps) => {
 
                 {/* price section */}
                 <div className="my-3">
-                    <h3 className="text-700 text-xl font-bold inline-block">¥{data?.price}〜</h3>
+                    <h3 className="inline-block text-xl font-bold text-700">¥{data?.price}〜</h3>
                     <span className="text-gray-400">/時間</span>
                 </div>
 
                 {/* metadata section */}
                 <div className="flex justify-between mb-1.5">
                     <div>
-                        <UserGroupIcon className="w-4 h-4 text-gray-300 inline-block" />
-                        <span className="text-gray-500 text-xs">〜{data?.people}人</span>
+                        <UserGroupIcon className="inline-block w-4 h-4 text-gray-300" />
+                        <span className="text-xs text-gray-500">〜{data?.people}人</span>
                     </div>
                     <div>
-                        <HomeIcon className="w-4 h-4 text-gray-300 inline-block" />
-                        <span className="text-gray-500 text-xs">{data?.area}</span>
+                        <HomeIcon className="inline-block w-4 h-4 text-gray-300" />
+                        <span className="text-xs text-gray-500">{data?.area}</span>
                     </div>
                     <div>
-                        <TagIcon className="w-4 h-4 text-gray-300 inline-block" />
-                        <span className="text-gray-500 text-xs">{data?.tag}</span>
+                        <TagIcon className="inline-block w-4 h-4 text-gray-300" />
+                        <span className="text-xs text-gray-500">{data?.tag}</span>
                     </div>
                 </div>
 
@@ -74,7 +76,7 @@ const ItemGrid = ({ data }: ItemGridProps) => {
                     <Button>もっと見る</Button>
                     <Button variant="secondary">
                         <span>
-                            <HeartIcon className="w-4 h-4 text-gray-300 inline-block" />保存
+                            <HeartIcon className="inline-block w-4 h-4 text-gray-300" />保存
                         </span>
                     </Button>
                 </div>
@@ -83,4 +85,4 @@ const ItemGrid = ({ data }: ItemGridProps) => {
     )
 }
 
-export default ItemGrid
+export default ItemGrid;

@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 interface ButtonProps {
     variant?: 'primary' | 'secondary';
@@ -11,11 +12,13 @@ const Button = (props: ButtonProps) => {
     return (
         <button
             type={type}
-            className={`${variant === 'primary'
-                ? 'text-white bg-primary hover:bg-primaryHover focus:ring-primary'
-                : variant === 'secondary'
-                    ? 'text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-primary' : ''} min-w-xxs px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm focus: outline-none focus:ring-2 focus:ring-offset-2
-                `}
+            className={clsx(
+                'min-w-xxs px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm',
+                'focus:outline-none focus:ring-2 focus:ring-offset-2', {
+                'text-white bg-primary hover:bg-primaryHover focus:ring-primary': variant === 'primary',
+                'text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-primary': variant === 'secondary'
+            }
+            )}
         >
             {children}
         </button>

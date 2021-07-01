@@ -20,7 +20,7 @@ const itemGridData: IItemGrid[] = [
 
 export default function Home() {
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex items-center justify-center h-screen">
       <Head>
         <title>Space Rental</title>
       </Head>
@@ -31,7 +31,7 @@ export default function Home() {
             <CategoryItem key={index} title="イベントスペース" subTitle="113件" />
           ))}
         </div>
-        <div className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-5">
+        <div role="list" className="grid grid-cols-1 my-5 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Array(4).fill(0).map((res, index) => (
             <ItemGrid key={index} data={itemGridData[0]} />
           ))}
