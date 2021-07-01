@@ -6,6 +6,7 @@ interface ButtonProps {
     type?: "button" | "submit";
     className?: string;
     children: React.ReactNode;
+    onClick?: (e: any) => void;
 }
 
 const Button = (props: ButtonProps) => {
@@ -14,19 +15,14 @@ const Button = (props: ButtonProps) => {
         <button
             type={type}
             className={clsx(
-                'min-w-xxs px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm',
+                'w-full flex items-center justify-center p-2 text-xs font-medium rounded',
+                'border border-transparent shadow-sm',
                 'focus:outline-none focus:ring-2 focus:ring-offset-2', {
                 'text-white bg-primary hover:bg-primaryHover focus:ring-primary': variant === 'primary',
-                'text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-primary': variant === 'secondary'
-            }
+                'text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200': variant === 'secondary'
+            },
+                className && className
             )}
-        // className={`${
-        //     variant === "primary"
-        //         ? "text-white bg-primary hover:bg-primaryHover focus:ring-primary"
-        //         : "text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200"
-        // } w-full flex items-center justify-center p-2 border border-transparent text-xs font-medium rounded shadow-sm focus: outline-none focus:ring-2 focus:ring-offset-2 ${
-        //     className && className
-        // } `}
         >
             {children}
         </button>
