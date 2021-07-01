@@ -1,3 +1,4 @@
+@import url("https://rsms.me/inter/inter.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +10,7 @@
         font-size: 16px;
         line-height: 24px;
     }
-    p{
+    p {
         font-size: 12px;
     }
 }
