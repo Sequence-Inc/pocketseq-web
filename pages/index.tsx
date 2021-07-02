@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="bg-gray-50">
       <Head>
-        <title>Space Rental</title>
+        <title>Home | Space Rental</title>
       </Head>
       <main className="px-4 mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
         <div className="my-10">

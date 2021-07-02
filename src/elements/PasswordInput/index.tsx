@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 
 interface PasswordInputProps {
     label: string;
@@ -50,10 +51,12 @@ const PasswordInput = (props: PasswordInputProps) => {
                 <input
                     id={id}
                     type={type}
-                    className={`appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm ${error
-                        ? "border-error focus:ring-error focus:border-error"
-                        : "border-gray-300 focus:ring-primary focus:border-primary"
-                        }`}
+                    className={clsx(
+                        'appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400',
+                        'focus:outline-none sm:text-sm', {
+                        'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500': error,
+                        'border-gray-300 focus:ring-primary focus:border-primary': !error
+                    })}
                     {...rest}
                 />
                 <div className="absolute h-8 mt-0.5 inset-y-0 right-0 pr-3 mr-1 flex items-center cursor-pointer bg-white">
@@ -103,7 +106,7 @@ const PasswordInput = (props: PasswordInputProps) => {
                     </span>
                 </div>
                 {error && (
-                    <span className="text-sm text-error">{errorMessage}</span>
+                    <span className="text-xs text-red-600">{errorMessage}</span>
                 )}
             </div>
         </div>

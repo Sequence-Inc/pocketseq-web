@@ -25,7 +25,7 @@ const Login = () => {
                     </h2>
                     <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
                         <TextField
-                            {...register("email")}
+                            {...register("email", { required: true })}
                             error={errors.email ? true : false}
                             errorMessage={errors.email && "Email Address is required"}
                             label="Email Address"
@@ -36,7 +36,7 @@ const Login = () => {
                             tabIndex={1}
                         />
                         <PasswordInput
-                            {...register("password")}
+                            {...register("password", { required: true })}
                             error={errors.password ? true : false}
                             errorMessage={
                                 errors.password && "Password is required"
