@@ -37,7 +37,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>((pr
                     {label}
                 </label>
                 {showForgotPassword && (
-                    <Link href="/forgot-password">
+                    <Link href="/auth/forgot-password">
                         <a className="inline-block text-xs font-normal text-gray-500 hover:text-primary">
                             Forgot Password
                         </a>

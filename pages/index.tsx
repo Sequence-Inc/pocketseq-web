@@ -25,7 +25,7 @@ export default function Home() {
         <title>Home | Space Rental</title>
       </Head>
       <main className="px-4 mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
-        <div className="my-10">
+        <div className="py-10">
           <Link href="/auth/login">
             <a className="inline-block font-normal text-gray-500 hover:text-primary">
               Login
