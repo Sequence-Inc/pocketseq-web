@@ -25,9 +25,9 @@ const Login = () => {
                     </h2>
                     <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
                         <TextField
-                            {...register("email", { required: true })}
+                            {...register("email")}
                             error={errors.email ? true : false}
-                            errorMessage={errors.email && "Email Address is required"}
+                            errorMessage={errors?.email?.message}
                             label="Email Address"
                             placeholder="eg@eg.com"
                             id="email"
@@ -36,11 +36,9 @@ const Login = () => {
                             tabIndex={1}
                         />
                         <PasswordInput
-                            {...register("password", { required: true })}
+                            {...register("password")}
                             error={errors.password ? true : false}
-                            errorMessage={
-                                errors.password && "Password is required"
-                            }
+                            errorMessage={errors.password?.message}
                             label="Password"
                             id="password"
                             disabled={isLoading}
@@ -58,11 +56,10 @@ const Login = () => {
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                                Don't have an account ?
+                                Don't have an account
                             </span>
                         </div>
                         <Button
-                            variant="primary"
                             onClick={(e) => {
                                 e.preventDefault();
                                 router.push("/auth/register");

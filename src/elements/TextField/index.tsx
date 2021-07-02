@@ -21,7 +21,6 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
 
     return (
         <div className={`space-y-1 ${className}`}>
-            {console.log(<input {...rest} />)}
             <label
                 htmlFor={id}
                 className="block text-sm font-medium text-gray-700">

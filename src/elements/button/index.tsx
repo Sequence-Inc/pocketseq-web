@@ -8,11 +8,11 @@ interface ButtonProps {
     children: React.ReactNode;
     loadingText?: string;
     loading?: boolean;
-    onClick?: (e: any) => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = (props: ButtonProps) => {
-    const { variant, type, className, children } = props;
+    const { variant, type, className, loadingText, loading, children, ...rest } = props;
     return (
         <button
             type={type}
@@ -25,6 +25,7 @@ const Button = (props: ButtonProps) => {
             },
                 className && className
             )}
+            {...rest}
         >
             {children}
         </button>
@@ -36,6 +37,7 @@ Button.defaultProps = {
     type: "button",
     className: "",
     children: "Submit",
+    onClick: (event) => { }
 };
 
 export default Button;

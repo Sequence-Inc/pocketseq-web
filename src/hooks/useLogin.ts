@@ -1,9 +1,20 @@
 import { useForm } from 'react-hook-form';
 import { useRef } from 'react';
 import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+// form validation schema
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Invalid Email")
+    .required("Email is required"),
+  password: yup.string().required("Password is required")
+});
 
 const useLogin = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
   const router = useRouter();
   const pinRef = useRef();
   const isLoading = false;
