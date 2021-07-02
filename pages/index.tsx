@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Pill } from "@element";
-import { CategoryItem, ItemGrid, IItemGrid, SingleListItem } from "@comp";
+import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem } from "@comp";
 import Link from "next/link";
 
 const itemGridData: IItemGrid[] = [
@@ -47,14 +47,19 @@ export default function Home() {
           {Array(4)
             .fill(0)
             .map((res, index) => (
-              <ItemGrid key={index} data={itemGridData[0]} />
+              <ItemGrid data={itemGridData[0]} />
             ))}
         </div>
         <div className="mb-5">
-          <Pill className="mr-5" />
+          <Pill className="mr-5 spa" />
           <Pill variant="error" />
         </div>
         <SingleListItem data={itemGridData[0]} />
+        <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
+          {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
+            <ReviewItem key={index} id={`review${index}`} title="清潔さ" value={res} className="mr-16" />
+          ))}
+        </div>
       </main>
     </div>
   );

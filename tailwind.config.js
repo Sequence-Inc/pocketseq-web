@@ -1,4 +1,4 @@
-const { minWidth, fontFamily } = require("tailwindcss/defaulttheme");
+const { fontFamily } = require("tailwindcss/defaulttheme");
 
 module.exports = {
     purge: [
@@ -10,8 +10,8 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: "#33E68C",
-                primaryHover: "#2EC77A",
+                primary: "#00A79E",
+                primaryHover: "#00968e",
             },
             fontFamily: {
                 sans: ["Inter var", ...fontFamily.sans],
