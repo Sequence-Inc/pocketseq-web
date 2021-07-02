@@ -7,7 +7,8 @@
             "@style/*": ["src/styles/*"],
             "@page/*": ["pages/*"],
             "@comp": ["src/components/index.ts"],
-            "@element": ["src/elements/index.ts"]
+            "@element": ["src/elements/index.ts"],
+            "@hooks/*": ["src/hooks/*"]
         },
         "allowJs": true,
         "skipLibCheck": true,

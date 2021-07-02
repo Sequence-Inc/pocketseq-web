@@ -15,7 +15,7 @@ interface PasswordInputProps {
     hintText?: string;
 }
 
-const PasswordInput = (props: PasswordInputProps) => {
+const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>((props, ref) => {
     const [type, setType] = useState("password");
     const {
         label,
@@ -50,6 +50,7 @@ const PasswordInput = (props: PasswordInputProps) => {
             <div className="relative mt-1 rounded-md">
                 <input
                     id={id}
+                    ref={ref}
                     type={type}
                     className={clsx(
                         'appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400',
@@ -111,6 +112,6 @@ const PasswordInput = (props: PasswordInputProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default PasswordInput;

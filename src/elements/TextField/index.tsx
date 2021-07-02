@@ -13,13 +13,15 @@ interface TextFieldProps {
     disabled?: boolean;
     autoFocus?: boolean;
     tabIndex?: number;
+    onBlur?: any;
 }
 
-const TextField = (props: TextFieldProps) => {
+const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
     const { label, id, className, error, errorMessage, ...rest } = props;
 
     return (
         <div className={`space-y-1 ${className}`}>
+            {console.log(<input {...rest} />)}
             <label
                 htmlFor={id}
                 className="block text-sm font-medium text-gray-700">
@@ -28,6 +30,7 @@ const TextField = (props: TextFieldProps) => {
             <div className="relative rounded-md ">
                 <input
                     id={id}
+                    ref={ref}
                     className={clsx(
                         'appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400',
                         'focus:outline-none sm:text-sm', {
@@ -46,7 +49,7 @@ const TextField = (props: TextFieldProps) => {
             {error && <span className="text-xs text-red-600">{errorMessage}</span>}
         </div>
     );
-};
+});
 
 TextField.defaultProps = {
     label: "",

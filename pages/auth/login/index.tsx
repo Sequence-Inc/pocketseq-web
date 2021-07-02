@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import { Button, PasswordInput, TextField, PinDialog } from "@element";
-import useLogin from "./useLogin";
+import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
 import AuthLayout from "src/layouts/AuthLayout";
