@@ -1,7 +1,15 @@
 import Head from "next/head";
 import { Pill } from "@element";
-import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem } from "@comp";
+import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem, SingleReview, IReviewComment } from "@comp";
 import Link from "next/link";
+
+const reviewComment: IReviewComment = [
+  {
+    name: "Name",
+    date: "2021年6月",
+    comment: "清潔さ"
+  }
+]
 
 const itemGridData: IItemGrid[] = [
   {
@@ -47,7 +55,7 @@ export default function Home() {
           {Array(4)
             .fill(0)
             .map((res, index) => (
-              <ItemGrid data={itemGridData[0]} />
+              <ItemGrid key={index} data={itemGridData[0]} />
             ))}
         </div>
         <div className="mb-5">
@@ -59,6 +67,9 @@ export default function Home() {
           {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
             <ReviewItem key={index} id={`review${index}`} title="清潔さ" value={res} className="mr-16" />
           ))}
+        </div>
+        <div className="pb-5">
+          <SingleReview data={reviewComment[0]} />
         </div>
       </main>
     </div>

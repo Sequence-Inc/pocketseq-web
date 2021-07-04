@@ -19,7 +19,7 @@ export const CategoryItem = ({ title, subTitle }: CategoryItemProps) => {
             />
             <div className="text-gray-50 flex flex-col justify-end p-3 bg-green-700 bg-opacity-25 hover:bg-opacity-50">
                 <h4>{title}</h4>
-                <p>{subTitle}</p>
+                <span className="text-xs">{subTitle}</span>
             </div>
         </div>
     );
