@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Pill } from "@element";
 import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem, SingleReview, IReviewComment } from "@comp";
 import Link from "next/link";
+import Footer from "src/layouts/Footer";
 
 const reviewComment: IReviewComment = [
   {
@@ -72,6 +73,8 @@ export default function Home() {
           <SingleReview data={reviewComment[0]} />
         </div>
       </main>
+
+      <Footer />  
     </div>
   );
 }
