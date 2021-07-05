@@ -4,7 +4,7 @@ import { Button, PasswordInput, TextField, PinDialog } from "@element";
 import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
-import AuthLayout from "src/layouts/AuthLayout";
+import { AuthLayout } from "@layout";
 
 const Login = () => {
     const { register, errors, handleLogin, handleSubmit, isLoading, pinRef } = useLogin();

@@ -1,10 +1,9 @@
 import Head from "next/head";
 import { Pill } from "@element";
 import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem, SingleReview, IReviewComment } from "@comp";
-import Link from "next/link";
-import Footer from "src/layouts/Footer";
+import { Header, Footer } from "@layout";
 
-const reviewComment: IReviewComment = [
+const reviewComment: IReviewComment[] = [
   {
     name: "Name",
     date: "2021年6月",
@@ -33,15 +32,9 @@ export default function Home() {
       <Head>
         <title>Home | Space Rental</title>
       </Head>
-      <main className="px-4 mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
-        <div className="py-10">
-          <Link href="/auth/login">
-            <a className="inline-block font-normal text-gray-500 hover:text-primary">
-              Login
-            </a>
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+      <Header />
+      <main className="px-4 mx-auto mt-16 space-y-6 max-w-7xl sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 pt-6 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
           {Array(8)
             .fill(0)
             .map((res, index) => (
@@ -74,7 +67,7 @@ export default function Home() {
         </div>
       </main>
 
-      <Footer />  
+      <Footer />
     </div>
   );
 }

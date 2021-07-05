@@ -8,7 +8,7 @@ import {
     Button
 } from '@element';
 import { useRouter } from 'next/router';
-import AuthLayout from "src/layouts/AuthLayout";
+import { AuthLayout } from "@layout";
 
 const Register = () => {
     const {
