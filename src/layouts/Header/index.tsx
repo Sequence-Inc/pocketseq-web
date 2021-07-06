@@ -5,6 +5,7 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { useRouter } from 'next/router'
+import { Button } from '@element'
 
 interface INavLinkItems {
     name: string;
@@ -95,12 +96,13 @@ const Header = () => {
                                     ))}
                                 </div>
                                 <div className="flex-shrink-0">
-                                    <button
+                                    {/* <button
                                         type="button"
                                         className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-500 bg-white border-transparent rounded-full shadow-sm bg-whiteborder hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
                                     >
                                         新規登録
-                                    </button>
+                                    </button> */}
+                                    <Button variant="white" rounded>新規登録</Button>
                                 </div>
                                 {/* <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                                     <button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
