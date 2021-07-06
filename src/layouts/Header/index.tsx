@@ -80,14 +80,16 @@ const Header = () => {
                                         )}
                                     </Disclosure.Button>
                                 </div>
-                                <div className="flex items-center flex-shrink-0">
-                                    <img
-                                        className="w-auto h-8"
-                                        src="https://tailwindui.com/img/logos/workflow-mark-white.svg"
-                                        alt="Workflow"
-                                    />
-                                    <span className="hidden w-auto ml-3 text-sm font-semibold text-white uppercase h-7 lg:flex lg:items-center">Time Book</span>
-                                </div>
+                                <Link href="/">
+                                    <a className="flex items-center flex-shrink-0">
+                                        <img
+                                            className="w-auto h-8"
+                                            src="https://tailwindui.com/img/logos/workflow-mark-white.svg"
+                                            alt="Workflow"
+                                        />
+                                        <span className="hidden w-auto ml-3 text-sm font-semibold text-white uppercase h-7 lg:flex lg:items-center">Time Book</span>
+                                    </a>
+                                </Link>
                             </div>
                             <div className="flex items-center">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
