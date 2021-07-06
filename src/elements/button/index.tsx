@@ -18,7 +18,7 @@ const Button = (props: ButtonProps) => {
         <button
             type={type}
             className={clsx(
-                'w-full flex items-center justify-center text-xs font-medium',
+                'w-full flex items-center justify-center text-sm font-medium',
                 'border border-transparent shadow-sm',
                 'focus:outline-none focus:ring-2 focus:ring-offset-2', {
                 'text-white bg-primary hover:bg-primaryHover focus:ring-primary': variant === 'primary',
