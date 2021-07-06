@@ -1,8 +1,7 @@
 import Head from "next/head";
 import { Container, Pill } from "@element";
-import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem, SingleReview, IReviewComment } from "@comp";
+import { CategoryItem, ItemGrid, IItemGrid, SingleListItem, ReviewItem, SingleReview, IReviewComment, HeroSection } from "@comp";
 import { Header, Footer } from "@layout";
-import Image from "next/image";
 
 const reviewComment: IReviewComment[] = [
   {
@@ -35,22 +34,20 @@ export default function Home() {
       </Head>
       <Header />
       <main>
-        <div className="relative w-full mt-16 md:mt-0 aspect-w-12 aspect-h-5">
-          <Image
-            className="z-0"
-            src="/hero-bg.svg"
-            alt="category items"
-            layout="fill"
-            role="presentation"
-            objectFit="cover"
-            objectPosition="center"
-          />
-          <Container className="absolute top-0 left-0 z-10 flex items-center w-full h-full">
-            <p>TIME BOOK</p>
-          </Container>
-        </div>
+        <HeroSection />
         <Container>
-          <div className="grid grid-cols-1 pt-6 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+          {/* <div className="grid grid-cols-1 pt-6 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+            {Array(8)
+              .fill(0)
+              .map((res, index) => (
+                <CategoryItem
+                  key={index}
+                  title="イベントスペース"
+                  subTitle="113件"
+                />
+              ))}
+          </div> */}
+          <div className="grid grid-cols-2 pt-6 md:grid-cols-4 gap-x-4 gap-y-4 md:gap-x-6 md:gap-y-6">
             {Array(8)
               .fill(0)
               .map((res, index) => (
@@ -61,7 +58,14 @@ export default function Home() {
                 />
               ))}
           </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {/* <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Array(4)
+              .fill(0)
+              .map((res, index) => (
+                <ItemGrid key={index} data={itemGridData[0]} />
+              ))}
+          </div> */}
+          <div className="flex overflow-x-auto md:overflow-x-hidden">
             {Array(4)
               .fill(0)
               .map((res, index) => (
