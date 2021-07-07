@@ -7,7 +7,7 @@ import {
     // SingleListItem,
     // ReviewItem,
     // SingleReview,
-    // RegisterCTA,
+    RegisterCTA,
     IReviewComment,
     SingleExploreItem,
     HeroSection,
@@ -140,7 +140,7 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                    {/* <RegisterCTA /> */}
+                    <RegisterCTA />
                     {/* <SingleListItem data={itemGridData[0]} />
                     <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
                         {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
