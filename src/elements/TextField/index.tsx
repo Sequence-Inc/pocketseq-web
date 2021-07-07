@@ -14,6 +14,8 @@ interface TextFieldProps {
     autoFocus?: boolean;
     tabIndex?: number;
     onBlur?: any;
+    onChange: any;
+    value: string | number;
 }
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
