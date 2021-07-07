@@ -8,7 +8,7 @@ import {
     // ReviewItem,
     // SingleReview,
     RegisterCTA,
-    IReviewComment,
+    // IReviewComment,
     SingleExploreItem,
     HeroSection,
 } from "@comp";
@@ -16,13 +16,13 @@ import { Header, Footer } from "@layout";
 
 import { FlagIcon, StarIcon, LocationMarkerIcon } from "@heroicons/react/outline";
 
-const reviewComment: IReviewComment[] = [
-    {
-        name: "Name",
-        date: "2021年6月",
-        comment: "清潔さ",
-    },
-];
+// const reviewComment: IReviewComment[] = [
+//     {
+//         name: "Name",
+//         date: "2021年6月",
+//         comment: "清潔さ",
+//     },
+// ];
 
 const itemGridData: IItemGrid[] = [
     {
