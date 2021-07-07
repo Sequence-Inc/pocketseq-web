@@ -43,6 +43,7 @@ export const ItemGrid = ({ data }: ItemGridProps) => {
                     <Tag
                         Icon={LocationMarkerIcon}
                         IconStyle="text-gray-300"
+                        TextStyle="text-xs"
                         numberOfLines={1}
                     >
                         {data?.location}
