@@ -1,11 +1,11 @@
 // import { Fragment } from 'react'
 // import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Disclosure } from '@headlessui/react'
-import { MenuIcon, XIcon } from '@heroicons/react/outline'
-import Link from 'next/link'
-import clsx from 'clsx'
-import { useRouter } from 'next/router'
-import { Button } from '@element'
+import { Disclosure } from "@headlessui/react";
+import { MenuIcon, XIcon, ClockIcon } from "@heroicons/react/outline";
+import Link from "next/link";
+import clsx from "clsx";
+import { useRouter } from "next/router";
+import { Button } from "@element";
 
 interface INavLinkItems {
     name: string;
@@ -15,55 +15,70 @@ interface INavLinkItems {
 const navLinkItems: INavLinkItems[] = [
     {
         name: "スペース掲載",
-        link: "/space"
+        link: "/space",
     },
     {
         name: "初めての方へ",
-        link: "/guide"
+        link: "/guide",
     },
     {
         name: "ヘルプ",
-        link: "/help"
+        link: "/help",
     },
     {
         name: "ログイン",
-        link: "/auth/login"
-    }
-]
+        link: "/auth/login",
+    },
+];
 
 const NavLink = ({ link, name }: INavLinkItems) => {
     const router = useRouter();
     return (
         <Link href={link}>
-            <a className={clsx("inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2", {
-                "text-white border-transparent hover:border-gray-200 hover:text-gray-200": router.pathname !== link,
-                "border-gray-200 text-gray-200": router.pathname === link
-            })}
+            <a
+                className={clsx(
+                    "inline-flex items-center px-1 pt-1 text-sm border-b-2",
+                    {
+                        "text-white border-transparent hover:border-gray-100 hover:text-gray-100":
+                            router.pathname !== link,
+                        "border-gray-100 text-gray-100":
+                            router.pathname === link,
+                    }
+                )}
             >
                 {name}
             </a>
         </Link>
-    )
-}
+    );
+};
 
 const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
     const router = useRouter();
     return (
         <Link href={link}>
-            <a className={clsx("block py-2 pl-3 pr-4 text-base font-medium sm:pl-5 sm:pr-6", {
-                "border-transparent text-white hover:bg-gray-200 hover:border-gray-300 hover:text-gray-500": router.pathname !== link,
-                "bg-gray-200 border-gray-200 text-gray-500": router.pathname === link
-            })}
+            <a
+                className={clsx(
+                    "block py-2 pl-3 pr-4 text-base font-medium sm:pl-5 sm:pr-6",
+                    {
+                        "border-transparent text-white hover:bg-gray-200 hover:border-gray-300 hover:text-gray-500":
+                            router.pathname !== link,
+                        "bg-gray-200 border-gray-200 text-gray-500":
+                            router.pathname === link,
+                    }
+                )}
             >
                 {name}
             </a>
         </Link>
-    )
-}
+    );
+};
 
 const Header = () => {
     return (
-        <Disclosure as="nav" className="fixed top-0 left-0 z-20 w-full shadow bg-primary">
+        <Disclosure
+            as="nav"
+            className="fixed top-0 left-0 z-20 w-full bg-primary"
+        >
             {({ open }) => (
                 <>
                     <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -72,29 +87,45 @@ const Header = () => {
                                 <div className="flex items-center mr-2 -ml-2 md:hidden">
                                     {/* Mobile menu button */}
                                     <Disclosure.Button className="inline-flex items-center justify-center p-2 text-white rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                                        <span className="sr-only">Open main menu</span>
+                                        <span className="sr-only">
+                                            Open main menu
+                                        </span>
                                         {open ? (
-                                            <XIcon className="block w-6 h-6" aria-hidden="true" />
+                                            <XIcon
+                                                className="block w-6 h-6"
+                                                aria-hidden="true"
+                                            />
                                         ) : (
-                                            <MenuIcon className="block w-6 h-6" aria-hidden="true" />
+                                            <MenuIcon
+                                                className="block w-6 h-6"
+                                                aria-hidden="true"
+                                            />
                                         )}
                                     </Disclosure.Button>
                                 </div>
                                 <Link href="/">
                                     <a className="flex items-center flex-shrink-0">
-                                        <img
+                                        {/* <img
                                             className="w-auto h-8"
                                             src="https://tailwindui.com/img/logos/workflow-mark-white.svg"
                                             alt="Workflow"
-                                        />
-                                        <span className="hidden w-auto ml-3 text-sm font-semibold text-white uppercase h-7 lg:flex lg:items-center">Time Book</span>
+                                        /> */}
+
+                                        <ClockIcon className="w-8 h-8 text-white" />
+                                        <span className="hidden w-auto ml-2 text-lg font-medium text-white h-7 lg:flex lg:items-center">
+                                            Time Book
+                                        </span>
                                     </a>
                                 </Link>
                             </div>
                             <div className="flex items-center">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
                                     {navLinkItems.map((item: INavLinkItems) => (
-                                        <NavLink key={item.link} link={item.link} name={item.name} />
+                                        <NavLink
+                                            key={item.link}
+                                            link={item.link}
+                                            name={item.name}
+                                        />
                                     ))}
                                 </div>
                                 <div className="flex-shrink-0">
@@ -104,7 +135,13 @@ const Header = () => {
                                     >
                                         新規登録
                                     </button> */}
-                                    <Button variant="white" rounded>新規登録</Button>
+                                    <Button
+                                        variant="white"
+                                        rounded
+                                        className="font-light text-gray-500"
+                                    >
+                                        新規登録
+                                    </Button>
                                 </div>
                                 {/* <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                                     <button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -192,15 +229,18 @@ const Header = () => {
                     <Disclosure.Panel className="md:hidden">
                         <div className="pt-2 pb-3 space-y-1">
                             {navLinkItems.map((item: INavLinkItems) => (
-                                <NavLinkOnSmall key={item.link} name={item.name} link={item.link} />
+                                <NavLinkOnSmall
+                                    key={item.link}
+                                    name={item.name}
+                                    link={item.link}
+                                />
                             ))}
                         </div>
                     </Disclosure.Panel>
                 </>
             )}
         </Disclosure>
-    )
-}
+    );
+};
 
 export default Header;
-

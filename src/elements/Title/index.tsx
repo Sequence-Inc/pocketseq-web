@@ -9,7 +9,7 @@ export interface TitleProps {
 const Title = ({ numberOfLines, titleStyle, children }: TitleProps) => {
     return (
         <h3
-            className={`text-gray-800 line-clamp-${numberOfLines} ${
+            className={`text-gray-800 line-clamp-${numberOfLines.toString()} ${
                 titleStyle && titleStyle
             }`}
         >

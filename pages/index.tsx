@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Container, Pill } from "@element";
+import { Container, Tag } from "@element";
 import {
     CategoryItem,
     ItemGrid,
@@ -12,6 +12,8 @@ import {
 } from "@comp";
 import { Header, Footer } from "@layout";
 
+import { FlagIcon } from "@heroicons/react/outline";
+
 const reviewComment: IReviewComment[] = [
     {
         name: "Name",
@@ -22,18 +24,50 @@ const reviewComment: IReviewComment[] = [
 
 const itemGridData: IItemGrid[] = [
     {
-        location: "東京都目黒区東京都目黒区東京都目黒区",
-        rating: 4.59,
-        cases: 99,
-        title: "OPEN割🎉151_Forever新宿🌿🍑大人気ゲーム機🎮超大型65㌅テレビ📺鍋会・たこパ🐙",
-        price: 1386,
-        people: 15,
-        area: "24m²",
+        photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
+        location: "東京都渋谷区",
+        rating: 4.1,
+        cases: 328,
+        title: "108【シェアスペORENGE新宿】🎇スパークリング割🎇定期消毒✨テレワーク✨新宿駅3分✨最大12名✨会議✨パーティ",
+        price: 1131,
+        people: 12,
+        area: "32m²",
+        tag: "おうちスペース",
+    },
+    {
+        photo: "https://cdnspacemarket.com/uploads/attachments/315502/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
+        location: "東京都新宿区",
+        rating: 4.6,
+        cases: 415,
+        title: "013_fika新宿御苑🌿夏割🌊最大24名収容⭕新宿三丁目3分＆新宿御苑駅3分🚶‍♂️65型TV📺本格キッチン🍴Wi-Fi📶",
+        price: 1732,
+        people: 30,
+        area: "60m²",
+        tag: "イベントスペース",
+    },
+    {
+        photo: "https://cdnspacemarket.com/uploads/attachments/693445/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
+        location: "東京都渋谷区",
+        rating: 4.2,
+        cases: 13,
+        title: "夏割⛵定期除菌🌟新宿駅徒歩３分【ティファニー会議室】清潔素敵空間🌈撮影OK📸会議/セミナー/女子会",
+        price: 1732,
+        people: 6,
+        area: "19m²",
         tag: "貸し会議室",
     },
+    {
+        photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
+        location: "東京都新宿区",
+        rating: 4.7,
+        cases: 123,
+        title: "mysa新宿4th🌿夏割🌊🉐新宿5分WiFiでか📺広々ソファ🛋️大人気ゲーム機🎮ネトフリ/女子会/パーティ/撮影/おうちデート",
+        price: 623,
+        people: 6,
+        area: "30m²",
+        tag: "おうちスペース",
+    },
 ];
-
-// gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8
 
 export default function Home() {
     return (
@@ -44,43 +78,47 @@ export default function Home() {
             <Header />
             <main>
                 <HeroSection />
-                <Container className="space-y-12">
-                    <div className="grid grid-cols-1 pt-6 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                        {Array(8)
-                            .fill(0)
-                            .map((res, index) => (
-                                <CategoryItem
-                                    key={index}
-                                    title="イベントスペース"
-                                    subTitle="113件"
-                                />
-                            ))}
+                <Container className="space-y-12 py-12">
+                    <div>
+                        <div className="border-b border-gray-200 pb-3 mb-6">
+                            <Tag
+                                Icon={FlagIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                目的に応じて探す
+                            </Tag>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+                            {Array(8)
+                                .fill(0)
+                                .map((res, index) => (
+                                    <CategoryItem
+                                        key={index}
+                                        title="イベントスペース"
+                                        subTitle="113件"
+                                    />
+                                ))}
+                        </div>
                     </div>
-                    {/* <div className="grid grid-cols-2 pt-6 md:grid-cols-4 gap-x-4 gap-y-4 md:gap-x-6 md:gap-y-6">
-                        {Array(8)
-                            .fill(0)
-                            .map((res, index) => (
-                                <CategoryItem
-                                    key={index}
-                                    title="イベントスペース"
-                                    subTitle="113件"
-                                />
+                    <div>
+                        <div className="border-b border-gray-200 pb-3 mb-6">
+                            <Tag
+                                Icon={FlagIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                目的に応じて探す
+                            </Tag>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                            {itemGridData.map((item, index) => (
+                                <ItemGrid key={index} data={item} />
                             ))}
-                    </div> */}
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {Array(4)
-                            .fill(0)
-                            .map((res, index) => (
-                                <ItemGrid key={index} data={itemGridData[0]} />
-                            ))}
+                        </div>
                     </div>
-                    {/* <div className="flex overflow-x-auto md:overflow-x-hidden">
-                        {Array(4)
-                            .fill(0)
-                            .map((res, index) => (
-                                <ItemGrid key={index} data={itemGridData[0]} />
-                            ))}
-                    </div> */}
                     <SingleListItem data={itemGridData[0]} />
                     <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
                         {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
