@@ -28,7 +28,11 @@ export const SingleListItem = ({ data }: ItemGridProps) => {
                 {/* price section */}
                 <div className="flex items-end space-x-4">
                     <Price amount={1386} />
-                    <Tag Icon={StarIcon} IconStyle="h-5 w-5 text-yellow-400">
+                    <Tag
+                        Icon={StarIcon}
+                        iconSize={5}
+                        iconStyle="text-yellow-400"
+                    >
                         <div className="text-sm font-semibold text-gray-600">
                             {data?.rating}{" "}
                             <span className="font-light text-gray-400">
@@ -40,10 +44,31 @@ export const SingleListItem = ({ data }: ItemGridProps) => {
 
                 {/* metadata section */}
                 <div className="flex flex-wrap justify-start space-x-4 space-y-1">
-                    <Tag Icon={UserGroupIcon}>{`〜${data?.people}人`}</Tag>
-                    <Tag Icon={HomeIcon}>{data?.area}</Tag>
-                    <Tag Icon={TagIcon}>{data?.tag}</Tag>
-                    <Tag Icon={LocationMarkerIcon} numberOfLines={1}>
+                    <Tag
+                        Icon={UserGroupIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                    >{`〜${data?.people}人`}</Tag>
+                    <Tag
+                        Icon={HomeIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                    >
+                        {data?.area}
+                    </Tag>
+                    <Tag
+                        Icon={TagIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                    >
+                        {data?.tag}
+                    </Tag>
+                    <Tag
+                        Icon={LocationMarkerIcon}
+                        iconStyle="text-gray-300"
+                        numberOfLines={1}
+                        textStyle="text-sm text-gray-500"
+                    >
                         {data?.location}
                     </Tag>
                 </div>

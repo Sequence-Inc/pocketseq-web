@@ -6,11 +6,10 @@ import {
     TagIcon,
     UserGroupIcon,
     HomeIcon,
-    HeartIcon,
 } from "@heroicons/react/solid";
-import { Button, Price, Tag, Title } from "@element";
+import { Price, Tag, Title } from "@element";
 
-export interface IItemGrid {
+export interface IPickUpItem {
     location: string;
     rating: number;
     cases: number;
@@ -19,19 +18,18 @@ export interface IItemGrid {
     people: number;
     area: string;
     tag: string;
-    photo: string;
 }
 
-export interface ItemGridProps {
-    data: IItemGrid;
+export interface PickUpItemProps {
+    data: IPickUpItem;
 }
 
-export const ItemGrid = ({ data }: ItemGridProps) => {
+export const PickUpItem = ({ data }: PickUpItemProps) => {
     return (
-        <div className="p-2 space-y-4 bg-white rounded-2xl">
+        <div className="space-y-4">
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                 <Image
-                    src={data?.photo}
+                    src="/itemGrid.svg"
                     alt="category items"
                     layout="fill"
                     objectFit="cover"
@@ -84,19 +82,9 @@ export const ItemGrid = ({ data }: ItemGridProps) => {
                         Icon={TagIcon}
                         textStyle="text-sm text-gray-500"
                         iconStyle="text-gray-300"
-                        numberOfLines={1}
                     >
                         {data?.tag}
                     </Tag>
-                </div>
-
-                {/* action section */}
-                <div className="flex justify-between py-2 space-x-4">
-                    <Button variant="primary">もっと見る</Button>
-                    <Button>
-                        <HeartIcon className="inline-block w-4 h-4 mr-1 text-gray-300" />
-                        <span>保存</span>
-                    </Button>
                 </div>
             </div>
         </div>

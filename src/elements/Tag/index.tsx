@@ -2,26 +2,36 @@ import React from "react";
 
 export interface TagProps {
     Icon?: React.ComponentType<{ className: string }>;
-    IconStyle?: string;
-    fontSize?: "xs" | "sm" | "base" | "md";
+    iconSize?: number;
+    iconStyle?: string;
+    textStyle?: string;
     numberOfLines?: number;
     children: React.ReactNode;
 }
 
-const Tag = ({ Icon, IconStyle, fontSize, numberOfLines, children }: TagProps) => {
+const Tag = ({
+    Icon,
+    iconSize,
+    iconStyle,
+    textStyle,
+    numberOfLines,
+    children,
+}: TagProps) => {
     return (
         <div className="flex items-center space-x-1">
             {Icon && (
                 <Icon
-                    className={`flex-none w-4 h-4 text-gray-300 inline-block ${IconStyle && IconStyle
-                        }`}
+                    className={`flex-none w-${iconSize} h-${iconSize} inline-block ${
+                        iconStyle || ""
+                    }`}
                 />
             )}
             <div
-                className={`text-gray-500 text-${fontSize} ${numberOfLines
-                    ? "line-clamp-" + numberOfLines
-                    : "whitespace-nowrap"
-                    }`}
+                className={`text-gray-500 text-sm ${textStyle || ""} ${
+                    numberOfLines
+                        ? "line-clamp-" + numberOfLines.toString()
+                        : "whitespace-nowrap"
+                }`}
             >
                 {children}
             </div>
@@ -31,9 +41,10 @@ const Tag = ({ Icon, IconStyle, fontSize, numberOfLines, children }: TagProps) =
 
 Tag.defaultProps = {
     Icon: null,
-    IconStyle: "",
-    fontSize: "xs",
-    Text: "Tag",
+    iconSize: 4,
+    iconStyle: "",
+    textStyle: "",
+    text: "Tag",
     children: "Tag",
 };
 
