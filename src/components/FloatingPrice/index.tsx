@@ -5,7 +5,7 @@ import React from 'react'
 
 export const FloatingPrice = () => {
     return (
-        <div>
+        <div className="w-96">
             <div className="p-5 space-y-4 border border-gray-200 rounded-lg">
 
                 {/* price row */}
