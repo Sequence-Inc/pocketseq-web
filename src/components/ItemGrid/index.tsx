@@ -9,8 +9,10 @@ import {
     HeartIcon,
 } from "@heroicons/react/solid";
 import { Button, Price, Tag, Title } from "@element";
+import Link from "next/link";
 
 export interface IItemGrid {
+    id?: string | number;
     location: string;
     rating: number;
     cases: number;
@@ -92,7 +94,9 @@ export const ItemGrid = ({ data }: ItemGridProps) => {
 
                 {/* action section */}
                 <div className="flex justify-between py-2 space-x-4">
-                    <Button variant="primary">もっと見る</Button>
+                    <Link href={`/space/${data?.id}`}>
+                        <Button variant="primary">もっと見る</Button>
+                    </Link>
                     <Button>
                         <HeartIcon className="inline-block w-4 h-4 mr-1 text-gray-300" />
                         <span>保存</span>

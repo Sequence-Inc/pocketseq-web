@@ -26,6 +26,7 @@ import { FlagIcon, StarIcon, LocationMarkerIcon } from "@heroicons/react/outline
 
 const itemGridData: IItemGrid[] = [
     {
+        id: 1,
         photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都渋谷区",
         rating: 4.1,
@@ -37,6 +38,7 @@ const itemGridData: IItemGrid[] = [
         tag: "おうちスペース",
     },
     {
+        id: 2,
         photo: "https://cdnspacemarket.com/uploads/attachments/315502/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都新宿区",
         rating: 4.6,
@@ -48,6 +50,7 @@ const itemGridData: IItemGrid[] = [
         tag: "イベントスペース",
     },
     {
+        id: 3,
         photo: "https://cdnspacemarket.com/uploads/attachments/693445/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都渋谷区",
         rating: 4.2,
@@ -59,6 +62,7 @@ const itemGridData: IItemGrid[] = [
         tag: "貸し会議室",
     },
     {
+        id: 3,
         photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都新宿区",
         rating: 4.7,
