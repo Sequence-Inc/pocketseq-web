@@ -1,33 +1,36 @@
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 // import { useMutation } from "react-query";
 // import { axios } from '../../app/network/axios.instance';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/router';
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 // form validation schema
 const schema = yup.object().shape({
     firstName: yup.string().required("First Name is required"),
     lastName: yup.string().required("Last Name is required"),
-    email: yup
-        .string()
-        .email("Invalid Email")
-        .required("Email is required"),
+    email: yup.string().email("Invalid Email").required("Email is required"),
     password: yup.string().required("Password is required"),
     confirmPassword: yup
         .string()
-        .oneOf([yup.ref('password'), null], "Password must match")
+        .oneOf([yup.ref("password"), null], "Password must match"),
 });
 
 const useRegister = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState("");
     const router = useRouter();
     const pinRef = useRef();
 
-    const { register, formState: { errors }, watch, handleSubmit, getValues } = useForm({
-        resolver: yupResolver(schema)
+    const {
+        register,
+        formState: { errors },
+        watch,
+        handleSubmit,
+        getValues,
+    } = useForm({
+        resolver: yupResolver(schema),
     });
 
     // form submit function
@@ -38,7 +41,7 @@ const useRegister = () => {
         // try {
         //     const { data } = await axios.post('register', formData);
         //     if (data.data.result) {
-        //         // login after successfull user register 
+        //         // login after successfull user register
         //         const obj = { email: formData.email };
         //         pinRef.current.open(obj);
         //         // handleLogin({ email: formData.email, password: formData.password })
@@ -73,7 +76,8 @@ const useRegister = () => {
         handleSubmit,
         isLoading,
         email,
-        pinRef
+        pinRef,
+        getValues,
     };
 };
 

@@ -7,7 +7,15 @@ import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 
 const Login = () => {
-    const { register, errors, handleLogin, handleSubmit, isLoading, pinRef } = useLogin();
+    const {
+        register,
+        errors,
+        handleLogin,
+        handleSubmit,
+        isLoading,
+        pinRef,
+        getValues,
+    } = useLogin();
     const router = useRouter();
 
     return (
@@ -23,7 +31,10 @@ const Login = () => {
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                         Login to your account
                     </h2>
-                    <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
+                    <form
+                        onSubmit={handleSubmit(handleLogin)}
+                        className="space-y-4"
+                    >
                         <TextField
                             {...register("email")}
                             error={errors.email ? true : false}
@@ -34,6 +45,7 @@ const Login = () => {
                             disabled={isLoading}
                             autoFocus={true}
                             tabIndex={1}
+                            value={getValues("email")}
                         />
                         <PasswordInput
                             {...register("password")}

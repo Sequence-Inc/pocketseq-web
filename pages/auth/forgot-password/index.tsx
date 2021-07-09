@@ -1,21 +1,22 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import React, { useRef, useState } from 'react';
-import {
-    Button,
-    TextField,
-    PinDialog
-} from '@element';
-import { useForm } from 'react-hook-form';
-import AuthLayout from 'src/layouts/AuthLayout';
+import Head from "next/head";
+import { useRouter } from "next/router";
+import React, { useRef, useState } from "react";
+import { Button, TextField, PinDialog } from "@element";
+import { useForm } from "react-hook-form";
+import AuthLayout from "src/layouts/AuthLayout";
 
 const ForgotPassword = () => {
     const router = useRouter();
     const pinRef = useRef();
-    const { register, formState: { errors }, handleSubmit, getValues } = useForm();
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        getValues,
+    } = useForm();
     const [isLoading, setIsLoading] = useState(false);
-    const [email, setEmail] = useState('');
-    const [otherError, setOtherError] = useState('');
+    const [email, setEmail] = useState("");
+    const [otherError, setOtherError] = useState("");
 
     const onSubmit = async (formData) => {
         // setIsLoading(true);
@@ -36,8 +37,8 @@ const ForgotPassword = () => {
 
     const handleResetRedirect = (queryData) => {
         router.push({
-            pathname: '/forgot-password/reset-password',
-            query: { email: queryData.email, code: queryData.code }
+            pathname: "/forgot-password/reset-password",
+            query: { email: queryData.email, code: queryData.code },
         });
     };
 
@@ -58,14 +59,15 @@ const ForgotPassword = () => {
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     Reset Password
                 </h2>
-                {otherError.trim() !== '' && (
+                {otherError.trim() !== "" && (
                     <>
                         <div className="flex px-4 py-2 text-sm text-red-500 border border-red-300 rounded bg-red-50">
                             <svg
                                 className="w-5 h-5 mr-2 stroke-current"
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
                                 <path
                                     d="M12 9V11M12 15H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0378 2.66667 10.268 4L3.33978 16C2.56998 17.3333 3.53223 19 5.07183 19Z"
                                     strokeWidth="2"
@@ -81,11 +83,14 @@ const ForgotPassword = () => {
                     <TextField
                         {...register("email", { required: true })}
                         error={errors.email ? true : false}
-                        errorMessage={errors.email && "Email Address is required"}
+                        errorMessage={
+                            errors.email && "Email Address is required"
+                        }
                         label="Email Address"
                         id="email"
                         type="string"
                         placeholder="eg@eg.com"
+                        value={email}
                         disabled={isLoading}
                         autoFocus={true}
                     />
@@ -94,7 +99,8 @@ const ForgotPassword = () => {
                         variant="primary"
                         loadingText="loading"
                         loading={isLoading}
-                        type="submit">
+                        type="submit"
+                    >
                         Reset
                     </Button>
 
@@ -109,8 +115,9 @@ const ForgotPassword = () => {
                         loading={isLoading}
                         onClick={(e) => {
                             e.preventDefault();
-                            router.push('/auth/login');
-                        }}>
+                            router.push("/auth/login");
+                        }}
+                    >
                         Login
                     </Button>
                 </form>
