@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import {
     LocationMarkerIcon,
     StarIcon,
@@ -32,12 +31,10 @@ export const ItemGrid = ({ data }: ItemGridProps) => {
     return (
         <div className="p-2 space-y-4 bg-white rounded-2xl">
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
-                <Image
+                <img
                     src={data?.photo}
-                    alt="category items"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    alt={data?.title}
+                    className="object-left-topw-full h-full object-cover"
                 />
             </div>
             <div className="px-2 space-y-2">

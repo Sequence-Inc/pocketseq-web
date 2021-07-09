@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import {
     LocationMarkerIcon,
     StarIcon,
@@ -18,6 +17,7 @@ export interface IPickUpItem {
     people: number;
     area: string;
     tag: string;
+    photo: string;
 }
 
 export interface PickUpItemProps {
@@ -28,12 +28,10 @@ export const PickUpItem = ({ data }: PickUpItemProps) => {
     return (
         <div className="space-y-4">
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
-                <Image
-                    src="/itemGrid.svg"
-                    alt="category items"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                <img
+                    src={data?.photo}
+                    alt={data?.title}
+                    className="z-0 object-left-topw-full h-full object-cover"
                 />
             </div>
             <div className="px-2 space-y-2">

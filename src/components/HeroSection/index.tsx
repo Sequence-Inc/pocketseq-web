@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import clsx from "clsx";
 import { Container } from "@element";
 import { SearchBox } from "@comp";
@@ -12,14 +11,11 @@ export const HeroSection = () => {
                 "sm:aspect-w-4 sm:aspect-h-3 lg:aspect-w-16 lg:aspect-h-8 xl:aspect-w-13 xl:aspect-h-5"
             )}
         >
-            <Image
-                className="z-0"
+            <img
                 src="/hero-bg.jpg"
                 alt="category items"
-                layout="fill"
                 role="presentation"
-                objectFit="cover"
-                objectPosition="center"
+                className="z-0 object-left-topw-full h-full object-cover"
             />
             <Container className="absolute top-0 left-0 z-10 md:pt-16">
                 <div className="flex flex-col items-center justify-center w-full h-full lg:items-start lg:w-7/12 xl:w-1/2">

@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import {
     LocationMarkerIcon,
     StarIcon,
@@ -15,12 +14,10 @@ export const SingleListItem = ({ data }: ItemGridProps) => {
     return (
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
             <div className="w-full overflow-hidden rounded-lg sm:w-60 sm:h-40 aspect-w-16 aspect-h-9 sm:aspect-h-1">
-                <Image
+                <img
                     src="/listItem.svg"
                     alt="category items"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    className="w-full h-full object-cover"
                 />
             </div>
             <div className="px-2 space-y-2 sm:px-0">
