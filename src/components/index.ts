@@ -13,3 +13,5 @@ export * from "./HostProfile";
 export * from "./SpaceInfoTitle";
 export * from "./SpaceInfoBanner";
 export * from "./SpaceInfoRecommended";
+export * from "./SpaceInfoAccess";
+export * from "./SpaceInfoReviews";

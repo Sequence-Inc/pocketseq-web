@@ -1,11 +1,9 @@
-import { FloatingPrice, HostProfile, ItemGrid, SpaceUtilities, SpaceInfoTitle, SpaceInfoBanner, SpaceInfoRecommended } from "@comp";
-import { Button, Container, Tag } from "@element";
+import { FloatingPrice, HostProfile, SpaceUtilities, SpaceInfoTitle, SpaceInfoBanner, SpaceInfoRecommended, SpaceInfoAccess, SpaceInfoReviews } from "@comp";
+import { Container, Tag } from "@element";
 import React from "react";
-import { LocationMarkerIcon } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
-import { StarIcon, ShieldCheckIcon, ChevronRightIcon } from "@heroicons/react/solid";
+import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { itemGridData } from "..";
 
 const ContentSection = ({ title, description }: { title: string, description: string }) => {
     return (
@@ -80,6 +78,16 @@ const SpaceDetail = () => {
                             title="サービス・設備"
                             description="ママ会、女子会、おうちデート、映画鑑賞、カップル利用、ファミリー会（子連れ歓迎）、誕生日会、セミナー、ワークショップ、写真撮影、ロケ撮影、商品撮影、商用撮影、ストックフォト、キッチンスタジオ、撮影スタジオ、ハウススタジオ、パーティールーム、レンタルスペース、宿泊可能"
                         />
+                        <div className="w-full my-6 border-t border-gray-300" />
+
+                        {/* access section */}
+                        <SpaceInfoAccess />
+
+                        {/* divider */}
+                        <div className="w-full my-6 border-t border-gray-300" />
+
+                        {/* reviews and comment section */}
+                        <SpaceInfoReviews />
 
                     </div>
                     <div className="hidden md:block">

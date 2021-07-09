@@ -6,11 +6,7 @@ import {
     IItemGrid,
     ICategoryItem,
     IExploreItem,
-    // SingleListItem,
-    // ReviewItem,
-    // SingleReview,
     RegisterCTA,
-    // IReviewComment,
     SingleExploreItem,
     HeroSection,
 } from "@comp";
@@ -22,14 +18,6 @@ import {
     LocationMarkerIcon,
     ChevronRightIcon,
 } from "@heroicons/react/outline";
-
-// const reviewComment: IReviewComment[] = [
-//     {
-//         name: "Name",
-//         date: "2021年6月",
-//         comment: "清潔さ",
-//     },
-// ];
 
 export const itemGridData: IItemGrid[] = [
     {
@@ -241,21 +229,7 @@ export default function Home() {
                         </div>
                     </div>
                     <RegisterCTA />
-                    {/* <SingleListItem data={itemGridData[0]} />
-                    <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
-                        {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
-                            <ReviewItem
-                                key={index}
-                                id={`review${index}`}
-                                title="清潔さ"
-                                value={res}
-                                className="mr-16"
-                            />
-                        ))}
-                    </div>
-                    <div className="pb-5">
-                        <SingleReview data={reviewComment[0]} />
-                    </div> */}
+                    {/* <SingleListItem data={itemGridData[0]} /> */}
                 </Container>
             </main>
 
