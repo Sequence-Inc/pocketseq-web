@@ -1,13 +1,8 @@
-import React from 'react';
-import Head from 'next/head';
-import useRegister from '@hooks/useRegister';
-import {
-    PasswordInput,
-    TextField,
-    PinDialog,
-    Button
-} from '@element';
-import { useRouter } from 'next/router';
+import React from "react";
+import Head from "next/head";
+import useRegister from "@hooks/useRegister";
+import { PasswordInput, TextField, PinDialog, Button } from "@element";
+import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 
 const Register = () => {
@@ -19,7 +14,8 @@ const Register = () => {
         isLoading,
         pinRef,
         handleLogin,
-        email
+        email,
+        getValues,
     } = useRegister();
     const router = useRouter();
 
@@ -41,7 +37,8 @@ const Register = () => {
                 </h2>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
-                    className="space-y-4">
+                    className="space-y-4"
+                >
                     <TextField
                         {...register("firstName", { required: true })}
                         error={errors.firstName ? true : false}
@@ -50,6 +47,7 @@ const Register = () => {
                         id="firstName"
                         autoFocus={true}
                         disabled={isLoading}
+                        value={getValues("firstName")}
                     />
                     <TextField
                         {...register("lastName", { required: true })}
@@ -58,6 +56,7 @@ const Register = () => {
                         label="Last Name"
                         id="lastName"
                         disabled={isLoading}
+                        value={getValues("lastName")}
                     />
                     <TextField
                         {...register("email", { required: true })}
@@ -66,6 +65,7 @@ const Register = () => {
                         label="Email Address"
                         id="email"
                         disabled={isLoading}
+                        value={getValues("email")}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}
@@ -86,13 +86,18 @@ const Register = () => {
                     <div className="text-sm">
                         <a
                             href="#"
-                            className="text-xs text-gray-400 hover:text-lightBlue-500">
+                            className="text-xs text-gray-400 hover:text-lightBlue-500"
+                        >
                             Agree to term
                         </a>
                     </div>
 
                     <div>
-                        <Button variant="primary" loading={isLoading} type="submit">
+                        <Button
+                            variant="primary"
+                            loading={isLoading}
+                            type="submit"
+                        >
                             Register
                         </Button>
                     </div>
@@ -105,8 +110,9 @@ const Register = () => {
                     <Button
                         onClick={(e) => {
                             e.preventDefault();
-                            router.push('/auth/login');
-                        }}>
+                            router.push("/auth/login");
+                        }}
+                    >
                         Login
                     </Button>
                 </form>
