@@ -4,6 +4,8 @@ import {
     CategoryItem,
     ItemGrid,
     IItemGrid,
+    ICategoryItem,
+    IExploreItem,
     // SingleListItem,
     // ReviewItem,
     // SingleReview,
@@ -14,7 +16,12 @@ import {
 } from "@comp";
 import { Header, Footer } from "@layout";
 
-import { FlagIcon, StarIcon, LocationMarkerIcon } from "@heroicons/react/outline";
+import {
+    FlagIcon,
+    StarIcon,
+    LocationMarkerIcon,
+    ChevronRightIcon,
+} from "@heroicons/react/outline";
 
 // const reviewComment: IReviewComment[] = [
 //     {
@@ -75,6 +82,72 @@ const itemGridData: IItemGrid[] = [
     },
 ];
 
+const categories: ICategoryItem[] = [
+    {
+        title: "イベントスペース",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue1-2f441630d1.jpg",
+    },
+    {
+        title: "貸し会議室",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue2-d1bcd206b2.jpg",
+    },
+    {
+        title: "おうちスペース",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue3-ee70adf998.jpg",
+    },
+    {
+        title: "撮影スタジオ",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue4-e153758527.jpg",
+    },
+    {
+        title: "レンタルスタジオ",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue5-bc39e6a2f9.jpg",
+    },
+    {
+        title: "古民家",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue6-e6918eba9d.jpg",
+    },
+    {
+        title: "屋上・テラス",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue7-10da6595b7.jpg",
+    },
+    {
+        title: "レンタルジム",
+        subTitle: "123件",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue8-cd826d045a.jpg",
+    },
+];
+
+const exploreAreas: IExploreItem[] = [
+    {
+        name: "新宿",
+        distance: "3.5km",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
+    },
+    {
+        name: "渋谷",
+        distance: "3.5km",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
+    },
+    {
+        name: "池袋",
+        distance: "3.5km",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
+    },
+    {
+        name: "原宿",
+        distance: "3.5km",
+        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
+    },
+];
+
 export default function Home() {
     return (
         <div className="bg-gray-50">
@@ -86,7 +159,7 @@ export default function Home() {
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     <div>
-                        <div className="pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={FlagIcon}
                                 iconSize={6}
@@ -95,21 +168,27 @@ export default function Home() {
                             >
                                 目的に応じて探す
                             </Tag>
+                            <a
+                                href="#"
+                                className="flex items-center text-xs text-gray-500 hover:text-primary"
+                            >
+                                もっと見る
+                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                            </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {Array(8)
-                                .fill(0)
-                                .map((res, index) => (
-                                    <CategoryItem
-                                        key={index}
-                                        title="イベントスペース"
-                                        subTitle="113件"
-                                    />
-                                ))}
+                            {categories.map((category, index) => (
+                                <CategoryItem
+                                    key={index.toString()}
+                                    title={category.title}
+                                    subTitle={category.subTitle}
+                                    photo={category.photo}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div>
-                        <div className="pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={LocationMarkerIcon}
                                 iconSize={6}
@@ -118,17 +197,27 @@ export default function Home() {
                             >
                                 近くのエリアから探す
                             </Tag>
+                            <a
+                                href="#"
+                                className="flex items-center text-xs text-gray-500 hover:text-primary"
+                            >
+                                もっと見る
+                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                            </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {Array(8)
-                                .fill(0)
-                                .map((res, index) => (
-                                    <SingleExploreItem key={index} />
-                                ))}
+                            {exploreAreas.map((area, index) => (
+                                <SingleExploreItem
+                                    key={index.toString()}
+                                    name={area.name}
+                                    distance={area.distance}
+                                    photo={area.photo}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div>
-                        <div className="pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={StarIcon}
                                 iconSize={6}
@@ -137,6 +226,13 @@ export default function Home() {
                             >
                                 新着ピックアップスペース
                             </Tag>
+                            <a
+                                href="#"
+                                className="flex items-center text-xs text-gray-500 hover:text-primary"
+                            >
+                                もっと見る
+                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                            </a>
                         </div>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                             {itemGridData.map((item, index) => (
