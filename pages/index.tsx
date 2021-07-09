@@ -31,7 +31,7 @@ import {
 //     },
 // ];
 
-const itemGridData: IItemGrid[] = [
+export const itemGridData: IItemGrid[] = [
     {
         id: 1,
         photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
@@ -159,7 +159,7 @@ export default function Home() {
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={FlagIcon}
                                 iconSize={6}
@@ -173,7 +173,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
@@ -188,7 +188,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={LocationMarkerIcon}
                                 iconSize={6}
@@ -202,7 +202,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
@@ -217,7 +217,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={StarIcon}
                                 iconSize={6}
@@ -231,7 +231,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
