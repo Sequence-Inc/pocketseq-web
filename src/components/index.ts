@@ -8,3 +8,5 @@ export * from "./SearchBox";
 export * from "./RegisterCTA";
 export * from "./SingleExploreItem";
 export * from "./FloatingPrice";
+export * from "./SpaceUtilities";
+export * from "./HostProfile";

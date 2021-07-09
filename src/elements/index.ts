@@ -9,3 +9,4 @@ export { default as PinDialog } from "./PinDialog";
 export { default as TextField } from "./TextField";
 export { default as Container } from "./Container";
 export { default as Popover } from "./Popover";
+export { default as Rating } from "./Rating";
