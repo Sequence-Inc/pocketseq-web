@@ -1,12 +1,18 @@
 import { GoogleMap, Tag } from '@element'
-import { MapIcon } from '@heroicons/react/outline'
+import { HomeIcon, MapIcon } from '@heroicons/react/outline'
 import React from 'react'
-import { useRef } from 'react'
 
-const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 13 } as google.maps.MapOptions
+// const mapOptions = { center: { lat: 36.2048, lng: 138.2529 }, zoom: 6 } as google.maps.MapOptions;
+const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 12 } as google.maps.MapOptions;
+const markers = [
+    {
+        coords: { lat: 34.6619, lng: 135.5205 } as google.maps.MapOptions,
+        icon: "/home.svg",
+        content: "<h1 style='font-weight: bold; margin-bottom: 0.5rem'>大阪府大阪市天王寺区</h1><ul><li>laititude: 34.6619N</li><li>longitude: 135.5205E</li></ul>"
+    }
+]
 
 export const SpaceInfoAccess = () => {
-    const mapRef = useRef<HTMLElement>();
     return (
         <div>
             <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>
@@ -32,7 +38,12 @@ export const SpaceInfoAccess = () => {
             </div>
             {/* <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" /> */}
             <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-6">
-                <GoogleMap ref={mapRef} options={mapOptions} />
+                <GoogleMap options={mapOptions} markers={markers} />
+            </div>
+            <div className="w-12 h-12 p-2.5 bg-gray-300 rounded-full">
+                <div className="p-1.5 bg-gray-900 rounded-full w-7 h-7">
+                    <HomeIcon className='w-4 h-4 text-white' />
+                </div>
             </div>
             <div className="flex justify-end">
                 <Tag
