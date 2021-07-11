@@ -18,6 +18,9 @@ module.exports = {
             fontFamily: {
                 sans: ["Inter var", ...fontFamily.sans],
             },
+            height: {
+                mapScreen: "calc(100vh - 4rem)"
+            }
         },
     },
     variants: {
