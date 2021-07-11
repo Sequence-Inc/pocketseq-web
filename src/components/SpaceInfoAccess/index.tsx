@@ -40,11 +40,6 @@ export const SpaceInfoAccess = () => {
             <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-6">
                 <GoogleMap options={mapOptions} markers={markers} />
             </div>
-            <div className="w-12 h-12 p-2.5 bg-gray-300 rounded-full">
-                <div className="p-1.5 bg-gray-900 rounded-full w-7 h-7">
-                    <HomeIcon className='w-4 h-4 text-white' />
-                </div>
-            </div>
             <div className="flex justify-end">
                 <Tag
                     Icon={MapIcon}
