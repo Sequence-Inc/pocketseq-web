@@ -1,4 +1,4 @@
-import { ListViewSearch, SearchBox } from '@comp'
+import { GridViewSearch, ListViewSearch, SearchBox } from '@comp'
 import { Alert, GoogleMap, Pill, Select } from '@element'
 import { LightBulbIcon, SpeakerphoneIcon, ViewGridAddIcon, ViewListIcon } from '@heroicons/react/outline'
 import { MainLayout } from '@layout'
@@ -11,6 +11,7 @@ const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 13 } as goog
 
 const Search = () => {
     const [filter, setFilter] = useState<string>("おすすめ");
+    const [sort, setSort] = useState<'list' | 'grid'>("list");
 
     return (
         <MainLayout>
@@ -52,10 +53,10 @@ const Search = () => {
                             {/* view changer button */}
                             <div className="flex justify-between">
                                 <div className="flex border border-gray-200 rounded-md">
-                                    <button className="p-2.5 border-r border-gray-200 focus:outline-none">
+                                    <button className="p-2.5 border-r border-gray-200 focus:outline-none" onClick={() => { setSort('list') }}>
                                         <ViewListIcon className="w-5 h-5 text-gray-400" />
                                     </button>
-                                    <button className="p-2.5">
+                                    <button className="p-2.5" onClick={() => { setSort('grid') }}>
                                         <ViewGridAddIcon className="w-5 h-5 text-gray-400 focus:outline-none" />
                                     </button>
                                 </div>
@@ -66,7 +67,11 @@ const Search = () => {
 
                             {/* lists section */}
                             <div>
-                                <ListViewSearch lists={itemGridData} />
+                                {sort === 'list'
+                                    ? <ListViewSearch lists={itemGridData} />
+                                    : sort === 'grid'
+                                        ? <GridViewSearch lists={itemGridData} />
+                                        : null}
                             </div>
                         </div>
                     </div>

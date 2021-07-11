@@ -9,15 +9,23 @@ import {
 } from "@heroicons/react/solid";
 import { ItemGridProps } from "@comp";
 import { Button, Price, Tag, Title } from "@element";
+import Image from "next/image";
 
 export const SingleListItem = ({ data }: ItemGridProps) => {
     return (
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
             <div className="w-full overflow-hidden rounded-lg sm:w-60 sm:h-40 aspect-w-16 aspect-h-9 sm:aspect-h-1">
-                <img
+                {/* <img
                     src="/listItem.svg"
                     alt="category items"
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
+                /> */}
+                <Image
+                    src={data?.photo}
+                    alt="category items"
+                    layout="fill"
+                    objectFit="cover"
+                    objectPosition="center"
                 />
             </div>
             <div className="px-2 space-y-2 sm:px-0">

@@ -57,7 +57,7 @@ export const itemGridData: IItemGrid[] = [
         tag: "貸し会議室",
     },
     {
-        id: 3,
+        id: 4,
         photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都新宿区",
         rating: 4.7,
