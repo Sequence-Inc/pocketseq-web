@@ -229,7 +229,6 @@ export default function Home() {
                         </div>
                     </div>
                     <RegisterCTA />
-                    {/* <SingleListItem data={itemGridData[0]} /> */}
                 </Container>
             </main>
 

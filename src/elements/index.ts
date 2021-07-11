@@ -12,3 +12,4 @@ export { default as Popover } from "./Popover";
 export { default as Rating } from "./Rating";
 export { default as GoogleMap } from "./Map";
 export { default as Alert } from "./Alert";
+export { default as Select } from "./Select";

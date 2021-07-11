@@ -15,3 +15,4 @@ export * from "./SpaceInfoBanner";
 export * from "./SpaceInfoRecommended";
 export * from "./SpaceInfoAccess";
 export * from "./SpaceInfoReviews";
+export * from "./ListViewSearch";

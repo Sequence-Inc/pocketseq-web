@@ -19,7 +19,7 @@ const Map = React.forwardRef<HTMLElement, IMap>(({ options }, ref) => {
     }, []);
 
     return (
-        <div id="map" className="absolute top-0 left-0 w-full h-full" />
+        <div id="map" className="w-full h-full" />
     )
 })
 
