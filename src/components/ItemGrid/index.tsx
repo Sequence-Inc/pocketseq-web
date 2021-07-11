@@ -8,7 +8,7 @@ import {
     HeartIcon,
 } from "@heroicons/react/solid";
 import { Button, Price, Tag, Title } from "@element";
-import { useRouter } from "next/router";
+import router from "next/router";
 
 export interface IItemGrid {
     id?: string | number;
@@ -28,7 +28,6 @@ export interface ItemGridProps {
 }
 
 export const ItemGrid = ({ data }: ItemGridProps) => {
-    const router = useRouter();
     return (
         <div className="p-2 space-y-4 bg-white rounded-2xl">
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">

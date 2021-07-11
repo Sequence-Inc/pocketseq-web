@@ -10,6 +10,7 @@ import {
 import { ItemGridProps } from "@comp";
 import { Button, Price, Tag, Title } from "@element";
 import Image from "next/image";
+import router from "next/router";
 
 export const SingleListItem = ({ data }: ItemGridProps) => {
     return (
@@ -80,7 +81,7 @@ export const SingleListItem = ({ data }: ItemGridProps) => {
 
                 {/* action section */}
                 <div className="flex justify-center w-full py-2 space-x-4 sm:w-60">
-                    <Button variant="primary">もっと見る</Button>
+                    <Button variant="primary" onClick={() => router.push(`/space/${data?.id}`)}>もっと見る</Button>
                     <Button>
                         <HeartIcon className="inline-block w-4 h-4 mr-1 text-gray-300" />
                         <span>保存</span>

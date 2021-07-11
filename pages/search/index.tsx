@@ -1,5 +1,5 @@
 import { GridViewSearch, ListViewSearch, SearchBox } from '@comp'
-import { Alert, GoogleMap, Pill, Select } from '@element'
+import { Alert, GoogleMap, Pagination, Pill, Select } from '@element'
 import { LightBulbIcon, SpeakerphoneIcon, ViewGridAddIcon, ViewListIcon } from '@heroicons/react/outline'
 import { MainLayout } from '@layout'
 import Link from 'next/link'
@@ -12,6 +12,7 @@ const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 13 } as goog
 const Search = () => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<'list' | 'grid'>("list");
+    const [page, setPage] = useState<number>(1);
 
     return (
         <MainLayout>
@@ -72,6 +73,7 @@ const Search = () => {
                                     : sort === 'grid'
                                         ? <GridViewSearch lists={itemGridData} />
                                         : null}
+                                <Pagination currentPage={page} totalPages={9} changePage={(pageNumber: number) => setPage(pageNumber)} />
                             </div>
                         </div>
                     </div>
