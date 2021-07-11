@@ -8,7 +8,7 @@ import {
     HeartIcon,
 } from "@heroicons/react/solid";
 import { Button, Price, Tag, Title } from "@element";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 export interface IItemGrid {
     id?: string | number;
@@ -28,13 +28,14 @@ export interface ItemGridProps {
 }
 
 export const ItemGrid = ({ data }: ItemGridProps) => {
+    const router = useRouter();
     return (
         <div className="p-2 space-y-4 bg-white rounded-2xl">
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                 <img
                     src={data?.photo}
                     alt={data?.title}
-                    className="object-left-topw-full h-full object-cover"
+                    className="object-cover object-left-top w-full h-full"
                 />
             </div>
             <div className="px-2 space-y-2">
@@ -91,9 +92,7 @@ export const ItemGrid = ({ data }: ItemGridProps) => {
 
                 {/* action section */}
                 <div className="flex justify-between py-2 space-x-4">
-                    <Link href={`/space/${data?.id}`}>
-                        <Button variant="primary">もっと見る</Button>
-                    </Link>
+                    <Button variant="primary" onClick={() => router.push(`/space/${data?.id}`)}>もっと見る</Button>
                     <Button>
                         <HeartIcon className="inline-block w-4 h-4 mr-1 text-gray-300" />
                         <span>保存</span>
