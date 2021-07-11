@@ -1,8 +1,12 @@
-import { Tag } from '@element'
+import { GoogleMap, Tag } from '@element'
 import { MapIcon } from '@heroicons/react/outline'
 import React from 'react'
+import { useRef } from 'react'
+
+const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 13 } as google.maps.MapOptions
 
 export const SpaceInfoAccess = () => {
+    const mapRef = useRef<HTMLElement>();
     return (
         <div>
             <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>
@@ -26,7 +30,10 @@ export const SpaceInfoAccess = () => {
                 <p className="w-32 text-sm font-bold text-gray-800">アクセス</p>
                 <div className="text-sm text-gray-500">大阪メトロ谷町線四天王寺夕陽ヶ丘駅より徒歩30秒</div>
             </div>
-            <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" />
+            {/* <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" /> */}
+            <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-6">
+                <GoogleMap ref={mapRef} options={mapOptions} />
+            </div>
             <div className="flex justify-end">
                 <Tag
                     Icon={MapIcon}
