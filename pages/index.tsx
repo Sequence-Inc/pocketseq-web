@@ -31,6 +31,10 @@ export const itemGridData: IItemGrid[] = [
         people: 12,
         area: "32m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6620,
+            lng: 139.7038
+        }
     },
     {
         id: 2,
@@ -43,6 +47,10 @@ export const itemGridData: IItemGrid[] = [
         people: 30,
         area: "60m²",
         tag: "イベントスペース",
+        coords: {
+            lat: 35.6630,
+            lng: 139.7050
+        }
     },
     {
         id: 3,
@@ -55,6 +63,10 @@ export const itemGridData: IItemGrid[] = [
         people: 6,
         area: "19m²",
         tag: "貸し会議室",
+        coords: {
+            lat: 35.6530,
+            lng: 139.7123
+        }
     },
     {
         id: 4,
@@ -67,6 +79,10 @@ export const itemGridData: IItemGrid[] = [
         people: 6,
         area: "30m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6666,
+            lng: 139.7040
+        }
     },
 ];
 
@@ -227,6 +243,7 @@ export default function Home() {
                                 <ItemGrid key={index} data={item} />
                             ))}
                         </div>
+                        <input type="text" placeholder="DEMO" />
                     </div>
                     <RegisterCTA />
                 </Container>

@@ -10,6 +10,11 @@ import {
 import { Button, Price, Tag, Title } from "@element";
 import router from "next/router";
 
+interface Coords {
+    lat: number;
+    lng: number;
+}
+
 export interface IItemGrid {
     id?: string | number;
     location: string;
@@ -21,15 +26,22 @@ export interface IItemGrid {
     area: string;
     tag: string;
     photo: string;
+    coords?: Coords;
 }
 
 export interface ItemGridProps {
     data: IItemGrid;
+    activeIndex?: string | number;
+    setActiveIndex?: any;
 }
 
-export const ItemGrid = ({ data }: ItemGridProps) => {
+export const ItemGrid = ({ data, activeIndex, setActiveIndex }: ItemGridProps) => {
     return (
-        <div className="p-2 space-y-4 bg-white rounded-2xl">
+        <div
+            className={`p-2 space-y-4 bg-white rounded-2xl ${activeIndex === data?.id ? 'bg-gray-100' : ''}`}
+            onMouseEnter={() => setActiveIndex && setActiveIndex(data?.id)}
+            onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
+        >
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                 <img
                     src={data?.photo}

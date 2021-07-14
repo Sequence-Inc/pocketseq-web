@@ -7,17 +7,16 @@ import React from 'react'
 import { useState } from 'react'
 import { itemGridData } from '..'
 
-const mapOptions = { center: { lat: 34.6619, lng: 135.5205 }, zoom: 13 } as google.maps.MapOptions
-
-const Search = () => {
+const Search = ({ resetToStartObj }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<'list' | 'grid'>("list");
     const [page, setPage] = useState<number>(1);
+    const [activeIndex, setActiveIndex] = useState<string | number>(-1);
 
     return (
         <MainLayout>
-            <div className="relative grid grid-cols-1 lg:grid-cols-8">
-                <div className="col-span-5 px-6 py-10 mt-16">
+            <div className="relative grid grid-cols-1 lg:grid-cols-9">
+                <div className="px-6 py-10 mt-16 lg:col-span-5">
                     <div className="flex justify-center">
                         <SearchBox />
                     </div>
@@ -69,17 +68,25 @@ const Search = () => {
                             {/* lists section */}
                             <div>
                                 {sort === 'list'
-                                    ? <ListViewSearch lists={itemGridData} />
+                                    ? <ListViewSearch
+                                        lists={itemGridData}
+                                        activeIndex={activeIndex}
+                                        setActiveIndex={setActiveIndex}
+                                    />
                                     : sort === 'grid'
-                                        ? <GridViewSearch lists={itemGridData} />
+                                        ? <GridViewSearch
+                                            lists={itemGridData}
+                                            activeIndex={activeIndex}
+                                            setActiveIndex={setActiveIndex}
+                                        />
                                         : null}
                                 <Pagination currentPage={page} totalPages={9} changePage={(pageNumber: number) => setPage(pageNumber)} />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='sticky top-0 right-0 hidden w-full h-screen col-span-3 pt-16 lg:block'>
-                    <GoogleMap options={mapOptions} />
+                <div className='sticky top-0 right-0 hidden w-full h-screen col-span-4 pt-16 lg:block'>
+                    <GoogleMap markers={itemGridData} type="multi" activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
                 </div>
             </div>
         </MainLayout>
