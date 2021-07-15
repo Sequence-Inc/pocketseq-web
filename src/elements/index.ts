@@ -10,3 +10,7 @@ export { default as TextField } from "./TextField";
 export { default as Container } from "./Container";
 export { default as Popover } from "./Popover";
 export { default as Rating } from "./Rating";
+export { default as GoogleMap } from "./Map";
+export { default as Alert } from "./Alert";
+export { default as Select } from "./Select";
+export { default as Pagination } from "./Pagination";

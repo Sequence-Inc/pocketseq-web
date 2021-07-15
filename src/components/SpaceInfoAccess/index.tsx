@@ -1,4 +1,4 @@
-import { Tag } from '@element'
+import { GoogleMap, Tag } from '@element'
 import { MapIcon } from '@heroicons/react/outline'
 import React from 'react'
 
@@ -26,7 +26,12 @@ export const SpaceInfoAccess = () => {
                 <p className="w-32 text-sm font-bold text-gray-800">アクセス</p>
                 <div className="text-sm text-gray-500">大阪メトロ谷町線四天王寺夕陽ヶ丘駅より徒歩30秒</div>
             </div>
-            <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" />
+            {/* <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" /> */}
+            <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-6">
+                <div className="w-full h-full">
+                    <GoogleMap mark={{ lat: 34.6619, lng: 135.5205 }} />
+                </div>
+            </div>
             <div className="flex justify-end">
                 <Tag
                     Icon={MapIcon}

@@ -31,6 +31,10 @@ export const itemGridData: IItemGrid[] = [
         people: 12,
         area: "32m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6620,
+            lng: 139.7038
+        }
     },
     {
         id: 2,
@@ -43,6 +47,10 @@ export const itemGridData: IItemGrid[] = [
         people: 30,
         area: "60m²",
         tag: "イベントスペース",
+        coords: {
+            lat: 35.6630,
+            lng: 139.7050
+        }
     },
     {
         id: 3,
@@ -55,9 +63,13 @@ export const itemGridData: IItemGrid[] = [
         people: 6,
         area: "19m²",
         tag: "貸し会議室",
+        coords: {
+            lat: 35.6530,
+            lng: 139.7123
+        }
     },
     {
-        id: 3,
+        id: 4,
         photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都新宿区",
         rating: 4.7,
@@ -67,6 +79,10 @@ export const itemGridData: IItemGrid[] = [
         people: 6,
         area: "30m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6666,
+            lng: 139.7040
+        }
     },
 ];
 
@@ -227,9 +243,9 @@ export default function Home() {
                                 <ItemGrid key={index} data={item} />
                             ))}
                         </div>
+                        <input type="text" placeholder="DEMO" />
                     </div>
                     <RegisterCTA />
-                    {/* <SingleListItem data={itemGridData[0]} /> */}
                 </Container>
             </main>
 
