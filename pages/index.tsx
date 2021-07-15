@@ -6,11 +6,7 @@ import {
     IItemGrid,
     ICategoryItem,
     IExploreItem,
-    // SingleListItem,
-    // ReviewItem,
-    // SingleReview,
     RegisterCTA,
-    // IReviewComment,
     SingleExploreItem,
     HeroSection,
 } from "@comp";
@@ -23,15 +19,7 @@ import {
     ChevronRightIcon,
 } from "@heroicons/react/outline";
 
-// const reviewComment: IReviewComment[] = [
-//     {
-//         name: "Name",
-//         date: "2021年6月",
-//         comment: "清潔さ",
-//     },
-// ];
-
-const itemGridData: IItemGrid[] = [
+export const itemGridData: IItemGrid[] = [
     {
         id: 1,
         photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
@@ -43,6 +31,10 @@ const itemGridData: IItemGrid[] = [
         people: 12,
         area: "32m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6620,
+            lng: 139.7038
+        }
     },
     {
         id: 2,
@@ -55,6 +47,10 @@ const itemGridData: IItemGrid[] = [
         people: 30,
         area: "60m²",
         tag: "イベントスペース",
+        coords: {
+            lat: 35.6630,
+            lng: 139.7050
+        }
     },
     {
         id: 3,
@@ -67,9 +63,13 @@ const itemGridData: IItemGrid[] = [
         people: 6,
         area: "19m²",
         tag: "貸し会議室",
+        coords: {
+            lat: 35.6530,
+            lng: 139.7123
+        }
     },
     {
-        id: 3,
+        id: 4,
         photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
         location: "東京都新宿区",
         rating: 4.7,
@@ -79,6 +79,10 @@ const itemGridData: IItemGrid[] = [
         people: 6,
         area: "30m²",
         tag: "おうちスペース",
+        coords: {
+            lat: 35.6666,
+            lng: 139.7040
+        }
     },
 ];
 
@@ -159,7 +163,7 @@ export default function Home() {
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={FlagIcon}
                                 iconSize={6}
@@ -173,7 +177,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
@@ -188,7 +192,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={LocationMarkerIcon}
                                 iconSize={6}
@@ -202,7 +206,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
@@ -217,7 +221,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div>
-                        <div className="flex justify-between items-center px-1 pb-3 mb-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
                                 Icon={StarIcon}
                                 iconSize={6}
@@ -231,7 +235,7 @@ export default function Home() {
                                 className="flex items-center text-xs text-gray-500 hover:text-primary"
                             >
                                 もっと見る
-                                <ChevronRightIcon className="h-4 w-4 ml-1" />
+                                <ChevronRightIcon className="w-4 h-4 ml-1" />
                             </a>
                         </div>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -239,23 +243,9 @@ export default function Home() {
                                 <ItemGrid key={index} data={item} />
                             ))}
                         </div>
+                        <input type="text" placeholder="DEMO" />
                     </div>
                     <RegisterCTA />
-                    {/* <SingleListItem data={itemGridData[0]} />
-                    <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
-                        {[4.4, 4.0, 2.0, 3.2].map((res, index) => (
-                            <ReviewItem
-                                key={index}
-                                id={`review${index}`}
-                                title="清潔さ"
-                                value={res}
-                                className="mr-16"
-                            />
-                        ))}
-                    </div>
-                    <div className="pb-5">
-                        <SingleReview data={reviewComment[0]} />
-                    </div> */}
                 </Container>
             </main>
 

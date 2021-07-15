@@ -4,15 +4,16 @@ export interface IReviewComment {
     name: string;
     date: string;
     comment: string;
+    thumbnail: string;
 }
 
 export const SingleReview = ({ data }: { data: IReviewComment }) => {
     return (
-        <div>
+        <div className="pr-4 my-3">
             <div className="flex items-center mb-2 space-x-3">
                 <img
-                    className="rounded-full w-12 h-12"
-                    src="/user.jpg"
+                    className="w-12 h-12 rounded-full"
+                    src={data?.thumbnail}
                     alt={data?.name}
                 />
                 <div>

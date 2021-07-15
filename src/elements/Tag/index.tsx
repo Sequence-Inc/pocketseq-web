@@ -21,17 +21,15 @@ const Tag = ({
         <div className="flex items-center space-x-1">
             {Icon && (
                 <Icon
-                    className={`flex-none w-${iconSize} h-${iconSize} inline-block ${
-                        iconStyle || ""
-                    }`}
+                    className={`flex-none w-${iconSize} h-${iconSize} inline-block ${iconStyle || ""
+                        }`}
                 />
             )}
             <div
-                className={`text-gray-500 text-sm ${textStyle || ""} ${
-                    numberOfLines
-                        ? "line-clamp-" + numberOfLines.toString()
-                        : "whitespace-nowrap"
-                }`}
+                className={`${textStyle || "text-sm text-gray-500 "} ${numberOfLines
+                    ? "line-clamp-" + numberOfLines.toString()
+                    : "whitespace-nowrap"
+                    }`}
             >
                 {children}
             </div>

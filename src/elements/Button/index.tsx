@@ -55,7 +55,7 @@ Button.defaultProps = {
     className: "",
     rounded: false,
     children: "Submit",
-    onClick: (event) => {},
+    onClick: (event) => { },
 };
 
 export default Button;
