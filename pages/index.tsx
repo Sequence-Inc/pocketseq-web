@@ -243,7 +243,6 @@ export default function Home() {
                                 <ItemGrid key={index} data={item} />
                             ))}
                         </div>
-                        <input type="text" placeholder="DEMO" />
                     </div>
                     <RegisterCTA />
                 </Container>

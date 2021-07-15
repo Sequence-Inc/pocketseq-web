@@ -12,8 +12,7 @@ import { Button, Price, Tag, Title } from "@element";
 import Image from "next/image";
 import router from "next/router";
 
-// export const SingleListItem = ({ data }: ItemGridProps) => {
-export const SingleListItem = ({ data, activeIndex, setActiveIndex }: any) => {
+export const SingleListItem = ({ data, activeIndex, setActiveIndex }: ItemGridProps) => {
     return (
         <div
             className={`flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 ${activeIndex === data?.id ? 'bg-gray-100' : ''}`}
@@ -21,11 +20,6 @@ export const SingleListItem = ({ data, activeIndex, setActiveIndex }: any) => {
             onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
         >
             <div className="w-full overflow-hidden rounded-lg sm:w-60 sm:h-40 aspect-w-16 aspect-h-9 sm:aspect-h-1">
-                {/* <img
-                    src="/listItem.svg"
-                    alt="category items"
-                    className="object-cover w-full h-full"
-                /> */}
                 <Image
                     src={data?.photo}
                     alt="category items"
@@ -38,7 +32,7 @@ export const SingleListItem = ({ data, activeIndex, setActiveIndex }: any) => {
                 <Title>{data?.title}</Title>
                 {/* price section */}
                 <div className="flex items-end space-x-4">
-                    <Price amount={1386} />
+                    <Price amount={data?.price} />
                     <Tag
                         Icon={StarIcon}
                         iconSize={5}
