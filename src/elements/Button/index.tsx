@@ -35,7 +35,7 @@ const Button = (props: ButtonProps) => {
                         variant === "primary",
                     "text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200":
                         variant === "secondary",
-                    "text-gray-500 bg-white hover:bg-gray-100 focus:ring-gray-100":
+                    "text-gray-500 bg-white hover:bg-gray-100 focus:ring-gray-300":
                         variant === "white",
                     "rounded p-2": !rounded,
                     "rounded-full px-4 py-2": rounded,
@@ -55,7 +55,7 @@ Button.defaultProps = {
     className: "",
     rounded: false,
     children: "Submit",
-    onClick: (event) => { },
+    onClick: (event) => {},
 };
 
 export default Button;
