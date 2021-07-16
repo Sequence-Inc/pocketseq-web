@@ -133,8 +133,8 @@ const Register = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
-    return { props: {} };
-};
+// export const getServerSideProps = async (context) => {
+//     return { props: {} };
+// };
 
 export default Register;
