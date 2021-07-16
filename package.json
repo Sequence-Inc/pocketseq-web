@@ -1,0 +1,35 @@
+{
+    "name": "timebook-frontend-host",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev -p 8080",
+        "build": "next build",
+        "start": "next start"
+    },
+    "dependencies": {
+        "@headlessui/react": "^1.3.0",
+        "@heroicons/react": "^1.0.1",
+        "@hookform/resolvers": "^2.6.0",
+        "google-map-react": "^2.1.10",
+        "next": "latest",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-hook-form": "^7.9.0",
+        "yup": "^0.32.9"
+    },
+    "devDependencies": {
+        "@tailwindcss/aspect-ratio": "^0.2.1",
+        "@tailwindcss/forms": "^0.3.3",
+        "@tailwindcss/line-clamp": "^0.2.1",
+        "@tailwindcss/typography": "^0.4.1",
+        "@types/google-map-react": "^2.1.2",
+        "@types/node": "^15.12.5",
+        "@types/react": "^17.0.11",
+        "autoprefixer": "^10.2.6",
+        "clsx": "^1.1.1",
+        "postcss": "^8.3.5",
+        "tailwindcss": "^2.2.4",
+        "typescript": "^4.3.4"
+    }
+}
