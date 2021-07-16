@@ -14,3 +14,4 @@ export { default as GoogleMap } from "./Map";
 export { default as Alert } from "./Alert";
 export { default as Select } from "./Select";
 export { default as Pagination } from "./Pagination";
+export { default as Logo } from "./Logo";

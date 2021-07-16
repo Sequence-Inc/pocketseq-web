@@ -1,6 +1,7 @@
-import Head from "next/head";
 import React from "react";
-import { Button, PasswordInput, TextField, PinDialog } from "@element";
+import Head from "next/head";
+import Link from "next/link";
+import { Button, PasswordInput, TextField, PinDialog, Logo } from "@element";
 import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
@@ -26,8 +27,8 @@ const Login = () => {
             <PinDialog ref={pinRef} callback={handleLogin} />
             <AuthLayout>
                 <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
-                    {/* <Logo /> */}
-                    Logo Here
+                    <Logo />
+                    {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                         Login to your account
                     </h2>
@@ -81,9 +82,16 @@ const Login = () => {
                         </Button>
                     </form>
                 </div>
-                <div className="flex justify-center py-2 mt-2 w-96">
+                <div className="flex flex-col items-center py-2 mt-2 w-96">
+                    <div className="py-2 text-md ">
+                        <Link href="/">
+                            <a className="text-gray-500 hover:text-green-600">
+                                Go back to Timebook
+                            </a>
+                        </Link>
+                    </div>
                     <div className="py-2 text-sm text-gray-500">
-                        &copy; Copyright 2021 JRG Co., Ltd.
+                        &copy; Copyright 2021 Sequence Co., Ltd.
                     </div>
                 </div>
             </AuthLayout>
@@ -93,8 +101,8 @@ const Login = () => {
 
 // Login.Layout = EmptyLayout;
 
-export const getServerSideProps = async (context) => {
-    return { props: {} };
-};
+// export const getServerSideProps = async (context) => {
+//     return { props: {} };
+// };
 
 export default Login;

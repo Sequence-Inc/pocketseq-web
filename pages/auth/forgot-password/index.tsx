@@ -1,7 +1,8 @@
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
-import { Button, TextField, PinDialog } from "@element";
+import { Button, TextField, PinDialog, Logo } from "@element";
 import { useForm } from "react-hook-form";
 import AuthLayout from "src/layouts/AuthLayout";
 
@@ -54,8 +55,7 @@ const ForgotPassword = () => {
                 emailAddress={email}
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
-                {/* <Logo /> */}
-                Logo here
+                <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     Reset Password
                 </h2>
@@ -122,17 +122,24 @@ const ForgotPassword = () => {
                     </Button>
                 </form>
             </div>
-            <div className="flex flex-wrap justify-between py-2 mt-2 w-96">
+            <div className="flex flex-col items-center py-2 mt-2 w-96">
+                <div className="py-2 text-md ">
+                    <Link href="/">
+                        <a className="text-gray-500 hover:text-green-600">
+                            Go back to Timebook
+                        </a>
+                    </Link>
+                </div>
                 <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 JRG Co., Ltd.
+                    &copy; Copyright 2021 Sequence Co., Ltd.
                 </div>
             </div>
         </AuthLayout>
     );
 };
 
-export const getServerSideProps = async (context) => {
-    return { props: {} };
-};
+// export const getServerSideProps = async (context) => {
+//     return { props: {} };
+// };
 
 export default ForgotPassword;

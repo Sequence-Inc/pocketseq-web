@@ -1,4 +1,6 @@
+import React from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { Container, Tag } from "@element";
 import {
     CategoryItem,
@@ -32,9 +34,9 @@ export const itemGridData: IItemGrid[] = [
         area: "32m²",
         tag: "おうちスペース",
         coords: {
-            lat: 35.6620,
-            lng: 139.7038
-        }
+            lat: 35.662,
+            lng: 139.7038,
+        },
     },
     {
         id: 2,
@@ -48,9 +50,9 @@ export const itemGridData: IItemGrid[] = [
         area: "60m²",
         tag: "イベントスペース",
         coords: {
-            lat: 35.6630,
-            lng: 139.7050
-        }
+            lat: 35.663,
+            lng: 139.705,
+        },
     },
     {
         id: 3,
@@ -64,9 +66,9 @@ export const itemGridData: IItemGrid[] = [
         area: "19m²",
         tag: "貸し会議室",
         coords: {
-            lat: 35.6530,
-            lng: 139.7123
-        }
+            lat: 35.653,
+            lng: 139.7123,
+        },
     },
     {
         id: 4,
@@ -81,8 +83,8 @@ export const itemGridData: IItemGrid[] = [
         tag: "おうちスペース",
         coords: {
             lat: 35.6666,
-            lng: 139.7040
-        }
+            lng: 139.704,
+        },
     },
 ];
 
@@ -172,13 +174,12 @@ export default function Home() {
                             >
                                 目的に応じて探す
                             </Tag>
-                            <a
-                                href="#"
-                                className="flex items-center text-xs text-gray-500 hover:text-primary"
-                            >
-                                もっと見る
-                                <ChevronRightIcon className="w-4 h-4 ml-1" />
-                            </a>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
                             {categories.map((category, index) => (
@@ -201,13 +202,12 @@ export default function Home() {
                             >
                                 近くのエリアから探す
                             </Tag>
-                            <a
-                                href="#"
-                                className="flex items-center text-xs text-gray-500 hover:text-primary"
-                            >
-                                もっと見る
-                                <ChevronRightIcon className="w-4 h-4 ml-1" />
-                            </a>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
                             {exploreAreas.map((area, index) => (
@@ -230,20 +230,18 @@ export default function Home() {
                             >
                                 新着ピックアップスペース
                             </Tag>
-                            <a
-                                href="#"
-                                className="flex items-center text-xs text-gray-500 hover:text-primary"
-                            >
-                                もっと見る
-                                <ChevronRightIcon className="w-4 h-4 ml-1" />
-                            </a>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
                         </div>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                             {itemGridData.map((item, index) => (
                                 <ItemGrid key={index} data={item} />
                             ))}
                         </div>
-                        <input type="text" placeholder="DEMO" />
                     </div>
                     <RegisterCTA />
                 </Container>
