@@ -7,6 +7,7 @@ import {
     ViewListIcon,
 } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
+import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
@@ -20,6 +21,9 @@ const Search = ({ resetToStartObj }) => {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Search | Timebook</title>
+            </Head>
             <div className="relative grid grid-cols-1 lg:grid-cols-9">
                 <div className="px-6 py-10 mt-16 lg:col-span-5">
                     <div className="flex justify-center">
@@ -98,11 +102,13 @@ const Search = ({ resetToStartObj }) => {
                             {/* lists section */}
                             <div>
                                 {sort === "list" ? (
-                                    <ListViewSearch
-                                        lists={itemGridData}
-                                        activeIndex={activeIndex}
-                                        setActiveIndex={setActiveIndex}
-                                    />
+                                    <div className="divide-y divide-gray-100">
+                                        <ListViewSearch
+                                            lists={itemGridData}
+                                            activeIndex={activeIndex}
+                                            setActiveIndex={setActiveIndex}
+                                        />
+                                    </div>
                                 ) : sort === "grid" ? (
                                     <GridViewSearch
                                         lists={itemGridData}
