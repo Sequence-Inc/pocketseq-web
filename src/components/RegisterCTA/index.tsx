@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const CTAButton = ({ link, children }: { link: string; children: string }) => {
     return (
@@ -15,9 +16,9 @@ export const RegisterCTA = () => {
     return (
         <div className="relative overflow-hidden bg-gray-800 rounded-2xl">
             <div className="relative h-56 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
-                <img
+                <Image
+                    layout="fill"
                     src="/cta-bg.jpg"
-                    alt="Register now"
                     className="h-full w-full object-cover"
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t md:bg-gradient-to-l from-gray-800 to-gray-transparent"></div>

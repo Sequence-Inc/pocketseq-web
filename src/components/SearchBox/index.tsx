@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { Button, Tag, TextField } from "@element";
 import {
     CalendarIcon,
@@ -26,6 +27,8 @@ export const SearchBox = () => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
+
+    const router = useRouter();
     return (
         <div className="flex flex-col sm:flex-row space-y-2.5 sm:space-y-0 sm:space-x-2.5">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
@@ -141,7 +144,15 @@ export const SearchBox = () => {
                 </Popover>
             </div>
             <div>
-                <Button rounded variant="primary" className="px-5 py-3">
+                <Button
+                    rounded
+                    variant="primary"
+                    className="px-5 py-3"
+                    onClick={(event) => {
+                        event.preventDefault();
+                        router.push("/search");
+                    }}
+                >
                     <Tag
                         Icon={SearchIcon}
                         iconSize={5}
