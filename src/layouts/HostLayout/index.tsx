@@ -23,7 +23,7 @@ import {
 } from '@heroicons/react/solid'
 import SideBar from 'src/layouts/SideBar'
 import Toolbar from '../Toolbar'
-import { Container } from '@element'
+
 
 const navigation = [
     { name: 'All Issues', href: '#', icon: HomeIcon, current: true },
@@ -91,9 +91,7 @@ export default function HostLayout({ children }) {
             <div className="flex flex-col flex-1 w-0 overflow-hidden">
                 <Toolbar setSidebarOpen={setSidebarOpen} />
                 <main className="relative flex-1 overflow-y-auto bg-gray-100 focus:outline-none">
-                    <Container className="py-4 sm:py-6 lg:py-8">
-                        {children}
-                    </Container>
+                    {children}
                 </main>
             </div>
         </div>

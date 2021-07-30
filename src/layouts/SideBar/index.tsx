@@ -15,6 +15,11 @@ function classNames(...classes) {
 const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
     const router = useRouter();
 
+    const isActiveNav = (href: string): boolean => {
+        if (href === '/user-host') return router.pathname === href;
+        return router.pathname.split("/").includes(href.split("/")[2]);
+    }
+
     return (
         <>
             <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -80,14 +85,14 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                             <Link key={item.name} href={item.href}>
                                                 <a
                                                     className={classNames(
-                                                        router.pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                        isActiveNav(item.href) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                         'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                                     )}
-                                                    aria-current={router.pathname === item.href ? 'page' : undefined}
+                                                    aria-current={isActiveNav(item.href) ? 'page' : undefined}
                                                 >
                                                     <item.icon
                                                         className={classNames(
-                                                            router.pathname === item.href ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                                                            isActiveNav(item.href) ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
                                                             'mr-4 flex-shrink-0 h-6 w-6'
                                                         )}
                                                         aria-hidden="true"
@@ -136,14 +141,14 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                         <Link key={item.name} href={item.href}>
                                             <a
                                                 className={classNames(
-                                                    router.pathname === item.href ? 'bg-primaryDark text-white' : 'text-gray-100 hover:bg-primaryHover hover:text-white',
+                                                    isActiveNav(item.href) ? 'bg-primaryDark text-white' : 'text-gray-100 hover:bg-primaryHover hover:text-white',
                                                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                                 )}
-                                                aria-current={router.pathname === item.href ? 'page' : undefined}
+                                                aria-current={isActiveNav(item.href) ? 'page' : undefined}
                                             >
                                                 <item.icon
                                                     className={classNames(
-                                                        router.pathname === item.href ? 'text-gray-300' : 'text-gray-300 group-hover:text-gray-200',
+                                                        isActiveNav(item.href) ? 'text-gray-300' : 'text-gray-300 group-hover:text-gray-200',
                                                         'mr-3 flex-shrink-0 h-6 w-6'
                                                     )}
                                                     aria-hidden="true"

@@ -10,6 +10,7 @@ interface ButtonProps {
     loadingText?: string;
     loading?: boolean;
     disabled?: boolean;
+    Icon?: React.ComponentType<{ className: string }>;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -23,6 +24,7 @@ const Button = (props: ButtonProps) => {
         disabled,
         loading,
         children,
+        Icon,
         ...rest
     } = props;
     return (
@@ -48,7 +50,11 @@ const Button = (props: ButtonProps) => {
             )}
             {...rest}
         >
-            {loading ? 'loading...' : children}
+            {loading
+                ? 'loading...'
+                : !!Icon
+                    ? <div className="flex items-center"><Icon className="w-5 h-5 mr-2 text-inherit" /><span>{children}</span></div>
+                    : children}
         </button>
     );
 };
