@@ -1,9 +1,10 @@
 import React from "react";
 import Head from "next/head";
 import useRegister from "@hooks/useRegister";
-import { PasswordInput, TextField, PinDialog, Button } from "@element";
+import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
+import Link from "next/link";
 
 const Register = () => {
     const {
@@ -30,8 +31,7 @@ const Register = () => {
                 emailAddress={email}
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
-                {/* <Logo /> */}
-                Logo here
+                <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     Create an account
                 </h2>
@@ -135,9 +135,16 @@ const Register = () => {
                     </Button>
                 </form>
             </div>
-            <div className="flex justify-center py-2 mt-2 w-96">
+            <div className="flex flex-col items-center py-2 mt-2 w-96">
+                <div className="py-2 text-md ">
+                    <Link href="/">
+                        <a className="text-gray-500 hover:text-green-600">
+                            Go back to Timebook
+                        </a>
+                    </Link>
+                </div>
                 <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 JRG Co., Ltd.
+                    &copy; Copyright 2021 Sequence Co., Ltd.
                 </div>
             </div>
         </AuthLayout>

@@ -77,6 +77,7 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
 
 const Header = () => {
     const { data } = useQuery(GET_SESSION)
+    const router = useRouter();
     return (
         <Disclosure
             as="nav"
@@ -108,12 +109,6 @@ const Header = () => {
                                 </div>
                                 <Link href="/">
                                     <a className="flex items-center flex-shrink-0">
-                                        {/* <img
-                                            className="w-auto h-8"
-                                            src="https://tailwindui.com/img/logos/workflow-mark-white.svg"
-                                            alt="Workflow"
-                                        /> */}
-
                                         <ClockIcon className="w-8 h-8 text-white" />
                                         <span className="hidden w-auto ml-2 text-lg font-medium text-white h-7 lg:flex lg:items-center">
                                             Time Book
@@ -142,6 +137,10 @@ const Header = () => {
                                         variant="white"
                                         rounded
                                         className="font-light text-gray-500"
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            router.push("/auth/register");
+                                        }}
                                     >
                                         新規登録
                                     </Button>
