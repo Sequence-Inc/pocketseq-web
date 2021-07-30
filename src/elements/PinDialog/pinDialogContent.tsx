@@ -35,9 +35,9 @@ const PinDialogContent = ({
                 className="mt-2 text-base font-normal text-center text-lightBlue-600"
                 id="modal-headline"
             >
-                confirmPasswordReset
+                Confirm Reset Password
             </h3>
-            <p className="text-sm text-center text-gray-600">sentYouCode</p>
+            <p className="text-sm text-center text-gray-600">Sent You Code</p>
             <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
                     Verification code
@@ -45,26 +45,27 @@ const PinDialogContent = ({
                 <CodeInput
                     length={6}
                     initialValue=""
-                    onChange={(value) => setCode(value)}
+                    onChange={(value: number) => setCode(value)}
                     type="numeric"
-                    inputMode="number"
-                    onComplete={(value) => setCode(value)}
+                    inputMode="numeric"
+                    onComplete={(value: number) => setCode(value)}
                     autoSelect={true}
                     regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
                 />
             </div>
             <Button
+                type="submit"
                 className="sm:col-start-2"
                 loading={isLoading || resendLoading}
             >
-                buttonVerifyCode
+                Verify Code
             </Button>
             <Button
                 variant="white"
                 disabled={isLoading || resendLoading}
                 onClick={() => setModal(false)}
             >
-                buttonCancel
+                Cancel
             </Button>
             <div className="relative text-center">
                 <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
