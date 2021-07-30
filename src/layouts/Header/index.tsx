@@ -6,6 +6,8 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { Button } from "@element";
+import { GET_SESSION } from "src/apollo/queries/state.queries";
+import { useQuery } from '@apollo/client';
 
 interface INavLinkItems {
     name: string;
@@ -74,6 +76,7 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
 };
 
 const Header = () => {
+    const { data } = useQuery(GET_SESSION)
     const router = useRouter();
     return (
         <Disclosure
@@ -82,7 +85,7 @@ const Header = () => {
         >
             {({ open }) => (
                 <>
-                    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">{console.log("STATE_________", data)}
                         <div className="flex justify-between h-16">
                             <div className="flex">
                                 <div className="flex items-center mr-2 -ml-2 md:hidden">

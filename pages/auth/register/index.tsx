@@ -47,7 +47,7 @@ const Register = () => {
                         id="firstName"
                         autoFocus={true}
                         disabled={isLoading}
-                        value={getValues("firstName")}
+                    // value={getValues("firstName")}
                     />
                     <TextField
                         {...register("lastName", { required: true })}
@@ -56,7 +56,25 @@ const Register = () => {
                         label="Last Name"
                         id="lastName"
                         disabled={isLoading}
-                        value={getValues("lastName")}
+                    // value={getValues("lastName")}
+                    />
+                    <TextField
+                        {...register("firstNameKana", { required: true })}
+                        error={errors.firstName ? true : false}
+                        errorMessage={errors?.firstName?.message}
+                        label="First Name Kana"
+                        id="firstNameKana"
+                        disabled={isLoading}
+                    // value={getValues("firstNameKana")}
+                    />
+                    <TextField
+                        {...register("lastNameKana", { required: true })}
+                        error={errors.lastName ? true : false}
+                        errorMessage={errors?.lastName?.message}
+                        label="Last Name Kana"
+                        id="lastNameKana"
+                        disabled={isLoading}
+                    // value={getValues("lastNameKana")}
                     />
                     <TextField
                         {...register("email", { required: true })}
@@ -65,7 +83,7 @@ const Register = () => {
                         label="Email Address"
                         id="email"
                         disabled={isLoading}
-                        value={getValues("email")}
+                    // value={getValues("email")}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}

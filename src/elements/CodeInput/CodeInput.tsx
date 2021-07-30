@@ -1,16 +1,50 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import PinItem from './CodeItem';
+import React, { Component } from "react";
+import PinItem from "./CodeItem";
 
-/**
- */
-class CodeInput extends Component {
+interface IProps {
+    focus: boolean;
+    length: number;
+    onComplete: (pin: number, activeIndex: number) => void;
+    onChange: (pin: number, activeIndex: number) => void;
+    style: any;
+    disabled: boolean;
+    secret: boolean;
+    type: string;
+    inputMode: "numeric" | "text" | "tel" | "none" | "url" | "email" | "decimal" | "search";
+    validate: any;
+    inputStyle: any;
+    inputFocusStyle: any;
+    autoSelect: boolean;
+    regexCriteria: any;
+}
+
+class CodeInput extends Component<IProps> {
+    values: any[];
+    elements: any[];
+    currentIndex: number;
+
+    static defaultProps = {
+        initialValue: "",
+        type: "numeric",
+        secret: false,
+        validate: null,
+        focus: false,
+        disabled: false,
+        onChange: () => { },
+        onComplete: () => { },
+        inputMode: undefined,
+        style: {},
+        inputStyle: {},
+        inputFocusStyle: {},
+        autoSelect: true,
+        regexCriteria: /^[a-zA-Z0-9]+$/,
+    }
+
     constructor(props) {
         super(props);
-
         this.values = Array(props.length)
-            .fill('')
-            .map((x, i) => props.initialValue.toString()[i] || '');
+            .fill("")
+            .map((x, i) => props.initialValue.toString()[i] || "");
         this.elements = [];
         this.currentIndex = 0;
 
@@ -47,10 +81,10 @@ class CodeInput extends Component {
         }
 
         // Notify the parent
-        const pin = this.values.join('');
+        const pin = this.values.join("");
 
         if (!isPasting) {
-            onChange(pin, currentIndex);
+            onChange(parseInt(pin), currentIndex);
         }
 
         if (pin.length === length) {
@@ -59,7 +93,7 @@ class CodeInput extends Component {
                 return;
             }
 
-            onComplete(pin, currentIndex);
+            onComplete(parseInt(pin), currentIndex);
         }
     }
 
@@ -82,7 +116,8 @@ class CodeInput extends Component {
         return (
             <div
                 style={this.props.style}
-                className="flex -space-x-px rounded-md shadow">
+                className="flex -space-x-px rounded-md shadow"
+            >
                 {this.values.map((e, i) => (
                     <PinItem
                         initialValue={e}
@@ -110,40 +145,5 @@ class CodeInput extends Component {
         );
     }
 }
-
-CodeInput.propTypes = {
-    initialValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    length: PropTypes.number.isRequired,
-    type: PropTypes.string,
-    onComplete: PropTypes.func,
-    validate: PropTypes.func,
-    secret: PropTypes.bool,
-    disabled: PropTypes.bool,
-    focus: PropTypes.bool,
-    onChange: PropTypes.func,
-    inputMode: PropTypes.string,
-    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    inputStyle: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    inputFocusStyle: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    autoSelect: PropTypes.bool,
-    regexCriteria: PropTypes.any
-};
-
-CodeInput.defaultProps = {
-    initialValue: '',
-    type: 'numeric',
-    secret: false,
-    validate: null,
-    focus: false,
-    disabled: false,
-    onChange: () => {},
-    onComplete: () => {},
-    inputMode: undefined,
-    style: {},
-    inputStyle: {},
-    inputFocusStyle: {},
-    autoSelect: true,
-    regexCriteria: /^[a-zA-Z0-9]+$/
-};
 
 export default CodeInput;

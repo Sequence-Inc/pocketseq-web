@@ -1,9 +1,42 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-/**
- */
-class CodeItem extends Component {
+interface IProps {
+    initialValue?: any;
+    onBackspace: () => void;
+    onChange: (value: number, isPasting: boolean) => void;
+    autoSelect: boolean;
+    onPaste: (value: number) => void;
+    validate: (value: any) => void;
+    regexCriteria: any;
+    type: string;
+    inputMode: "numeric" | "text" | "tel" | "none" | "url" | "email" | "decimal" | "search";
+    inputStyle: any;
+    inputFocusStyle: any;
+    itemIndex: number;
+    itemLength: number;
+    disabled: boolean;
+    secret: boolean;
+}
+
+interface IState {
+    value: any;
+    focus: boolean;
+}
+
+class CodeItem extends Component<IProps, IState> {
+    input: any;
+
+    static defalutProps = {
+        secret: false,
+        type: 'numeric',
+        inputMode: undefined,
+        disabled: false,
+        validate: undefined,
+        autoSelect: false,
+        onPaste: undefined,
+        regexCriteria: /^[a-zA-Z0-9]+$/
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -118,13 +151,13 @@ class CodeItem extends Component {
         return (
             <div className="flex-1 min-w-0">
                 <input
-                    disabled={this.props.disabled ? 'disabled' : undefined}
+                    disabled={this.props.disabled}
                     className={`focus:ring-lightBlue-600 text-gray-600 focus:border-lightBlue-600 relative text-center block w-full rounded-none bg-transparent focus:z-10 sm:text-sm border-gray-300 ${additionalClassName}`}
                     onChange={this.onChange}
                     onKeyDown={this.onKeyDown}
                     placeholder={value}
                     aria-label={value}
-                    maxLength="1"
+                    maxLength={1}
                     autoComplete="off"
                     type={this.props.secret ? 'password' : inputType}
                     inputMode={inputMode || 'text'}
@@ -148,34 +181,5 @@ class CodeItem extends Component {
         );
     }
 }
-
-CodeItem.propTypes = {
-    initialValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    onBackspace: PropTypes.func.isRequired,
-    onPaste: PropTypes.func,
-    secret: PropTypes.bool,
-    disabled: PropTypes.bool,
-    type: PropTypes.string,
-    inputMode: PropTypes.string,
-    validate: PropTypes.func,
-    inputStyle: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    inputFocusStyle: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    autoSelect: PropTypes.bool,
-    regexCriteria: PropTypes.any,
-    itemIndex: PropTypes.number,
-    itemLength: PropTypes.number
-};
-
-CodeItem.defaultProps = {
-    secret: false,
-    type: 'numeric',
-    inputMode: undefined,
-    disabled: false,
-    validate: undefined,
-    autoSelect: false,
-    onPaste: undefined,
-    regexCriteria: /^[a-zA-Z0-9]+$/
-};
 
 export default CodeItem;
