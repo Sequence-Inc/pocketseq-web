@@ -8,28 +8,32 @@ import { useRouter } from "next/router";
 import { Button } from "@element";
 import { GET_SESSION } from "src/apollo/queries/state.queries";
 import { useQuery } from '@apollo/client';
+import { isAuthenticated, logout } from "src/utils/auth";
+import React from "react";
 
 interface INavLinkItems {
     name: string;
     link: string;
+    authenticate?: boolean;
 }
 
 const navLinkItems: INavLinkItems[] = [
     {
         name: "スペース掲載",
-        link: "/space",
+        link: "/space"
     },
     {
         name: "初めての方へ",
-        link: "/guide",
+        link: "/guide"
     },
     {
         name: "ヘルプ",
-        link: "/help",
+        link: "/help"
     },
     {
         name: "ログイン",
         link: "/auth/login",
+        authenticate: true
     },
 ];
 
@@ -119,31 +123,41 @@ const Header = () => {
                             <div className="flex items-center">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
                                     {navLinkItems.map((item: INavLinkItems) => (
-                                        <NavLink
-                                            key={item.link}
-                                            link={item.link}
-                                            name={item.name}
-                                        />
+                                        <>
+                                            {isAuthenticated() && !item.authenticate &&
+                                                <NavLink
+                                                    key={item.link}
+                                                    link={item.link}
+                                                    name={item.name}
+                                                />}
+                                        </>
                                     ))}
                                 </div>
                                 <div className="flex-shrink-0">
-                                    {/* <button
-                                        type="button"
-                                        className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-500 bg-white border-transparent rounded-full shadow-sm bg-whiteborder hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-                                    >
-                                        新規登録
-                                    </button> */}
-                                    <Button
-                                        variant="white"
-                                        rounded
-                                        className="font-light text-gray-500"
-                                        onClick={(event) => {
-                                            event.preventDefault();
-                                            router.push("/auth/register");
-                                        }}
-                                    >
-                                        新規登録
-                                    </Button>
+                                    {isAuthenticated() &&
+                                        <Button
+                                            variant="white"
+                                            rounded
+                                            className="font-light text-gray-500"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                logout();
+                                            }}
+                                        >
+                                            サインアウト
+                                        </Button>}
+                                    {!isAuthenticated() &&
+                                        <Button
+                                            variant="white"
+                                            rounded
+                                            className="font-light text-gray-500"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                router.push("/auth/register");
+                                            }}
+                                        >
+                                            新規登録
+                                        </Button>}
                                 </div>
                                 {/* <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                                     <button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -231,11 +245,15 @@ const Header = () => {
                     <Disclosure.Panel className="md:hidden">
                         <div className="pt-2 pb-3 space-y-1">
                             {navLinkItems.map((item: INavLinkItems) => (
-                                <NavLinkOnSmall
-                                    key={item.link}
-                                    name={item.name}
-                                    link={item.link}
-                                />
+                                <>
+                                    {isAuthenticated() && !item.authenticate &&
+                                        <NavLinkOnSmall
+                                            key={item.link}
+                                            name={item.name}
+                                            link={item.link}
+                                        />
+                                    }
+                                </>
                             ))}
                         </div>
                     </Disclosure.Panel>

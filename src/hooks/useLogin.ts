@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from '@apollo/client';
 import { LOGIN } from "src/apollo/queries/auth.queries";
-import { setCookie } from "nookies";
+import { storeSession } from "src/utils/auth";
 
 type Error = {
     message: string,
@@ -32,12 +32,8 @@ const useLogin = () => {
     const pinRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            console.log(data)
-            // setCookie(null, 'session', `Bearer ${data.data.data.token}`, {
-            //     maxAge: 30 * 24 * 60 * 60,
-            //     path: '/',
-            // });
-            // router.replace('/');
+            storeSession(data.login);
+            router.replace('/');
         },
         onError: ({ graphQLErrors }) => {
             const error: Error = { ...graphQLErrors[0] }
