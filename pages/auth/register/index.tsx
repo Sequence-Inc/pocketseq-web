@@ -35,6 +35,7 @@ const Register = () => {
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     Create an account
                 </h2>
+                <div>{isLoading}</div>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
                     className="space-y-4"
@@ -47,7 +48,7 @@ const Register = () => {
                         id="firstName"
                         autoFocus={true}
                         disabled={isLoading}
-                    // value={getValues("firstName")}
+                        // value={getValues("firstName")}
                     />
                     <TextField
                         {...register("lastName", { required: true })}
@@ -65,7 +66,7 @@ const Register = () => {
                         label="First Name Kana"
                         id="firstNameKana"
                         disabled={isLoading}
-                    // value={getValues("firstNameKana")}
+                        // value={getValues("firstNameKana")}
                     />
                     <TextField
                         {...register("lastNameKana", { required: true })}
@@ -74,7 +75,7 @@ const Register = () => {
                         label="Last Name Kana"
                         id="lastNameKana"
                         disabled={isLoading}
-                    // value={getValues("lastNameKana")}
+                        // value={getValues("lastNameKana")}
                     />
                     <TextField
                         {...register("email", { required: true })}
@@ -83,7 +84,7 @@ const Register = () => {
                         label="Email Address"
                         id="email"
                         disabled={isLoading}
-                    // value={getValues("email")}
+                        // value={getValues("email")}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}

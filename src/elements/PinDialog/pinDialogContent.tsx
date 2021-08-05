@@ -81,6 +81,7 @@ const PinDialogContent = ({
                 disabled={isLoading || resendLoading}
                 onClick={(e) => {
                     e.preventDefault();
+                    console.log("this is running!")
                     resendCode(emailAddress);
                 }}
             >

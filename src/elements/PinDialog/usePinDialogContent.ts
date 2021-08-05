@@ -31,15 +31,16 @@ const usePinDialogContent = (response, callback, location) => {
         }
     })
 
-    const { refetch } = useQuery(location !== 'forgotPassword' && RESEND_VERIFICATION_CODE, {
-        variables: { email: response.email }
-    });
+    // const { refetch } = useQuery(location !== 'forgotPassword' && RESEND_VERIFICATION_CODE, {
+    //     variables: { email: response.email }
+    // });
 
     const [verifyResetPasswordRequest] = useMutation(VERIFY_RESET_PASSWORD_REQUEST);
 
     const [forgotPassword] = useMutation(FORGOT_PASSWORD);
 
     const resendCode = async (email?) => {
+        // Resend code does not work for register page
         if (location === 'forgotPassword') {
             forgotPassword({ variables: { email } })
         }
@@ -51,7 +52,9 @@ const usePinDialogContent = (response, callback, location) => {
             email: response.email,
             code
         };
+
         if (location === 'forgotPassword') {
+            console.log("eta aayo!")
             verifyResetPasswordRequest({ variables: { input } });
         } else {
             verifyEmail({ variables: { input } });
