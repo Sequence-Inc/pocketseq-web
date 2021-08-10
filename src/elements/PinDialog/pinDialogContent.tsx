@@ -10,7 +10,7 @@ const PinDialogContent = ({
     location,
     emailAddress,
 }) => {
-    const { verifyPin, setCode, resendCode, isLoading, resendLoading } =
+    const { verifyPin, setCode, resendCode, resetLoading, refetchLoading, verifyLoading } =
         usePinDialogContent(response, callback, location);
 
     return (
@@ -54,15 +54,16 @@ const PinDialogContent = ({
                 />
             </div>
             <Button
+                variant="primary"
                 type="submit"
                 className="sm:col-start-2"
-                loading={isLoading || resendLoading}
+                loading={resetLoading || refetchLoading || verifyLoading}
             >
                 Verify Code
             </Button>
             <Button
                 variant="white"
-                disabled={isLoading || resendLoading}
+                disabled={resetLoading || refetchLoading || verifyLoading}
                 onClick={() => setModal(false)}
             >
                 Cancel
@@ -78,13 +79,13 @@ const PinDialogContent = ({
             </div>
             <Button
                 variant="white"
-                disabled={isLoading || resendLoading}
+                disabled={resetLoading || refetchLoading || verifyLoading}
                 onClick={(e) => {
                     e.preventDefault();
                     resendCode(emailAddress);
                 }}
             >
-                {resendLoading ? "buttonResendLoading" : "buttonResendCode"}
+                {refetchLoading ? "Resending Code..." : "Resend Code"}
             </Button>
         </form>
     );

@@ -19,11 +19,8 @@ const schema = yup.object().shape({
 });
 
 const useRegister = () => {
-    const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState("");
-    const router = useRouter();
     const pinRef = useRef(null);
-    const { handleLogin } = useLogin();
 
     const {
         register,
@@ -35,9 +32,10 @@ const useRegister = () => {
         resolver: yupResolver(schema),
     });
 
-    const [registerUser] = useMutation(REGISTER_USER, {
+    const [registerUser, { loading }] = useMutation(REGISTER_USER, {
         onError: (error) => console.log(error),
         onCompleted: ({ registerUser }) => {
+            debugger;
             if (registerUser?.action === "verify-email") {
                 // login after successfull user register
                 const obj = { email: watch().email };
@@ -58,9 +56,8 @@ const useRegister = () => {
         errors,
         watch,
         handleRegister,
-        handleLogin,
         handleSubmit,
-        isLoading,
+        loading,
         email,
         pinRef,
         getValues,
