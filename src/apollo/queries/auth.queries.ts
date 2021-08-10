@@ -8,6 +8,16 @@ export const REGISTER_USER = gql`
         }
   }
 `
+
+export const REGISTER_HOST = gql`
+    mutation RegisterCompany($input: RegisterCompanyInput!) {
+      registerCompany(input: $input) {
+            message
+            action
+        }
+  }
+`
+
 export const VERIFY_EMAIL = gql`
     mutation VerifyEmail($input: VerifyEmailInput) {
         verifyEmail(input: $input) {

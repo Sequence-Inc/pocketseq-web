@@ -1,10 +1,10 @@
 import React from "react";
 import Head from "next/head";
-import useRegister from "@hooks/useRegister";
 import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 import Link from "next/link";
+import useRegisterHost from "@hooks/useRegisterHost";
 import ErrorModal from "src/elements/ErrorModal";
 
 const Register = () => {
@@ -15,8 +15,9 @@ const Register = () => {
         handleRegister,
         loading,
         pinRef,
+        email,
         errorRef
-    } = useRegister();
+    } = useRegisterHost();
     const router = useRouter();
 
     return (
@@ -28,6 +29,7 @@ const Register = () => {
             <PinDialog
                 ref={pinRef}
                 callback={() => router.replace('/')}
+                emailAddress={email}
                 location="register"
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
@@ -40,36 +42,20 @@ const Register = () => {
                     className="space-y-4"
                 >
                     <TextField
-                        {...register("firstName", { required: true })}
-                        error={errors.firstName ? true : false}
-                        errorMessage={errors?.firstName?.message}
-                        label="First Name"
-                        id="firstName"
+                        {...register("name", { required: true })}
+                        error={errors.name ? true : false}
+                        errorMessage={errors?.name?.message}
+                        label="Comapny Name"
+                        id="name"
                         autoFocus={true}
                         disabled={loading}
                     />
                     <TextField
-                        {...register("lastName", { required: true })}
-                        error={errors.lastName ? true : false}
-                        errorMessage={errors?.lastName?.message}
-                        label="Last Name"
-                        id="lastName"
-                        disabled={loading}
-                    />
-                    <TextField
-                        {...register("firstNameKana", { required: true })}
-                        error={errors.firstName ? true : false}
-                        errorMessage={errors?.firstName?.message}
-                        label="First Name Kana"
-                        id="firstNameKana"
-                        disabled={loading}
-                    />
-                    <TextField
-                        {...register("lastNameKana", { required: true })}
-                        error={errors.lastName ? true : false}
-                        errorMessage={errors?.lastName?.message}
-                        label="Last Name Kana"
-                        id="lastNameKana"
+                        {...register("nameKana", { required: true })}
+                        error={errors.nameKana ? true : false}
+                        errorMessage={errors?.nameKana?.message}
+                        label="Company Name Kana"
+                        id="nameKana"
                         disabled={loading}
                     />
                     <TextField
@@ -78,6 +64,14 @@ const Register = () => {
                         errorMessage={errors?.email?.message}
                         label="Email Address"
                         id="email"
+                        disabled={loading}
+                    />
+                    <TextField
+                        {...register("registrationNumber", { required: true })}
+                        error={errors.registrationNumber ? true : false}
+                        errorMessage={errors?.registrationNumber?.message}
+                        label="Registration Number"
+                        id="registrationNumber"
                         disabled={loading}
                     />
                     <PasswordInput

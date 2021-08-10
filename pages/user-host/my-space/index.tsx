@@ -28,6 +28,8 @@ import HostLayout from 'src/layouts/HostLayout'
 import Head from "next/head";
 import { Button, Container } from '@element';
 import Link from "next/link";
+import { useQuery } from '@apollo/client'
+import { MY_SPACES } from 'src/apollo/queries/space.queries'
 
 const navigation = [
     { name: 'Home', href: '#', icon: HomeIcon, current: true },
@@ -159,11 +161,13 @@ function classNames(...classes) {
 }
 
 const MySpace = () => {
+    const { data } = useQuery(MY_SPACES);
+
     return (
         <HostLayout>
             <Head>
                 <title>My Spaces | Host Admin</title>
-            </Head>
+            </Head>{console.log(data)}
             {/* Page header */}
             <div className="bg-white shadow">
                 <Container>
