@@ -124,12 +124,14 @@ const Header = () => {
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
                                     {navLinkItems.map((item: INavLinkItems) => (
                                         <>
-                                            {isAuthenticated() && !item.authenticate &&
+                                            {console.log(isAuthenticated(), item.authenticate, item.link)}
+                                            {isAuthenticated() && item.authenticate ? null :
                                                 <NavLink
                                                     key={item.link}
                                                     link={item.link}
                                                     name={item.name}
-                                                />}
+                                                />
+                                            }
                                         </>
                                     ))}
                                 </div>

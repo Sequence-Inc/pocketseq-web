@@ -166,8 +166,9 @@ const MySpace = () => {
             </Head>
             {/* Page header */}
             <div className="bg-white shadow">
-                <div className="px-4 sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
-                    <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
+                <Container>
+                    {/* <div className="px-4 sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8"> */}
+                    <div className="py-6 md:flex md:items-center md:justify-between">
                         <div className="flex-1 min-w-0">
                             {/* Profile */}
                             <div className="flex items-center">
@@ -223,7 +224,8 @@ const MySpace = () => {
                             </Link>
                         </div>
                     </div>
-                </div>
+                    {/* </div> */}
+                </Container>
             </div>
             <Container className="py-4 sm:py-6 lg:py-8">
                 {/* <h2 className="text-lg font-medium leading-6 text-gray-900">
