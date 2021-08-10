@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from '@apollo/client';
 import { LOGIN } from "src/apollo/queries/auth.queries";
-import { setCookie } from "nookies";
+import { storeSession } from "src/utils/auth";
 
 type Error = {
     message: string,
@@ -25,24 +25,24 @@ const useLogin = () => {
         register,
         handleSubmit,
         watch,
-        formState: { errors },
-        getValues,
+        formState: { errors }
     } = useForm({ resolver: yupResolver(schema) });
+    const [errorModal, setErrorModal] = useState<string>();
     const router = useRouter();
     const pinRef = useRef(null);
+    const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            console.log(data)
-            // setCookie(null, 'session', `Bearer ${data.data.data.token}`, {
-            //     maxAge: 30 * 24 * 60 * 60,
-            //     path: '/',
-            // });
-            // router.replace('/');
+            storeSession(data.login);
+            router.replace('/');
         },
-        onError: ({ graphQLErrors }) => {
-            const error: Error = { ...graphQLErrors[0] }
+        onError: (err) => {
+            const error: Error = { ...err.graphQLErrors[0] }
+            console.log(err, error)
             if (error?.action === "verify-email") {
                 pinRef?.current.open(watch());
+            } else {
+                setErrorModal(error.message)
             }
         }
     });
@@ -59,7 +59,9 @@ const useLogin = () => {
         handleSubmit,
         loading,
         pinRef,
-        getValues,
+        errorModal,
+        setErrorModal,
+        errorRef
     };
 };
 

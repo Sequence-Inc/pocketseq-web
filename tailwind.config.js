@@ -14,6 +14,7 @@ module.exports = {
             colors: {
                 primary: "#00A79E",
                 primaryHover: "#00968e",
+                primaryDark: "#017a74",
             },
             fontFamily: {
                 sans: ["Inter var", ...fontFamily.sans],
