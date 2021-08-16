@@ -16,6 +16,7 @@ interface TextFieldProps {
     onBlur?: any;
     onChange: any;
     value?: string | number;
+    step?: string;
 }
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
@@ -28,7 +29,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
                 className="block text-sm font-medium text-gray-700">
                 {label}
             </label>
-            <div className="relative rounded-md ">
+            <div className="relative rounded-md">
                 <input
                     id={id}
                     ref={ref}

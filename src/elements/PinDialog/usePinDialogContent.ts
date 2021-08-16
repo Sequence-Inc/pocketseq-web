@@ -31,7 +31,7 @@ const usePinDialogContent = (response, callback, location) => {
         }
     })
 
-    const { refetch } = useQuery(location !== 'forgotPassword' && RESEND_VERIFICATION_CODE, {
+    const { refetch } = useQuery(location === 'login' && RESEND_VERIFICATION_CODE, {
         variables: { email: response.email }
     });
 

@@ -6,6 +6,7 @@ import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
+import ErrorModal from "src/elements/ErrorModal";
 
 const Login = () => {
     const {
@@ -15,7 +16,7 @@ const Login = () => {
         handleSubmit,
         loading,
         pinRef,
-        getValues,
+        errorRef
     } = useLogin();
     const router = useRouter();
 
@@ -25,6 +26,7 @@ const Login = () => {
                 <title>Login | Space Rental</title>
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
+            <ErrorModal ref={errorRef} />
             <AuthLayout>
                 <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                     <Logo />
