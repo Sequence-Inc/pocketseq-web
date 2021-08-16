@@ -12,17 +12,17 @@ const AddNewSpace = () => {
             <Container className="py-4 sm:py-6 lg:py-8">
                 <form onSubmit={onSubmit}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
-                        <div className="px-4 py-6 space-y-6 bg-white divide-y divide-gray-200 sm:p-6">
+                        <div className="px-4 py-6 space-y-4 bg-white divide-y divide-gray-200 sm:p-6">
                             <div>
-                                <div>
+                                <div className="pb-5">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Space</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         This information will be displayed publicly so be sure to add valid information.
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="sm:col-span-4">
+                                <div className="max-w-xs space-y-4">
+                                    <div className="">
                                         <TextField
                                             {...register("name", { required: true })}
                                             label="Name"
@@ -31,7 +31,7 @@ const AddNewSpace = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <div className="sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("maximumCapacity", { required: true, setValueAs: (val) => parseInt(val) })}
                                             label="Maximum Capacity"
@@ -41,7 +41,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("numberOfSeats", { required: true, setValueAs: (val) => parseInt(val) })}
                                             label="Number Of seats"
@@ -51,7 +51,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spaceSize", { required: true, setValueAs: (val) => parseFloat(val) })}
                                             label="Space Size"
@@ -61,7 +61,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="sm:col-span-4">
+                                    <div className="">
                                         <Controller
                                             name="spaceTypes"
                                             control={control}
@@ -80,15 +80,15 @@ const AddNewSpace = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-8">
-                                <div>
+                            <div className="pt-7">
+                                <div className="pb-5">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Pricing</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         Added a pricing plan for your space
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="col-span-6 sm:col-span-4">
+                                <div className="max-w-xs space-y-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.planTitle", { required: true })}
                                             label="Plan Title"
@@ -97,7 +97,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.hourlyPrice", { required: true, setValueAs: (val) => parseFloat(val) })}
                                             label="Hourly Price"
@@ -107,7 +107,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.dailyPrice", { required: true, setValueAs: (val) => parseFloat(val) })}
                                             label="Daily Price"
@@ -117,7 +117,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.maintenanceFee", { required: true, setValueAs: (val) => parseFloat(val) })}
                                             label="Maintenance Fee"
@@ -127,7 +127,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.lastMinuteDiscount", { required: true, setValueAs: (val) => parseFloat(val) })}
                                             label="LastMinute Discount"
@@ -137,7 +137,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
                                         <TextField
                                             {...register("spacePricePlan.cooldownTime", { required: true, setValueAs: (val) => parseInt(val) })}
                                             label="Cooldown Time"
@@ -149,15 +149,15 @@ const AddNewSpace = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-8">
-                                <div>
+                            <div className="pt-7">
+                                <div className="pb-5">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Statiion</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         Share the nearest station from your space.
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="col-span-6 sm:col-span-4">
+                                <div className="max-w-xs space-y-4">
+                                    <div className="">
 
                                         <TextField
                                             {...register("nearestStations.stationId", { required: true, setValueAs: (val) => parseInt(val) })}
@@ -168,7 +168,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
 
                                         <TextField
                                             {...register("nearestStations.via", { required: true })}
@@ -178,7 +178,7 @@ const AddNewSpace = () => {
                                         />
                                     </div>
 
-                                    <div className="col-span-6 sm:col-span-4">
+                                    <div className="">
 
                                         <TextField
                                             {...register("nearestStations.time", { required: true, setValueAs: (val) => parseInt(val) })}
