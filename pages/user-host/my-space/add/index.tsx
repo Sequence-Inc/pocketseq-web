@@ -6,22 +6,23 @@ import useAddSpace from '@hooks/useAddSpace';
 import { Controller } from 'react-hook-form';
 
 const AddNewSpace = () => {
-    const { spaceTypes, register, control, errors, onSubmit } = useAddSpace();
+    const { spaceTypes, register, control, errors, onSubmit, trainLines, getTrainLine, stationId, getStationId } = useAddSpace();
+
     return (
         <HostLayout>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <form onSubmit={onSubmit}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
-                        <div className="px-4 py-6 space-y-4 bg-white divide-y divide-gray-200 sm:p-6">
+                        <div className="space-y-4 bg-white">
                             <div>
-                                <div className="pb-5">
+                                <div className="px-4 py-1.5 border border-gray-200 sm:px-6 sm:py-2.5 bg-gray-50">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Space</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         This information will be displayed publicly so be sure to add valid information.
                                     </p>
                                 </div>
 
-                                <div className="max-w-xs space-y-4">
+                                <div className="px-4 py-1.5 sm:px-6 sm:py-2.5 max-w-sm space-y-4">
                                     <div className="">
                                         <TextField
                                             {...register("name", { required: true })}
@@ -80,14 +81,14 @@ const AddNewSpace = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-7">
-                                <div className="pb-5">
+                            <div className="pt-2">
+                                <div className="px-4 py-1.5 border border-gray-200 sm:px-6 sm:py-2.5 bg-gray-50">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Pricing</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         Added a pricing plan for your space
                                     </p>
                                 </div>
-                                <div className="max-w-xs space-y-4">
+                                <div className="px-4 py-1.5 sm:px-6 sm:py-2.5 max-w-sm space-y-4">
                                     <div className="">
                                         <TextField
                                             {...register("spacePricePlan.planTitle", { required: true })}
@@ -149,22 +150,63 @@ const AddNewSpace = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-7">
-                                <div className="pb-5">
+                            <div className="pt-2">
+                                <div className="px-4 py-1.5 sm:px-6 sm:py-2.5 border border-gray-200 bg-gray-50">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900">Statiion</h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         Share the nearest station from your space.
                                     </p>
                                 </div>
-                                <div className="max-w-xs space-y-4">
-                                    <div className="">
+                                <div className="px-4 py-1.5 sm:px-6 sm:py-2.5 max-w-sm space-y-4">
 
-                                        <TextField
-                                            {...register("nearestStations.stationId", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Station ID"
-                                            error={errors.nearestStations?.stationId && true}
-                                            errorMessage="Station ID is required"
-                                            type="number"
+                                    <div className="">
+                                        <Controller
+                                            name="nearestStations.prefecture"
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                label="Prefecture"
+                                                options={['東京']}
+                                                error={errors.nearestStations?.prefecture && true}
+                                                onChange={getTrainLine}
+                                                errorMessage="Prefecture is required"
+                                            />}
+                                        />
+                                    </div>
+
+                                    <div className="">
+                                        <Controller
+                                            name="nearestStations.trainLine"
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                label="Train Line"
+                                                options={trainLines}
+                                                error={errors.nearestStations?.trainLine && true}
+                                                errorMessage="Train Line is required"
+                                                onChange={getStationId}
+                                                labelKey="name"
+                                                valueKey="id"
+                                            />}
+                                        />
+                                    </div>
+
+                                    <div className="">
+                                        <Controller
+                                            name="nearestStations.stationId"
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                label="Station ID"
+                                                options={stationId}
+                                                error={errors.nearestStations?.stationId && true}
+                                                errorMessage="Train Line is required"
+                                                labelKey="name"
+                                                valueKey="id"
+                                            />}
                                         />
                                     </div>
 

@@ -32,7 +32,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
     } = props;
 
     const getSelectedLabel = () => {
-        if (!valueKey) return value;
+        if (!valueKey) return value ? value : "Select an option";
         const selectedObj = options.find((r) => r[valueKey] === value);
         return selectedObj ? selectedObj[labelKey] : "Select an option";
     };
