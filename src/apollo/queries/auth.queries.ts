@@ -9,9 +9,18 @@ export const REGISTER_USER = gql`
   }
 `
 
+export const BE_A_HOST = gql`
+    mutation BeAHost($input: BeAHostInput) {
+      beAHost(input: $input) {
+            message
+            url
+        }
+  }
+`
+
 export const REGISTER_HOST = gql`
-    mutation RegisterCompany($input: RegisterCompanyInput!) {
-      registerCompany(input: $input) {
+    mutation RegisterHost($input: RegisterHostInput!) {
+      registerHost(input: $input) {
             message
             action
         }
