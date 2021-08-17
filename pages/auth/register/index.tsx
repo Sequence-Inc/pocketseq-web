@@ -5,7 +5,6 @@ import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 import Link from "next/link";
-import ErrorModal from "src/elements/ErrorModal";
 
 const Register = () => {
     const {
@@ -13,9 +12,11 @@ const Register = () => {
         errors,
         handleSubmit,
         handleRegister,
-        loading,
+        isLoading,
         pinRef,
-        errorRef
+        handleLogin,
+        email,
+        getValues,
     } = useRegister();
     const router = useRouter();
 
@@ -24,11 +25,10 @@ const Register = () => {
             <Head>
                 <title>Signup | Space Rental</title>
             </Head>
-            <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace('/')}
-                location="register"
+                callback={handleLogin}
+                emailAddress={email}
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                 <Logo />
@@ -46,7 +46,8 @@ const Register = () => {
                         label="First Name"
                         id="firstName"
                         autoFocus={true}
-                        disabled={loading}
+                        disabled={isLoading}
+                        value={getValues("firstName")}
                     />
                     <TextField
                         {...register("lastName", { required: true })}
@@ -54,23 +55,8 @@ const Register = () => {
                         errorMessage={errors?.lastName?.message}
                         label="Last Name"
                         id="lastName"
-                        disabled={loading}
-                    />
-                    <TextField
-                        {...register("firstNameKana", { required: true })}
-                        error={errors.firstName ? true : false}
-                        errorMessage={errors?.firstName?.message}
-                        label="First Name Kana"
-                        id="firstNameKana"
-                        disabled={loading}
-                    />
-                    <TextField
-                        {...register("lastNameKana", { required: true })}
-                        error={errors.lastName ? true : false}
-                        errorMessage={errors?.lastName?.message}
-                        label="Last Name Kana"
-                        id="lastNameKana"
-                        disabled={loading}
+                        disabled={isLoading}
+                        value={getValues("lastName")}
                     />
                     <TextField
                         {...register("email", { required: true })}
@@ -78,7 +64,8 @@ const Register = () => {
                         errorMessage={errors?.email?.message}
                         label="Email Address"
                         id="email"
-                        disabled={loading}
+                        disabled={isLoading}
+                        value={getValues("email")}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}
@@ -86,7 +73,7 @@ const Register = () => {
                         errorMessage={errors?.password?.message}
                         label="Password"
                         id="password"
-                        disabled={loading}
+                        disabled={isLoading}
                     />
                     <PasswordInput
                         {...register("confirmPassword", { required: true })}
@@ -94,7 +81,7 @@ const Register = () => {
                         errorMessage={errors?.confirmPassword?.message}
                         label="Confirm Password"
                         id="confirmPassword"
-                        disabled={loading}
+                        disabled={isLoading}
                     />
                     <div className="text-sm">
                         <a
@@ -108,7 +95,7 @@ const Register = () => {
                     <div>
                         <Button
                             variant="primary"
-                            loading={loading}
+                            loading={isLoading}
                             type="submit"
                         >
                             Register
@@ -146,8 +133,8 @@ const Register = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
+export const getServerSideProps = async (context) => {
+    return { props: {} };
+};
 
 export default Register;

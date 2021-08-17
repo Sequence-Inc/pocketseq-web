@@ -4,8 +4,6 @@ import Image from "next/image";
 import { Price, Tag, Title } from "@element";
 import { StarIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { useRef } from "react";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
 
 interface MyMarkerProps {
     lat: number;
@@ -18,14 +16,6 @@ interface MyMarkerProps {
 }
 
 const MyMarker = ({ marker, alive, setAlive, activeIndex, setActiveIndex }: MyMarkerProps) => {
-
-    const wrapperRef = useRef();
-    useOutsideAlerter(wrapperRef, handleOutsideClick)
-
-    function handleOutsideClick() {
-        setActiveIndex(-1);
-        setAlive(false);
-    }
 
     const handleClick = () => {
         !alive && setAlive(true);
@@ -48,7 +38,7 @@ const MyMarker = ({ marker, alive, setAlive, activeIndex, setActiveIndex }: MyMa
             </button>
             {alive && activeIndex === marker?.id &&
                 <Link href={`/space/${marker?.id}`}>
-                    <a ref={wrapperRef} className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8">
+                    <a className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8">
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
                             <Image
                                 src={marker?.photo}
@@ -70,7 +60,7 @@ const MyMarker = ({ marker, alive, setAlive, activeIndex, setActiveIndex }: MyMa
                             </Tag>
                             <Title numberOfLines={2}>{marker?.title}</Title>
                             <div className="mt-1">
-                                <Price amount={marker?.price} />
+                                <Price amount={1386} />
                             </div>
                         </div>
                     </a>

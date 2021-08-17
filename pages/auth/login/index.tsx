@@ -6,7 +6,6 @@ import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
-import ErrorModal from "src/elements/ErrorModal";
 
 const Login = () => {
     const {
@@ -14,9 +13,9 @@ const Login = () => {
         errors,
         handleLogin,
         handleSubmit,
-        loading,
+        isLoading,
         pinRef,
-        errorRef
+        getValues,
     } = useLogin();
     const router = useRouter();
 
@@ -25,8 +24,7 @@ const Login = () => {
             <Head>
                 <title>Login | Space Rental</title>
             </Head>
-            <PinDialog ref={pinRef} callback={handleLogin} location="login" />
-            <ErrorModal ref={errorRef} />
+            <PinDialog ref={pinRef} callback={handleLogin} />
             <AuthLayout>
                 <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                     <Logo />
@@ -45,9 +43,10 @@ const Login = () => {
                             label="Email Address"
                             placeholder="eg@eg.com"
                             id="email"
-                            disabled={loading}
+                            disabled={isLoading}
                             autoFocus={true}
                             tabIndex={1}
+                            value={getValues("email")}
                         />
                         <PasswordInput
                             {...register("password")}
@@ -55,14 +54,14 @@ const Login = () => {
                             errorMessage={errors.password?.message}
                             label="Password"
                             id="password"
-                            disabled={loading}
+                            disabled={isLoading}
                             showForgotPassword
                             tabIndex={2}
                         />
                         <Button
                             loadingText="loading"
                             variant="primary"
-                            loading={loading}
+                            loading={isLoading}
                             type="submit"
                         >
                             Login
@@ -74,7 +73,6 @@ const Login = () => {
                             </span>
                         </div>
                         <Button
-                            disabled={loading}
                             onClick={(e) => {
                                 e.preventDefault();
                                 router.push("/auth/register");
@@ -103,8 +101,8 @@ const Login = () => {
 
 // Login.Layout = EmptyLayout;
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
+export const getServerSideProps = async (context) => {
+    return { props: {} };
+};
 
 export default Login;
