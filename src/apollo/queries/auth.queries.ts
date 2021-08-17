@@ -8,6 +8,25 @@ export const REGISTER_USER = gql`
         }
   }
 `
+
+export const BE_A_HOST = gql`
+    mutation BeAHost($input: BeAHostInput) {
+      beAHost(input: $input) {
+            message
+            url
+        }
+  }
+`
+
+export const REGISTER_HOST = gql`
+    mutation RegisterHost($input: RegisterHostInput!) {
+      registerHost(input: $input) {
+            message
+            action
+        }
+  }
+`
+
 export const VERIFY_EMAIL = gql`
     mutation VerifyEmail($input: VerifyEmailInput) {
         verifyEmail(input: $input) {

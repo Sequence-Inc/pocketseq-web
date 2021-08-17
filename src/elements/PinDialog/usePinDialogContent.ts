@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FORGOT_PASSWORD, RESEND_VERIFICATION_CODE, VERIFY_EMAIL, VERIFY_RESET_PASSWORD_REQUEST } from 'src/apollo/queries/auth.queries';
 
 interface IVerifyEmailData {
@@ -18,9 +18,7 @@ interface IVerifyEmailVariables {
 
 const usePinDialogContent = (response, callback, location) => {
     const [code, setCode] = useState<number | null>(null);
-    const [resendLoading, setResendLoading] = useState<boolean>(false);
-    const isLoading = false;
-    const [verifyEmail] = useMutation<IVerifyEmailData, IVerifyEmailVariables>(VERIFY_EMAIL, {
+    const [verifyEmail, { loading: verifyLoading }] = useMutation<IVerifyEmailData, IVerifyEmailVariables>(VERIFY_EMAIL, {
         onError: (err) => alert(err?.message),
         onCompleted: (data) => {
             const forgotBody = {
@@ -31,17 +29,21 @@ const usePinDialogContent = (response, callback, location) => {
         }
     })
 
-    const { refetch } = useQuery(location !== 'forgotPassword' && RESEND_VERIFICATION_CODE, {
-        variables: { email: response.email }
-    });
+    const [refetch, { loading: refetchLoading }] = useLazyQuery(RESEND_VERIFICATION_CODE);
 
-    const [verifyResetPasswordRequest] = useMutation(VERIFY_RESET_PASSWORD_REQUEST);
+    const [verifyResetPasswordRequest, { loading: resetLoading }] = useMutation(VERIFY_RESET_PASSWORD_REQUEST);
 
     const [forgotPassword] = useMutation(FORGOT_PASSWORD);
 
+    useEffect(() => {
+        location === 'login' && refetch({ variables: { email: response.email } });
+    }, [])
+
     const resendCode = async (email?) => {
         if (location === 'forgotPassword') {
-            forgotPassword({ variables: { email } })
+            forgotPassword({ variables: { email: email || response.email } })
+        } else {
+            refetch({ variables: { email: email || response.email } })
         }
     };
 
@@ -58,7 +60,7 @@ const usePinDialogContent = (response, callback, location) => {
         }
     };
 
-    return { verifyPin, setCode, resendCode, isLoading, resendLoading };
+    return { verifyPin, setCode, resendCode, resetLoading, refetchLoading, verifyLoading };
 };
 
 export default usePinDialogContent;

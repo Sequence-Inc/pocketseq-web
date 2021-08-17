@@ -20,6 +20,8 @@ import {
     LocationMarkerIcon,
     ChevronRightIcon,
 } from "@heroicons/react/outline";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_SPACE_TYPES } from "src/apollo/queries/space.queries";
 
 export const itemGridData: IItemGrid[] = [
     {
@@ -155,6 +157,9 @@ const exploreAreas: IExploreItem[] = [
 ];
 
 export default function Home() {
+
+    const { data: spaceTypes } = useQuery(GET_ALL_SPACE_TYPES);
+
     return (
         <div className="bg-gray-50">
             <Head>
@@ -182,12 +187,12 @@ export default function Home() {
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {categories.map((category, index) => (
+                            {spaceTypes?.allSpaceTypes.map((spaceType, index) => (
                                 <CategoryItem
-                                    key={index.toString()}
-                                    title={category.title}
-                                    subTitle={category.subTitle}
-                                    photo={category.photo}
+                                    key={spaceType.id}
+                                    title={spaceType.title}
+                                    subTitle={spaceType.description}
+                                    photo={spaceType.photo}
                                 />
                             ))}
                         </div>

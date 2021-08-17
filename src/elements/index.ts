@@ -15,3 +15,4 @@ export { default as Alert } from "./Alert";
 export { default as Select } from "./Select";
 export { default as Pagination } from "./Pagination";
 export { default as Logo } from "./Logo";
+export { default as Table } from "./Table";
