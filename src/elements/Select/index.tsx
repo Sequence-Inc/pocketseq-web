@@ -17,6 +17,7 @@ interface SelectProps {
     value: string | number | null;
     error?: boolean;
     errorMessage?: string;
+    singleRow?: boolean;
 }
 
 const Select = React.forwardRef<any, SelectProps>((props, ref) => {
@@ -29,6 +30,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         label,
         error,
         errorMessage,
+        singleRow = false
     } = props;
 
     const getSelectedLabel = () => {
@@ -41,13 +43,13 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         <>
             <Listbox value={value} onChange={onChange}>
                 {({ open }) => (
-                    <div className="md:flex md:items-center md:space-x-4">
+                    <div className={clsx(singleRow ? "flex-none sm:flex sm:items-center sm:space-x-4" : "")}>
                         {label && (
-                            <Listbox.Label className="block text-sm font-medium text-gray-700 text-right w-60">
+                            <Listbox.Label className={clsx("block text-sm font-medium text-gray-700", singleRow ? "sm:text-right sm:w-60" : "")}>
                                 {label}
                             </Listbox.Label>
                         )}
-                        <div className="relative w-96">
+                        <div className={clsx("relative", singleRow ? "sm:w-96" : "mt-1")}>
                             <Listbox.Button
                                 className={clsx(
                                     error

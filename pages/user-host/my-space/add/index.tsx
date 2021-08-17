@@ -36,7 +36,7 @@ const AddNewSpace = () => {
                                     </p>
                                 </div>
 
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                                     <div className="">
                                         <TextField
                                             {...register("name", {
@@ -46,6 +46,7 @@ const AddNewSpace = () => {
                                             error={errors.name && true}
                                             errorMessage="Name is required"
                                             autoFocus
+                                            singleRow
                                         />
                                     </div>
                                     <div className="">
@@ -61,6 +62,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Maximum Capacity is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -75,6 +77,7 @@ const AddNewSpace = () => {
                                             error={errors.numberOfSeats && true}
                                             errorMessage="Number Of seats is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -89,6 +92,7 @@ const AddNewSpace = () => {
                                             error={errors.spaceSize && true}
                                             errorMessage="Space Size is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -112,6 +116,7 @@ const AddNewSpace = () => {
                                                     errorMessage="Space Types is required"
                                                     labelKey="title"
                                                     valueKey="id"
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -128,7 +133,7 @@ const AddNewSpace = () => {
                                         Added a pricing plan for your space
                                     </p>
                                 </div>
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                                     <div className="">
                                         <TextField
                                             {...register(
@@ -141,6 +146,7 @@ const AddNewSpace = () => {
                                                     ?.planTitle && true
                                             }
                                             errorMessage="Plan Title is required"
+                                            singleRow
                                         />
                                     </div>
 
@@ -161,6 +167,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Hourly Price is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -181,6 +188,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Daily Price is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -201,6 +209,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Maintenance Fee is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -221,6 +230,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="LastMinute Discount is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
 
@@ -241,6 +251,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Cooldown Time is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
                                 </div>
@@ -256,7 +267,7 @@ const AddNewSpace = () => {
                                         space.
                                     </p>
                                 </div>
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                                     <div className="">
                                         <Controller
                                             name="nearestStations.prefecture"
@@ -273,6 +284,7 @@ const AddNewSpace = () => {
                                                     }
                                                     onChange={getTrainLine}
                                                     errorMessage="Prefecture is required"
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -296,6 +308,7 @@ const AddNewSpace = () => {
                                                     onChange={getStationId}
                                                     labelKey="name"
                                                     valueKey="id"
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -318,6 +331,7 @@ const AddNewSpace = () => {
                                                     errorMessage="Train Line is required"
                                                     labelKey="name"
                                                     valueKey="id"
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -335,6 +349,7 @@ const AddNewSpace = () => {
                                                 true
                                             }
                                             errorMessage="Via is required"
+                                            singleRow
                                         />
                                     </div>
 
@@ -355,6 +370,7 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Time is required"
                                             type="number"
+                                            singleRow
                                         />
                                     </div>
                                 </div>
