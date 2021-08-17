@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { userSession } from "./cache";
 import getConfig from 'next/config';
+import { getSession } from "src/utils/auth";
 
 const { publicRunTimeConfig } = getConfig();
 
@@ -9,9 +10,9 @@ const createApolloClient = () => {
         ssrMode: typeof window === 'undefined',
         link: new HttpLink({
             uri: "https://mdou6ti0t9.execute-api.ap-northeast-1.amazonaws.com/dev/graphql",
-            // headers: {
-            //     Authorization: "Bearer token"
-            // }
+            headers: {
+                Authorization: getSession()?.accessToken ? `Bearer ${getSession()?.accessToken}` : ""
+            }
         }),
         cache: new InMemoryCache({
             typePolicies: { // Type policy map
