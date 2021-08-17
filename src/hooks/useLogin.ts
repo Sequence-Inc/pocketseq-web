@@ -3,6 +3,16 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from '@apollo/client';
+import { LOGIN } from "src/apollo/queries/auth.queries";
+import { storeSession } from "src/utils/auth";
+
+type Error = {
+    message: string,
+    action?: string,
+    code?: string,
+    info?: any
+}
 
 // form validation schema
 const schema = yup.object().shape({
@@ -15,37 +25,28 @@ const useLogin = () => {
         register,
         handleSubmit,
         watch,
-        formState: { errors },
-        getValues,
+        formState: { errors }
     } = useForm({ resolver: yupResolver(schema) });
     const router = useRouter();
-    const pinRef = useRef();
-    const isLoading = false;
-    // const { mutate, isLoading } = useMutation(
-    //   (body) => axios.post('login', body),
-    //   {
-    //     onSuccess: (data) => {
-    //       setCookie(null, 'token', `Bearer ${data.data.data.token}`, {
-    //         maxAge: 30 * 24 * 60 * 60,
-    //         path: '/',
-    //       });
-    //       router.replace('/dashboard/courses');
-    //     },
-    //     onError: (error) => {
-    //       if (error.response?.data.data?.action === "verify-email") {
-    //         // open dialog with error.reponse.data.data.email
-    //         console.log(error.response.data.data.email);
-    //         const obj = { email: error.response.data.data.email || watch.email };
-    //         pinRef.current.open(obj)
-    //       }
-    //     },
-    //   }
-    // );
+    const pinRef = useRef(null);
+    const errorRef = useRef(null);
+    const [login, { loading }] = useMutation(LOGIN, {
+        onCompleted: (data) => {
+            storeSession(data.login);
+            router.replace('/');
+        },
+        onError: (err) => {
+            const error: Error = { ...err.graphQLErrors[0] }
+            if (error?.action === "verify-email") {
+                pinRef?.current.open(watch());
+            } else {
+                errorRef.current?.open(error.message)
+            }
+        }
+    });
 
     const handleLogin = (formData) => {
-        router.replace("/");
-        // delete formData.remember_me;
-        // mutate(formData);
+        login({ variables: { input: formData } });
     };
 
     return {
@@ -54,9 +55,9 @@ const useLogin = () => {
         watch,
         handleLogin,
         handleSubmit,
-        isLoading,
+        loading,
         pinRef,
-        getValues,
+        errorRef
     };
 };
 
