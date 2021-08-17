@@ -4,8 +4,8 @@
 //     },
 // };
 
-const withPWA = require('next-pwa')
-const runtimeCaching = require('next-pwa/cache')
+const withPWA = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
 
 module.exports = withPWA({
     reactStrictMode: true,
@@ -13,8 +13,8 @@ module.exports = withPWA({
         domains: ["cdnspacemarket.com"],
     },
     pwa: {
-        dest: 'public',
+        dest: "public",
         runtimeCaching,
-    }
-})
-
+        disable: true,
+    },
+});
