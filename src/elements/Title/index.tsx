@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React from "react";
 
 export interface TitleProps {
-    numberOfLines?: 1 | 2 | 3;
+    numberOfLines?: number;
     titleStyle?: string;
     children: React.ReactNode;
 }
@@ -10,10 +10,9 @@ export interface TitleProps {
 const Title = ({ numberOfLines, titleStyle, children }: TitleProps) => {
     return (
         <h3
+            // className={`text-gray-800 line-clamp-${numberOfLines.toString()} ${titleStyle && titleStyle
+            //     }`}
             className={clsx(`text-gray-800 line-clamp-${numberOfLines}`, {
-                'line-clamp-1': numberOfLines === 1,
-                'line-clamp-2': numberOfLines === 2,
-                'line-clamp-3': numberOfLines === 3,
                 titleStyle: titleStyle
             })}
         >
