@@ -5,16 +5,41 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRef, useState } from "react";
 import { REGISTER_HOST } from "src/apollo/queries/auth.queries";
 
+type UserInput = {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    firstNameKana: string;
+    lastNameKana: string;
+    confirmPassword: string;
+}
+
+type CorporateInput = {
+    email: string;
+    password: string;
+    name: string;
+    registrationNumber: string;
+    nameKana: string;
+    confirmPassword: string;
+}
+
+type RegisterHost = {
+    hostType: 'Individual' | 'Corporate';
+    company: CorporateInput | undefined;
+    user: UserInput | undefined;
+}
+
 // form validation schema
 const schema = yup.object().shape({
-    name: yup.string().required("Company Name is required"),
-    nameKana: yup.string().required("Company Name Kana is required"),
-    email: yup.string().email("Invalid Email").required("Email is required"),
-    registrationNumber: yup.string().required("Registration Number is required"),
-    password: yup.string().required("Password is required"),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Password must match"),
+    // name: yup.string().required("Company Name is required"),
+    // nameKana: yup.string().required("Company Name Kana is required"),
+    // email: yup.string().email("Invalid Email").required("Email is required"),
+    // registrationNumber: yup.string().required("Registration Number is required"),
+    // password: yup.string().required("Password is required"),
+    // confirmPassword: yup
+    //     .string()
+    //     .oneOf([yup.ref("password"), null], "Password must match"),
 });
 
 const useRegisterHost = () => {
@@ -24,23 +49,29 @@ const useRegisterHost = () => {
 
     const {
         register,
+        control,
         formState: { errors },
         watch,
         handleSubmit,
-    } = useForm({
+    } = useForm<RegisterHost>({
         resolver: yupResolver(schema),
+        defaultValues: {
+            hostType: 'Individual',
+            company: undefined,
+            user: undefined
+        }
     });
 
-    const [registerUser, { loading }] = useMutation(REGISTER_HOST, {
+    const [registerHost, { loading }] = useMutation(REGISTER_HOST, {
         onError: (error) => {
             const err: Error = { ...error.graphQLErrors[0] }
             errorRef.current?.open(err.message)
         },
-        onCompleted: ({ registerUser }) => {
+        onCompleted: ({ registerHost }) => {
             // debugger;
-            if (registerUser?.action === "verify-email") {
+            if (registerHost?.action === "verify-email") {
                 // login after successfull user register
-                const obj = { email: watch().email };
+                const obj = { email: watch().user?.email ? watch().user.email : watch().company.email };
                 pinRef?.current.open(obj);
             }
         }
@@ -49,12 +80,14 @@ const useRegisterHost = () => {
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
-        delete formModel.confirmPassword
-        registerUser({ variables: { input: formModel } });
+        formModel.user && delete formModel.user.confirmPassword
+        formModel.compnay && delete formModel.compnay.confirmPassword
+        registerHost({ variables: { input: formModel } });
     };
 
     return {
         register,
+        control,
         errors,
         watch,
         handleRegister,
