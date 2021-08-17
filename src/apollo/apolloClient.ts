@@ -9,8 +9,8 @@ const createApolloClient = () => {
     return new ApolloClient({
         ssrMode: typeof window === "undefined",
         link: new HttpLink({
-            // uri: "https://mdou6ti0t9.execute-api.ap-northeast-1.amazonaws.com/dev/graphql",
-            uri: "http://localhost:3001/dev/graphql",
+            uri: "https://mdou6ti0t9.execute-api.ap-northeast-1.amazonaws.com/dev/graphql",
+            // uri: "http://localhost:3001/dev/graphql",
             headers: {
                 Authorization: getSession()?.accessToken
                     ? `Bearer ${getSession()?.accessToken}`
