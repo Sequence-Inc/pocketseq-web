@@ -10,6 +10,35 @@ export const GET_ALL_SPACE_TYPES = gql`
     }
 `
 
+export const GET_PREFECTURE = gql`
+    query Prefectures{
+      prefectures{
+            id
+            name
+            nameKana
+            nameRomaji
+        }
+    }
+`
+
+export const GET_LINES_BY_PREFECTURE = gql`
+    query LinesByPrefecture($prefectureId: Int!){
+      linesByPrefecture(prefectureId: $prefectureId){
+            id
+            name
+        }
+    }
+`
+
+export const GET_STATIONS_BY_LINE = gql`
+    query stationsByLine($lineId: Int!){
+      stationsByLine(lineId: $lineId){
+            id
+            stationName
+        }
+    }
+`
+
 export const ADD_SPACE = gql`
     mutation AddSpace($input: AddSpaceInput!){
         addSpace(input: $input){

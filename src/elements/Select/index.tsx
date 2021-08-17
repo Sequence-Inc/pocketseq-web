@@ -18,6 +18,7 @@ interface SelectProps {
     error?: boolean;
     errorMessage?: string;
     singleRow?: boolean;
+    disabled?: boolean;
 }
 
 const Select = React.forwardRef<any, SelectProps>((props, ref) => {
@@ -30,6 +31,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         label,
         error,
         errorMessage,
+        disabled = false,
         singleRow = false
     } = props;
 
@@ -41,7 +43,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
 
     return (
         <>
-            <Listbox value={value} onChange={onChange}>
+            <Listbox value={value} onChange={onChange} disabled={disabled}>
                 {({ open }) => (
                     <div className={clsx(singleRow ? "flex-none sm:flex sm:items-center sm:space-x-4" : "")}>
                         {label && (

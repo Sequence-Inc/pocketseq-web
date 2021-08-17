@@ -5,6 +5,7 @@ import { Logo } from "@element";
 import { navigation, projects } from "./menuItems";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { logout } from "src/utils/auth";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -93,7 +94,7 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                                     className={classNames(
                                                         isActiveNav(item.href)
                                                             ? "bg-gray-900 text-white"
-                                                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                                            : "text-green-100 hover:bg-gray-700 hover:text-white",
                                                         "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                                                     )}
                                                     aria-current={
@@ -108,7 +109,7 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                                                 item.href
                                                             )
                                                                 ? "text-green-300"
-                                                                : "text-green-400 group-hover:text-gray-300",
+                                                                : "text-green-400 group-hover:text-green-100",
                                                             "mr-4 flex-shrink-0 h-6 w-6"
                                                         )}
                                                         aria-hidden="true"
@@ -120,21 +121,18 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                     <div className="mt-10">
                                         <p className="px-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
-                                            Projects
+                                            Other useful links
                                         </p>
                                         <div className="mt-2 space-y-1">
-                                            {projects.map((project) => (
-                                                <Link
-                                                    key={project.id}
-                                                    href={project.href}
-                                                >
-                                                    <a className="flex items-center px-2 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">
-                                                        <span className="truncate">
-                                                            {project.name}
-                                                        </span>
-                                                    </a>
-                                                </Link>
-                                            ))}
+                                            {/* {projects.map((project) => ( */}
+                                            <button
+                                                className="flex items-center px-2 py-2 text-base font-medium text-green-100 rounded-md hover:bg-gray-700 hover:text-white"
+                                            >
+                                                <span className="truncate">
+                                                    Logout
+                                                </span>
+                                            </button>
+                                            {/* ))} */}
                                         </div>
                                     </div>
                                 </nav>
@@ -189,21 +187,19 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="mt-10">
                                     <p className="px-3 text-xs font-semibold tracking-wider text-green-100 uppercase">
-                                        Projects
+                                        Other useful links
                                     </p>
                                     <div className="mt-2 space-y-1">
-                                        {projects.map((project) => (
-                                            <Link
-                                                key={project.id}
-                                                href={project.href}
-                                            >
-                                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-100 rounded-md group hover:text-white hover:bg-primaryHover">
-                                                    <span className="truncate">
-                                                        {project.name}
-                                                    </span>
-                                                </a>
-                                            </Link>
-                                        ))}
+                                        {/* {projects.map((project) => ( */}
+                                        <button
+                                            className="flex items-center w-full px-2 py-2 text-base font-medium text-green-300 rounded-md hover:text-white"
+                                            onClick={logout}
+                                        >
+                                            <span className="truncate">
+                                                Logout
+                                            </span>
+                                        </button>
+                                        {/* ))} */}
                                     </div>
                                 </div>
                             </nav>

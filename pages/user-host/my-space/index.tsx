@@ -59,12 +59,6 @@ const MySpace = () => {
                 } else return value
             }
         }))
-        newData.unshift({
-            Header: "S.N",
-            accessor: "sn",
-            className: 'w-2',
-            childClassName: 'text-center'
-        });
         newData.push({
             Header: "ACTION",
             accessor: "action",
