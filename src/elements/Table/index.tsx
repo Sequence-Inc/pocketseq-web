@@ -44,11 +44,7 @@ const Table = ({ columns, data }) => {
                                             className={`px-4 py-2 text-sm text-gray-900 max-w-0 whitespace-nowrap ${cell.column.childClassName}`}
                                             {...cell.getCellProps()}
                                         >
-                                            {cell.column.id === "sn"
-                                                ? (row.index +
-                                                    1 +
-                                                    data.pageSize * (data.pageNumber - 1)).toString()
-                                                : cell.render("Cell")}
+                                            {cell.render("Cell")}
                                         </td>
                                     })}
                                 </tr>

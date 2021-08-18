@@ -79,10 +79,11 @@ const useRegisterHost = () => {
 
     // form submit function
     const handleRegister = async (formData) => {
-        const formModel = { ...formData };
-        formModel.user && delete formModel.user.confirmPassword
-        formModel.compnay && delete formModel.compnay.confirmPassword
-        registerHost({ variables: { input: formModel } });
+        console.log(formData)
+        // const formModel = { ...formData };
+        // formModel.user && delete formModel.user.confirmPassword
+        // formModel.compnay && delete formModel.compnay.confirmPassword
+        // registerHost({ variables: { input: formModel } });
     };
 
     return {

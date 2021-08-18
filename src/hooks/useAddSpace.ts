@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ADD_SPACE } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
 import { GET_ALL_SPACE_TYPES } from 'src/apollo/queries/space.queries';
 
 interface IData {
@@ -24,8 +24,6 @@ interface ISpacePricePlan {
 }
 
 interface INearestStations {
-    prefecture: string;
-    trainLine: string | number;
     stationId: number;
     via: string;
     time: number;
@@ -39,30 +37,41 @@ interface IFormState {
     spacePricePlan: ISpacePricePlan,
     nearestStations: INearestStations,
     spaceTypes: string;
-    asdasdasd: string;
+    prefecture: string;
+    trainLine: string | number;
 }
 
 const useAddSpace = () => {
-    const { register, control, formState: { errors }, handleSubmit } = useForm<IFormState, IFormState>();
-    const [trainLines, setTrainLines] = useState<any[]>([]);
-    const [stationId, setStationId] = useState<any[]>([]);
-    const [mutate] = useMutation(ADD_SPACE);
-    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_ALL_SPACE_TYPES)
+    const { register, control, formState: { errors }, watch, handleSubmit } = useForm<IFormState, IFormState>();
+    const [mutateTrainLines, { data: trainLines }] = useLazyQuery(GET_LINES_BY_PREFECTURE);
+    const [mutateStationId, { data: stationId }] = useLazyQuery(GET_STATIONS_BY_LINE);
+    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_ALL_SPACE_TYPES);
+    const confirmRef = useRef(null);
+
+    const [mutate, { loading }] = useMutation(ADD_SPACE, {
+        onCompleted: (data) => {
+            if (data?.addSpace?.message) {
+                confirmRef.current.open(data?.addSpace?.message)
+            }
+        },
+        refetchQueries: [{ query: MY_SPACES }],
+    });
 
     const onSubmit = handleSubmit((formData: IFormState) => {
-        console.log(formData)
+        delete formData.prefecture;
+        delete formData.trainLine;
         mutate({ variables: { input: formData } })
     })
 
     const getTrainLine = () => {
-        setTrainLines([{ name: '山の手線', id: 11302 }, { name: '京浜東北線', id: 11332 }])
+        mutateTrainLines({ variables: { prefectureId: watch().prefecture } })
     }
 
     const getStationId = () => {
-        setStationId([{ name: '上野', id: 1130220 }, { name: '御徒町', id: 1130221 }, { name: '神田', id: 1130223 }, { name: '秋葉原', id: 1130222 }])
+        mutateStationId({ variables: { lineId: watch().trainLine } })
     }
 
-    return { spaceTypes, register, control, errors, onSubmit, trainLines, getTrainLine, stationId, getStationId }
+    return { spaceTypes, register, control, errors, onSubmit, trainLines, getTrainLine, stationId, getStationId, loading, confirmRef }
 }
 
 export default useAddSpace;

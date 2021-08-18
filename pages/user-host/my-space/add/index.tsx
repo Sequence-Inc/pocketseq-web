@@ -4,6 +4,9 @@ import HostLayout from "src/layouts/HostLayout";
 import Link from "next/link";
 import useAddSpace from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
+import { useQuery } from "@apollo/client";
+import { GET_PREFECTURE } from "src/apollo/queries/space.queries";
+import ConfirmModal from "src/elements/ConfirmModal";
 
 const AddNewSpace = () => {
     const {
@@ -16,10 +19,14 @@ const AddNewSpace = () => {
         getTrainLine,
         stationId,
         getStationId,
+        loading,
+        confirmRef
     } = useAddSpace();
+    const { data: prefectures } = useQuery(GET_PREFECTURE);
 
     return (
         <HostLayout>
+            <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
             <Container className="py-4 sm:py-6 lg:py-8">
                 <form onSubmit={onSubmit}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
@@ -36,7 +43,7 @@ const AddNewSpace = () => {
                                     </p>
                                 </div>
 
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                                     <div className="">
                                         <TextField
                                             {...register("name", {
@@ -46,6 +53,8 @@ const AddNewSpace = () => {
                                             error={errors.name && true}
                                             errorMessage="Name is required"
                                             autoFocus
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
                                     <div className="">
@@ -61,6 +70,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Maximum Capacity is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -75,6 +86,8 @@ const AddNewSpace = () => {
                                             error={errors.numberOfSeats && true}
                                             errorMessage="Number Of seats is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -89,6 +102,8 @@ const AddNewSpace = () => {
                                             error={errors.spaceSize && true}
                                             errorMessage="Space Size is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -112,6 +127,8 @@ const AddNewSpace = () => {
                                                     errorMessage="Space Types is required"
                                                     labelKey="title"
                                                     valueKey="id"
+                                                    disabled={loading}
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -128,7 +145,7 @@ const AddNewSpace = () => {
                                         Added a pricing plan for your space
                                     </p>
                                 </div>
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                                     <div className="">
                                         <TextField
                                             {...register(
@@ -141,6 +158,8 @@ const AddNewSpace = () => {
                                                     ?.planTitle && true
                                             }
                                             errorMessage="Plan Title is required"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -161,6 +180,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Hourly Price is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -181,6 +202,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Daily Price is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -201,6 +224,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Maintenance Fee is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -221,6 +246,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="LastMinute Discount is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -241,6 +268,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Cooldown Time is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
                                 </div>
@@ -256,23 +285,27 @@ const AddNewSpace = () => {
                                         space.
                                     </p>
                                 </div>
-                                <div className="px-4 py-2 sm:px-6 sm:py-6 space-y-4">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                    {console.log(prefectures?.prefectures)}
                                     <div className="">
                                         <Controller
-                                            name="nearestStations.prefecture"
+                                            name="prefecture"
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field }) => (
                                                 <Select
                                                     {...field}
                                                     label="Prefecture"
-                                                    options={["東京"]}
+                                                    options={prefectures?.prefectures || []}
                                                     error={
-                                                        errors.nearestStations
-                                                            ?.prefecture && true
+                                                        errors?.prefecture && true
                                                     }
-                                                    onChange={getTrainLine}
+                                                    onChange={(event) => { field.onChange(event); getTrainLine(); }}
                                                     errorMessage="Prefecture is required"
+                                                    labelKey="name"
+                                                    valueKey="id"
+                                                    disabled={loading}
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -280,22 +313,23 @@ const AddNewSpace = () => {
 
                                     <div className="">
                                         <Controller
-                                            name="nearestStations.trainLine"
+                                            name="trainLine"
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field }) => (
                                                 <Select
                                                     {...field}
                                                     label="Train Line"
-                                                    options={trainLines}
+                                                    options={trainLines?.linesByPrefecture || []}
                                                     error={
-                                                        errors.nearestStations
-                                                            ?.trainLine && true
+                                                        errors?.trainLine && true
                                                     }
                                                     errorMessage="Train Line is required"
-                                                    onChange={getStationId}
+                                                    onChange={(event) => { field.onChange(event); getStationId(); }}
                                                     labelKey="name"
                                                     valueKey="id"
+                                                    disabled={loading}
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -310,14 +344,16 @@ const AddNewSpace = () => {
                                                 <Select
                                                     {...field}
                                                     label="Station ID"
-                                                    options={stationId}
+                                                    options={stationId?.stationsByLine || []}
                                                     error={
                                                         errors.nearestStations
                                                             ?.stationId && true
                                                     }
                                                     errorMessage="Train Line is required"
-                                                    labelKey="name"
+                                                    labelKey="stationName"
                                                     valueKey="id"
+                                                    disabled={loading}
+                                                    singleRow
                                                 />
                                             )}
                                         />
@@ -335,6 +371,8 @@ const AddNewSpace = () => {
                                                 true
                                             }
                                             errorMessage="Via is required"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
 
@@ -355,6 +393,8 @@ const AddNewSpace = () => {
                                             }
                                             errorMessage="Time is required"
                                             type="number"
+                                            disabled={loading}
+                                            singleRow
                                         />
                                     </div>
                                 </div>
@@ -366,12 +406,13 @@ const AddNewSpace = () => {
                                 type="submit"
                                 variant="primary"
                                 className="w-auto px-8"
+                                loading={loading}
                             >
                                 Save
                             </Button>
                             <Link href="/user-host/my-space">
                                 <a>
-                                    <Button className="w-auto px-8">
+                                    <Button className="w-auto px-8" disabled={loading}>
                                         Cancel
                                     </Button>
                                 </a>
