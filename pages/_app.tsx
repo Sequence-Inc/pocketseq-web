@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import Head from 'next/head';
+import Head from "next/head";
 // tailwind css
 import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";
@@ -7,7 +7,7 @@ import { useApollo } from "src/apollo/apollo";
 import { useRouter } from "next/router";
 import Home from ".";
 import { isAuthenticated } from "src/utils/auth";
-import { redirect } from "next/dist/next-server/server/api-utils";
+// import { redirect } from "next/dist/next-server/server/api-utils";
 
 function MyApp({ Component, pageProps }: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);
