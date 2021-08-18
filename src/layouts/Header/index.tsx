@@ -36,6 +36,7 @@ const navLinkItems: INavLinkItems[] = [
 ];
 
 const userNavigation = [
+    { name: 'Host Dashboard', href: '/user-host' },
     { name: 'Your Profile', href: '#' },
     { name: 'Settings', href: '#' },
 ]
