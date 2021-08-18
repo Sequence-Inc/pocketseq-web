@@ -6,6 +6,7 @@ import { useQuery } from "@apollo/client";
 import { HOST } from "src/apollo/queries/host.queries";
 import React from "react";
 import DashboardCard from "src/components/DashboardCard";
+import withAuth from "src/utils/withAuth";
 
 interface IBalanceInput {
     currency: string;
@@ -30,7 +31,7 @@ interface IHost {
     account: IAccount;
 }
 
-export default function HostDashboard() {
+const HostDashboard = () => {
     const { data } = useQuery<{ host: IHost }>(HOST);
     return (
         <HostLayout>
@@ -88,10 +89,12 @@ export default function HostDashboard() {
                     </div>
                 ) : (
                     <div className="flex items-center justify-center h-content">
-                        <div className="border-t-2 border-b-2 border-green-500 rounded-full w-28 h-28 animate-spin"></div>
+                        <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
                     </div>
                 )}
             </Container>
         </HostLayout>
     );
-}
+};
+
+export default withAuth(HostDashboard);
