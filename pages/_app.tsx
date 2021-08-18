@@ -7,7 +7,6 @@ import { useApollo } from "src/apollo/apollo";
 import { useRouter } from "next/router";
 import Home from ".";
 import { isAuthenticated } from "src/utils/auth";
-// import { redirect } from "next/dist/next-server/server/api-utils";
 
 function MyApp({ Component, pageProps }: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);

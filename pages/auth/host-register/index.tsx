@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
+import { PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 import Link from "next/link";
@@ -9,8 +9,8 @@ import ErrorModal from "src/elements/ErrorModal";
 import clsx from "clsx";
 import { RadioGroup } from "@headlessui/react";
 import { Controller } from "react-hook-form";
-import CorporateForm from "./corporateForm";
-import IndividualForm from "./individualForm";
+import CorporateForm from "src/components/CorporateForm";
+import IndividualForm from "src/components/IndividualForm";
 
 const Register = () => {
     const {
