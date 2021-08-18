@@ -13,7 +13,7 @@ type UserInput = {
     firstNameKana: string;
     lastNameKana: string;
     confirmPassword: string;
-}
+};
 
 type CorporateInput = {
     email: string;
@@ -22,13 +22,13 @@ type CorporateInput = {
     registrationNumber: string;
     nameKana: string;
     confirmPassword: string;
-}
+};
 
 type RegisterHost = {
-    hostType: 'Individual' | 'Corporate';
+    hostType: "Individual" | "Corporate";
     company: CorporateInput | undefined;
     user: UserInput | undefined;
-}
+};
 
 // form validation schema
 const schema = yup.object().shape({
@@ -56,34 +56,37 @@ const useRegisterHost = () => {
     } = useForm<RegisterHost>({
         resolver: yupResolver(schema),
         defaultValues: {
-            hostType: 'Individual',
+            hostType: "Individual",
             company: undefined,
-            user: undefined
-        }
+            user: undefined,
+        },
     });
 
     const [registerHost, { loading }] = useMutation(REGISTER_HOST, {
         onError: (error) => {
-            const err: Error = { ...error.graphQLErrors[0] }
-            errorRef.current?.open(err.message)
+            const err: Error = { ...error.graphQLErrors[0] };
+            errorRef.current?.open(err.message);
         },
         onCompleted: ({ registerHost }) => {
             // debugger;
             if (registerHost?.action === "verify-email") {
                 // login after successfull user register
-                const obj = { email: watch().user?.email ? watch().user.email : watch().company.email };
+                const obj = {
+                    email: watch().user?.email
+                        ? watch().user.email
+                        : watch().company.email,
+                };
                 pinRef?.current.open(obj);
             }
-        }
+        },
     });
 
     // form submit function
     const handleRegister = async (formData) => {
-        console.log(formData)
-        // const formModel = { ...formData };
-        // formModel.user && delete formModel.user.confirmPassword
-        // formModel.compnay && delete formModel.compnay.confirmPassword
-        // registerHost({ variables: { input: formModel } });
+        const formModel = { ...formData };
+        formModel.user && delete formModel.user.confirmPassword;
+        formModel.compnay && delete formModel.compnay.confirmPassword;
+        registerHost({ variables: { input: formModel } });
     };
 
     return {
