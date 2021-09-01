@@ -1,54 +1,66 @@
-import { CashIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import React from 'react'
-import { useMemo } from 'react'
-import { useTable } from 'react-table'
+import { CashIcon, ChevronRightIcon } from "@heroicons/react/outline";
+import React from "react";
+import { useMemo } from "react";
+import { useTable } from "react-table";
 
 const Table = ({ columns, data }) => {
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns: useMemo(() => columns, []),
-        data,
-    })
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+        useTable({
+            columns: useMemo(() => columns, []),
+            data,
+        });
+
+    console.log(columns);
     return (
         <div className="flex flex-col mt-2">
             <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
+                <table
+                    className="min-w-full divide-y divide-gray-200"
+                    {...getTableProps()}
+                >
                     <thead>
                         {headerGroups.map((headerGroup, index) => (
-                            <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+                            <tr
+                                key={index}
+                                {...headerGroup.getHeaderGroupProps()}
+                            >
                                 {headerGroup.headers.map((column: any) => (
                                     <th
                                         key={column.id}
-                                        className={`px-4 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase bg-gray-50 ${column.className}`}
+                                        className={`px-4 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50 ${column.className}`}
                                         {...column.getHeaderProps()}
                                     >
-                                        {column.render('Header')}
+                                        {column.render("Header")}
                                     </th>
                                 ))}
                             </tr>
                         ))}
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200" {...getTableBodyProps()}>
+                    <tbody
+                        className="bg-white divide-y divide-gray-200"
+                        {...getTableBodyProps()}
+                    >
                         {rows.map((row, i) => {
-                            prepareRow(row)
+                            prepareRow(row);
                             return (
-                                <tr key={row.id} className="bg-white" {...row.getRowProps()}>
+                                <tr
+                                    key={row.id}
+                                    className="bg-white"
+                                    {...row.getRowProps()}
+                                >
                                     {row.cells.map((cell: any) => {
-                                        return <td
-                                            key={cell.column.id}
-                                            className={`px-4 py-2 text-sm text-gray-900 max-w-0 whitespace-nowrap ${cell.column.childClassName}`}
-                                            {...cell.getCellProps()}
-                                        >
-                                            {cell.render("Cell")}
-                                        </td>
+                                        return (
+                                            <td
+                                                key={cell.column.id}
+                                                className={`px-4 py-2 text-sm text-gray-900 max-w-0 whitespace-nowrap ${cell.column.childClassName}`}
+                                                {...cell.getCellProps()}
+                                            >
+                                                {cell.render("Cell")}
+                                            </td>
+                                        );
                                     })}
                                 </tr>
-                            )
+                            );
                         })}
                     </tbody>
                 </table>
@@ -59,7 +71,8 @@ const Table = ({ columns, data }) => {
                 >
                     <div className="hidden sm:block">
                         <p className="text-sm text-gray-700">
-                            Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
+                            Showing <span className="font-medium">1</span> to{" "}
+                            <span className="font-medium">10</span> of{" "}
                             <span className="font-medium">20</span> results
                         </p>
                     </div>
@@ -80,8 +93,7 @@ const Table = ({ columns, data }) => {
                 </nav>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Table;
-
