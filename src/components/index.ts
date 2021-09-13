@@ -6,6 +6,7 @@ export * from "./SingleReview";
 export * from "./HeroSection";
 export * from "./SearchBox";
 export * from "./RegisterCTA";
+export * from "./RegisterCTAAlt";
 export * from "./SingleExploreItem";
 export * from "./FloatingPrice";
 export * from "./SpaceUtilities";
