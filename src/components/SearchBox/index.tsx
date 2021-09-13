@@ -34,12 +34,12 @@ export const SearchBox = () => {
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
                 {/* area search box */}
                 <Popover
-                    className={`${defaultBtnClass} py-3 pl-6 pr-4 rounded-l-full`}
+                    className={`${defaultBtnClass} py-3 pl-10 pr-8 rounded-l-full`}
                     btnText={
                         <Tag
                             Icon={LocationMarkerIcon}
                             iconSize={5}
-                            iconStyle="text-gray-300"
+                            iconStyle="text-gray-300 mr-2"
                             textStyle="text-gray-400 text-sm"
                             numberOfLines={1}
                         >
@@ -74,12 +74,12 @@ export const SearchBox = () => {
 
                 {/* purpose of use search box */}
                 <Popover
-                    className={`${defaultBtnClass} px-6 py-3 -ml-px`}
+                    className={`${defaultBtnClass} px-10 py-3 -ml-px`}
                     btnText={
                         <Tag
                             Icon={FlagIcon}
                             iconSize={5}
-                            iconStyle="text-gray-300"
+                            iconStyle="text-gray-300 mr-2"
                             textStyle="text-gray-400 text-sm"
                             numberOfLines={1}
                         >
@@ -120,12 +120,12 @@ export const SearchBox = () => {
 
                 {/* date and time search boc */}
                 <Popover
-                    className={`${defaultBtnClass} py-3 pl-4 pr-6 -ml-px rounded-r-full`}
+                    className={`${defaultBtnClass} py-3 pl-8 pr-12 -ml-px rounded-r-full`}
                     btnText={
                         <Tag
                             Icon={CalendarIcon}
                             iconSize={5}
-                            iconStyle="text-gray-300"
+                            iconStyle="text-gray-300 mr-2"
                             textStyle="text-gray-400 text-sm"
                             numberOfLines={1}
                         >
@@ -146,7 +146,7 @@ export const SearchBox = () => {
             <div>
                 <Button
                     rounded
-                    variant="primary"
+                    variant="white"
                     className="px-5 py-3"
                     onClick={(event) => {
                         event.preventDefault();
@@ -156,11 +156,11 @@ export const SearchBox = () => {
                     <Tag
                         Icon={SearchIcon}
                         iconSize={5}
-                        iconStyle="text-white"
-                        textStyle="text-white"
+                        iconStyle="text-gray-400"
+                        textStyle="text-gray-400"
                         numberOfLines={1}
                     >
-                        <span className="text-white">検索する</span>
+                        <span className="text-gray-500">検索する</span>
                     </Tag>
                 </Button>
             </div>
