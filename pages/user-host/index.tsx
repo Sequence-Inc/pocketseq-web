@@ -32,7 +32,7 @@ interface IHost {
 }
 
 const HostDashboard = () => {
-    const { data } = useQuery<{ host: IHost }>(HOST);
+    const { data, error } = useQuery<{ host: IHost }>(HOST);
     return (
         <HostLayout>
             <Head>
@@ -40,7 +40,7 @@ const HostDashboard = () => {
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 {!!data?.host?.account?.balance ?
-                    <>
+                    <>{console.log(error)}
                         <h2 className="text-lg font-medium leading-6 text-gray-900">Overview</h2>
                         <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
                             {/* Card */}

@@ -15,7 +15,7 @@ const createApolloClient = () => {
                 Authorization: getSession()?.accessToken
                     ? `Bearer ${getSession()?.accessToken}`
                     : "",
-            },
+            }
         }),
         cache: new InMemoryCache({
             typePolicies: {
