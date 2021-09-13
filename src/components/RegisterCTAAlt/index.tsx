@@ -41,7 +41,7 @@ export const RegisterCTAAlt = () => {
                     src="/cta-bg1.jpg"
                     className="object-cover w-full h-full"
                 />
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t md:bg-gradient-to-r from-primary to-green-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b md:bg-gradient-to-r from-primary to-green-transparent"></div>
             </div>
         </div>
     );

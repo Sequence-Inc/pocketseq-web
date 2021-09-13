@@ -10,8 +10,6 @@ import {
     HeroSection,
 } from "@comp";
 import { Header, Footer } from "@layout";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_SPACE_TYPES } from "src/apollo/queries/space.queries";
 
 const categories: ICategoryItem[] = [
     {
@@ -47,12 +45,10 @@ const categories: ICategoryItem[] = [
 ];
 
 export default function Services() {
-    const { data: spaceTypes } = useQuery(GET_ALL_SPACE_TYPES);
-    console.log(spaceTypes);
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>TimeBook</title>
+                <title>TimeBook | Services</title>
             </Head>
             <Header />
             <main>
