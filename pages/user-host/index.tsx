@@ -32,7 +32,7 @@ interface IHost {
 }
 
 const HostDashboard = () => {
-    const { data } = useQuery<{ host: IHost }>(HOST);
+    const { data, error } = useQuery<{ host: IHost }>(HOST);
     return (
         <HostLayout>
             <Head>
@@ -49,19 +49,17 @@ const HostDashboard = () => {
                             <DashboardCard
                                 Icon={ScaleIcon}
                                 name="Available Balance"
-                                amount={`${data?.host?.account?.balance.available[0].currency?.toUpperCase()} ${
-                                    data?.host?.account?.balance?.available[0]
+                                amount={`${data?.host?.account?.balance.available[0].currency?.toUpperCase()} ${data?.host?.account?.balance?.available[0]
                                         .amount
-                                }`}
+                                    }`}
                                 url={data?.host?.account?.url}
                             />
                             <DashboardCard
                                 Icon={ScaleIcon}
                                 name="Pending Balance"
-                                amount={`${data?.host?.account?.balance.pending[0].currency?.toUpperCase()} ${
-                                    data?.host?.account?.balance.pending[0]
+                                amount={`${data?.host?.account?.balance.pending[0].currency?.toUpperCase()} ${data?.host?.account?.balance.pending[0]
                                         .amount
-                                }`}
+                                    }`}
                                 url={data?.host?.account?.url}
                             />
                         </div>

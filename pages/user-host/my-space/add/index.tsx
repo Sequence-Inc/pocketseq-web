@@ -4,25 +4,36 @@ import HostLayout from "src/layouts/HostLayout";
 import Link from "next/link";
 import useAddSpace from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
-import { useQuery } from "@apollo/client";
-import { GET_PREFECTURE } from "src/apollo/queries/space.queries";
 import ConfirmModal from "src/elements/ConfirmModal";
+import HostPricing from "src/components/HostPricing";
+import HostStation from "src/components/HostStation";
+import HostSpace from "src/components/HostSpace";
+import { PlusIcon } from "@heroicons/react/solid";
+import { Disclosure, Transition } from "@headlessui/react";
+import { TrashIcon } from "@heroicons/react/outline";
+import { useState } from "react";
 
 const AddNewSpace = () => {
     const {
-        spaceTypes,
         register,
         control,
+        watch,
         errors,
         onSubmit,
-        trainLines,
-        getTrainLine,
-        stationId,
-        getStationId,
         loading,
-        confirmRef
+        confirmRef,
+        fields,
+        prepend,
+        remove,
+        stationsField,
+        stationsPrepend,
+        stationsRemove,
+        defaultPriceObj,
+        defaultStationObj
     } = useAddSpace();
-    const { data: prefectures } = useQuery(GET_PREFECTURE);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeStationIndex, setActiveStationIndex] = useState(0);
+
 
     return (
         <HostLayout>
@@ -44,360 +55,93 @@ const AddNewSpace = () => {
                                 </div>
 
                                 <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
-                                    <div className="">
-                                        <TextField
-                                            {...register("name", {
-                                                required: true,
-                                            })}
-                                            label="Name"
-                                            error={errors.name && true}
-                                            errorMessage="Name is required"
-                                            autoFocus
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-                                    <div className="">
-                                        <TextField
-                                            {...register("maximumCapacity", {
-                                                required: true,
-                                                setValueAs: (val) =>
-                                                    parseInt(val),
-                                            })}
-                                            label="Maximum Capacity"
-                                            error={
-                                                errors.maximumCapacity && true
-                                            }
-                                            errorMessage="Maximum Capacity is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register("numberOfSeats", {
-                                                required: true,
-                                                setValueAs: (val) =>
-                                                    parseInt(val),
-                                            })}
-                                            label="Number Of seats"
-                                            error={errors.numberOfSeats && true}
-                                            errorMessage="Number Of seats is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register("spaceSize", {
-                                                required: true,
-                                                setValueAs: (val) =>
-                                                    parseFloat(val),
-                                            })}
-                                            label="Space Size"
-                                            error={errors.spaceSize && true}
-                                            errorMessage="Space Size is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <Controller
-                                            name="spaceTypes"
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    label="Space Types"
-                                                    options={
-                                                        spaceTypes?.allSpaceTypes ||
-                                                        []
-                                                    }
-                                                    error={
-                                                        errors.spaceTypes &&
-                                                        true
-                                                    }
-                                                    errorMessage="Space Types is required"
-                                                    labelKey="title"
-                                                    valueKey="id"
-                                                    disabled={loading}
-                                                    singleRow
-                                                />
-                                            )}
-                                        />
-                                    </div>
+                                    <HostSpace register={register} control={control} errors={errors} loading={loading} />
                                 </div>
                             </div>
 
                             <div>
-                                <div className="px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                                        Pricing
-                                    </h3>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Added a pricing plan for your space
-                                    </p>
-                                </div>
-                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.planTitle",
-                                                { required: true }
-                                            )}
-                                            label="Plan Title"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.planTitle && true
-                                            }
-                                            errorMessage="Plan Title is required"
-                                            disabled={loading}
-                                            singleRow
-                                        />
+                                <div className="flex items-center justify-between px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                                    <div>
+                                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                            Pricing
+                                        </h3>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Added a pricing plan for your space
+                                        </p>
                                     </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.hourlyPrice",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseFloat(val),
-                                                }
-                                            )}
-                                            label="Hourly Price"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.hourlyPrice && true
-                                            }
-                                            errorMessage="Hourly Price is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.dailyPrice",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseFloat(val),
-                                                }
-                                            )}
-                                            label="Daily Price"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.dailyPrice && true
-                                            }
-                                            errorMessage="Daily Price is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.maintenanceFee",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseFloat(val),
-                                                }
-                                            )}
-                                            label="Maintenance Fee"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.maintenanceFee && true
-                                            }
-                                            errorMessage="Maintenance Fee is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.lastMinuteDiscount",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseFloat(val),
-                                                }
-                                            )}
-                                            label="LastMinute Discount"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.lastMinuteDiscount && true
-                                            }
-                                            errorMessage="LastMinute Discount is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "spacePricePlan.cooldownTime",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseInt(val),
-                                                }
-                                            )}
-                                            label="Cooldown Time"
-                                            error={
-                                                errors.spacePricePlan
-                                                    ?.cooldownTime && true
-                                            }
-                                            errorMessage="Cooldown Time is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
+                                    <div className="float-right">
+                                        <Button type="button" variant="white" onClick={() => { prepend(defaultPriceObj) }}>
+                                            <PlusIcon className="w-5 h-5 mr-2 text-inherit" />Add Pricing
+                                        </Button>
                                     </div>
                                 </div>
+                                {fields.map((field: any, index: number) => (
+                                    <Disclosure key={index}>
+                                        {watch().spacePricePlan[index].planTitle &&
+                                            <Disclosure.Button className="flex w-full px-8 py-3 border-t border-b border-gray-200">
+                                                <p className="flex-1 text-left" onClick={() => { setActiveIndex(index) }}>{watch().spacePricePlan[index].planTitle}</p>
+                                                <button className="p-1 bg-red-500 rounded focus:outline-none" onClick={() => { remove(index) }}>
+                                                    <TrashIcon className="w-4 h-4 text-red-50" />
+                                                </button>
+                                            </Disclosure.Button>}
+                                        <Transition
+                                            show={activeIndex === index}
+                                            enter="transition duration-100 ease-out"
+                                            enterFrom="transform scale-95 opacity-0"
+                                            enterTo="transform scale-100 opacity-100"
+                                            leave="transition duration-75 ease-out"
+                                            leaveFrom="transform scale-100 opacity-100"
+                                            leaveTo="transform scale-95 opacity-0"
+                                        >
+                                            <Disclosure.Panel static className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                                <HostPricing field={field} index={index} register={register} errors={errors} loading={loading} />
+                                            </Disclosure.Panel>
+                                        </Transition>
+                                    </Disclosure>
+                                ))}
                             </div>
 
                             <div>
-                                <div className="px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                                        Statiion
-                                    </h3>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Share the nearest station from your
-                                        space.
-                                    </p>
-                                </div>
-                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
-                                    {console.log(prefectures?.prefectures)}
-                                    <div className="">
-                                        <Controller
-                                            name="prefecture"
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    label="Prefecture"
-                                                    options={prefectures?.prefectures || []}
-                                                    error={
-                                                        errors?.prefecture && true
-                                                    }
-                                                    onChange={(event) => { field.onChange(event); getTrainLine(); }}
-                                                    errorMessage="Prefecture is required"
-                                                    labelKey="name"
-                                                    valueKey="id"
-                                                    disabled={loading}
-                                                    singleRow
-                                                />
-                                            )}
-                                        />
+                                <div className="flex items-center justify-between px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                                    <div>
+                                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                            Station
+                                        </h3>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Share the nearest station from your
+                                            space.
+                                        </p>
                                     </div>
-
-                                    <div className="">
-                                        <Controller
-                                            name="trainLine"
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    label="Train Line"
-                                                    options={trainLines?.linesByPrefecture || []}
-                                                    error={
-                                                        errors?.trainLine && true
-                                                    }
-                                                    errorMessage="Train Line is required"
-                                                    onChange={(event) => { field.onChange(event); getStationId(); }}
-                                                    labelKey="name"
-                                                    valueKey="id"
-                                                    disabled={loading}
-                                                    singleRow
-                                                />
-                                            )}
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <Controller
-                                            name="nearestStations.stationId"
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    label="Station ID"
-                                                    options={stationId?.stationsByLine || []}
-                                                    error={
-                                                        errors.nearestStations
-                                                            ?.stationId && true
-                                                    }
-                                                    errorMessage="Train Line is required"
-                                                    labelKey="stationName"
-                                                    valueKey="id"
-                                                    disabled={loading}
-                                                    singleRow
-                                                />
-                                            )}
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "nearestStations.via",
-                                                { required: true }
-                                            )}
-                                            label="Via"
-                                            error={
-                                                errors.nearestStations?.via &&
-                                                true
-                                            }
-                                            errorMessage="Via is required"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    </div>
-
-                                    <div className="">
-                                        <TextField
-                                            {...register(
-                                                "nearestStations.time",
-                                                {
-                                                    required: true,
-                                                    setValueAs: (val) =>
-                                                        parseInt(val),
-                                                }
-                                            )}
-                                            label="Time"
-                                            error={
-                                                errors.nearestStations?.time &&
-                                                true
-                                            }
-                                            errorMessage="Time is required"
-                                            type="number"
-                                            disabled={loading}
-                                            singleRow
-                                        />
+                                    <div className="float-right">
+                                        <Button type="button" variant="white" onClick={() => { stationsPrepend(defaultStationObj) }}>
+                                            <PlusIcon className="w-5 h-5 mr-2 text-inherit" />Add Station
+                                        </Button>
                                     </div>
                                 </div>
+                                {stationsField.map((field: any, index: number) => (
+                                    <Disclosure key={index}>
+                                        {watch().nearestStations[index].stationId !== 0 &&
+                                            <Disclosure.Button className="flex w-full px-8 py-3 border-t border-b border-gray-200">
+                                                <p className="flex-1 text-left" onClick={() => { setActiveStationIndex(index) }}>{watch().nearestStations[index].stationId}</p>
+                                                <button className="p-1 bg-red-500 rounded focus:outline-none" onClick={() => { stationsRemove(index) }}>
+                                                    <TrashIcon className="w-4 h-4 text-red-50" />
+                                                </button>
+                                            </Disclosure.Button>}
+                                        <Transition
+                                            show={activeStationIndex === index}
+                                            enter="transition duration-100 ease-out"
+                                            enterFrom="transform scale-95 opacity-0"
+                                            enterTo="transform scale-100 opacity-100"
+                                            leave="transition duration-75 ease-out"
+                                            leaveFrom="transform scale-100 opacity-100"
+                                            leaveTo="transform scale-95 opacity-0"
+                                        >
+                                            <Disclosure.Panel static className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                                <HostStation field={field} index={index} register={register} control={control} errors={errors} loading={loading} />
+                                            </Disclosure.Panel>
+                                        </Transition>
+                                    </Disclosure>
+                                ))}
                             </div>
                         </div>
 
