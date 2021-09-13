@@ -19,6 +19,9 @@ import {
     StarIcon,
     LocationMarkerIcon,
     ChevronRightIcon,
+    BookmarkAltIcon,
+    FireIcon,
+    ShieldCheckIcon,
 } from "@heroicons/react/outline";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_SPACE_TYPES } from "src/apollo/queries/space.queries";
@@ -156,19 +159,83 @@ const exploreAreas: IExploreItem[] = [
     },
 ];
 
+const features = [
+    {
+        name: "Secure",
+        icon: ShieldCheckIcon,
+        description:
+            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+    },
+    {
+        name: "Save Spaces",
+        icon: BookmarkAltIcon,
+        description:
+            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+    },
+    {
+        name: "Popular",
+        icon: FireIcon,
+        description:
+            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+    },
+];
+
 export default function Home() {
-
     const { data: spaceTypes } = useQuery(GET_ALL_SPACE_TYPES);
-
+    console.log(spaceTypes);
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>Home | Space Rental</title>
+                <title>TimeBook</title>
             </Head>
             <Header />
             <main>
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
+                    {/* Blob */}
+                    <div>
+                        <div className="relative">
+                            <div className="mx-auto text-center">
+                                <p className="mt-2 text-2xl text-primary tracking-tight sm:text-3xl">
+                                    TimeBookとは
+                                </p>
+                                <p className="mt-6 w-4/5 mx-auto text-xl text-gray-500 font-light">
+                                    ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
+                                </p>
+                                <div className="mt-12">
+                                    <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+                                        {features.map((feature) => (
+                                            <div
+                                                key={feature.name}
+                                                className="pt-6"
+                                            >
+                                                <div className="flow-root bg-white rounded-lg px-6 pb-8">
+                                                    <div className="-mt-6">
+                                                        <div>
+                                                            <span className="inline-flex items-center justify-center p-3 bg-primary rounded-md shadow-lg">
+                                                                <feature.icon
+                                                                    className="h-6 w-6 text-white"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                        <h3 className="mt-8 text-lg font-medium text-primary tracking-tight">
+                                                            {feature.name}
+                                                        </h3>
+                                                        <p className="mt-5 text-base font-light text-gray-500">
+                                                            {
+                                                                feature.description
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div>
                         <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
                             <Tag
@@ -187,14 +254,16 @@ export default function Home() {
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {spaceTypes?.allSpaceTypes.map((spaceType, index) => (
-                                <CategoryItem
-                                    key={spaceType.id}
-                                    title={spaceType.title}
-                                    subTitle={spaceType.description}
-                                    photo={spaceType.photo}
-                                />
-                            ))}
+                            {spaceTypes?.allSpaceTypes.map(
+                                (spaceType, index) => (
+                                    <CategoryItem
+                                        key={spaceType.id}
+                                        title={spaceType.title}
+                                        subTitle={spaceType.description}
+                                        photo={spaceType.photo}
+                                    />
+                                )
+                            )}
                         </div>
                     </div>
                     <div>
