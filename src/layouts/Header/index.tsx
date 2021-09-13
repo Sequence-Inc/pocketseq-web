@@ -22,7 +22,7 @@ const navLinkItems: INavLinkItems[] = [
     },
     {
         name: "初めての方へ",
-        link: "/guide"
+        link: "/services"
     },
     {
         name: "ヘルプ",
