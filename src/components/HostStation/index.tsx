@@ -16,7 +16,7 @@ const HostStation = ({ register, control, errors, loading, field, index }) => {
         <>
             <div className="">
                 <Controller
-                    name="prefecture"
+                    name={`nearestStations[${index}].prefecture`}
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
@@ -27,7 +27,7 @@ const HostStation = ({ register, control, errors, loading, field, index }) => {
                             error={
                                 errors?.prefecture && true
                             }
-                            onChange={(event) => { field.onChange(event); getTrainLine(); }}
+                            onChange={(event) => { field.onChange(event); getTrainLine(event); }}
                             errorMessage="Prefecture is required"
                             labelKey="name"
                             valueKey="id"
@@ -40,7 +40,7 @@ const HostStation = ({ register, control, errors, loading, field, index }) => {
 
             <div className="">
                 <Controller
-                    name="trainLine"
+                    name={`nearestStations[${index}].trainLine`}
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
@@ -52,7 +52,7 @@ const HostStation = ({ register, control, errors, loading, field, index }) => {
                                 errors?.trainLine && true
                             }
                             errorMessage="Train Line is required"
-                            onChange={(event) => { field.onChange(event); getStationId(); }}
+                            onChange={(event) => { field.onChange(event); getStationId(event); }}
                             labelKey="name"
                             valueKey="id"
                             disabled={loading}

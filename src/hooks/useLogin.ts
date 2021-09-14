@@ -33,6 +33,7 @@ const useLogin = () => {
     const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
+            debugger
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);

@@ -31,31 +31,31 @@ export const GET_SESSION = gql`
                             available
                         }
                     }
-                    # profilePhoto {
-                    #     id
-                    #     mime
-                    #     type
-                    #     thumbnail {
-                    #         width
-                    #         height
-                    #         url
-                    #     }
-                    #     small {
-                    #         width
-                    #         height
-                    #         url
-                    #     }
-                    #     medium {
-                    #         width
-                    #         height
-                    #         url
-                    #     }
-                    #     large {
-                    #         width
-                    #         height
-                    #         url
-                    #     }
-                    # }
+                    profilePhoto {
+                        id
+                        mime
+                        type
+                        thumbnail {
+                            width
+                            height
+                            url
+                        }
+                        small {
+                            width
+                            height
+                            url
+                        }
+                        medium {
+                            width
+                            height
+                            url
+                        }
+                        large {
+                            width
+                            height
+                            url
+                        }
+                    }
                 }
                 ... on CompanyProfile {
                     id
