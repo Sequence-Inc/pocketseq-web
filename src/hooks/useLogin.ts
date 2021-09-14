@@ -37,7 +37,8 @@ const useLogin = () => {
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);
-            router.replace("/");
+            // router.replace("/");
+            location.href = "/";
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };
