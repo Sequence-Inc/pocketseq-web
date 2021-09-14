@@ -37,7 +37,7 @@ const useLogin = () => {
             isLoggedIn(true);
             currentSession(data.login);
             console.log("login successful", data.login);
-            router.replace("/");
+            // router.replace("/");
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };
