@@ -49,7 +49,7 @@ const HostDashboard = () => {
             </div>
         );
     } else {
-        if (data.host.account.balance) {
+        if (!!data?.host?.account?.balance) {
             content = (
                 <>
                     <h2 className="text-lg font-medium leading-6 text-gray-900">
