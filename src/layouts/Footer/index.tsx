@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const Footer = () => {
     return (
@@ -16,12 +17,11 @@ const Footer = () => {
                             <ul className="mt-4 space-y-2">
                                 {navigation.find.map((item) => (
                                     <li key={item.name}>
-                                        <a
-                                            href={item.href}
-                                            className="text-sm text-gray-300 hover:text-white"
-                                        >
-                                            {item.name}
-                                        </a>
+                                    <Link href={item.href}>
+                                            <a className="text-sm text-gray-300 hover:text-white">
+                                                {item.name}
+                                            </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -33,12 +33,11 @@ const Footer = () => {
                             <ul className="mt-4 space-y-2">
                                 {navigation.guide.map((item) => (
                                     <li key={item.name}>
-                                        <a
-                                            href={item.href}
-                                            className="text-sm text-gray-300 hover:text-white"
-                                        >
-                                            {item.name}
-                                        </a>
+                                        <Link href={item.href}>
+                                            <a className="text-sm text-gray-300 hover:text-white">
+                                                {item.name}
+                                            </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -52,12 +51,11 @@ const Footer = () => {
                             <ul className="mt-4 space-y-2">
                                 {navigation.company.map((item) => (
                                     <li key={item.name}>
-                                        <a
-                                            href={item.href}
-                                            className="text-sm text-gray-300 hover:text-white"
-                                        >
-                                            {item.name}
-                                        </a>
+                                        <Link href={item.href}>
+                                            <a className="text-sm text-gray-300 hover:text-white">
+                                                {item.name}
+                                            </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -122,9 +120,9 @@ const navigation = {
         { name: "人数から探す", href: "#" },
     ],
     guide: [
-        { name: "初めての方へ", href: "#" },
-        { name: "ゲストの方へ", href: "#" },
-        { name: "ホストの方へ", href: "#" },
+        { name: "初めての方へ", href: "/services" },
+        { name: "ゲストの方へ", href: "/user-guide" },
+        { name: "ホストの方へ", href: "/host-guide" },
         { name: "スペースを掲載するには", href: "#" },
         { name: "スペースマーケットリワード", href: "#" },
     ],

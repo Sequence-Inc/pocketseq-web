@@ -1,202 +1,164 @@
-import { Button, Container, Select, TextField } from '@element'
-import React from 'react'
-import HostLayout from 'src/layouts/HostLayout';
+import { Button, Container, Select, TextField } from "@element";
+import React from "react";
+import HostLayout from "src/layouts/HostLayout";
 import Link from "next/link";
-import useAddSpace from '@hooks/useAddSpace';
-import { Controller } from 'react-hook-form';
+import useAddSpace from "@hooks/useAddSpace";
+import { Controller } from "react-hook-form";
+import ConfirmModal from "src/elements/ConfirmModal";
+import HostPricing from "src/components/HostPricing";
+import HostStation from "src/components/HostStation";
+import HostSpace from "src/components/HostSpace";
+import { PlusIcon } from "@heroicons/react/solid";
+import { Disclosure, Transition } from "@headlessui/react";
+import { TrashIcon } from "@heroicons/react/outline";
+import { useState } from "react";
 
 const AddNewSpace = () => {
-    const { spaceTypes, register, control, errors, onSubmit } = useAddSpace();
+    const {
+        register,
+        control,
+        watch,
+        errors,
+        onSubmit,
+        loading,
+        confirmRef,
+        fields,
+        prepend,
+        remove,
+        stationsField,
+        stationsPrepend,
+        stationsRemove,
+        defaultPriceObj,
+        defaultStationObj
+    } = useAddSpace();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeStationIndex, setActiveStationIndex] = useState(0);
+
+
     return (
         <HostLayout>
+            <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
             <Container className="py-4 sm:py-6 lg:py-8">
                 <form onSubmit={onSubmit}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
-                        <div className="px-4 py-6 space-y-6 bg-white divide-y divide-gray-200 sm:p-6">
+                        <div className="space-y-4 bg-white">
                             <div>
-                                <div>
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">Space</h3>
+                                <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                        Space
+                                    </h3>
                                     <p className="mt-1 text-sm text-gray-500">
-                                        This information will be displayed publicly so be sure to add valid information.
+                                        This information will be displayed
+                                        publicly so be sure to add valid
+                                        information.
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="sm:col-span-4">
-                                        <TextField
-                                            {...register("name", { required: true })}
-                                            label="Name"
-                                            error={errors.name && true}
-                                            errorMessage="Name is required"
-                                            autoFocus
-                                        />
-                                    </div>
-                                    <div className="sm:col-span-4">
-                                        <TextField
-                                            {...register("maximumCapacity", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Maximum Capacity"
-                                            error={errors.maximumCapacity && true}
-                                            errorMessage="Maximum Capacity is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="sm:col-span-4">
-                                        <TextField
-                                            {...register("numberOfSeats", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Number Of seats"
-                                            error={errors.numberOfSeats && true}
-                                            errorMessage="Number Of seats is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="sm:col-span-4">
-                                        <TextField
-                                            {...register("spaceSize", { required: true, setValueAs: (val) => parseFloat(val) })}
-                                            label="Space Size"
-                                            error={errors.spaceSize && true}
-                                            errorMessage="Space Size is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="sm:col-span-4">
-                                        <Controller
-                                            name="spaceTypes"
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field }) => <Select
-                                                {...field}
-                                                label="Space Types"
-                                                options={spaceTypes?.allSpaceTypes || []}
-                                                error={errors.spaceTypes && true}
-                                                errorMessage="Space Types is required"
-                                                labelKey="title"
-                                                valueKey="id"
-                                            />}
-                                        />
-                                    </div>
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                    <HostSpace register={register} control={control} errors={errors} loading={loading} />
                                 </div>
                             </div>
 
-                            <div className="pt-8">
-                                <div>
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">Pricing</h3>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Added a pricing plan for your space
-                                    </p>
-                                </div>
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.planTitle", { required: true })}
-                                            label="Plan Title"
-                                            error={errors.spacePricePlan?.planTitle && true}
-                                            errorMessage="Plan Title is required"
-                                        />
+                            <div>
+                                <div className="flex items-center justify-between px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                                    <div>
+                                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                            Pricing
+                                        </h3>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Added a pricing plan for your space
+                                        </p>
                                     </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.hourlyPrice", { required: true, setValueAs: (val) => parseFloat(val) })}
-                                            label="Hourly Price"
-                                            error={errors.spacePricePlan?.hourlyPrice && true}
-                                            errorMessage="Hourly Price is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.dailyPrice", { required: true, setValueAs: (val) => parseFloat(val) })}
-                                            label="Daily Price"
-                                            error={errors.spacePricePlan?.dailyPrice && true}
-                                            errorMessage="Daily Price is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.maintenanceFee", { required: true, setValueAs: (val) => parseFloat(val) })}
-                                            label="Maintenance Fee"
-                                            error={errors.spacePricePlan?.maintenanceFee && true}
-                                            errorMessage="Maintenance Fee is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.lastMinuteDiscount", { required: true, setValueAs: (val) => parseFloat(val) })}
-                                            label="LastMinute Discount"
-                                            error={errors.spacePricePlan?.lastMinuteDiscount && true}
-                                            errorMessage="LastMinute Discount is required"
-                                            type="number"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-                                        <TextField
-                                            {...register("spacePricePlan.cooldownTime", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Cooldown Time"
-                                            error={errors.spacePricePlan?.cooldownTime && true}
-                                            errorMessage="Cooldown Time is required"
-                                            type="number"
-                                        />
+                                    <div className="float-right">
+                                        <Button type="button" variant="white" onClick={() => { prepend(defaultPriceObj) }}>
+                                            <PlusIcon className="w-5 h-5 mr-2 text-inherit" />Add Pricing
+                                        </Button>
                                     </div>
                                 </div>
+                                {fields.map((field: any, index: number) => (
+                                    <Disclosure key={index}>
+                                        {watch().spacePricePlan[index].planTitle &&
+                                            <Disclosure.Button className="flex w-full px-8 py-3 border-t border-b border-gray-200">
+                                                <p className="flex-1 text-left" onClick={() => { setActiveIndex(index) }}>{watch().spacePricePlan[index].planTitle}</p>
+                                                <button className="p-1 bg-red-500 rounded focus:outline-none" onClick={() => { remove(index) }}>
+                                                    <TrashIcon className="w-4 h-4 text-red-50" />
+                                                </button>
+                                            </Disclosure.Button>}
+                                        <Transition
+                                            show={activeIndex === index}
+                                            enter="transition duration-100 ease-out"
+                                            enterFrom="transform scale-95 opacity-0"
+                                            enterTo="transform scale-100 opacity-100"
+                                            leave="transition duration-75 ease-out"
+                                            leaveFrom="transform scale-100 opacity-100"
+                                            leaveTo="transform scale-95 opacity-0"
+                                        >
+                                            <Disclosure.Panel static className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                                <HostPricing field={field} index={index} register={register} errors={errors} loading={loading} />
+                                            </Disclosure.Panel>
+                                        </Transition>
+                                    </Disclosure>
+                                ))}
                             </div>
 
-                            <div className="pt-8">
-                                <div>
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">Statiion</h3>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Share the nearest station from your space.
-                                    </p>
-                                </div>
-                                <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                    <div className="col-span-6 sm:col-span-4">
-
-                                        <TextField
-                                            {...register("nearestStations.stationId", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Station ID"
-                                            error={errors.nearestStations?.stationId && true}
-                                            errorMessage="Station ID is required"
-                                            type="number"
-                                        />
+                            <div>
+                                <div className="flex items-center justify-between px-4 py-2 border-t border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                                    <div>
+                                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                            Station
+                                        </h3>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            Share the nearest station from your
+                                            space.
+                                        </p>
                                     </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-
-                                        <TextField
-                                            {...register("nearestStations.via", { required: true })}
-                                            label="Via"
-                                            error={errors.nearestStations?.via && true}
-                                            errorMessage="Via is required"
-                                        />
-                                    </div>
-
-                                    <div className="col-span-6 sm:col-span-4">
-
-                                        <TextField
-                                            {...register("nearestStations.time", { required: true, setValueAs: (val) => parseInt(val) })}
-                                            label="Time"
-                                            error={errors.nearestStations?.time && true}
-                                            errorMessage="Time is required"
-                                            type="number"
-                                        />
+                                    <div className="float-right">
+                                        <Button type="button" variant="white" onClick={() => { stationsPrepend(defaultStationObj) }}>
+                                            <PlusIcon className="w-5 h-5 mr-2 text-inherit" />Add Station
+                                        </Button>
                                     </div>
                                 </div>
+                                {stationsField.map((field: any, index: number) => (
+                                    <Disclosure key={index}>
+                                        {watch().nearestStations[index].stationId !== 0 &&
+                                            <Disclosure.Button className="flex w-full px-8 py-3 border-t border-b border-gray-200">
+                                                <p className="flex-1 text-left" onClick={() => { setActiveStationIndex(index) }}>{watch().nearestStations[index].stationId}</p>
+                                                <button className="p-1 bg-red-500 rounded focus:outline-none" onClick={() => { stationsRemove(index) }}>
+                                                    <TrashIcon className="w-4 h-4 text-red-50" />
+                                                </button>
+                                            </Disclosure.Button>}
+                                        <Transition
+                                            show={activeStationIndex === index}
+                                            enter="transition duration-100 ease-out"
+                                            enterFrom="transform scale-95 opacity-0"
+                                            enterTo="transform scale-100 opacity-100"
+                                            leave="transition duration-75 ease-out"
+                                            leaveFrom="transform scale-100 opacity-100"
+                                            leaveTo="transform scale-95 opacity-0"
+                                        >
+                                            <Disclosure.Panel static className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                                <HostStation field={field} index={index} register={register} control={control} errors={errors} loading={loading} />
+                                            </Disclosure.Panel>
+                                        </Transition>
+                                    </Disclosure>
+                                ))}
                             </div>
                         </div>
 
                         <div className="flex px-4 py-5 space-x-2 bg-gray-50 sm:px-6">
-                            <Button type="submit" variant="primary" className="w-auto px-8">Save</Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                className="w-auto px-8"
+                                loading={loading}
+                            >
+                                Save
+                            </Button>
                             <Link href="/user-host/my-space">
                                 <a>
-                                    <Button className="w-auto px-8">Cancel</Button>
+                                    <Button className="w-auto px-8" disabled={loading}>
+                                        Cancel
+                                    </Button>
                                 </a>
                             </Link>
                         </div>
@@ -204,7 +166,7 @@ const AddNewSpace = () => {
                 </form>
             </Container>
         </HostLayout>
-    )
-}
+    );
+};
 
-export default AddNewSpace
+export default AddNewSpace;

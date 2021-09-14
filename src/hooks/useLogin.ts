@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/router";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -27,7 +27,6 @@ const useLogin = () => {
         watch,
         formState: { errors }
     } = useForm({ resolver: yupResolver(schema) });
-    const [errorModal, setErrorModal] = useState<string>();
     const router = useRouter();
     const pinRef = useRef(null);
     const errorRef = useRef(null);
@@ -38,11 +37,10 @@ const useLogin = () => {
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] }
-            console.log(err, error)
             if (error?.action === "verify-email") {
                 pinRef?.current.open(watch());
             } else {
-                setErrorModal(error.message)
+                errorRef.current?.open(error.message)
             }
         }
     });
@@ -59,8 +57,6 @@ const useLogin = () => {
         handleSubmit,
         loading,
         pinRef,
-        errorModal,
-        setErrorModal,
         errorRef
     };
 };

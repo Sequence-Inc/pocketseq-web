@@ -2,15 +2,15 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRef, useState } from "react";
-import { useRouter } from "next/router";
+import { useRef } from "react";
 import { REGISTER_USER } from "src/apollo/queries/auth.queries";
-import useLogin from "./useLogin";
 
 // form validation schema
 const schema = yup.object().shape({
     firstName: yup.string().required("First Name is required"),
+    firstNameKana: yup.string().required("First Name Kana is required"),
     lastName: yup.string().required("Last Name is required"),
+    lastNameKana: yup.string().required("Last Name Kana is required"),
     email: yup.string().email("Invalid Email").required("Email is required"),
     password: yup.string().required("Password is required"),
     confirmPassword: yup
@@ -19,11 +19,8 @@ const schema = yup.object().shape({
 });
 
 const useRegister = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [email, setEmail] = useState("");
-    const router = useRouter();
+    const errorRef = useRef(null);
     const pinRef = useRef(null);
-    const { handleLogin } = useLogin();
 
     const {
         register,
@@ -35,9 +32,13 @@ const useRegister = () => {
         resolver: yupResolver(schema),
     });
 
-    const [registerUser] = useMutation(REGISTER_USER, {
-        onError: (error) => console.log(error),
+    const [registerUser, { loading }] = useMutation(REGISTER_USER, {
+        onError: (error) => {
+            const err: Error = { ...error.graphQLErrors[0] }
+            errorRef.current?.open(err.message)
+        },
         onCompleted: ({ registerUser }) => {
+            // debugger;
             if (registerUser?.action === "verify-email") {
                 // login after successfull user register
                 const obj = { email: watch().email };
@@ -58,12 +59,10 @@ const useRegister = () => {
         errors,
         watch,
         handleRegister,
-        handleLogin,
         handleSubmit,
-        isLoading,
-        email,
+        loading,
         pinRef,
-        getValues,
+        errorRef
     };
 };
 

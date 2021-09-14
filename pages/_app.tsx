@@ -1,24 +1,12 @@
 import type { AppProps } from "next/app";
-import Head from 'next/head';
+import Head from "next/head";
 // tailwind css
 import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "src/apollo/apollo";
-import { useRouter } from "next/router";
-import Home from ".";
 
 function MyApp({ Component, pageProps }: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);
-    const role: string = "admin";
-    let allowed = true;
-    const router = useRouter();
-    if (router.pathname.startsWith("/host") && role !== "host") {
-        allowed = false;
-    }
-    if (router.pathname.startsWith("/admin") && role !== "admin") {
-        allowed = false;
-    }
-    const ComponentToRender = allowed ? Component : Home;
 
     return (
         <ApolloProvider client={apolloClient}>
@@ -28,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
                 />
             </Head>
-            <ComponentToRender {...pageProps} />
+            <Component {...pageProps} />
         </ApolloProvider>
     );
 }
