@@ -89,8 +89,9 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
 };
 
 const HeaderComp = () => {
-    const { data, loading, error } = useQuery(GET_SESSION);
     const router = useRouter();
+
+    const { data, loading, error } = useQuery(GET_SESSION);
     console.log("ReactQuery", data, loading, error);
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error {error.message}</div>;

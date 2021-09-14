@@ -33,13 +33,11 @@ const useLogin = () => {
     const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            storeSession(data.login);
             isLoggedIn(true);
             currentSession(data.login);
-            console.log("login successful", data.login);
-            setTimeout(() => {
-                router.replace("/");
-            }, 500);
+            storeSession(data.login);
+            console.log("store this", data.login);
+            router.push("/");
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };
