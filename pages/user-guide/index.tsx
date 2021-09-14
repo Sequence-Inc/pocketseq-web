@@ -3,12 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@element";
+import { ICategoryItem, RegisterCTAAlt, HeroSection } from "@comp";
 import {
-    ICategoryItem,
-    RegisterCTAAlt,
-    HeroSection,
-} from "@comp";
-import { SearchIcon,CalendarIcon,CreditCardIcon,BadgeCheckIcon } from "@heroicons/react/outline";
+    SearchIcon,
+    CalendarIcon,
+    CreditCardIcon,
+    BadgeCheckIcon,
+} from "@heroicons/react/outline";
 import { Header, Footer } from "@layout";
 
 const steps: any[] = [
@@ -49,24 +50,44 @@ export default function UserGuide() {
                         <div className="relative">
                             <div className="mx-auto text-center">
                                 <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
-                                    サービスについて
+                                    ご利用の流れ
                                 </p>
                                 <p className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
                                 </p>
                                 <div className="space-y-5 mt-12">
-                                    {steps.map(({Icon, title, subTitle}, index) => (
-                                        <div className="px-5 py-6 flex rounded-lg bg-white shadow max-w-xl mx-auto">
-                                                <button className="bg-primary h-12 w-12 flex-shrink-0 flex justify-center items-center rounded-lg">
+                                    {steps.map(
+                                        ({ Icon, title, subTitle }, index) => (
+                                            <div className="px-4 py-5 flex space-x-5 rounded-lg bg-white shadow max-w-2xl mx-auto">
+                                                <button className="bg-primary h-12 w-12 flex justify-center items-center rounded-lg flex-shrink-0">
                                                     <Icon className="w-6 h-6 text-white" />
                                                 </button>
-                                            <div>
-                                                <p className="text-sm text-gray-600 text-left">STEP {index + 1}</p>
-                                                <h2 className="text-2xl text-left font-semibold text-primary mb-2">{title}</h2>
-                                                <p className="text-gray-500">{subTitle}</p>
+                                                <div className="text-left">
+                                                    <p className="text-sm text-gray-500 ">
+                                                        STEP {index + 1}
+                                                    </p>
+                                                    <h2 className="text-2xl font-medium text-primary mt-1">
+                                                        {title}
+                                                    </h2>
+                                                    <p className="text-gray-500 mt-2">
+                                                        {subTitle}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    )}
+                                </div>
+                                <div className="max-w-2xl mx-auto mt-10 grid grid-cols-2">
+                                    <Link href="/auth/register">
+                                        <a className="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-gray-600 bg-white border border-transparent rounded-md hover:bg-gray-50 shadow">
+                                            今すぐゲスト登録する
+                                        </a>
+                                    </Link>
+                                    <Link href="/user-guide">
+                                        <a className="inline-flex items-center justify-center mx-5 my-2 text-base font-medium text-gray-500 hover:text-primary">
+                                            ホストの流れへ
+                                        </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -15,23 +15,19 @@ const CTAButton = ({ link, children }: { link: string; children: string }) => {
 export const RegisterCTAAlt = () => {
     return (
         <div className="relative overflow-hidden bg-primary rounded-2xl">
-            <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
+            <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-20">
                 <div className="md:mr-auto md:w-1/2 md:pr-10">
                     <p className="mt-2 text-right text-3xl font-bold tracking-tight text-white">
-                        いますぐ会員登録して、
-                        <br />
-                        スペースを貸し借りしてみよう
+                        安心への取り組み
                     </p>
                     <p className="mt-5 text-right text-white text-md">
                         たったの1分で簡単登録。もちろん登録は無料です。
                     </p>
                     <div className="flex justify-end mt-10 space-x-4">
                         <CTAButton link="/auth/register">
-                            レンタルする
+                            ゲスト登録する
                         </CTAButton>
-                        <CTAButton link="/about-us">
-                            ご利用の流れ
-                        </CTAButton>
+                        <CTAButton link="/services">詳しく見る</CTAButton>
                     </div>
                 </div>
             </div>
