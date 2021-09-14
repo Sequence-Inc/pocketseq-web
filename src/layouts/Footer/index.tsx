@@ -7,17 +7,17 @@ const Footer = () => {
             <h2 id="footer-heading" className="sr-only">
                 Footer
             </h2>
-            <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+            <div className="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:py-16 lg:px-8">
                 <div className="grid grid-cols-2 gap-8">
                     <div className="md:grid md:grid-cols-2 md:gap-8">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-200 tracking-wider uppercase">
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
                                 レンタルスペースを探す
                             </h3>
                             <ul className="mt-4 space-y-2">
                                 {navigation.find.map((item) => (
                                     <li key={item.name}>
-                                    <Link href={item.href}>
+                                        <Link href={item.href}>
                                             <a className="text-sm text-gray-300 hover:text-white">
                                                 {item.name}
                                             </a>
@@ -27,7 +27,7 @@ const Footer = () => {
                             </ul>
                         </div>
                         <div className="mt-12 md:mt-0">
-                            <h3 className="text-lg font-medium text-gray-200 tracking-wider uppercase">
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
                                 ご利用ガイド
                             </h3>
                             <ul className="mt-4 space-y-2">
@@ -45,7 +45,7 @@ const Footer = () => {
                     </div>
                     <div className="md:grid md:grid-cols-2 md:gap-8">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-200 tracking-wider uppercase">
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
                                 スペースマーケットについて
                             </h3>
                             <ul className="mt-4 space-y-2">
@@ -60,12 +60,12 @@ const Footer = () => {
                                 ))}
                             </ul>
                         </div>
-                        <div className="mt-12 md:mt-0 flex justify-center">
+                        <div className="flex justify-center mt-12 md:mt-0">
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-400 tracking-wider uppercase">
+                                <h2 className="text-lg font-semibold tracking-wider text-gray-400 uppercase">
                                     Time Book
                                 </h2>
-                                <div className="mt-4 flex space-x-6 md:order-2">
+                                <div className="flex mt-4 space-x-6 md:order-2">
                                     {navigation.social.map((item) => (
                                         <a
                                             key={item.name}
@@ -76,7 +76,7 @@ const Footer = () => {
                                                 {item.name}
                                             </span>
                                             <item.icon
-                                                className="h-6 w-6"
+                                                className="w-6 h-6"
                                                 aria-hidden="true"
                                             />
                                         </a>
@@ -86,8 +86,8 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <div className="mt-8 border-t border-gray-700 pt-8 flex flex-col lg:flex-row items-center">
-                    <p className="mt-8 text-base text-gray-400 md:mt-0 mr-8">
+                <div className="flex flex-col items-center pt-8 mt-8 border-t border-gray-700 lg:flex-row">
+                    <p className="mt-8 mr-8 text-base text-gray-400 md:mt-0">
                         &copy; 2021 Space Rental K.K.
                     </p>
                     <nav className="flex flex-wrap">

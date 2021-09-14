@@ -36,7 +36,7 @@ const useLogin = () => {
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);
-            router.push("/");
+            router.replace("/");
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };

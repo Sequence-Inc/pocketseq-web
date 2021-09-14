@@ -154,7 +154,7 @@ const HeaderComp = () => {
                                     {navLinkItems.map((item: INavLinkItems) => (
                                         <>
                                             {isLoggedIn &&
-                                            item.authenticate ? null : (
+                                                item.authenticate ? null : (
                                                 <NavLink
                                                     key={item.link}
                                                     link={item.link}
@@ -172,23 +172,23 @@ const HeaderComp = () => {
                                             className="relative ml- 8"
                                         >
                                             <div>
-                                                <Menu.Button className="flex items-center text-sm rounded-full bg-white p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary focus:ring-white">
+                                                <Menu.Button className="flex items-center p-1 text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary focus:ring-white">
                                                     <span className="sr-only">
                                                         Open user menu
                                                     </span>
                                                     <img
                                                         className="w-8 h-8 mr-2 rounded-full"
                                                         src={
-                                                            profile.profilePhoto
+                                                            profile?.profilePhoto
                                                                 ? profile
-                                                                      .profilePhoto
-                                                                      .thumbnail
-                                                                      .url
+                                                                    .profilePhoto
+                                                                    .thumbnail
+                                                                    .url
                                                                 : `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`
                                                         }
                                                         alt=""
                                                     />
-                                                    <div className="font-medium text-primary mr-2">
+                                                    <div className="mr-2 font-medium text-primary">
                                                         {currentUser}
                                                     </div>
                                                 </Menu.Button>
