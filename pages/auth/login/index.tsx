@@ -16,7 +16,7 @@ const Login = () => {
         handleSubmit,
         loading,
         pinRef,
-        errorRef
+        errorRef,
     } = useLogin();
     const router = useRouter();
 
@@ -100,11 +100,5 @@ const Login = () => {
         </>
     );
 };
-
-// Login.Layout = EmptyLayout;
-
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
 
 export default Login;
