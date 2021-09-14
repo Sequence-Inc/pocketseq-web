@@ -37,7 +37,9 @@ const useLogin = () => {
             isLoggedIn(true);
             currentSession(data.login);
             console.log("login successful", data.login);
-            // router.replace("/");
+            setTimeout(() => {
+                router.replace("/");
+            }, 500);
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };
