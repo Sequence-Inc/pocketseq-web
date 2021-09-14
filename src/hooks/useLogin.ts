@@ -36,7 +36,6 @@ const useLogin = () => {
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);
-            console.log("store this", data.login);
             router.push("/");
         },
         onError: (err) => {
