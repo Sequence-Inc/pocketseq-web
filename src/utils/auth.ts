@@ -1,15 +1,11 @@
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 
 export const storeSession = (session): void => {
-    const data = encodeURIComponent(JSON.stringify(session));
-    console.log(data);
-    debugger;
+    const data = JSON.stringify(session);
+
     setCookie(null, "session", data, {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
-        encode: (data) => {
-            return data;
-        },
     });
 };
 
@@ -22,8 +18,8 @@ export const logout = (): void => {
     window.location.href = "/";
 };
 
-export const getSession = () => {
-    const cookies = parseCookies(null, {
+export const getSession = (): Record<string, any> => {
+    const cookies: Record<string, any> = parseCookies(null, {
         decode: (data) => {
             return JSON.parse(decodeURIComponent(data));
         },
