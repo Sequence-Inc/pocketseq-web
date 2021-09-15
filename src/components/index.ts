@@ -18,3 +18,5 @@ export * from "./SpaceInfoAccess";
 export * from "./SpaceInfoReviews";
 export * from "./ListViewSearch";
 export * from "./GridViewSearch";
+export * from "./PhotoIdUploader";
+export * from "./AddStripe";

@@ -22,7 +22,6 @@ export const getSession = () => {
 };
 
 export const isAuthenticated = (): boolean => {
-    console.log("isLoggedIn", !!getSession());
     return !!getSession();
 };
 

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Button } from "@element";
 import { GET_SESSION } from "src/apollo/queries/state.queries";
 import { useQuery } from "@apollo/client";
-import { authorizeRole, logout } from "src/utils/auth";
+import { authorizeRole, logout, classNames } from "src/utils/";
 import React, { Fragment } from "react";
 import ClientOnly from "src/components/ClientOnly";
 
@@ -41,10 +41,6 @@ const userNavigation = [
     { name: "Profile", href: "/user/profile", role: ["user", "host"] },
     { name: "Settings", href: "/user/settings", role: ["user", "host"] },
 ];
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-}
 
 const NavLink = ({ link, name }: INavLinkItems) => {
     const router = useRouter();
@@ -154,7 +150,7 @@ const HeaderComp = () => {
                                     {navLinkItems.map((item: INavLinkItems) => (
                                         <>
                                             {isLoggedIn &&
-                                                item.authenticate ? null : (
+                                            item.authenticate ? null : (
                                                 <NavLink
                                                     key={item.link}
                                                     link={item.link}
@@ -181,9 +177,9 @@ const HeaderComp = () => {
                                                         src={
                                                             profile?.profilePhoto
                                                                 ? profile
-                                                                    .profilePhoto
-                                                                    .thumbnail
-                                                                    .url
+                                                                      .profilePhoto
+                                                                      .thumbnail
+                                                                      .url
                                                                 : `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`
                                                         }
                                                         alt=""
