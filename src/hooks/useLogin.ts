@@ -33,7 +33,7 @@ const useLogin = () => {
     const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            debugger
+            debugger;
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);
@@ -41,6 +41,8 @@ const useLogin = () => {
             location.href = "/";
         },
         onError: (err) => {
+            console.log(err);
+            debugger;
             const error: Error = { ...err.graphQLErrors[0] };
             if (error?.action === "verify-email") {
                 pinRef?.current.open(watch());
@@ -51,6 +53,7 @@ const useLogin = () => {
     });
 
     const handleLogin = (formData) => {
+        debugger;
         login({ variables: { input: formData } });
     };
 

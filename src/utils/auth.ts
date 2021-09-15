@@ -1,9 +1,15 @@
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 
 export const storeSession = (session): void => {
-    setCookie(null, "session", JSON.stringify(session), {
+    const data = encodeURIComponent(JSON.stringify(session));
+    console.log(data);
+    debugger;
+    setCookie(null, "session", data, {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
+        encode: (data) => {
+            return data;
+        },
     });
 };
 
@@ -17,8 +23,13 @@ export const logout = (): void => {
 };
 
 export const getSession = () => {
-    const cookies = parseCookies();
-    return cookies.session ? JSON.parse(cookies.session) : null;
+    const cookies = parseCookies(null, {
+        decode: (data) => {
+            return JSON.parse(decodeURIComponent(data));
+        },
+    });
+    console.log("decoded Data", cookies);
+    return cookies.session ? cookies.session : null;
 };
 
 export const isAuthenticated = (): boolean => {
