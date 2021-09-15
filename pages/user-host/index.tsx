@@ -7,6 +7,7 @@ import { HOST } from "src/apollo/queries/host.queries";
 import React from "react";
 import DashboardCard from "src/components/DashboardCard";
 import withAuth from "src/utils/withAuth";
+import PhotoIdUploader from "src/components/PhotoIdUploader";
 
 interface IBalanceInput {
     currency: string;
@@ -28,6 +29,7 @@ interface IHost {
     id: string;
     name: string;
     stripeAccountId: string;
+    photoId: string;
     account: IAccount;
 }
 
@@ -102,12 +104,18 @@ const HostDashboard = () => {
             );
         }
     }
+
+    let photoId = null;
+
     return (
         <HostLayout>
             <Head>
                 <title>Dashboard | Host Admin</title>
             </Head>
-            <Container className="py-4 sm:py-6 lg:py-8">{content}</Container>
+            <Container className="py-4 sm:py-6 lg:py-8">
+                {content}
+                <PhotoIdUploader />
+            </Container>
         </HostLayout>
     );
 };
