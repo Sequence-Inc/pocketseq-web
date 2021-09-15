@@ -96,9 +96,9 @@ const HostDashboard = () => {
     return (
         <HostLayout>
             <Head>
-                <title>Dashboard | Host Admin</title>
+                <title>Host - Timebook</title>
             </Head>
-            <Container className="py-4 sm:py-6 lg:py-8 space-y-8">
+            <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl">
                 {content}
                 <PhotoIdUploader />
             </Container>
