@@ -91,12 +91,12 @@ const useAddSpace = () => {
         mutate({ variables: { input: formData } })
     })
 
-    const getTrainLine = () => {
-        mutateTrainLines({ variables: { prefectureId: watch().prefecture } })
+    const getTrainLine = (trainLineId) => {
+        mutateTrainLines({ variables: { prefectureId: parseInt(trainLineId) } })
     }
 
-    const getStationId = () => {
-        mutateStationId({ variables: { lineId: watch().trainLine } })
+    const getStationId = (trainLineId) => {
+        mutateStationId({ variables: { lineId: trainLineId } })
     }
 
     return { spaceTypes, register, watch, control, errors, fields, prepend, remove, stationsField, stationsPrepend, stationsRemove, onSubmit, trainLines, getTrainLine, stationId, getStationId, loading, confirmRef, defaultPriceObj, defaultStationObj }

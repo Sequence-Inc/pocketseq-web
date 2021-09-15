@@ -79,6 +79,31 @@ export const LOGIN = gql`
                     firstNameKana
                     lastNameKana
                     phoneNumber
+                    profilePhoto {
+                        id
+                        mime
+                        type
+                        thumbnail {
+                            width
+                            height
+                            url
+                        }
+                        small {
+                            width
+                            height
+                            url
+                        }
+                        medium {
+                            width
+                            height
+                            url
+                        }
+                        large {
+                            width
+                            height
+                            url
+                        }
+                    }
                     address {
                         id
                         addressLine1

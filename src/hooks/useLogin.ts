@@ -33,10 +33,12 @@ const useLogin = () => {
     const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
+            debugger
             isLoggedIn(true);
             currentSession(data.login);
             storeSession(data.login);
-            router.push("/");
+            // router.replace("/");
+            location.href = "/";
         },
         onError: (err) => {
             const error: Error = { ...err.graphQLErrors[0] };
