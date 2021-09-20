@@ -7,12 +7,20 @@ export const storeSession = (session): void => {
     });
 };
 
+export const storeProfile = (profile): void => {
+    setCookie(null, "session_profile", JSON.stringify(profile), {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
+    });
+};
+
 export const removeSession = (cookieName: string): void => {
     destroyCookie(null, cookieName);
 };
 
 export const logout = (): void => {
     removeSession("session");
+    removeSession("session_profile");
     window.location.href = "/";
 };
 
@@ -21,19 +29,32 @@ export const getSession = () => {
     return cookies.session ? JSON.parse(cookies.session) : null;
 };
 
+export const getUserRole = () => {
+    const cookies = parseCookies();
+    const parsedCookies = cookies.session_profile ? JSON.parse(cookies.session_profile) : null;
+    return parsedCookies ? parsedCookies.roles : null;
+};
+
+export const getInitialSession = () => {
+    const cookies = parseCookies();
+    return cookies.session ? JSON.parse(cookies.session) : null;
+};
+
+export const getInitialProfile = () => {
+    const cookies = parseCookies();
+    return cookies.session_profile ? JSON.parse(cookies.session_profile) : null;
+};
+
 export const isAuthenticated = (): boolean => {
-    console.log("isLoggedIn", !!getSession());
     return !!getSession();
 };
 
-export const authorizeRole = (requiredRole): boolean => {
+export const authorizeRole = (requiredRole: string[]): boolean => {
     // check if authenticated
     if (!isAuthenticated()) return false;
 
-    const currentSession = getSession();
-    if (!currentSession.roles) return false;
-
-    const userRole = currentSession.roles;
+    const userRole = getUserRole();
+    if (!userRole) return false;
 
     const sorted_requiredRole = requiredRole.concat().sort();
     const sorted_userRole = userRole.concat().sort();

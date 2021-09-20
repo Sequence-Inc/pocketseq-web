@@ -1,5 +1,5 @@
-import { InMemoryCache, Reference, makeVar, gql } from "@apollo/client";
-import { getSession, isAuthenticated } from "../utils/auth";
+import { InMemoryCache, makeVar, gql } from "@apollo/client";
+import { getInitialProfile, getInitialSession, isAuthenticated } from "../utils/auth";
 interface IIsLoggedIn {
     session: boolean;
     role: string;
@@ -13,7 +13,8 @@ export interface ILocalState {
 // export const userSession = makeVar<ILocalState>(localStateInitialValue);
 
 export const isLoggedIn = makeVar<boolean>(isAuthenticated());
-export const currentSession = makeVar<Record<string, any>>(getSession());
+export const currentSession = makeVar<Record<string, any>>(getInitialSession());
+export const profile = makeVar<Record<string, any>>(getInitialProfile());
 
 export const clientTypeDefs = gql`
     type Address {
@@ -71,6 +72,11 @@ export const clientTypeDefs = gql`
 
     union Profile = UserProfile | CompanyProfile
 
+    type CurrentSession { 
+        accessToken: String!
+        refreshToken: String! 
+    }
+
     type LoginResult {
         profile: Profile!
         accessToken: String!
@@ -79,7 +85,8 @@ export const clientTypeDefs = gql`
     }
     extend type Query {
         isLoggedIn: Boolean!
-        currentSession: LoginResult
+        currentSession: CurrentSession!
+        profile: Profile!
     }
 `;
 
@@ -95,6 +102,11 @@ export const cache: InMemoryCache = new InMemoryCache({
                 currentSession: {
                     read() {
                         return currentSession();
+                    },
+                },
+                profile: {
+                    read() {
+                        return profile();
                     },
                 },
                 launches: {

@@ -67,7 +67,6 @@ export const FORGOT_PASSWORD = gql`
 export const LOGIN = gql`
     mutation Login($input: LoginInput!) {
         login(input: $input) {
-            roles
             accessToken
             refreshToken
             profile {
@@ -79,6 +78,7 @@ export const LOGIN = gql`
                     firstNameKana
                     lastNameKana
                     phoneNumber
+                    roles
                     profilePhoto {
                         id
                         mime
@@ -93,16 +93,16 @@ export const LOGIN = gql`
                             height
                             url
                         }
-                        medium {
-                            width
-                            height
-                            url
-                        }
-                        large {
-                            width
-                            height
-                            url
-                        }
+                        # medium {
+                        #     width
+                        #     height
+                        #     url
+                        # }
+                        # large {
+                        #     width
+                        #     height
+                        #     url
+                        # }
                     }
                     address {
                         id
@@ -128,6 +128,7 @@ export const LOGIN = gql`
                     nameKana
                     phoneNumber
                     registrationNumber
+                    roles
                 }
             }
         }
