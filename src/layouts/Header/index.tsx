@@ -100,7 +100,7 @@ const HeaderComp = () => {
     let currentUser;
 
     if (isLoggedIn) {
-        profile = currentSession?.profile;
+        profile = data?.profile;
         currentUser =
             profile.__typename === "UserProfile"
                 ? `${profile?.firstName} ${profile?.lastName}`

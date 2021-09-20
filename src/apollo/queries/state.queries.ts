@@ -6,7 +6,8 @@ export const GET_SESSION = gql`
         currentSession @client {
             accessToken
             refreshToken
-            profile {
+        }
+        profile @client {
                 ... on UserProfile {
                     id
                     email
@@ -45,16 +46,16 @@ export const GET_SESSION = gql`
                             height
                             url
                         }
-                        medium {
-                            width
-                            height
-                            url
-                        }
-                        large {
-                            width
-                            height
-                            url
-                        }
+                        # medium {
+                        #     width
+                        #     height
+                        #     url
+                        # }
+                        # large {
+                        #     width
+                        #     height
+                        #     url
+                        # }
                     }
                 }
                 ... on CompanyProfile {
@@ -67,5 +68,4 @@ export const GET_SESSION = gql`
                 }
             }
         }
-    }
 `;

@@ -5,8 +5,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "src/apollo/queries/auth.queries";
-import { storeSession } from "src/utils/auth";
-import { currentSession, isLoggedIn } from "src/apollo/cache";
+import { storeSession, storeProfile } from "src/utils/auth";
+import { currentSession, isLoggedIn, profile } from "src/apollo/cache";
 
 type Error = {
     message: string;
@@ -33,11 +33,13 @@ const useLogin = () => {
     const errorRef = useRef(null);
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            debugger
             isLoggedIn(true);
             currentSession(data.login);
-            storeSession(data.login);
-            // router.replace("/");
+            profile(data.login.profile);
+            const newData = { ...data.login };
+            delete newData.profile;
+            storeSession(newData);
+            storeProfile(data.login.profile);
             location.href = "/";
         },
         onError: (err) => {
