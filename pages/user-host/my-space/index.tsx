@@ -96,7 +96,7 @@ const MySpace = () => {
     return (
         <HostLayout>
             <Head>
-                <title>Spaces - Host - Timebook</title>
+                <title>My Spaces | Host Admin</title>
             </Head>
             {/* Page header */}
             <div className="bg-white shadow">
@@ -130,7 +130,7 @@ const MySpace = () => {
                             </div>
                         </div>
                         <div className="flex mt-6 space-x-3 md:mt-0 md:ml-4">
-                            <Link href="/host/my-space/add">
+                            <Link href="/user-host/my-space/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
                                         Add new space

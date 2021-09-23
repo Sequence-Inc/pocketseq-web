@@ -36,7 +36,7 @@ const PhotoIdUpload = () => {
                 setLoading(false);
                 setPhoto(null);
                 alert("Photo ID successfully uploaded.");
-                router.push("/host");
+                router.push("/user-host");
             } catch (error) {
                 alert(`Error: ${error.message}`);
             }
