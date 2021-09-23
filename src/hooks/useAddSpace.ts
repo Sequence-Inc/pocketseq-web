@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ADD_SPACE, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, GET_LINES_BY_PREFECTURE, GET_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
 import { GET_ALL_SPACE_TYPES } from 'src/apollo/queries/space.queries';
 
 interface IData {
@@ -39,6 +39,10 @@ interface IFormState {
     spaceTypes: string;
     prefecture: string;
     trainLine: string | number;
+    zipCode: string;
+    city: string;
+    addressLine1: string;
+    addressLine2?: string;
 }
 
 const defaultPriceObj = {
@@ -62,7 +66,7 @@ const defaultValues = {
 }
 
 const useAddSpace = () => {
-    const { register, control, formState: { errors }, watch, handleSubmit } = useForm<IFormState, IFormState>({ defaultValues });
+    const { register, control, formState: { errors }, setValue, watch, handleSubmit } = useForm<IFormState, IFormState>({ defaultValues });
     const { fields, prepend, remove } = useFieldArray({
         name: "spacePricePlan",
         control,
@@ -99,7 +103,35 @@ const useAddSpace = () => {
         mutateStationId({ variables: { lineId: trainLineId } })
     }
 
-    return { spaceTypes, register, watch, control, errors, fields, prepend, remove, stationsField, stationsPrepend, stationsRemove, onSubmit, trainLines, getTrainLine, stationId, getStationId, loading, confirmRef, defaultPriceObj, defaultStationObj }
+    return { spaceTypes, register, watch, control, setValue, errors, fields, prepend, remove, stationsField, stationsPrepend, stationsRemove, onSubmit, trainLines, getTrainLine, stationId, getStationId, loading, confirmRef, defaultPriceObj, defaultStationObj }
 }
 
 export default useAddSpace;
+
+export const useBasicSpace = (fn) => {
+    const [zipCode, setZipCode] = useState("");
+    const [cache, setCache] = useState({});
+    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
+    const loading = false;
+    const { data: prefectures } = useQuery(GET_PREFECTURE);
+
+    const onSubmit = handleSubmit((formData) => {
+        console.log(formData)
+        fn();
+        // mutate({ variables: { input: formData } })
+    })
+
+    return { zipCode, setZipCode, cache, setCache, register, control, errors, watch, setValue, onSubmit, loading, prefectures }
+}
+
+export const usePriceSpace = () => {
+    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
+    const loading = false;
+
+    const onSubmit = handleSubmit((formData) => {
+        console.log(formData);
+        // mutate({ variables: { input: formData } })
+    })
+
+    return { register, control, errors, watch, setValue, onSubmit, loading }
+}
