@@ -37,9 +37,14 @@ const navLinkItems: INavLinkItems[] = [
 ];
 
 const userNavigation = [
-    { name: "Host Dashboard", href: "/user-host", role: ["host"] },
+    { name: "Admin Dashboard", href: "/admin", role: ["admin"] },
+    { name: "Host Dashboard", href: "/host", role: ["host"] },
     { name: "Profile", href: "/user/profile", role: ["user", "host"] },
-    { name: "Settings", href: "/user/settings", role: ["user", "host"] },
+    {
+        name: "Settings",
+        href: "/user/settings",
+        role: ["user", "host", "admin"],
+    },
 ];
 
 const NavLink = ({ link, name }: INavLinkItems) => {
@@ -88,16 +93,14 @@ const HeaderComp = () => {
     const router = useRouter();
 
     const { data, loading, error } = useQuery(GET_SESSION);
-    console.log("ReactQuery", data, loading, error);
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error {error.message}</div>;
 
     const isLoggedIn = data?.isLoggedIn;
-    const currentSession = data?.currentSession;
-    console.log("STATE", data, isLoggedIn, currentSession);
 
     let profile;
     let currentUser;
+    let profilePhoto;
 
     if (isLoggedIn) {
         profile = data?.profile;
@@ -105,6 +108,12 @@ const HeaderComp = () => {
             profile.__typename === "UserProfile"
                 ? `${profile?.firstName} ${profile?.lastName}`
                 : `${profile?.name}`;
+        if (profile.profilePhoto) {
+            console.log(profile.profilePhoto);
+            profilePhoto = profile.profilePhoto.thumbnail?.url;
+        } else {
+            profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
+        }
     }
 
     return (
@@ -147,18 +156,29 @@ const HeaderComp = () => {
                             </div>
                             <div className="flex items-center">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
-                                    {navLinkItems.map((item: INavLinkItems) => (
-                                        <>
-                                            {isLoggedIn &&
-                                            item.authenticate ? null : (
-                                                <NavLink
-                                                    key={item.link}
-                                                    link={item.link}
-                                                    name={item.name}
-                                                />
-                                            )}
-                                        </>
-                                    ))}
+                                    {navLinkItems.map(
+                                        (
+                                            item: INavLinkItems,
+                                            index: number
+                                        ) => {
+                                            {
+                                                if (
+                                                    isLoggedIn &&
+                                                    item.authenticate
+                                                ) {
+                                                    return null;
+                                                } else {
+                                                    return (
+                                                        <NavLink
+                                                            key={index.toString()}
+                                                            link={item.link}
+                                                            name={item.name}
+                                                        />
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    )}
                                 </div>
                                 <div className="flex-shrink-0">
                                     {/* Profile dropdown */}
@@ -174,14 +194,7 @@ const HeaderComp = () => {
                                                     </span>
                                                     <img
                                                         className="w-8 h-8 mr-2 rounded-full"
-                                                        src={
-                                                            profile?.profilePhoto
-                                                                ? profile
-                                                                      .profilePhoto
-                                                                      .thumbnail
-                                                                      .url
-                                                                : `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`
-                                                        }
+                                                        src={profilePhoto}
                                                         alt=""
                                                     />
                                                     <div className="mr-2 font-medium text-primary">
@@ -271,17 +284,20 @@ const HeaderComp = () => {
 
                     <Disclosure.Panel className="md:hidden">
                         <div className="pt-2 pb-3 space-y-1">
-                            {navLinkItems.map((item: INavLinkItems) => (
-                                <>
-                                    {isLoggedIn && item.authenticate ? null : (
-                                        <NavLinkOnSmall
-                                            key={item.link}
-                                            name={item.name}
-                                            link={item.link}
-                                        />
-                                    )}
-                                </>
-                            ))}
+                            {navLinkItems.map(
+                                (item: INavLinkItems, index: number) => (
+                                    <div key={`${index.toString()}`}>
+                                        {isLoggedIn &&
+                                        item.authenticate ? null : (
+                                            <NavLinkOnSmall
+                                                key={item.link}
+                                                name={item.name}
+                                                link={item.link}
+                                            />
+                                        )}
+                                    </div>
+                                )
+                            )}
                         </div>
                     </Disclosure.Panel>
                 </>

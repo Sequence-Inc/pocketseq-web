@@ -39,29 +39,3 @@ export const GET_PROFILE = gql`
         }
     }
 `;
-
-//  profilePhoto {
-//                     id
-//                     mime
-//                     type
-//                     thumbnail {
-//                         width
-//                         height
-//                         url
-//                     }
-//                     small {
-//                         width
-//                         height
-//                         url
-//                     }
-//                     medium {
-//                         width
-//                         height
-//                         url
-//                     }
-//                     large {
-//                         width
-//                         height
-//                         url
-//                     }
-//                 }
