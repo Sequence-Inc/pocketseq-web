@@ -1,7 +1,16 @@
-export default function AdminDashboard() {
+import Head from "next/head";
+import withAuth from "src/utils/withAuth";
+import HostLayout from "src/layouts/HostLayout";
+
+function AdminDashboard() {
     return (
-        <div className="bg-gray-50">
-            <p>This is a Admin Page</p>
-        </div>
+        <HostLayout>
+            <Head>
+                <title>Admin - Timebook</title>
+            </Head>
+            <div className="bg-gray-50"></div>
+        </HostLayout>
     );
 }
+
+export default withAuth(AdminDashboard);
