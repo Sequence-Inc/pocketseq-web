@@ -4,49 +4,18 @@ import {
     ArrowLeftIcon,
     CalendarIcon,
     CogIcon,
-    UsersIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
     {
         name: "Host Dashboard",
-        href: "/host",
+        href: "/user-host",
         Icon: HomeIcon,
         roles: ["host"],
     },
     {
-        name: "Dashboard",
-        href: "/admin",
-        Icon: HomeIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Accounts",
-        href: "/admin/accounts",
-        Icon: UsersIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Hosts",
-        href: "/admin/hosts",
-        Icon: UsersIcon,
-        roles: ["admin"],
-    },
-    {
         name: "Spaces",
-        href: "#",
-        Icon: ViewListIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Settings",
-        href: "/admin/settings/",
-        Icon: CogIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Spaces",
-        href: "/host/my-space",
+        href: "/user-host/my-space",
         Icon: ViewListIcon,
         roles: ["host"],
     },
