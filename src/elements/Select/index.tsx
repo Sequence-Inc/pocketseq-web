@@ -32,7 +32,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         error,
         errorMessage,
         disabled = false,
-        singleRow = false
+        singleRow = false,
     } = props;
 
     const getSelectedLabel = () => {
@@ -45,13 +45,29 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         <>
             <Listbox value={value} onChange={onChange} disabled={disabled}>
                 {({ open }) => (
-                    <div className={clsx(singleRow ? "flex-none sm:flex sm:items-center sm:space-x-4" : "")}>
+                    <div
+                        className={clsx(
+                            singleRow
+                                ? "flex-none sm:flex sm:items-center sm:space-x-4"
+                                : ""
+                        )}
+                    >
                         {label && (
-                            <Listbox.Label className={clsx("block text-sm font-medium text-gray-700", singleRow ? "sm:text-right sm:w-60" : "")}>
+                            <Listbox.Label
+                                className={clsx(
+                                    "block text-sm font-medium text-gray-700",
+                                    singleRow ? "sm:text-right sm:w-60" : ""
+                                )}
+                            >
                                 {label}
                             </Listbox.Label>
                         )}
-                        <div className={clsx("relative", singleRow ? "sm:w-96" : "mt-1")}>
+                        <div
+                            className={clsx(
+                                "relative",
+                                singleRow ? "sm:w-96" : "mt-1"
+                            )}
+                        >
                             <Listbox.Button
                                 className={clsx(
                                     error

@@ -1,12 +1,12 @@
-import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
-import HostLayout from "src/layouts/HostLayout";
-import Head from "next/head";
-import { Container } from "@element";
-import { useQuery } from "@apollo/client";
-import { HOST } from "src/apollo/queries/host.queries";
 import React from "react";
-import DashboardCard from "src/components/DashboardCard";
+import Head from "next/head";
+import { useQuery } from "@apollo/client";
+import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import withAuth from "src/utils/withAuth";
+import HostLayout from "src/layouts/HostLayout";
+import { Container } from "@element";
+import { HOST } from "src/apollo/queries/host.queries";
+import DashboardCard from "src/components/DashboardCard";
 import { PhotoIdUploader, AddStripe } from "src/components";
 
 interface IBalanceInput {
@@ -33,22 +33,22 @@ interface IHost {
     account: IAccount;
 }
 
-const HostDashboard = () => {
+const HostDashboard = ({ currentSession }) => {
     const { data, loading, error } = useQuery<{ host: IHost }>(HOST);
-
+    console.log("CurrentUser from WithAuth", currentSession);
     let content;
 
     if (loading) {
         content = (
             <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
+                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
             </div>
         );
     }
 
     if (error) {
         content = (
-            <div className="flex items-center justify-center h-content">
+            <div className="flex items-center justify-center h-1/4">
                 <h2 className="text-lg font-medium leading-6 text-gray-900">
                     {error.message}
                 </h2>
@@ -91,16 +91,16 @@ const HostDashboard = () => {
         }
     }
 
-    let photoId = null;
-
     return (
         <HostLayout>
             <Head>
                 <title>Host - Timebook</title>
             </Head>
-            <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl">
-                {content}
-                <PhotoIdUploader />
+            <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
+                <div className="w-full sm:w-1/2 mx-auto h-full">
+                    {content}
+                    <PhotoIdUploader />
+                </div>
             </Container>
         </HostLayout>
     );

@@ -4,13 +4,13 @@ import { useMemo } from "react";
 import { useTable } from "react-table";
 
 const Table = ({ columns, data }) => {
+    console.log(columns, data);
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({
             columns: useMemo(() => columns, []),
             data,
         });
 
-    console.log(columns);
     return (
         <div className="flex flex-col mt-2">
             <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">
