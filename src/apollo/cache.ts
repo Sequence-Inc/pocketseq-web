@@ -1,5 +1,9 @@
 import { InMemoryCache, makeVar, gql } from "@apollo/client";
-import { getInitialProfile, getInitialSession, isAuthenticated } from "../utils/auth";
+import {
+    getInitialProfile,
+    getInitialSession,
+    isAuthenticated,
+} from "../utils/auth";
 interface IIsLoggedIn {
     session: boolean;
     role: string;
@@ -72,9 +76,9 @@ export const clientTypeDefs = gql`
 
     union Profile = UserProfile | CompanyProfile
 
-    type CurrentSession { 
+    type CurrentSession {
         accessToken: String!
-        refreshToken: String! 
+        refreshToken: String!
     }
 
     type LoginResult {
@@ -87,6 +91,7 @@ export const clientTypeDefs = gql`
         isLoggedIn: Boolean!
         currentSession: CurrentSession!
         profile: Profile!
+        accountById(id: ID!): Profile! @client
     }
 `;
 
@@ -111,6 +116,14 @@ export const cache: InMemoryCache = new InMemoryCache({
                 },
                 launches: {
                     // ...field policy definitions...
+                },
+                accountById: {
+                    read: (existing, { toReference, args }) => {
+                        const accountRef = toReference(
+                            `UserProfile:${args.id}`
+                        );
+                        return existing ?? accountRef;
+                    },
                 },
             },
         },

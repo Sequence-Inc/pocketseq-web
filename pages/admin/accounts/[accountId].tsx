@@ -5,16 +5,30 @@ import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
-import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
-import { Button, Container, Table } from "@element";
-import { AccountsList } from "@comp";
+import { UsersIcon } from "@heroicons/react/solid";
+import { Container } from "@element";
+import { NetworkHelper } from "@comp";
 
 import { classNames } from "src/utils";
-import { useRouter } from "next/router";
+import { ACCOUNT_BY_ID } from "src/apollo/queries/admin.queries";
 
-function AdminDashboard({ accountId }) {
+function AccountDetails({ accountId }) {
     // get data for accountID this
     console.log("get data for accountID", accountId);
+
+    const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
+        variables: { id: accountId },
+    });
+
+    if (loading) return <NetworkHelper type="loading" />;
+
+    if (error) return <NetworkHelper type="error" message={error.message} />;
+
+    if (data.accountById.length === 0) {
+        return <NetworkHelper type="no-data" />;
+    }
+
+    console.log(data);
 
     let [tabs] = useState([
         {
@@ -107,7 +121,7 @@ function AdminDashboard({ accountId }) {
     );
 }
 
-export default withAuth(AdminDashboard);
+export default withAuth(AccountDetails);
 
 export async function getServerSideProps(context) {
     const { accountId } = context.query;

@@ -72,3 +72,40 @@ export const PREFECTURE_BY_ID = gql`
         }
     }
 `;
+
+export const ACCOUNT_BY_ID = gql`
+    query accountById($id: ID!) {
+        accountById(id: $id) {
+            ... on UserProfile {
+                id
+                firstName
+                lastName
+                firstNameKana
+                lastNameKana
+                roles
+                email
+                profilePhoto {
+                    id
+                    mime
+                    thumbnail {
+                        url
+                        height
+                        width
+                    }
+                    medium {
+                        url
+                        height
+                        width
+                    }
+                }
+            }
+            ... on CompanyProfile {
+                id
+                name
+                nameKana
+                roles
+                email
+            }
+        }
+    }
+`;
