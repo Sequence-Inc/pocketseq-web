@@ -5,21 +5,40 @@ import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
-import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
-import { Button, Container, Table } from "@element";
-import { AccountsList } from "@comp";
+import {
+    CheckCircleIcon,
+    QuestionMarkCircleIcon,
+    XCircleIcon,
+    ViewListIcon,
+} from "@heroicons/react/outline";
+import { Container } from "@element";
+import { NetworkHelper } from "@comp";
 
 import { classNames } from "src/utils";
-import { useRouter } from "next/router";
+import { ACCOUNT_BY_ID } from "src/apollo/queries/admin.queries";
+import { BasicAccountInfo } from "src/components/AccountDetails";
 
-function AdminDashboard({ accountId }) {
+function AccountDetails({ accountId }) {
     // get data for accountID this
-    console.log("get data for accountID", accountId);
+    const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
+        variables: { id: accountId },
+        fetchPolicy: "cache-only",
+    });
 
-    let [tabs] = useState([
+    if (loading) return <NetworkHelper type="loading" />;
+
+    if (error) return <NetworkHelper type="error" message={error.message} />;
+
+    const account = data.accountById;
+
+    if (account.length === 0) {
+        return <NetworkHelper type="no-data" />;
+    }
+
+    const tabs = [
         {
             title: "Basic information",
-            component: <>Basic information of {accountId}</>,
+            component: <BasicAccountInfo account={account} />,
         },
         {
             title: "Payment methods",
@@ -29,7 +48,43 @@ function AdminDashboard({ accountId }) {
             title: "Bookings",
             component: <>Bookings of {accountId}</>,
         },
-    ]);
+    ];
+
+    let accountStatusIcon;
+
+    if (account.emailVerified) {
+        if (account.suspended) {
+            accountStatusIcon = (
+                <XCircleIcon className="w-5 h-5 text-red-400" />
+            );
+        } else if (account.approved) {
+            accountStatusIcon = (
+                <CheckCircleIcon className="w-5 h-5 text-green-400" />
+            );
+        } else {
+            accountStatusIcon = (
+                <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+            );
+        }
+    } else {
+        accountStatusIcon = (
+            <QuestionMarkCircleIcon className="w-5 h-5 text-gray-400" />
+        );
+    }
+
+    let name;
+    if (account.__typename === "UserProfile") {
+        name = `${account.firstName} ${account.lastName}`;
+    } else {
+        name = account.name;
+    }
+
+    let profilePhotoUrl;
+    if (account.profilePhoto) {
+        profilePhotoUrl = account.profilePhoto.thumbnail.url;
+    } else {
+        profilePhotoUrl = `https://avatars.dicebear.com/api/identicon/${account.id}.svg`;
+    }
 
     return (
         <HostLayout>
@@ -43,27 +98,24 @@ function AdminDashboard({ accountId }) {
                         <div className="flex-1 min-w-0">
                             {/* Profile */}
                             <div className="flex items-center">
-                                {/* <div className="hidden w-16 h-16 border rounded-lg shadow-sm sm:flex sm:justify-center sm:items-center">
-                                    <ViewListIcon className="w-10 h-10 text-primary" />
-                                </div> */}
-                                <div>
+                                <img
+                                    src={profilePhotoUrl}
+                                    className="w-16 h-16 rounded-lg shadow-sm "
+                                />
+                                <div className="ml-3">
                                     <div className="flex items-center">
-                                        <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Account
+                                        <h1 className="ml-3 text-2xl font-medium leading-7 capitalize text-gray-700 sm:leading-9 sm:truncate">
+                                            {name}
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                                        <dt className="sr-only">
-                                            Total accounts
-                                        </dt>
-                                        <dd className="flex items-center mt-3 text-sm font-medium text-gray-500 capitalize sm:mr-6 sm:mt-0">
-                                            <UsersIcon
-                                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                                aria-hidden="true"
-                                            />
-                                            12 accounts
-                                        </dd>
-                                    </dl>
+                                    <div className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                        <div className="flex items-center mt-3 text-sm font-medium text-gray-500 sm:mr-6 sm:mt-0">
+                                            {account.email}
+                                            <div className="ml-2">
+                                                {accountStatusIcon}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +159,7 @@ function AdminDashboard({ accountId }) {
     );
 }
 
-export default withAuth(AdminDashboard);
+export default withAuth(AccountDetails);
 
 export async function getServerSideProps(context) {
     const { accountId } = context.query;

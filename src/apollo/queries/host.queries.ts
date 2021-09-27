@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { IMAGE_UPLOAD_RESULT, PHOTO, STRIPE_ACCOUNT } from "./core.queries";
 
 export const HOST = gql`
     query Host {
@@ -7,19 +8,14 @@ export const HOST = gql`
             name
             stripeAccountId
             account {
-                message
-                url
-                balance {
-                    available {
-                        currency
-                        amount
-                    }
-                    pending {
-                        currency
-                        amount
-                    }
-                }
+                ${STRIPE_ACCOUNT}
             }
+            photoId{
+                ${PHOTO}
+            }
+            approved
+            createdAt
+            updatedAt
         }
     }
 `;
@@ -27,10 +23,7 @@ export const HOST = gql`
 export const ADD_PHOTO_ID = gql`
     mutation AddPhotoId($input: ImageUploadInput!) {
         addPhotoId(input: $input) {
-            type
-            url
-            mime
-            key
+            ${IMAGE_UPLOAD_RESULT}
         }
     }
 `;
