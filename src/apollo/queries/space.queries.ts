@@ -14,9 +14,38 @@ export const GET_ALL_SPACE_TYPES = gql`
     }
 `;
 
+export const GET_AVAILABLE_SPACE_TYPES = gql`
+    query GetAvailableSpaceTypes {
+        availableSpaceTypes {
+            id
+            title
+        }
+    }
+`;
+
+export const GET_AVAILABLE_SPACE_TYPES_WITHPHOTO = gql`
+    query GetAvailableSpaceTypes {
+        availableSpaceTypes {
+            id
+            title
+            description
+            photo
+            available
+        }
+    }
+`;
+
 export const GET_PREFECTURE = gql`
     query Prefectures {
         prefectures {
+            ${PREFECTURE}
+        }
+    }
+`;
+
+export const GET_ALL_PREFECTURE = gql`
+    query AllPrefectures {
+        allPrefectures {
             ${PREFECTURE}
         }
     }

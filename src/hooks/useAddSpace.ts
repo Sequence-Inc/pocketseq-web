@@ -1,8 +1,8 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ADD_SPACE, GET_LINES_BY_PREFECTURE, GET_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
-import { GET_ALL_SPACE_TYPES } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
+import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 
 interface IData {
     id: string;
@@ -11,7 +11,8 @@ interface IData {
 }
 
 interface IAllSpaceType {
-    allSpaceTypes: IData[];
+    allSpaceTypes?: IData[];
+    availableSpaceTypes?: IData[];
 }
 
 interface ISpacePricePlan {
@@ -77,7 +78,7 @@ const useAddSpace = () => {
     });
     const [mutateTrainLines, { data: trainLines }] = useLazyQuery(GET_LINES_BY_PREFECTURE);
     const [mutateStationId, { data: stationId }] = useLazyQuery(GET_STATIONS_BY_LINE);
-    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_ALL_SPACE_TYPES);
+    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_AVAILABLE_SPACE_TYPES);
     const confirmRef = useRef(null);
 
     const [mutate, { loading }] = useMutation(ADD_SPACE, {
@@ -113,11 +114,18 @@ export const useBasicSpace = (fn) => {
     const [cache, setCache] = useState({});
     const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
     const loading = false;
-    const { data: prefectures } = useQuery(GET_PREFECTURE);
+    const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+    const [mutate, { data: addData }] = useMutation(ADD_SPACE);
 
-    const onSubmit = handleSubmit((formData) => {
-        console.log(formData)
-        fn();
+    const onSubmit = handleSubmit(async (formData) => {
+        const formModel = {
+            name: formData.name,
+            maximumCapacity: formData.maximumCapacity,
+            numberOfSeats: formData.numberOfSeats,
+            spaceSize: formData.spaceSize
+        };
+        await mutate({ variables: { input: formModel } });
+        if (addData) fn();
         // mutate({ variables: { input: formData } })
     })
 
