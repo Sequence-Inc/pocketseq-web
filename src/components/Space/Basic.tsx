@@ -1,30 +1,43 @@
-import React from 'react'
-import { Button, Select, TextField } from '@element'
-import useAddSpace, { useBasicSpace } from '@hooks/useAddSpace'
-import { Controller } from 'react-hook-form'
-import { useEffect } from 'react'
-import axios from 'axios'
-import { normalizeZipCodeInput } from 'src/utils/normalizeZipCode'
+import React from "react";
+import { Button, Select, TextField } from "@element";
+import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
+import { Controller } from "react-hook-form";
+import { useEffect } from "react";
+import axios from "axios";
+import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
 const Basic = ({ activeStep, setActiveStep, steps }) => {
     const { spaceTypes } = useAddSpace();
-    const { prefectures, loading, zipCode, setZipCode, cache, setCache, register, control, errors, watch, setValue, onSubmit } = useBasicSpace(handleNext);
+    const {
+        prefectures,
+        loading,
+        zipCode,
+        setZipCode,
+        cache,
+        setCache,
+        register,
+        control,
+        errors,
+        watch,
+        setValue,
+        onSubmit,
+    } = useBasicSpace(handleNext);
 
     const hasPrevious: boolean = activeStep > 0 && true;
-    const hasNext: boolean = activeStep < steps.length - 1 && true
+    const hasNext: boolean = activeStep < steps.length - 1 && true;
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
-    }
+    };
 
     function handleNext(): void {
         if (hasNext) setActiveStep(activeStep + 1);
     }
 
     useEffect(() => {
+        console.log("YO!", watch().zipCode);
         const api = async () => {
-            // debugger;
-            const newZipCode = normalizeZipCodeInput(watch().zipcode, zipCode);
+            const newZipCode = normalizeZipCodeInput(watch().zipCode, zipCode);
             setZipCode(newZipCode);
             if (newZipCode?.length === 3) {
                 const prefix = newZipCode;
@@ -32,26 +45,34 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                 if (!cache[prefix]) {
                     // fetch data
                     console.log("fetching data from web for", prefix);
-                    const { data } = await axios.get("https://yubinbango.github.io/yubinbango-data/data/" + prefix + ".js");
+                    const { data } = await axios.get(
+                        "https://yubinbango.github.io/yubinbango-data/data/" +
+                            prefix +
+                            ".js"
+                    );
                     const newCache = { ...cache };
-                    newCache[prefix] = JSON.parse(data.trim().slice(7, data.length - 3));
+                    newCache[prefix] = JSON.parse(
+                        data.trim().slice(7, data.length - 3)
+                    );
                     setCache(newCache);
                 }
-            } else if (newZipCode?.length === 8) {
-                const tempCode: string[] = newZipCode.split("-");
-                const prefix: string = tempCode[0];
-                const fullZipCode = tempCode.join("");
-                const address = cache[prefix] ? cache[prefix][fullZipCode] : null;
+            } else if (newZipCode?.length === 7) {
+                const tempCode: string = newZipCode.substring(0, 3);
+                const prefix: string = tempCode;
+                const fullZipCode = newZipCode;
+                const address = cache[prefix]
+                    ? cache[prefix][fullZipCode]
+                    : null;
                 if (address) {
-                    setValue('prefecture', address[0], { shouldDirty: true })
-                    setValue('city', address[1])
-                    setValue('addressLine1', address[2])
-                    setValue('addressLine2', address[3])
+                    setValue("prefecture", address[0], { shouldDirty: true });
+                    setValue("city", address[1]);
+                    setValue("addressLine1", address[2]);
+                    setValue("addressLine2", address[3]);
                 }
             }
-        }
-        watch().zipcode && api();
-    }, [watch().zipcode])
+        };
+        watch().zipCode && api();
+    }, [watch().zipCode]);
 
     return (
         <form onSubmit={onSubmit}>
@@ -60,9 +81,8 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                     Space
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    This information will be displayed
-                    publicly so be sure to add valid
-                    information.
+                    This information will be displayed publicly so be sure to
+                    add valid information.
                 </p>
             </div>
             <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
@@ -79,12 +99,78 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                         singleRow
                     />
                 </div>
+
+                <div className="">
+                    <TextField
+                        {...register("maximumCapacity", {
+                            required: true,
+                            setValueAs: (val) => parseInt(val),
+                        })}
+                        label="Maximum Capacity"
+                        error={errors.maximumCapacity && true}
+                        errorMessage="Maximum Capacity is required"
+                        type="number"
+                        disabled={loading}
+                        singleRow
+                    />
+                </div>
+
+                <div className="">
+                    <TextField
+                        {...register("numberOfSeats", {
+                            required: true,
+                            setValueAs: (val) => parseInt(val),
+                        })}
+                        label="Number Of seats"
+                        error={errors.numberOfSeats && true}
+                        errorMessage="Number Of seats is required"
+                        type="number"
+                        disabled={loading}
+                        singleRow
+                    />
+                </div>
+
+                <div className="">
+                    <TextField
+                        {...register("spaceSize", {
+                            required: true,
+                            setValueAs: (val) => parseFloat(val),
+                        })}
+                        label="Space Size"
+                        error={errors.spaceSize && true}
+                        errorMessage="Space Size is required"
+                        type="number"
+                        disabled={loading}
+                        singleRow
+                    />
+                </div>
+
+                <div className="">
+                    <Controller
+                        name="spaceTypes"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <Select
+                                {...field}
+                                label="Space Types"
+                                options={spaceTypes?.availableSpaceTypes || []}
+                                error={errors.spaceTypes && true}
+                                errorMessage="Space Types is required"
+                                labelKey="title"
+                                valueKey="id"
+                                disabled={loading}
+                                singleRow
+                            />
+                        )}
+                    />
+                </div>
                 <div className="">
                     <TextField
                         {...register("zipCode", {
                             required: true,
                         })}
-                        label="Zip Code"
+                        label="Postal code"
                         error={errors.zipCode && true}
                         errorMessage="Zip Code is required"
                         disabled={loading}
@@ -100,11 +186,13 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                             <Select
                                 {...field}
                                 label="Prefecture"
-                                options={prefectures?.availablePrefectures || []}
-                                error={
-                                    errors?.prefecture && true
+                                options={
+                                    prefectures?.availablePrefectures || []
                                 }
-                                onChange={(event) => { field.onChange(event) }}
+                                error={errors?.prefecture && true}
+                                onChange={(event) => {
+                                    field.onChange(event);
+                                }}
                                 errorMessage="Prefecture is required"
                                 labelKey="name"
                                 valueKey="id"
@@ -150,85 +238,13 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                         singleRow
                     />
                 </div>
-                <div className="">
-                    <TextField
-                        {...register("maximumCapacity", {
-                            required: true,
-                            setValueAs: (val) =>
-                                parseInt(val),
-                        })}
-                        label="Maximum Capacity"
-                        error={
-                            errors.maximumCapacity && true
-                        }
-                        errorMessage="Maximum Capacity is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <TextField
-                        {...register("numberOfSeats", {
-                            required: true,
-                            setValueAs: (val) =>
-                                parseInt(val),
-                        })}
-                        label="Number Of seats"
-                        error={errors.numberOfSeats && true}
-                        errorMessage="Number Of seats is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <TextField
-                        {...register("spaceSize", {
-                            required: true,
-                            setValueAs: (val) =>
-                                parseFloat(val),
-                        })}
-                        label="Space Size"
-                        error={errors.spaceSize && true}
-                        errorMessage="Space Size is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <Controller
-                        name="spaceTypes"
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                label="Space Types"
-                                options={
-                                    spaceTypes?.availableSpaceTypes ||
-                                    []
-                                }
-                                error={
-                                    errors.spaceTypes &&
-                                    true
-                                }
-                                errorMessage="Space Types is required"
-                                labelKey="title"
-                                valueKey="id"
-                                disabled={loading}
-                                singleRow
-                            />
-                        )}
-                    />
-                </div>
             </div>
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                <Button className="w-auto px-8" disabled={loading || !hasPrevious} onClick={handlePrevious}>
+                <Button
+                    className="w-auto px-8"
+                    disabled={loading || !hasPrevious}
+                    onClick={handlePrevious}
+                >
                     previous
                 </Button>
                 <Button
@@ -241,7 +257,7 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                 </Button>
             </div>
         </form>
-    )
-}
+    );
+};
 
-export default Basic
+export default Basic;

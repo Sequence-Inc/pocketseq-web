@@ -1,13 +1,10 @@
 import { gql } from "@apollo/client";
+import { PREFECTURE } from "./core.queries";
 
 export const GET_PREFECTURES = gql`
     query GetPrefectures {
-        prefectures {
-            id
-            name
-            nameKana
-            nameRomaji
-            available
+        availablePrefectures {
+           ${PREFECTURE}
         }
     }
 `;

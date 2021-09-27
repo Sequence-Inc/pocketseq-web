@@ -1,5 +1,11 @@
 import { gql } from "@apollo/client";
-import { PHOTO, PREFECTURE } from "./core.queries";
+import {
+    ADDRESS,
+    PHOTO,
+    PREFECTURE,
+    SPACE_PRICE_PLAN,
+    STATION,
+} from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
     query GetAllSpaceTypes {
@@ -19,6 +25,7 @@ export const GET_AVAILABLE_SPACE_TYPES = gql`
         availableSpaceTypes {
             id
             title
+            description
         }
     }
 `;
@@ -29,7 +36,9 @@ export const GET_AVAILABLE_SPACE_TYPES_WITHPHOTO = gql`
             id
             title
             description
-            photo
+            photo {
+                ${PHOTO}
+            }
             available
         }
     }
@@ -89,30 +98,33 @@ export const MY_SPACES = gql`
             needApproval
             nearestStations {
                 station {
-                    id
-                    stationName
-                    stationZipCode
-                    address
-                    longitude
-                    latitude
+                    ${STATION}
                 }
                 via
                 time
             }
             spacePricePlans {
-                id
-                planTitle
-                hourlyPrice
-                dailyPrice
-                maintenanceFee
-                lastMinuteDiscount
-                cooldownTime
+                ${SPACE_PRICE_PLAN}
             }
             spaceTypes {
                 id
                 title
                 description
+                photo {
+                    ${PHOTO}
+                }
+            }
+            address {
+                ${ADDRESS}
             }
         }
     }
 `;
+
+export const GET_STATION_BY_ID = gql`
+    query staionByID($id: IntID!){
+        stationByID(id: $id){
+            ${STATION}
+        }
+    }
+    `;
