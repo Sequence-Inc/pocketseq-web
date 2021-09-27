@@ -68,30 +68,34 @@ const HostDashboard = ({ currentSession }) => {
     }
 
     const dashboardContent = (host) => {
-        <>
-            <h2 className="text-lg font-medium leading-6 text-gray-900">
-                Overview
-            </h2>
-            <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
-                {/* Card */}
-                <DashboardCard
-                    Icon={ScaleIcon}
-                    name="Available Balance"
-                    amount={`${host.account?.balance?.available[0].currency?.toUpperCase()} ${
-                        host.account?.balance?.available[0].amount
-                    }`}
-                    url={host.account?.url}
-                />
-                <DashboardCard
-                    Icon={ScaleIcon}
-                    name="Pending Balance"
-                    amount={`${host.account?.balance?.pending[0].currency?.toUpperCase()} ${
-                        host.account?.balance?.pending[0].amount
-                    }`}
-                    url={host.account?.url}
-                />
-            </div>
-        </>;
+        if (!host) return null;
+
+        return (
+            <>
+                <h2 className="text-lg font-medium leading-6 text-gray-900">
+                    Overview
+                </h2>
+                <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
+                    {/* Card */}
+                    <DashboardCard
+                        Icon={ScaleIcon}
+                        name="Available Balance"
+                        amount={`${host?.account?.balance?.available[0].currency?.toUpperCase()} ${
+                            host?.account?.balance?.available[0].amount
+                        }`}
+                        url={host?.account?.url}
+                    />
+                    <DashboardCard
+                        Icon={ScaleIcon}
+                        name="Pending Balance"
+                        amount={`${host?.account?.balance?.pending[0].currency?.toUpperCase()} ${
+                            host?.account?.balance?.pending[0].amount
+                        }`}
+                        url={host?.account?.url}
+                    />
+                </div>
+            </>
+        );
     };
 
     if (hasStripeAccount && hasPhotoId) {
