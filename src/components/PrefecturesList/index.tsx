@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
 import { LibraryIcon } from "@heroicons/react/outline";
-import { PREFECTURES } from "src/apollo/queries/admin.queries";
+import { AVAILABLE_PREFECTURES, PREFECTURES } from "src/apollo/queries/admin.queries";
 import { classNames } from "src/utils";
 import { NetworkHelper } from "@comp";
 
@@ -41,7 +41,7 @@ const headers = [
 ];
 
 export const PrefecturesList = () => {
-    const { data, loading, error } = useQuery(PREFECTURES);
+    const { data, loading, error } = useQuery(AVAILABLE_PREFECTURES);
 
     console.log(data, loading, error);
 

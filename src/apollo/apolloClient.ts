@@ -1,9 +1,19 @@
 import { ApolloClient, HttpLink } from "@apollo/client";
 import { clientTypeDefs, cache } from "./cache";
-import getConfig from "next/config";
 import { getSession } from "src/utils/auth";
+import { onError } from "@apollo/client/link/error";
 
-const { publicRunTimeConfig } = getConfig();
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+    console.log("ERRORO_______________")
+    if (graphQLErrors)
+
+        graphQLErrors.forEach(({ message, locations, path }) =>
+            console.log(
+                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            )
+        );
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+});
 
 const token = getSession()?.accessToken
     ? `Bearer ${getSession()?.accessToken}`
