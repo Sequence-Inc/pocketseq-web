@@ -1,29 +1,43 @@
-import { useCallback, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { Switch } from "@headlessui/react";
 import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
-import { useQuery } from "@apollo/client";
-import { Tab } from "@headlessui/react";
-import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
-import { Button, Container, Table } from "@element";
-import { AccountsList } from "@comp";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { Container } from "@element";
 
+import {
+    UPDATE_PREFECTURE,
+    PREFECTURES,
+    PREFECTURE_BY_ID,
+} from "src/apollo/queries/admin.queries";
+import { NetworkHelper } from "@comp";
 import { classNames } from "src/utils";
-import { useRouter } from "next/router";
 
-import { cache } from "../../../../../src/apollo/cache";
-import { PREFECTURE_BY_ID } from "src/apollo/queries/admin.queries";
-
-function AdminDashboard({ prefectureId }) {
+function PrefectureUpdate({ prefectureId }) {
     // get data for accountID this
-    console.log("get data for prefectureId", prefectureId);
-    const prefecture = cache.readQuery({
-        query: PREFECTURE_BY_ID,
+    const { data, loading, error } = useQuery(PREFECTURE_BY_ID, {
         variables: { id: prefectureId },
     });
 
-    console.log(prefectureId);
+    if (loading) return <NetworkHelper type="loading" />;
+    if (error) return <NetworkHelper type="error" />;
+
+    const { id, name, nameKana, nameRomaji, available } = data.prefectureById;
+    const [
+        updatePrefecture,
+        { data: enableData, loading: enableLoading, error: enableError },
+    ] = useMutation(UPDATE_PREFECTURE, {
+        refetchQueries: [{ query: PREFECTURES }],
+    });
+
+    const toggleAvailable = (newAvailability) => {
+        updatePrefecture({
+            variables: {
+                input: { id: parseInt(id, 10), available: newAvailability },
+            },
+        });
+    };
 
     return (
         <HostLayout>
@@ -42,14 +56,14 @@ function AdminDashboard({ prefectureId }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Edit Prefecture
+                                            Edit Prefecture - {name}
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                                        <dt className="sr-only">
-                                            [Prefecture Name]
-                                        </dt>
-                                    </dl>
+                                    <div className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                        <div className="flex items-center mt-3 text-sm font-medium text-gray-500 sm:mr-6 sm:mt-0">
+                                            {nameRomaji}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -57,13 +71,80 @@ function AdminDashboard({ prefectureId }) {
                 </Container>
             </div>
             <Container className="py-4 sm:py-6 lg:py-8">
-                <div className="w-full sm:px-0"></div>
+                <div className="w-full sm:px-0">
+                    <div className="bg-white shadow overflow-hidden sm:rounded-lg mt-2">
+                        <div className="px-4 py-5 sm:p-0">
+                            <dl className="sm:divide-y sm:divide-gray-200">
+                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500">
+                                        Name
+                                    </dt>
+                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                        {name}
+                                    </dd>
+                                </div>
+                            </dl>
+                            <dl className="sm:divide-y sm:divide-gray-200">
+                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500">
+                                        Name Kana
+                                    </dt>
+                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                        {nameKana}
+                                    </dd>
+                                </div>
+                            </dl>
+                            <dl className="sm:divide-y sm:divide-gray-200">
+                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500">
+                                        Name Romaji
+                                    </dt>
+                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                        {nameRomaji}
+                                    </dd>
+                                </div>
+                            </dl>
+                            <dl className="sm:divide-y sm:divide-gray-200">
+                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500">
+                                        Available on Timebook
+                                    </dt>
+                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                        <Switch
+                                            checked={available}
+                                            onChange={toggleAvailable}
+                                            className={classNames(
+                                                available
+                                                    ? "bg-primary"
+                                                    : "bg-gray-200",
+                                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                            )}
+                                        >
+                                            <span className="sr-only">
+                                                Available
+                                            </span>
+                                            <span
+                                                aria-hidden="true"
+                                                className={classNames(
+                                                    available
+                                                        ? "translate-x-5"
+                                                        : "translate-x-0",
+                                                    "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                                )}
+                                            />
+                                        </Switch>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
             </Container>
         </HostLayout>
     );
 }
 
-export default withAuth(AdminDashboard);
+export default withAuth(PrefectureUpdate);
 
 export async function getServerSideProps(context) {
     const { prefectureId } = context.query;

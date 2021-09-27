@@ -1,5 +1,9 @@
 import { InMemoryCache, makeVar, gql } from "@apollo/client";
-import { getInitialProfile, getInitialSession, isAuthenticated } from "../utils/auth";
+import {
+    getInitialProfile,
+    getInitialSession,
+    isAuthenticated,
+} from "../utils/auth";
 interface IIsLoggedIn {
     session: boolean;
     role: string;
@@ -72,9 +76,9 @@ export const clientTypeDefs = gql`
 
     union Profile = UserProfile | CompanyProfile
 
-    type CurrentSession { 
+    type CurrentSession {
         accessToken: String!
-        refreshToken: String! 
+        refreshToken: String!
     }
 
     type LoginResult {
@@ -83,10 +87,14 @@ export const clientTypeDefs = gql`
         refreshToken: String!
         roles: [String]!
     }
+
     extend type Query {
         isLoggedIn: Boolean!
         currentSession: CurrentSession!
         profile: Profile!
+        accountById(id: ID!): Profile! @client
+        prefectureById(id: ID!): Prefecture! @client
+        spaceTypeById(id: ID!): SpaceType! @client
     }
 `;
 
@@ -109,10 +117,34 @@ export const cache: InMemoryCache = new InMemoryCache({
                         return profile();
                     },
                 },
-                launches: {
-                    // ...field policy definitions...
+                accountById: {
+                    read: (existing, { toReference, args }) => {
+                        const accountRef = toReference(
+                            `UserProfile:${args.id}`
+                        );
+                        return existing ?? accountRef;
+                    },
+                },
+                prefectureById: {
+                    read: (existing, { toReference, args }) => {
+                        const prefectureRef = toReference(
+                            `Prefecture:${args.id}`
+                        );
+                        return existing ?? prefectureRef;
+                    },
+                },
+                spaceTypeById: {
+                    read: (existing, { toReference, args }) => {
+                        const spaceTypeRef = toReference(
+                            `SpaceTypeObject:${args.id}`
+                        );
+                        return existing ?? spaceTypeRef;
+                    },
                 },
             },
         },
+    },
+    possibleTypes: {
+        Profile: ["UserProfile", "CompanyProfile"],
     },
 });
