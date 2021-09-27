@@ -8,11 +8,13 @@ import {
 } from "src/apollo/queries/station.queries";
 import { PlusIcon } from "@heroicons/react/outline";
 
-export const NearestStation = ({ station }) => {
+export const NearestStation = ({ onAdd }) => {
     const [loading, setLoading] = useState(false);
     const [prefectureId, setPrefectureId] = useState(null);
     const [lineId, setLineId] = useState(null);
     const [stationId, setStationId] = useState(null);
+    const [via, setVia] = useState("");
+    const [time, setTime] = useState(0);
 
     const {
         data: prefectureData,
@@ -34,20 +36,24 @@ export const NearestStation = ({ station }) => {
         { data: stationsData, loading: stationsLoading, error: stationsError },
     ] = useLazyQuery(GET_STATIONS);
 
-    if (station) {
-        const { id, prefectureId, trainLineId, stationId, via, time } = station;
-    }
-
-    const getAllData = async ({ prefectureId, trainLindId, stationId }) => {
-        try {
-            // get
-        } catch (error) {
-            console.log(error.message);
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // Check everything
+        if (
+            !prefectureId ||
+            !lineId ||
+            !stationId ||
+            via.trim() === "" ||
+            !time
+        ) {
+            alert("All information are required.");
+            return;
         }
+        onAdd({ prefectureId, lineId, stationId, via, time });
     };
 
     return (
-        <>
+        <div className="space-y-4">
             <div>
                 <Select
                     label="県"
@@ -117,7 +123,8 @@ export const NearestStation = ({ station }) => {
                     // error={}
                     errorMessage="Via is required"
                     disabled={loading}
-                    onChange={(event) => console.log(event)}
+                    onChange={(event) => setVia(event.target.value)}
+                    value={via}
                     singleRow
                 />
             </div>
@@ -130,7 +137,8 @@ export const NearestStation = ({ station }) => {
                     errorMessage="Time is required"
                     type="number"
                     disabled={loading}
-                    onChange={(event) => console.log(event)}
+                    onChange={(event) => setTime(event.target.value)}
+                    value={time}
                     singleRow
                 />
             </div>
@@ -139,12 +147,15 @@ export const NearestStation = ({ station }) => {
                     &nbsp;
                 </div>
                 <div className="relative rounded-md sm:w-96">
-                    <button className="w-full flex items-center justify-center text-sm font-medium border border-transparent shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:ring-gray-300 rounded p-2">
+                    <button
+                        onClick={handleSubmit}
+                        className="w-full flex items-center justify-center text-sm font-medium border border-transparent shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:ring-gray-300 rounded p-2"
+                    >
                         <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
-                        Add
+                        Add station
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 };

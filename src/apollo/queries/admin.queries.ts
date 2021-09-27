@@ -38,11 +38,7 @@ export const PREFECTURES = gql`
 export const AVAILABLE_PREFECTURES = gql`
     query AvailablePrefectures {
         availablePrefectures {
-            id
-            name
-            nameKana
-            nameRomaji
-            available
+            ${PREFECTURE}
         }
     }
 `;

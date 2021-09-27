@@ -176,3 +176,23 @@ export const SPACE_TYPE = `
         ${PHOTO}
     }
 `;
+
+export const SPACE_PRICE_PLAN = `
+    id
+    title
+    type
+    amount
+    duration
+    maintenanceFee
+    lastMinuteDiscount
+    cooldownTime
+`;
+
+export const STATION = `
+    id
+    stationName
+    stationZipCode
+    address
+    longitude
+    latitude
+`;
