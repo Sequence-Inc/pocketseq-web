@@ -3,8 +3,9 @@ import { NearestStation } from "@comp";
 import { useQuery } from "@apollo/client";
 import { GET_STATION_BY_ID } from "src/apollo/queries/space.queries";
 import { TrashIcon } from "@heroicons/react/outline";
+import { Button } from "@element";
 
-const NearestStationStep = () => {
+const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
     const [stations, setStations] = useState([]);
 
     const addStation = ({ stationId, via, time }) => {
@@ -14,9 +15,29 @@ const NearestStationStep = () => {
         const newStations = stations.filter((station, idx) => idx !== index);
         setStations(newStations);
     };
+
+    const hasPrevious: boolean = activeStep > 0 && true;
+    const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const handlePrevious = (): void => {
+        if (hasPrevious) setActiveStep(activeStep - 1);
+    };
+
+    function handleNext(): void {
+        if (hasNext) setActiveStep(activeStep + 1);
+    }
+
     return (
-        <div className="py-4">
-            <div className="w-full sm:w-96 sm:ml-64 mb-5 mt-3 space-y-3">
+        <div className="">
+            <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                    Nearest stations
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                    Please select all the nearest stataions to the space venue.
+                </p>
+            </div>
+            <div className="w-full sm:w-96 sm:ml-64 my-6 space-y-3">
                 <h3 className="font-medium text-gray-700">Stations</h3>
                 {stations.map((station, index) => {
                     return (
@@ -29,7 +50,21 @@ const NearestStationStep = () => {
                     );
                 })}
             </div>
-            <NearestStation onAdd={addStation} />
+            <div className="mb-8">
+                <NearestStation onAdd={addStation} />
+            </div>
+            <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6 border-t border-gray-100">
+                <Button
+                    className="w-auto px-8"
+                    disabled={!hasPrevious}
+                    onClick={handlePrevious}
+                >
+                    Previous
+                </Button>
+                <Button type="submit" variant="primary" className="w-auto px-8">
+                    {hasNext ? "Next" : "Save"}
+                </Button>
+            </div>
         </div>
     );
 };

@@ -6,10 +6,11 @@ import { Stepper, Container } from "@element";
 import Basic from "src/components/Space/Basic";
 import NearestStationStep from "src/components/Space/NearestStationStep";
 import PricingPlan from "src/components/Space/PricingPlan";
+import SpacePhotos from "src/components/Space/SpacePhotos";
 
 const AddNewSpace = () => {
     const { loading, confirmRef } = useAddSpace();
-    const [activeStep, setActiveStep] = useState(1);
+    const [activeStep, setActiveStep] = useState(2);
     const steps = [
         "Basic",
         "Nearest Stations",
@@ -35,9 +36,23 @@ const AddNewSpace = () => {
                             setActiveStep={setActiveStep}
                         />
                     ) : activeStep === 1 ? (
-                        <NearestStationStep />
+                        <NearestStationStep
+                            activeStep={activeStep}
+                            setActiveStep={setActiveStep}
+                            steps={steps}
+                        />
+                    ) : activeStep === 2 ? (
+                        <SpacePhotos
+                            activeStep={activeStep}
+                            setActiveStep={setActiveStep}
+                            steps={steps}
+                        />
                     ) : activeStep === 3 ? (
-                        <PricingPlan />
+                        <PricingPlan
+                            activeStep={activeStep}
+                            setActiveStep={setActiveStep}
+                            steps={steps}
+                        />
                     ) : (
                         <p>ok</p>
                     )}

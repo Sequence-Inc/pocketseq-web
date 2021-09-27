@@ -105,8 +105,8 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                             className={({ active }) =>
                                                 classNames(
                                                     active
-                                                        ? "text-white bg-indigo-600"
-                                                        : "text-gray-900",
+                                                        ? "text-white bg-primary"
+                                                        : "text-gray-700",
                                                     "cursor-default select-none relative py-2 pl-3 pr-9"
                                                 )
                                             }
@@ -136,7 +136,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                                             className={classNames(
                                                                 active
                                                                     ? "text-white"
-                                                                    : "text-indigo-600",
+                                                                    : "text-primary",
                                                                 "absolute inset-y-0 right-0 flex items-center pr-4"
                                                             )}
                                                         >
