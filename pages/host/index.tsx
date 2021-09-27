@@ -97,9 +97,9 @@ const HostDashboard = ({ currentSession }) => {
                 <title>Host - Timebook</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
-                <div className="w-full sm:w-1/2 mx-auto h-full">
-                    {content}
+                <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
                     <PhotoIdUploader />
+                    {content}
                 </div>
             </Container>
         </HostLayout>

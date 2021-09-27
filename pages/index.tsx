@@ -182,7 +182,6 @@ const features = [
 
 export default function Home() {
     const { data: spaceTypes } = useQuery(GET_ALL_SPACE_TYPES);
-    console.log(spaceTypes);
     return (
         <div className="bg-gray-50">
             <Head>
@@ -260,7 +259,7 @@ export default function Home() {
                                         key={spaceType.id}
                                         title={spaceType.title}
                                         subTitle={spaceType.description}
-                                        photo={spaceType.photo}
+                                        photo={spaceType.photo?.medium?.url}
                                     />
                                 )
                             )}

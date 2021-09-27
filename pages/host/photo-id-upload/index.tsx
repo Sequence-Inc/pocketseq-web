@@ -18,8 +18,7 @@ const PhotoIdUpload = () => {
     const [photo, setPhoto] = useState(null);
 
     const handleSelectPhoto = (event) => {
-        const file = event.nativeEvent.target.files[0];
-        console.log(file);
+        const file = event.target.files[0];
         setPhoto(file);
     };
 
@@ -100,8 +99,11 @@ const PhotoIdUpload = () => {
     if (photo) {
         content = (
             <div className="px-6 pt-5 pb-6 rounded-md overflow-hidden">
-                <div className="mb-4">
-                    <img src={URL.createObjectURL(photo)} />
+                <div className="mb-4 text-center">
+                    <img
+                        src={URL.createObjectURL(photo)}
+                        className="max-h-60 object-contain"
+                    />
                 </div>
                 <div className="text-right">
                     <button
@@ -130,7 +132,7 @@ const PhotoIdUpload = () => {
             </Head>
 
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8">
-                <div className="overflow-hidden bg-white rounded-lg shadow">
+                <div className="overflow-hidden bg-white rounded-lg shadow sm:max-w-lg mx-auto">
                     <div className="p-5">
                         <div className="flex items-start">
                             <div className="flex-shrink-0">
@@ -150,7 +152,9 @@ const PhotoIdUpload = () => {
                                     reviewed by our staff and approved in timely
                                     manner.
                                 </p>
-                                <div className="mt-8 mr-8">{content}</div>
+                                <div className="mt-8 mr-8 sm:max-w-md">
+                                    {content}
+                                </div>
                             </div>
                         </div>
                     </div>

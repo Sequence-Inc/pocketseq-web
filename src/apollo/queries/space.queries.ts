@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { PHOTO, PREFECTURE } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
     query GetAllSpaceTypes {
@@ -6,6 +7,9 @@ export const GET_ALL_SPACE_TYPES = gql`
             id
             title
             description
+            photo {
+                ${PHOTO}
+            }
         }
     }
 `;
@@ -13,10 +17,7 @@ export const GET_ALL_SPACE_TYPES = gql`
 export const GET_PREFECTURE = gql`
     query Prefectures {
         prefectures {
-            id
-            name
-            nameKana
-            nameRomaji
+            ${PREFECTURE}
         }
     }
 `;
