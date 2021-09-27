@@ -100,7 +100,7 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                             <Select
                                 {...field}
                                 label="Prefecture"
-                                options={prefectures?.prefectures || []}
+                                options={prefectures?.availablePrefectures || []}
                                 error={
                                     errors?.prefecture && true
                                 }
@@ -210,7 +210,7 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                                 {...field}
                                 label="Space Types"
                                 options={
-                                    spaceTypes?.allSpaceTypes ||
+                                    spaceTypes?.availableSpaceTypes ||
                                     []
                                 }
                                 error={
