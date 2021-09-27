@@ -9,7 +9,7 @@ import Head from "next/head";
 import { Container } from "@element";
 import { useMutation } from "@apollo/client";
 import withAuth from "src/utils/withAuth";
-import { ADD_PHOTO_ID } from "../../../src/apollo/queries/host.queries";
+import { ADD_PHOTO_ID, HOST } from "../../../src/apollo/queries/host.queries";
 import axios from "axios";
 import router from "next/router";
 
@@ -45,6 +45,7 @@ const PhotoIdUpload = () => {
             console.log(err);
             setLoading(false);
         },
+        refetchQueries: [{ query: HOST }],
     });
 
     const handleUpload = () => {
