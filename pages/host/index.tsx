@@ -29,14 +29,16 @@ interface IHost {
     id: string;
     name: string;
     stripeAccountId: string;
-    photoId: string;
+    photoId: any;
     account: IAccount;
 }
 
 const HostDashboard = ({ currentSession }) => {
     const { data, loading, error } = useQuery<{ host: IHost }>(HOST);
-    console.log("CurrentUser from WithAuth", currentSession);
+
     let content;
+    let hasStripeAccount = false;
+    let hasPhotoId = false;
 
     if (loading) {
         content = (
@@ -56,38 +58,64 @@ const HostDashboard = ({ currentSession }) => {
         );
     } else {
         if (data) {
-            if (!!data?.host?.account?.balance) {
-                content = (
-                    <>
-                        <h2 className="text-lg font-medium leading-6 text-gray-900">
-                            Overview
-                        </h2>
-                        <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
-                            {/* Card */}
-                            <DashboardCard
-                                Icon={ScaleIcon}
-                                name="Available Balance"
-                                amount={`${data?.host?.account?.balance.available[0].currency?.toUpperCase()} ${
-                                    data?.host?.account?.balance?.available[0]
-                                        .amount
-                                }`}
-                                url={data?.host?.account?.url}
-                            />
-                            <DashboardCard
-                                Icon={ScaleIcon}
-                                name="Pending Balance"
-                                amount={`${data?.host?.account?.balance.pending[0].currency?.toUpperCase()} ${
-                                    data?.host?.account?.balance.pending[0]
-                                        .amount
-                                }`}
-                                url={data?.host?.account?.url}
-                            />
-                        </div>
-                    </>
-                );
-            } else {
-                content = <AddStripe account={data.host.account} />;
+            if (data?.host?.account?.balance) {
+                hasStripeAccount = true;
             }
+            if (data?.host?.photoId?.large?.url) {
+                hasPhotoId = true;
+            }
+        }
+    }
+
+    const dashboardContent = (host) => {
+        <>
+            <h2 className="text-lg font-medium leading-6 text-gray-900">
+                Overview
+            </h2>
+            <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Card */}
+                <DashboardCard
+                    Icon={ScaleIcon}
+                    name="Available Balance"
+                    amount={`${host.account?.balance?.available[0].currency?.toUpperCase()} ${
+                        host.account?.balance?.available[0].amount
+                    }`}
+                    url={host.account?.url}
+                />
+                <DashboardCard
+                    Icon={ScaleIcon}
+                    name="Pending Balance"
+                    amount={`${host.account?.balance?.pending[0].currency?.toUpperCase()} ${
+                        host.account?.balance?.pending[0].amount
+                    }`}
+                    url={host.account?.url}
+                />
+            </div>
+        </>;
+    };
+
+    if (hasStripeAccount && hasPhotoId) {
+        content = dashboardContent(data.host);
+    } else {
+        if (!hasStripeAccount && !hasPhotoId) {
+            content = (
+                <>
+                    <PhotoIdUploader />
+                    <AddStripe account={data.host.account} />
+                </>
+            );
+        } else if (!hasStripeAccount) {
+            content = (
+                <>
+                    <AddStripe account={data.host.account} />
+                </>
+            );
+        } else {
+            content = (
+                <>
+                    <PhotoIdUploader />
+                </>
+            );
         }
     }
 
@@ -98,7 +126,6 @@ const HostDashboard = ({ currentSession }) => {
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                 <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
-                    <PhotoIdUploader />
                     {content}
                 </div>
             </Container>
