@@ -41,29 +41,46 @@ const HostDashboard = ({ currentSession }) => {
     let hasPhotoId = false;
 
     if (loading) {
-        content = (
-            <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
-            </div>
+        return (
+            <HostLayout>
+                <Head>
+                    <title>Host - Timebook</title>
+                </Head>
+                <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
+                    <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
+                        <div className="flex items-center justify-center h-content">
+                            <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
+                        </div>
+                    </div>
+                </Container>
+            </HostLayout>
         );
     }
 
     if (error) {
-        content = (
-            <div className="flex items-center justify-center h-1/4">
-                <h2 className="text-lg font-medium leading-6 text-gray-900">
-                    {error.message}
-                </h2>
-            </div>
+        return (
+            <HostLayout>
+                <Head>
+                    <title>Host - Timebook</title>
+                </Head>
+                <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
+                    <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
+                        <div className="flex items-center justify-center h-1/4">
+                            <h2 className="text-lg font-medium leading-6 text-gray-900">
+                                {error.message}
+                            </h2>
+                        </div>
+                    </div>
+                </Container>
+            </HostLayout>
         );
-    } else {
-        if (data) {
-            if (data?.host?.account?.balance) {
-                hasStripeAccount = true;
-            }
-            if (data?.host?.photoId?.large?.url) {
-                hasPhotoId = true;
-            }
+    }
+    if (data) {
+        if (data?.host?.account?.balance) {
+            hasStripeAccount = true;
+        }
+        if (data?.host?.photoId?.large?.url) {
+            hasPhotoId = true;
         }
     }
 
@@ -99,7 +116,7 @@ const HostDashboard = ({ currentSession }) => {
     };
 
     if (hasStripeAccount && hasPhotoId) {
-        content = dashboardContent(data.host);
+        content = dashboardContent(data?.host);
     } else {
         if (!hasStripeAccount && !hasPhotoId) {
             content = (
