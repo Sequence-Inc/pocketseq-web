@@ -51,7 +51,7 @@ export const NearestStation = ({ station }) => {
             <div>
                 <Select
                     label="県"
-                    options={prefectureData?.prefectures || []}
+                    options={prefectureData?.availablePrefectures || []}
                     // error={}
                     onChange={(selectedPrefectureId) => {
                         setPrefectureId(selectedPrefectureId);
