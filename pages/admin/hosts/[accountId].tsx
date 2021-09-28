@@ -1,32 +1,46 @@
 import { useCallback, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
-import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
+import { UsersIcon } from "@heroicons/react/outline";
 import { Button, Container, Table } from "@element";
-import { AccountsList } from "@comp";
+import { NetworkHelper } from "@comp";
+import {
+    BasicAccountInfo,
+    HostAccountInfo,
+} from "src/components/AccountDetails";
 
 import { classNames } from "src/utils";
-import { useRouter } from "next/router";
+import { ACCOUNT_BY_ID } from "src/apollo/queries/admin.queries";
 
-function AdminDashboard() {
-    const router = useRouter();
-    const { accountId } = router.query;
+function AdminDashboard({ accountId }) {
+    const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
+        variables: { accountId },
+        fetchPolicy: "cache-only",
+    });
+
+    if (loading) return <NetworkHelper type="loading" />;
+
+    if (error) return <NetworkHelper type="error" message={error.message} />;
+
+    const account = data.accountById;
+
+    if (account.length === 0) {
+        return <NetworkHelper type="no-data" />;
+    }
 
     // get data for accountID this
-    console.log("get data for accountID", accountId);
 
     let [tabs] = useState([
         {
-            title: "Basic information",
-            component: <>Basic information of {accountId}</>,
+            title: "Host information",
+            component: <HostAccountInfo account={account} />,
         },
         {
-            title: "Payment methods",
-            component: <>Payment methods of {accountId}</>,
+            title: "Kanrisha information",
+            component: <BasicAccountInfo account={account} />,
         },
         {
             title: "Bookings",
@@ -37,7 +51,7 @@ function AdminDashboard() {
     return (
         <HostLayout>
             <Head>
-                <title>Account - Timebook</title>
+                <title>Host account - Timebook</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -52,7 +66,7 @@ function AdminDashboard() {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Account
+                                            Host
                                         </h1>
                                     </div>
                                     <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -111,3 +125,8 @@ function AdminDashboard() {
 }
 
 export default withAuth(AdminDashboard);
+
+export async function getServerSideProps(context) {
+    const { accountId } = context.query;
+    return { props: { accountId } };
+}

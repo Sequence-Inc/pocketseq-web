@@ -7,7 +7,7 @@ import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
 import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
 import { Button, Container, Table } from "@element";
-import { AccountsList } from "@comp";
+import { HostsList } from "@comp";
 
 import { classNames } from "src/utils";
 
@@ -16,7 +16,7 @@ function AdminDashboard() {
         {
             title: "Approved",
             component: (
-                <AccountsList
+                <HostsList
                     filterOptions={{
                         roles: ["host"],
                         approved: true,
@@ -28,7 +28,7 @@ function AdminDashboard() {
         {
             title: "Unapproved",
             component: (
-                <AccountsList
+                <HostsList
                     filterOptions={{
                         roles: ["host"],
                         approved: false,
@@ -40,7 +40,7 @@ function AdminDashboard() {
         {
             title: "Suspended",
             component: (
-                <AccountsList
+                <HostsList
                     filterOptions={{
                         roles: ["host"],
                         suspended: true,

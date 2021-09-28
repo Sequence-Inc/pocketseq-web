@@ -42,7 +42,9 @@ const headers = [
 ];
 
 export const SpaceTypesList = () => {
-    const { data, loading, error, refetch } = useQuery(SPACE_TYPES);
+    const { data, loading, error, refetch } = useQuery(SPACE_TYPES, {
+        fetchPolicy: "network-only",
+    });
 
     if (loading) return <NetworkHelper type="loading" />;
 

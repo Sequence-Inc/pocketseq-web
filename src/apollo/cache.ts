@@ -120,7 +120,7 @@ export const cache: InMemoryCache = new InMemoryCache({
                 accountById: {
                     read: (existing, { toReference, args }) => {
                         const accountRef = toReference(
-                            `UserProfile:${args.id}`
+                            `UserProfile:${args.accountId}`
                         );
                         return existing ?? accountRef;
                     },

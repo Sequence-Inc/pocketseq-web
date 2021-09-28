@@ -21,7 +21,7 @@ import { BasicAccountInfo } from "src/components/AccountDetails";
 function AccountDetails({ accountId }) {
     // get data for accountID this
     const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
-        variables: { id: accountId },
+        variables: { accountId },
         fetchPolicy: "cache-only",
     });
 
@@ -37,7 +37,7 @@ function AccountDetails({ accountId }) {
 
     const tabs = [
         {
-            title: "Basic information",
+            title: "Host information",
             component: <BasicAccountInfo account={account} />,
         },
         {
