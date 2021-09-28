@@ -31,7 +31,7 @@ const keys = [
 
 const MySpace = () => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
-    const { data } = useQuery(MY_SPACES);
+    const { data } = useQuery(MY_SPACES, { fetchPolicy: "network-only" });
 
     const columnClassName = (key) => {
         if (key === "maximumCapacity") return "w-44";
@@ -60,7 +60,7 @@ const MySpace = () => {
                             {value.map((res: any) => (
                                 <span
                                     key={res.title}
-                                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+                                    className="inline-flex items-center px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full"
                                 >
                                     {res.title}
                                 </span>
