@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ADD_SPACE, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, ADD_SPACE_ADDRESS, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 
 interface IData {
@@ -116,17 +116,28 @@ export const useBasicSpace = (fn) => {
     const loading = false;
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const [mutate, { data: addData }] = useMutation(ADD_SPACE);
+    const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
 
     const onSubmit = handleSubmit(async (formData) => {
-        const formModel = {
+        const basicModel = {
             name: formData.name,
+            description: formData.description,
             maximumCapacity: formData.maximumCapacity,
             numberOfSeats: formData.numberOfSeats,
             spaceSize: formData.spaceSize
         };
-        await mutate({ variables: { input: formModel } });
-        if (addData) fn();
-        // mutate({ variables: { input: formData } })
+        const addressModel = {
+            postalCode: formData.zipCode,
+            prefectureId: formData.prefecture,
+            city: formData.city,
+            addressLine1: formData.addressLine1,
+            addressLine2: formData.addressLine2,
+            latitude: 0,
+            longitude: 0
+        };
+        const addSpacesData = await mutate({ variables: { input: basicModel } });
+        await mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } })
+        addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
     })
 
     return { zipCode, setZipCode, cache, setCache, register, control, errors, watch, setValue, onSubmit, loading, prefectures }

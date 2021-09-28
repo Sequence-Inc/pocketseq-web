@@ -7,10 +7,12 @@ import Basic from "src/components/Space/Basic";
 import NearestStationStep from "src/components/Space/NearestStationStep";
 import PricingPlan from "src/components/Space/PricingPlan";
 import SpacePhotos from "src/components/Space/SpacePhotos";
+import Preview from "src/components/Space/Preview";
 
 const AddNewSpace = () => {
     const { loading, confirmRef } = useAddSpace();
-    const [activeStep, setActiveStep] = useState(2);
+    const [spaceId, setSpaceId] = useState();
+    const [activeStep, setActiveStep] = useState(4);
     const steps = [
         "Basic",
         "Nearest Stations",
@@ -34,27 +36,36 @@ const AddNewSpace = () => {
                             steps={steps}
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
+                            setSpaceId={setSpaceId}
                         />
                     ) : activeStep === 1 ? (
                         <NearestStationStep
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
+                            spaceId={spaceId}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
+                            spaceId={spaceId}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
+                            spaceId={spaceId}
                         />
                     ) : (
-                        <p>ok</p>
+                        <Preview
+                            steps={steps}
+                            activeStep={activeStep}
+                            setActiveStep={setActiveStep}
+                            spaceId={spaceId}
+                        />
                     )}
                 </Stepper>
             </Container>

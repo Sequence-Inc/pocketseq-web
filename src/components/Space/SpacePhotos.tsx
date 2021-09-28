@@ -1,28 +1,13 @@
 import React, { useState } from "react";
-import { Button, Select, TextField } from "@element";
-import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
-import { Controller } from "react-hook-form";
-import { useEffect } from "react";
+import { Button } from "@element";
 import axios from "axios";
-import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
+import { useMutation } from "@apollo/client";
+import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 
-const SpacePhotos = ({ activeStep, setActiveStep, steps }) => {
+const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
     const [photos, setPhotos] = useState([]);
-    const { spaceTypes } = useAddSpace();
-    const {
-        prefectures,
-        loading,
-        zipCode,
-        setZipCode,
-        cache,
-        setCache,
-        register,
-        control,
-        errors,
-        watch,
-        setValue,
-        onSubmit,
-    } = useBasicSpace(handleNext);
+    const [loading, setLoading] = useState(false);
+    const [mutate] = useMutation(GET_UPLOAD_TOKEN);
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
@@ -44,10 +29,32 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps }) => {
         setPhotos(newPhotos);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         // get upload URL for all the photos
-        // map all the photos and URLS and create axios put request
-        // await Promise.all all the axios put requests
+        const imageInputs = photos.map(res => ({ mime: res.type }));
+        console.log(imageInputs, photos)
+        const { data, errors } = await mutate({ variables: { spaceId, imageInputs } })
+        if (errors) {
+            console.log("Errors", errors);
+            // alert(errors.message);
+            setLoading(false);
+            return;
+        }
+        if (data) {
+            debugger
+            const uploadedData = await Promise.all(data.addSpacePhotos.map((token, index) => {
+                const { url, mime } = token;
+                const options = {
+                    headers: {
+                        "Content-Type": mime,
+                    },
+                };
+                axios.put(url, photos[index], options);
+            }));
+            console.log(uploadedData)
+            // if(uploadedData)
+        }
     };
 
     return (
@@ -61,13 +68,13 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps }) => {
                     add valid information.
                 </p>
             </div>
-            <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6 max-w-lg mx-auto">
+            <div className="max-w-lg px-4 py-2 mx-auto space-y-4 sm:px-6 sm:py-6">
                 <SelectedPhotos photos={photos} deletePhoto={handleDelete} />
                 <h3>Select photos</h3>
                 <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div className="space-y-1 text-center">
                         <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
+                            className="w-12 h-12 mx-auto text-gray-400"
                             stroke="currentColor"
                             fill="none"
                             viewBox="0 0 48 48"
@@ -83,7 +90,7 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps }) => {
                         <div className="flex text-sm text-gray-600">
                             <label
                                 htmlFor="file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
+                                className="relative font-medium bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                             >
                                 <span>Upload a file</span>
                                 <input
@@ -142,11 +149,11 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                                     ? URL
                                     : webkitURL
                                 ).createObjectURL(photo)}
-                                className="w-36 h-36 rounded-lg object-cover"
+                                className="object-cover rounded-lg w-36 h-36"
                             />
                             <button
                                 onClick={() => deletePhoto(index)}
-                                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary bg-opacity-75 text-white px-4 py-2 rounded-lg text-sm hover:bg-opacity-90 opacity-50 hover:opacity-100"
+                                className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
                             >
                                 Remove
                             </button>

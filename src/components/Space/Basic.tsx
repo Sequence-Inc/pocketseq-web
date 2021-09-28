@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
-const Basic = ({ activeStep, setActiveStep, steps }) => {
+const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -30,8 +30,9 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
         if (hasPrevious) setActiveStep(activeStep - 1);
     };
 
-    function handleNext(): void {
+    function handleNext(id): void {
         if (hasNext) setActiveStep(activeStep + 1);
+        setSpaceId(id);
     }
 
     useEffect(() => {
@@ -47,8 +48,8 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                            prefix +
-                            ".js"
+                        prefix +
+                        ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -99,7 +100,18 @@ const Basic = ({ activeStep, setActiveStep, steps }) => {
                         singleRow
                     />
                 </div>
-
+                <div className="">
+                    <TextField
+                        {...register("description", {
+                            required: true,
+                        })}
+                        label="Description"
+                        error={errors.description && true}
+                        errorMessage="Description is required"
+                        disabled={loading}
+                        singleRow
+                    />
+                </div>
                 <div className="">
                     <TextField
                         {...register("maximumCapacity", {

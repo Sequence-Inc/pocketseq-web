@@ -10,7 +10,7 @@ import Head from "next/head";
 import { Button, Container, Table } from "@element";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
-import { MY_SPACES } from "src/apollo/queries/space.queries";
+import { GET_ALL_SPACE_TYPES, MY_SPACES } from "src/apollo/queries/space.queries";
 import { useEffect } from "react";
 import { PencilAltIcon } from "@heroicons/react/outline";
 
@@ -60,7 +60,7 @@ const MySpace = () => {
                             {value.map((res: any) => (
                                 <span
                                     key={res.title}
-                                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+                                    className="inline-flex items-center px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full"
                                 >
                                     {res.title}
                                 </span>

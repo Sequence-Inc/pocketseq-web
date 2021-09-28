@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { NearestStation } from "@comp";
-import { useQuery } from "@apollo/client";
-import { GET_STATION_BY_ID } from "src/apollo/queries/space.queries";
+import { useMutation, useQuery } from "@apollo/client";
+import { ADD_NEAREST_STATION, GET_STATION_BY_ID } from "src/apollo/queries/space.queries";
 import { TrashIcon } from "@heroicons/react/outline";
 import { Button } from "@element";
 
-const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
+const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
     const [stations, setStations] = useState([]);
+    const [mutate] = useMutation(ADD_NEAREST_STATION);
 
     const addStation = ({ stationId, via, time }) => {
-        setStations([...stations, { stationId, via, time }]);
+        setStations([...stations, { stationId, via, time: parseInt(time) }]);
     };
     const removeStation = (index) => {
         const newStations = stations.filter((station, idx) => idx !== index);
@@ -27,6 +28,12 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
         if (hasNext) setActiveStep(activeStep + 1);
     }
 
+    const handleStation = async () => {
+        const { data } = await mutate({ variables: { spaceId, stations } })
+        console.log(data)
+        if (data) handleNext();
+    }
+
     return (
         <div className="">
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
@@ -37,7 +44,7 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
                     Please select all the nearest stataions to the space venue.
                 </p>
             </div>
-            <div className="w-full sm:w-96 sm:ml-64 my-6 space-y-3">
+            <div className="w-full my-6 space-y-3 sm:w-96 sm:ml-64">
                 <h3 className="font-medium text-gray-700">Stations</h3>
                 {stations.map((station, index) => {
                     return (
@@ -53,7 +60,7 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
             <div className="mb-8">
                 <NearestStation onAdd={addStation} />
             </div>
-            <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6 border-t border-gray-100">
+            <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
                     disabled={!hasPrevious}
@@ -61,8 +68,12 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps }) => {
                 >
                     Previous
                 </Button>
-                <Button type="submit" variant="primary" className="w-auto px-8">
-                    {hasNext ? "Next" : "Save"}
+                <Button
+                    variant="primary"
+                    className="w-auto px-8"
+                    onClick={handleStation}
+                >
+                    Next
                 </Button>
             </div>
         </div>
@@ -85,7 +96,7 @@ const StationItem = ({ index, station, removeStation }) => {
     return (
         <div
             key={id}
-            className="flex items-center py-3 px-4 rounded-md bg-primary text-white"
+            className="flex items-center px-4 py-3 text-white rounded-md bg-primary"
         >
             <div className="flex-auto">
                 {stationName}駅から{via}

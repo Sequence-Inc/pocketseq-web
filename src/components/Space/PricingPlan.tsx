@@ -1,10 +1,14 @@
+import { useMutation } from "@apollo/client";
 import { Button, Select, TextField } from "@element";
 import { PlusIcon } from "@heroicons/react/outline";
 import { TrashIcon } from "@heroicons/react/solid";
 import React, { useState } from "react";
+import { ADD_PRICING_PLAN } from "src/apollo/queries/space.queries";
 
-const PricingPlan = ({ activeStep, setActiveStep, steps }) => {
+const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId }) => {
     const [pricePlans, setPricePlans] = useState([]);
+    const [mutate] = useMutation(ADD_PRICING_PLAN);
+    const id = "cku3zo566000009l78w6b1v07";
 
     const addPlan = (plan) => {
         setPricePlans([...pricePlans, plan]);
@@ -25,6 +29,12 @@ const PricingPlan = ({ activeStep, setActiveStep, steps }) => {
         if (hasNext) setActiveStep(activeStep + 1);
     }
 
+    const handlePricingPlan = async () => {
+        const { data } = await mutate({ variables: { spaceId: id, pricePlans } })
+        console.log(data)
+        if (data) handleNext();
+    }
+
     return (
         <div className="">
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
@@ -35,7 +45,7 @@ const PricingPlan = ({ activeStep, setActiveStep, steps }) => {
                     Please add the applicable pricing plan for your space.
                 </p>
             </div>
-            <div className="w-full sm:w-96 sm:ml-64 my-6 space-y-3">
+            <div className="w-full my-6 space-y-3 sm:w-96 sm:ml-64">
                 <h3 className="font-medium text-gray-700">Price Plans</h3>
                 {pricePlans.map((price, index) => {
                     return (
@@ -51,7 +61,7 @@ const PricingPlan = ({ activeStep, setActiveStep, steps }) => {
             <div className="mb-8">
                 <PricePlanForm addPlan={addPlan} />
             </div>
-            <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6 border-t border-gray-100">
+            <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
                     disabled={!hasPrevious}
@@ -59,8 +69,8 @@ const PricingPlan = ({ activeStep, setActiveStep, steps }) => {
                 >
                     Previous
                 </Button>
-                <Button type="submit" variant="primary" className="w-auto px-8">
-                    {hasNext ? "Next" : "Save"}
+                <Button variant="primary" className="w-auto px-8" onClick={handlePricingPlan}>
+                    Next
                 </Button>
             </div>
         </div>
@@ -83,7 +93,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
     return (
         <div
             key={index}
-            className="flex items-center py-3 px-4 rounded-md bg-primary text-white"
+            className="flex items-center px-4 py-3 text-white rounded-md bg-primary"
         >
             <div className="flex-auto">
                 {title} - ￥{amount}/{duration}
@@ -99,27 +109,27 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
 const PricePlanForm = ({ addPlan }) => {
     const [title, setTitle] = useState("");
     const [type, setType] = useState("HOURLY");
-    const [amount, setAmount] = useState(1000);
-    const [lastMinuteDiscount, setLastMinuteDiscount] = useState(100);
-    const [duration, setDuration] = useState(1);
-    const [cooldownTime, setCooldownTime] = useState(30);
-    const [maintenanceFee, setMaintenanceFee] = useState(300);
+    const [amount, setAmount] = useState<string>();
+    const [lastMinuteDiscount, setLastMinuteDiscount] = useState<string>();
+    const [duration, setDuration] = useState<string>();
+    const [cooldownTime, setCooldownTime] = useState<string>();
+    const [maintenanceFee, setMaintenanceFee] = useState<string>();
 
     const planTypes = [{ title: "HOURLY" }, { title: "DAILY" }];
 
     const handleSubmit = () => {
-        if (!title || !type || !amount || amount <= 0 || !duration) {
+        if (!title || !type || !amount || parseInt(amount) <= 0 || !duration) {
             alert("Please provide title, plan type, price and duration.");
             return;
         }
         addPlan({
             title,
             type,
-            amount,
-            lastMinuteDiscount,
-            duration,
-            cooldownTime,
-            maintenanceFee,
+            amount: parseFloat(amount),
+            lastMinuteDiscount: parseFloat(lastMinuteDiscount),
+            duration: parseFloat(duration),
+            cooldownTime: parseInt(cooldownTime),
+            maintenanceFee: parseFloat(maintenanceFee),
         });
     };
 
@@ -208,14 +218,14 @@ const PricePlanForm = ({ addPlan }) => {
                     onChange={(event) => setMaintenanceFee(event.target.value)}
                 />
             </div>
-            <div className="sm:space-x-4 flex-none sm:flex items-center">
+            <div className="items-center flex-none sm:space-x-4 sm:flex">
                 <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
                     &nbsp;
                 </div>
                 <div className="relative rounded-md sm:w-96">
                     <button
                         onClick={handleSubmit}
-                        className="w-full flex items-center justify-center text-sm font-medium border border-transparent shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:ring-gray-300 rounded p-2"
+                        className="flex items-center justify-center w-full p-2 text-sm font-medium text-gray-500 bg-gray-100 border border-transparent rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-gray-200 focus:ring-gray-300"
                     >
                         <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
                         Add station
