@@ -7,8 +7,8 @@ import { ADD_PRICING_PLAN } from "src/apollo/queries/space.queries";
 
 const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId }) => {
     const [pricePlans, setPricePlans] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(ADD_PRICING_PLAN);
-    const id = "cku3zo566000009l78w6b1v07";
 
     const addPlan = (plan) => {
         setPricePlans([...pricePlans, plan]);
@@ -30,7 +30,7 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId }) => {
     }
 
     const handlePricingPlan = async () => {
-        const { data } = await mutate({ variables: { spaceId: id, pricePlans } })
+        const { data } = await mutate({ variables: { spaceId, pricePlans } })
         console.log(data)
         if (data) handleNext();
     }
@@ -64,12 +64,12 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId }) => {
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
-                    disabled={!hasPrevious}
+                    disabled={!hasPrevious || loading}
                     onClick={handlePrevious}
                 >
                     Previous
                 </Button>
-                <Button variant="primary" className="w-auto px-8" onClick={handlePricingPlan}>
+                <Button variant="primary" className="w-auto px-8" onClick={handlePricingPlan} loading={loading}>
                     Next
                 </Button>
             </div>

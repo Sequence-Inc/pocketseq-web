@@ -10,7 +10,7 @@ import Head from "next/head";
 import { Button, Container, Table } from "@element";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_SPACE_TYPES, MY_SPACES } from "src/apollo/queries/space.queries";
+import { MY_SPACES } from "src/apollo/queries/space.queries";
 import { useEffect } from "react";
 import { PencilAltIcon } from "@heroicons/react/outline";
 
@@ -31,7 +31,7 @@ const keys = [
 
 const MySpace = () => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
-    const { data } = useQuery(MY_SPACES);
+    const { data } = useQuery(MY_SPACES, { fetchPolicy: "network-only" });
 
     const columnClassName = (key) => {
         if (key === "maximumCapacity") return "w-44";

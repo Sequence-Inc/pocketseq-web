@@ -113,12 +113,13 @@ export const useBasicSpace = (fn) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
-    const loading = false;
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
-    const [mutate, { data: addData }] = useMutation(ADD_SPACE);
+    const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true)
         const basicModel = {
             name: formData.name,
             description: formData.description,
@@ -138,6 +139,7 @@ export const useBasicSpace = (fn) => {
         const addSpacesData = await mutate({ variables: { input: basicModel } });
         await mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } })
         addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
+        setLoading(false)
     })
 
     return { zipCode, setZipCode, cache, setCache, register, control, errors, watch, setValue, onSubmit, loading, prefectures }

@@ -42,18 +42,20 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
             return;
         }
         if (data) {
-            debugger
-            const uploadedData = await Promise.all(data.addSpacePhotos.map((token, index) => {
-                const { url, mime } = token;
-                const options = {
-                    headers: {
-                        "Content-Type": mime,
-                    },
-                };
-                axios.put(url, photos[index], options);
-            }));
-            console.log(uploadedData)
-            // if(uploadedData)
+            try {
+                await Promise.all(data.addSpacePhotos.map((token, index) => {
+                    const { url, mime } = token;
+                    const options = {
+                        headers: {
+                            "Content-Type": mime,
+                        },
+                    };
+                    axios.put(url, photos[index], options);
+                }));
+                handleNext();
+            } catch (err) {
+                console.log(err)
+            }
         }
     };
 

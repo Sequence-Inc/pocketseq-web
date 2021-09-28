@@ -7,6 +7,7 @@ import { Button } from "@element";
 
 const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
     const [stations, setStations] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(ADD_NEAREST_STATION);
 
     const addStation = ({ stationId, via, time }) => {
@@ -63,7 +64,7 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
-                    disabled={!hasPrevious}
+                    disabled={!hasPrevious || loading}
                     onClick={handlePrevious}
                 >
                     Previous
@@ -72,6 +73,7 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
                     variant="primary"
                     className="w-auto px-8"
                     onClick={handleStation}
+                    loading={loading}
                 >
                     Next
                 </Button>

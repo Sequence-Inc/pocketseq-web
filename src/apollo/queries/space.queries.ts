@@ -98,28 +98,28 @@ export const MY_SPACES = gql`
             maximumCapacity
             numberOfSeats
             spaceSize
-            # needApproval
-            # nearestStations {
-            #     station {
-            #         ${STATION}
-            #     }
-            #     via
-            #     time
-            # }
-            # spacePricePlans {
-            #     ${SPACE_PRICE_PLAN}
-            # }
-            # spaceTypes {
-            #     id
-            #     title
-            #     description
-            #     photo {
-            #         ${PHOTO}
-            #     }
-            # }
-            # address {
-            #     ${ADDRESS}
-            # }
+            needApproval
+            nearestStations {
+                station {
+                    ${STATION}
+                }
+                via
+                time
+            }
+            spacePricePlans {
+                ${SPACE_PRICE_PLAN}
+            }
+            spaceTypes {
+                id
+                title
+                description
+                photo {
+                    ${PHOTO}
+                }
+            }
+            address {
+                ${ADDRESS}
+            }
         }
     }
 `;

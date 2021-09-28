@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import { GET_SPACE_BY_ID } from 'src/apollo/queries/space.queries';
 
 export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
-    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id: "cku3zo566000009l78w6b1v07" } });
+    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id: spaceId } });
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;

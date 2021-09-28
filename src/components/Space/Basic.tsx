@@ -36,7 +36,6 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
     }
 
     useEffect(() => {
-        console.log("YO!", watch().zipCode);
         const api = async () => {
             const newZipCode = normalizeZipCodeInput(watch().zipCode, zipCode);
             setZipCode(newZipCode);

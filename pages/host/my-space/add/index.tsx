@@ -12,7 +12,7 @@ import Preview from "src/components/Space/Preview";
 const AddNewSpace = () => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
-    const [activeStep, setActiveStep] = useState(4);
+    const [activeStep, setActiveStep] = useState(0);
     const steps = [
         "Basic",
         "Nearest Stations",
