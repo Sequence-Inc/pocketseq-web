@@ -143,6 +143,14 @@ export const ADD_SPACE_ADDRESS = gql`
     }
 `;
 
+export const UPDATE_TYPES_IN_SPACE = gql`
+    mutation UpdateTypesInSpace($input: UpdateTypesInSpaceInput!) {
+        updateTypesInSpace(input: $input) {
+            message
+            action
+        }
+    }
+`;
 
 export const ADD_NEAREST_STATION = gql`
     mutation AddNearestStations($spaceId: ID!
