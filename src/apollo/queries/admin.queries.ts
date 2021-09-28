@@ -52,8 +52,8 @@ export const PREFECTURE_BY_ID = gql`
 `;
 
 export const ACCOUNT_BY_ID = gql`
-    query accountById($id: ID!) {
-        accountById(id: $id) {
+    query accountById($accountId: ID!) {
+        accountById(accountId: $accountId) {
             ${USER_ACCOUNT}
             ${COMPANY_ACCOUNT}
         }
@@ -102,6 +102,14 @@ export const UPDATE_SPACE_TYPE_WITH_PHOTO = gql`
         }
         updateSpaceTypePhoto(input: $photoInput){
             ${IMAGE_UPLOAD_RESULT}
+        }
+    }
+`;
+
+export const APPROVE_ACCOUNT = gql`
+    mutation approveAccount($accountId: ID!){
+        approveAccount(accountId: $accountId){
+            ${RESULT}
         }
     }
 `;

@@ -11,14 +11,14 @@ const RecordsPerPage = 20;
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
     {
-        name: "名前",
+        name: "ホスト名",
         key: "name",
         headerClass: "text-left",
         cellClass: "text-left",
     },
     {
-        name: "フリガナ",
-        key: "nameKana",
+        name: "管理者",
+        key: "kanriSha",
         headerClass: "text-left",
         cellClass: "text-left",
     },
@@ -29,10 +29,10 @@ const headers = [
         cellClass: "text-left",
     },
     {
-        name: "Role",
-        key: "roles",
-        headerClass: "text-center",
-        cellClass: "text-center",
+        name: "Status",
+        key: "approved",
+        headerClass: "text-left",
+        cellClass: "text-left",
     },
     {
         name: "Action",
@@ -42,7 +42,7 @@ const headers = [
     },
 ];
 
-export const AccountsList = ({ filterOptions }) => {
+export const HostsList = ({ filterOptions }) => {
     const [page, setPage] = useState(0);
 
     const { approved, suspended, profileTypes, roles } = filterOptions;
@@ -54,8 +54,6 @@ export const AccountsList = ({ filterOptions }) => {
         },
         fetchPolicy: "network-only",
     });
-
-    console.log(data, loading, error);
 
     if (loading) return <NetworkHelper type="loading" />;
 
@@ -69,8 +67,8 @@ export const AccountsList = ({ filterOptions }) => {
     const normalizedForm = data.allAccounts.map((account) => {
         const newAccountData = { ...account };
         if (account.__typename === "UserProfile") {
-            newAccountData.name = `${account.firstName} ${account.lastName}`;
-            newAccountData.nameKana = `${account.firstNameKana} ${account.lastNameKana}`;
+            newAccountData.name = account.host?.name;
+            newAccountData.kanriSha = `${account.firstName} ${account.lastName}`;
         }
         return newAccountData;
     });
@@ -91,35 +89,33 @@ export const AccountsList = ({ filterOptions }) => {
                     {data[key]}
                 </div>
             );
-        } else if (key === "roles") {
-            const { roles } = data;
-            return (
-                <div className="text-center">
-                    {roles.map((role, idx) => {
-                        let roleClass;
-                        if (role === "user") {
-                            roleClass = "bg-green-500";
-                        } else if (role === "host") {
-                            roleClass = "bg-yellow-500";
-                        } else if (role === "admin") {
-                            roleClass = "bg-red-600";
-                        }
-                        return (
-                            <span
-                                key={idx}
-                                className={classNames(
-                                    `bg-gray-400 text-white px-3 py-1 mx-1 rounded-full text-xs`,
-                                    roleClass
-                                )}
-                            >
-                                {role.toUpperCase()}
-                            </span>
-                        );
-                    })}
-                </div>
-            );
+        } else if (key === "approved") {
+            const { approved } = data;
+            if (approved === true) {
+                return (
+                    <span
+                        className={classNames(
+                            ` text-white px-3 py-1 rounded-full text-xs`,
+                            `bg-green-500`
+                        )}
+                    >
+                        APPROVED
+                    </span>
+                );
+            } else {
+                return (
+                    <span
+                        className={classNames(
+                            ` text-white px-3 py-1 rounded-full text-xs`,
+                            `bg-gray-400`
+                        )}
+                    >
+                        UNAAPPROVED
+                    </span>
+                );
+            }
         } else if (key === "action") {
-            return <Link href={`accounts/${data.id}`}>Detail</Link>;
+            return <Link href={`hosts/${data.id}`}>Detail</Link>;
         } else {
             return data[key];
         }

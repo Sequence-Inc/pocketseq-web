@@ -74,24 +74,10 @@ export const HOST = `
     name
     approved
     photoId {
-        id
-        mime
-        thumbnail {
-            ${IMAGE}
-        }
-        medium {
-            ${IMAGE}
-        }
+        ${PHOTO}
     }
     profilePhoto {
-        id
-        mime
-        thumbnail {
-            ${IMAGE}
-        }
-        medium {
-            ${IMAGE}
-        }
+        ${PHOTO}
     }
     stripeAccountId
     account {
@@ -105,6 +91,7 @@ export const HOST = `
 export const USER_ACCOUNT = `
     ...on UserProfile {
         id
+        accountId
         firstName
         lastName
         firstNameKana
@@ -132,6 +119,7 @@ export const USER_ACCOUNT = `
 export const COMPANY_ACCOUNT = `
     ...on CompanyProfile {
         id
+        accountId
         name
         nameKana
         roles
