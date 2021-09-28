@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ADD_SPACE, ADD_SPACE_ADDRESS, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, ADD_SPACE_ADDRESS, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES, UPDATE_TYPES_IN_SPACE } from 'src/apollo/queries/space.queries';
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 
 interface IData {
@@ -116,6 +116,7 @@ export const useBasicSpace = (fn) => {
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
+    const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
     const [loading, setLoading] = useState(false);
 
     const onSubmit = handleSubmit(async (formData) => {
@@ -137,7 +138,10 @@ export const useBasicSpace = (fn) => {
             longitude: 0
         };
         const addSpacesData = await mutate({ variables: { input: basicModel } });
-        await mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } })
+        await Promise.all([
+            mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } }),
+            mutateSpaceTypes({ variables: { input: { spaceId: addSpacesData.data.addSpace.spaceId, spaceTypeIds: [formData.spaceTypes] } } })
+        ]);
         addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
         setLoading(false)
     })

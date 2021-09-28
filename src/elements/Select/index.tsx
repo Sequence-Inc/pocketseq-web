@@ -77,7 +77,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                     "focus:outline-none focus:ring-1 sm:text-sm"
                                 )}
                             >
-                                <span className="block truncate">
+                                <span key={value} className="block truncate">
                                     {getSelectedLabel()}
                                 </span>
                                 <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
