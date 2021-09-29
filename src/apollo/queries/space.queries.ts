@@ -26,6 +26,9 @@ export const GET_AVAILABLE_SPACE_TYPES = gql`
             id
             title
             description
+            photo {
+                ${PHOTO}
+            }
         }
     }
 `;
