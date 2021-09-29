@@ -5,6 +5,7 @@ import {
     CalendarIcon,
     CogIcon,
     UsersIcon,
+    MailIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
@@ -57,6 +58,12 @@ export const navigation = [
         roles: ["host"],
     },
     {
+        name: "Messages",
+        href: "#",
+        Icon: MailIcon,
+        roles: ["user", "host"],
+    },
+    {
         name: "Settings",
         href: "#",
         Icon: CogIcon,
@@ -66,6 +73,6 @@ export const navigation = [
         name: "Back to Timebook",
         href: "/",
         Icon: ArrowLeftIcon,
-        roles: ["user", "host"],
+        roles: ["user", "host", "admin"],
     },
 ];
