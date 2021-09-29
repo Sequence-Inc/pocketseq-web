@@ -135,7 +135,7 @@ const HostDashboard = ({ currentSession }) => {
     } else {
         if (!hasStripeAccount && !hasPhotoId) {
             content = (
-                <div className="sm:w-1/2 mx-auto">
+                <div className="sm:w-1/2 mx-auto space-y-4">
                     <PhotoIdUploader />
                     <AddStripe account={data.host.account} />
                 </div>
