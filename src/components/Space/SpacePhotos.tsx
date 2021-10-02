@@ -154,6 +154,7 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                                 className="object-cover rounded-lg w-36 h-36"
                             />
                             <button
+                                type="button"
                                 onClick={() => deletePhoto(index)}
                                 className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
                             >

@@ -90,6 +90,15 @@ export const ADD_SPACE = gql`
     }
 `;
 
+export const UPDATE_SPACE = gql`
+    mutation UpdateMySpace($input: UpdateMySpaceInput!) {
+        updateMySpace(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const MY_SPACES = gql`
     query MySpaces {
         mySpaces {
@@ -143,6 +152,16 @@ export const ADD_SPACE_ADDRESS = gql`
     }
 `;
 
+export const UPDATE_SPACE_ADDRESS = gql`
+    mutation UpdateSpaceAddress($spaceId: ID!
+    $address: UpdateAddressInput!) {
+        updateSpaceAddress(spaceId: $spaceId, address:$address) {
+            message
+            action
+        }
+    }
+`;
+
 export const UPDATE_TYPES_IN_SPACE = gql`
     mutation UpdateTypesInSpace($input: UpdateTypesInSpaceInput!) {
         updateTypesInSpace(input: $input) {
@@ -190,12 +209,19 @@ export const GET_SPACE_BY_ID = gql`
         spaceById(id: $id) {
                 id
                 name
+                description
                 maximumCapacity
                 numberOfSeats
                 spaceSize
+                spaceTypes {
+                    id
+                    title
+                }
                 address {
+                    id
                     postalCode
                     prefecture {
+                        id
                         name
                     }
                     city
@@ -212,6 +238,7 @@ export const GET_SPACE_BY_ID = gql`
                     via
                 }
                 spacePricePlans {
+                    id
                     title
                     type
                     amount

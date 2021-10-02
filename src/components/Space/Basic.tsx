@@ -6,7 +6,15 @@ import { useEffect } from "react";
 import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
-const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
+interface IBasicSpace {
+    activeStep: any;
+    setActiveStep: any;
+    steps: any;
+    setSpaceId: any;
+    initialValue?: any
+}
+
+const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: IBasicSpace) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -21,7 +29,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
         watch,
         setValue,
         onSubmit,
-    } = useBasicSpace(handleNext);
+    } = useBasicSpace(handleNext, initialValue);
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
@@ -75,7 +83,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
     }, [watch().zipCode]);
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>{console.log(watch())}
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                     Space
@@ -161,6 +169,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
                         name="spaceTypes"
                         control={control}
                         rules={{ required: true }}
+                        defaultValue={initialValue?.spaceTypes}
                         render={({ field }) => (
                             <Select
                                 {...field}
@@ -193,6 +202,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
                         name={`prefecture`}
                         control={control}
                         rules={{ required: true }}
+                        defaultValue={initialValue?.address?.Prefecture?.id}
                         render={({ field }) => (
                             <Select
                                 {...field}
@@ -218,8 +228,9 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
                         {...register("city", {
                             required: true,
                         })}
+                        defaultValue={initialValue?.address?.city}
                         label="City"
-                        error={errors.zipCode && true}
+                        error={errors.city && true}
                         errorMessage="City is required"
                         disabled={loading}
                         singleRow
@@ -230,6 +241,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
                         {...register("addressLine1", {
                             required: true,
                         })}
+                        defaultValue={initialValue?.address?.addressLine1}
                         label="Address Line 1"
                         error={errors.zipCode && true}
                         errorMessage="Address Line 1 is required"
@@ -242,6 +254,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
                         {...register("addressLine2", {
                             required: true,
                         })}
+                        defaultValue={initialValue?.address?.addressLine2}
                         label="Address Line 2"
                         error={errors.zipCode && true}
                         errorMessage="Address Line 2 is required"
@@ -253,8 +266,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId }) => {
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
-                    disabled={loading || !hasPrevious}
-                    onClick={handlePrevious}
+                    disabled={true}
                 >
                     previous
                 </Button>

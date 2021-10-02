@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ADD_SPACE, ADD_SPACE_ADDRESS, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES, UPDATE_TYPES_IN_SPACE } from 'src/apollo/queries/space.queries';
+import { ADD_SPACE, ADD_SPACE_ADDRESS, GET_AVAILABLE_SPACE_TYPES, GET_LINES_BY_PREFECTURE, GET_STATIONS_BY_LINE, MY_SPACES, UPDATE_SPACE, UPDATE_SPACE_ADDRESS, UPDATE_TYPES_IN_SPACE } from 'src/apollo/queries/space.queries';
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 
 interface IData {
@@ -109,7 +109,7 @@ const useAddSpace = () => {
 
 export default useAddSpace;
 
-export const useBasicSpace = (fn) => {
+export const useBasicSpace = (fn, initialValue) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
@@ -117,7 +117,27 @@ export const useBasicSpace = (fn) => {
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
     const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
+    // update api
+    const [updateSpace] = useMutation(UPDATE_SPACE);
+    const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
+
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (initialValue) {
+            setValue('name', initialValue?.name)
+            setValue('description', initialValue?.description)
+            setValue('maximumCapacity', initialValue?.maximumCapacity)
+            setValue('numberOfSeats', initialValue?.numberOfSeats)
+            setValue('spaceSize', initialValue?.spaceSize)
+            setValue('spaceTypes', initialValue?.spaceTypes?.id)
+            setValue('zipCode', initialValue?.address?.postalCode)
+            setValue('prefecture', initialValue?.address?.prefecture?.id)
+            setValue('city', initialValue?.address?.city)
+            setValue('addressLine1', initialValue?.address?.addressLine1)
+            setValue('addressLine2', initialValue?.address?.addressLine2)
+        }
+    }, [initialValue])
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true)
@@ -137,12 +157,21 @@ export const useBasicSpace = (fn) => {
             latitude: 0,
             longitude: 0
         };
-        const addSpacesData = await mutate({ variables: { input: basicModel } });
-        await Promise.all([
-            mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } }),
-            mutateSpaceTypes({ variables: { input: { spaceId: addSpacesData.data.addSpace.spaceId, spaceTypeIds: [formData.spaceTypes] } } })
-        ]);
-        addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
+        if (initialValue) {
+            const updateSpacesData = await updateSpace({ variables: { input: { ...basicModel, id: initialValue.id } } });
+            await Promise.all([
+                updateSpaceAddress({ variables: { spaceId: initialValue.id, address: { ...addressModel, id: initialValue.address?.id } } }),
+                // mutateSpaceTypes({ variables: { input: { spaceId: initialValue.spaceTypes?.id, spaceTypeIds: [formData.spaceTypes] } } })
+            ]);
+            alert("successfully updated!!")
+        } else {
+            const addSpacesData = await mutate({ variables: { input: basicModel } });
+            await Promise.all([
+                mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } }),
+                mutateSpaceTypes({ variables: { input: { spaceId: addSpacesData.data.addSpace.spaceId, spaceTypeIds: [formData.spaceTypes] } } })
+            ]);
+            addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
+        }
         setLoading(false)
     })
 

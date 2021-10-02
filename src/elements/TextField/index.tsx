@@ -15,6 +15,7 @@ interface TextFieldProps {
     tabIndex?: number;
     onBlur?: any;
     onChange: any;
+    defaultValue?: string | number;
     value?: string | number;
     step?: string;
     singleRow?: boolean;

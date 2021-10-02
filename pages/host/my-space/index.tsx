@@ -13,6 +13,7 @@ import { useQuery } from "@apollo/client";
 import { MY_SPACES } from "src/apollo/queries/space.queries";
 import { useEffect } from "react";
 import { PencilAltIcon } from "@heroicons/react/outline";
+import router from "next/router";
 
 interface IColumns {
     Header: string;
@@ -79,9 +80,7 @@ const MySpace = () => {
                     <button
                         className="flex mx-auto focus:outline-none"
                         onClick={() => {
-                            console.log(row.original.id);
-                            // singleCardRef.current.open(row.original.id);
-                            // fetch(`api/Members/markThisMemberBusy/${id}/${true}`);
+                            router.push(`/host/my-space/edit/${row.original.id}`)
                         }}
                     >
                         <PencilAltIcon className="w-5 h-5 text-gray-400" />

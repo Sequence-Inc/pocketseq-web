@@ -1,9 +1,10 @@
 import { CheckIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 
-export default function Step({ steps, activeStep, setActiveStep }) {
+export default function Step({ steps, activeStep, setActiveStep, isEdit }) {
 
   const isCompleted = (currentIndex: number): boolean => {
+    if (isEdit && !isCurrent(currentIndex)) return true
     if (!steps || !activeStep) return false;
     return currentIndex < activeStep;
   }
@@ -13,7 +14,11 @@ export default function Step({ steps, activeStep, setActiveStep }) {
   }
 
   const changeStep = (currentIndex: number) => {
-    isCompleted(currentIndex - 1) && setActiveStep(currentIndex - 1)
+    if (isEdit) {
+      setActiveStep(currentIndex)
+    } else {
+      isCompleted(currentIndex) && setActiveStep(currentIndex)
+    }
   }
 
   return (
