@@ -78,7 +78,7 @@ const useAddSpace = () => {
     });
     const [mutateTrainLines, { data: trainLines }] = useLazyQuery(GET_LINES_BY_PREFECTURE);
     const [mutateStationId, { data: stationId }] = useLazyQuery(GET_STATIONS_BY_LINE);
-    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_AVAILABLE_SPACE_TYPES);
+    const { data: spaceTypes } = useQuery<IAllSpaceType>(GET_AVAILABLE_SPACE_TYPES, { fetchPolicy: "network-only" });
     const confirmRef = useRef(null);
 
     const [mutate, { loading }] = useMutation(ADD_SPACE, {

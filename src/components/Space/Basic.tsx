@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Select, TextField } from "@element";
+import { Button, Select, TextArea, TextField } from "@element";
 import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
@@ -108,7 +108,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     />
                 </div>
                 <div className="">
-                    <TextField
+                    <TextArea
                         {...register("description", {
                             required: true,
                         })}
@@ -116,6 +116,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         error={errors.description && true}
                         errorMessage="Description is required"
                         disabled={loading}
+                        rows={4}
                         singleRow
                     />
                 </div>
@@ -263,7 +264,16 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     />
                 </div>
             </div>
-            <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+            {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-auto px-8"
+                    loading={loading}
+                >
+                    Save
+                </Button>
+            </div> : <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
                     disabled={true}
@@ -276,9 +286,9 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     className="w-auto px-8"
                     loading={loading}
                 >
-                    {hasNext ? "Next" : "Save"}
+                    Next
                 </Button>
-            </div>
+            </div>}
         </form>
     );
 };

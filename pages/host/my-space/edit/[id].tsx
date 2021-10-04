@@ -7,7 +7,6 @@ import Basic from "src/components/Space/Basic";
 import NearestStationStep from "src/components/Space/NearestStationStep";
 import PricingPlan from "src/components/Space/PricingPlan";
 import SpacePhotos from "src/components/Space/SpacePhotos";
-import Preview from "src/components/Space/Preview";
 import { useQuery } from "@apollo/client";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { useRouter } from "next/router";
@@ -18,13 +17,12 @@ const EditNewSpace = () => {
     const [activeStep, setActiveStep] = useState(0);
     const router = useRouter();
     const { id } = router.query;
-    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id }, fetchPolicy: "network-only" })
+    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id }, fetchPolicy: "network-only", skip: !id })
     const steps = [
         "Basic",
         "Nearest Stations",
         "Photos",
-        "Pricing Plans",
-        "Preview",
+        "Pricing Plans"
     ];
 
     return (
@@ -51,6 +49,7 @@ const EditNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={data?.spaceById?.nearestStations}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
@@ -58,6 +57,7 @@ const EditNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={{ img: null }}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
@@ -65,15 +65,9 @@ const EditNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={data?.spaceById?.spacePricePlans}
                         />
-                    ) : (
-                        <Preview
-                            steps={steps}
-                            activeStep={activeStep}
-                            setActiveStep={setActiveStep}
-                            spaceId={spaceId}
-                        />
-                    )}
+                    ) : null}
                 </Stepper>
             </Container>
         </HostLayout>

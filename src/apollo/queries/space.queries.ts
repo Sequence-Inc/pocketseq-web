@@ -134,7 +134,7 @@ export const MY_SPACES = gql`
 `;
 
 export const GET_STATION_BY_ID = gql`
-    query staionByID($id: IntID!){
+    query StaionByID($id: IntID!){
         stationByID(id: $id){
             ${STATION}
         }
@@ -181,6 +181,15 @@ export const ADD_NEAREST_STATION = gql`
     }
 `;
 
+export const REMOVE_NEAREST_STATION = gql`
+    mutation RemoveNearestStation($input: RemoveNearestStationInput!) {
+        removeNearestStation(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const GET_UPLOAD_TOKEN = gql`
     mutation AddSpacePhotos($spaceId: ID!
         $imageInputs: [ImageUploadInput]!) {
@@ -197,6 +206,15 @@ export const ADD_PRICING_PLAN = gql`
     mutation AddSpacePricePlans($spaceId: ID!
         $pricePlans: [AddSpacePricePlanInput]!) {
         addSpacePricePlans(spaceId: $spaceId, pricePlans:$pricePlans) {
+            message
+            action
+        }
+    }
+`;
+
+export const REMOVE_PRICING_PLAN = gql`
+    mutation RemoveSpacePricePlan($input: RemoveSpacePricePlanInput!) {
+        removeSpacePricePlan(input: $input) {
             message
             action
         }
@@ -232,6 +250,7 @@ export const GET_SPACE_BY_ID = gql`
                 }
                 nearestStations {
                     station {
+                        id
                         stationName
                     }
                     time
@@ -242,6 +261,10 @@ export const GET_SPACE_BY_ID = gql`
                     title
                     type
                     amount
+                    duration
+                    cooldownTime
+                    lastMinuteDiscount
+                    maintenanceFee
                 }
         }
     }

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 
-const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
+const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
@@ -115,21 +115,21 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
                 </div>
             </div>
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
+                {initialValue ? null : <><Button
                     className="w-auto px-8"
                     disabled={loading || !hasPrevious}
                     onClick={handlePrevious}
                 >
                     previous
                 </Button>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    {hasNext ? "Next" : "Save"}
-                </Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-auto px-8"
+                        loading={loading}
+                    >
+                        {hasNext ? "Next" : "Save"}
+                    </Button></>}
             </div>
         </form>
     );
