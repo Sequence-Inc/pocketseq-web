@@ -93,6 +93,15 @@ export const ADD_SPACE = gql`
     }
 `;
 
+export const UPDATE_SPACE = gql`
+    mutation UpdateMySpace($input: UpdateMySpaceInput!) {
+        updateMySpace(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const MY_SPACES = gql`
     query MySpaces {
         mySpaces {
@@ -128,7 +137,7 @@ export const MY_SPACES = gql`
 `;
 
 export const GET_STATION_BY_ID = gql`
-    query staionByID($id: IntID!){
+    query StaionByID($id: IntID!){
         stationByID(id: $id){
             ${STATION}
         }
@@ -140,6 +149,16 @@ export const ADD_SPACE_ADDRESS = gql`
     mutation AddSpaceAddress($spaceId: ID!
     $address: AddAddressInput!) {
         addSpaceAddress(spaceId: $spaceId, address:$address) {
+            message
+            action
+        }
+    }
+`;
+
+export const UPDATE_SPACE_ADDRESS = gql`
+    mutation UpdateSpaceAddress($spaceId: ID!
+    $address: UpdateAddressInput!) {
+        updateSpaceAddress(spaceId: $spaceId, address:$address) {
             message
             action
         }
@@ -159,6 +178,15 @@ export const ADD_NEAREST_STATION = gql`
     mutation AddNearestStations($spaceId: ID!
     $stations: [AddNearestStationInput]!) {
         addNearestStations(spaceId: $spaceId, stations:$stations) {
+            message
+            action
+        }
+    }
+`;
+
+export const REMOVE_NEAREST_STATION = gql`
+    mutation RemoveNearestStation($input: RemoveNearestStationInput!) {
+        removeNearestStation(input: $input) {
             message
             action
         }
@@ -187,18 +215,34 @@ export const ADD_PRICING_PLAN = gql`
     }
 `;
 
+export const REMOVE_PRICING_PLAN = gql`
+    mutation RemoveSpacePricePlan($input: RemoveSpacePricePlanInput!) {
+        removeSpacePricePlan(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 
 export const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
         spaceById(id: $id) {
                 id
                 name
+                description
                 maximumCapacity
                 numberOfSeats
                 spaceSize
+                spaceTypes {
+                    id
+                    title
+                }
                 address {
+                    id
                     postalCode
                     prefecture {
+                        id
                         name
                     }
                     city
@@ -209,15 +253,21 @@ export const GET_SPACE_BY_ID = gql`
                 }
                 nearestStations {
                     station {
+                        id
                         stationName
                     }
                     time
                     via
                 }
                 spacePricePlans {
+                    id
                     title
                     type
                     amount
+                    duration
+                    cooldownTime
+                    lastMinuteDiscount
+                    maintenanceFee
                 }
         }
     }

@@ -1,21 +1,67 @@
 import React, { useState } from "react";
 import { NearestStation } from "@comp";
 import { useMutation, useQuery } from "@apollo/client";
-import { ADD_NEAREST_STATION, GET_STATION_BY_ID } from "src/apollo/queries/space.queries";
-import { TrashIcon } from "@heroicons/react/outline";
+import { ADD_NEAREST_STATION, GET_STATION_BY_ID, REMOVE_NEAREST_STATION } from "src/apollo/queries/space.queries";
+import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { Button } from "@element";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { RefreshIcon } from "@heroicons/react/solid";
 
-const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
+const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [toggleForm, setToggleForm] = useState(false);
     const [mutate] = useMutation(ADD_NEAREST_STATION);
+    const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION);
+    const [activeStation, setActiveStation] = useState(-1);
+    const router = useRouter();
+    const { id } = router.query;
 
-    const addStation = ({ stationId, via, time }) => {
-        setStations([...stations, { stationId, via, time: parseInt(time) }]);
+    useEffect(() => {
+        if (initialValue) {
+            const newValue = initialValue.map(res => ({
+                stationId: res.station.id,
+                via: res.via,
+                time: res.time
+            }))
+            setStations(newValue)
+        }
+    }, [initialValue])
+
+    const handleStation = async () => {
+        if (stations.length > 0) handleNext();
+    }
+
+    const showForm = () => {
+        setToggleForm(true);
+    }
+
+    const closeForm = () => {
+        setToggleForm(false);
+    }
+
+    const addStation = async ({ stationId, via, time }) => {
+        const { data } = await mutate({ variables: { spaceId: initialValue ? id : spaceId, stations: [{ stationId, via, time: parseInt(time) }] } })
+        if (data) {
+            closeForm();
+            setStations([...stations, { stationId, via, time: parseInt(time) }]);
+        }
     };
-    const removeStation = (index) => {
-        const newStations = stations.filter((station, idx) => idx !== index);
-        setStations(newStations);
+    const removeStation = async (index, stationId) => {
+        setLoading(true);
+        setActiveStation(index);
+        try {
+            const { data } = await mutateRemoveStation({ variables: { input: { spaceId: initialValue ? id : spaceId, stationId } } })
+            if (data) {
+                const newStations = stations.filter((station, idx) => idx !== index);
+                setStations(newStations);
+            }
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setLoading(false);
+        }
     };
 
     const hasPrevious: boolean = activeStep > 0 && true;
@@ -27,12 +73,6 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
 
     function handleNext(): void {
         if (hasNext) setActiveStep(activeStep + 1);
-    }
-
-    const handleStation = async () => {
-        const { data } = await mutate({ variables: { spaceId, stations } })
-        console.log(data)
-        if (data) handleNext();
     }
 
     return (
@@ -54,29 +94,49 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
                             index={index}
                             station={station}
                             removeStation={removeStation}
+                            isLoading={loading && activeStation === index && true}
                         />
                     );
                 })}
             </div>
             <div className="mb-8">
-                <NearestStation onAdd={addStation} />
+                {stations.length < 0 ?
+                    <p className="text-sm text-center text-gray-800">
+                        No Nearest station added yet. Please in below button to add new station
+                    </p> : null}
+                {toggleForm && <NearestStation onAdd={addStation} closeForm={closeForm} />}
+                {toggleForm ? null :
+                    <div className="items-center flex-none sm:space-x-4 sm:flex">
+                        <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
+                            &nbsp;
+                        </div>
+                        <div className="relative rounded-md sm:w-96">
+                            <button
+                                onClick={showForm}
+                                className="flex items-center justify-center w-full p-2 text-sm font-medium text-gray-500 bg-gray-100 border border-transparent rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-gray-200 focus:ring-gray-300"
+                            >
+                                <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
+                                Add station
+                            </button>
+                        </div>
+                    </div>}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                <Button
+                {initialValue ? null : <><Button
                     className="w-auto px-8"
                     disabled={!hasPrevious || loading}
                     onClick={handlePrevious}
                 >
                     Previous
                 </Button>
-                <Button
-                    variant="primary"
-                    className="w-auto px-8"
-                    onClick={handleStation}
-                    loading={loading}
-                >
-                    Next
-                </Button>
+                    <Button
+                        variant="primary"
+                        className="w-auto px-8"
+                        onClick={handleStation}
+                        loading={loading}
+                    >
+                        Next
+                    </Button></>}
             </div>
         </div>
     );
@@ -84,11 +144,13 @@ const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId }) => {
 
 export default NearestStationStep;
 
-const StationItem = ({ index, station, removeStation }) => {
+const StationItem = ({ index, station, removeStation, isLoading }) => {
     const { stationId, via, time } = station;
 
     const { data, loading, error } = useQuery(GET_STATION_BY_ID, {
         variables: { id: parseInt(stationId, 10) },
+        skip: !stationId,
+        fetchPolicy: "network-only"
     });
 
     if (loading) return <div key={index}>Loading...</div>;
@@ -104,9 +166,13 @@ const StationItem = ({ index, station, removeStation }) => {
                 {stationName}駅から{via}
                 {time}分
             </div>
-            <button onClick={() => removeStation(index)}>
+            {isLoading ? <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                className="w-6 h-6 mr-3 text-green-200 animate-spin" viewBox="0 0 50 50">
+                <path fill="currentColor" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                </path>
+            </svg> : <button onClick={() => removeStation(index, stationId)}>
                 <TrashIcon className="w-6 h-6 text-green-200 hover:text-green-100" />
-            </button>
+            </button>}
         </div>
     );
 };

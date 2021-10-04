@@ -184,7 +184,7 @@ const features = [
 ];
 
 export default function Home() {
-    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES);
+    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, { fetchPolicy: "network-only" });
     return (
         <div className="bg-gray-50">
             <Head>
@@ -198,10 +198,10 @@ export default function Home() {
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
-                                <p className="mt-2 text-2xl text-primary tracking-tight sm:text-3xl">
+                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     TimeBookとは
                                 </p>
-                                <p className="mt-6 w-4/5 mx-auto text-xl text-gray-500 font-light">
+                                <p className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
                                 </p>
                                 <div className="mt-12">
@@ -211,17 +211,17 @@ export default function Home() {
                                                 key={feature.name}
                                                 className="pt-6"
                                             >
-                                                <div className="flow-root bg-white rounded-lg px-6 pb-8">
+                                                <div className="flow-root px-6 pb-8 bg-white rounded-lg">
                                                     <div className="-mt-6">
                                                         <div>
-                                                            <span className="inline-flex items-center justify-center p-3 bg-primary rounded-md shadow-lg">
+                                                            <span className="inline-flex items-center justify-center p-3 rounded-md shadow-lg bg-primary">
                                                                 <feature.icon
-                                                                    className="h-6 w-6 text-white"
+                                                                    className="w-6 h-6 text-white"
                                                                     aria-hidden="true"
                                                                 />
                                                             </span>
                                                         </div>
-                                                        <h3 className="mt-8 text-lg font-medium text-primary tracking-tight">
+                                                        <h3 className="mt-8 text-lg font-medium tracking-tight text-primary">
                                                             {feature.name}
                                                         </h3>
                                                         <p className="mt-5 text-base font-light text-gray-500">

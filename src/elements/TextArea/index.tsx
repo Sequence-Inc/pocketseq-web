@@ -2,10 +2,9 @@ import React from "react";
 import clsx from "clsx";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 
-interface TextFieldProps {
+interface TextAreaProps {
     label: string;
     placeholder?: string;
-    type?: string;
     id?: string;
     className?: string;
     error?: boolean;
@@ -19,9 +18,11 @@ interface TextFieldProps {
     value?: string | number;
     step?: string;
     singleRow?: boolean;
+    cols?: number;
+    rows?: number
 }
 
-const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
+const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     (props, ref) => {
         const { label, id, className, error, errorMessage, singleRow, ...rest } = props;
 
@@ -39,7 +40,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
                     {label}
                 </label>
                 <div className={clsx("relative rounded-md", singleRow ? 'sm:w-96' : '')}>
-                    <input
+                    <textarea
                         id={id}
                         ref={ref}
                         className={clsx(
@@ -71,10 +72,9 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     }
 );
 
-TextField.defaultProps = {
+TextArea.defaultProps = {
     label: "",
     placeholder: "",
-    type: "text",
     id: "",
     className: "",
     error: false,
@@ -82,4 +82,4 @@ TextField.defaultProps = {
     singleRow: false
 };
 
-export default TextField;
+export default TextArea;

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 
-const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
+const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
@@ -115,21 +115,21 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId }) => {
                 </div>
             </div>
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
+                {initialValue ? null : <><Button
                     className="w-auto px-8"
                     disabled={loading || !hasPrevious}
                     onClick={handlePrevious}
                 >
                     previous
                 </Button>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    {hasNext ? "Next" : "Save"}
-                </Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-auto px-8"
+                        loading={loading}
+                    >
+                        {hasNext ? "Next" : "Save"}
+                    </Button></>}
             </div>
         </form>
     );
@@ -154,6 +154,7 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                                 className="object-cover rounded-lg w-36 h-36"
                             />
                             <button
+                                type="button"
                                 onClick={() => deletePhoto(index)}
                                 className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
                             >

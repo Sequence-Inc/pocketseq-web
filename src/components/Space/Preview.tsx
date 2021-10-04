@@ -1,11 +1,12 @@
 import { PaperClipIcon } from '@heroicons/react/solid'
 import { Button } from "@element";
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import { GET_SPACE_BY_ID } from 'src/apollo/queries/space.queries';
 
 export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
-    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id: spaceId } });
+    const router = useRouter();
+    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id: spaceId ? spaceId : router.query.id } });
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
@@ -65,7 +66,7 @@ export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <ul role="list" className="border border-gray-200 divide-y divide-gray-200 rounded-md">
                                 {data?.spaceById?.nearestStations.map(station => (
-                                    <li className="py-3 pl-3 pr-4 text-sm">
+                                    <li key={station.station.stationName} className="py-3 pl-3 pr-4 text-sm">
                                         <div className="flex">
                                             <PaperClipIcon className="flex-shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
                                             <div>
@@ -84,7 +85,7 @@ export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <ul role="list" className="border border-gray-200 divide-y divide-gray-200 rounded-md">
                                 {data?.spaceById?.spacePricePlans.map(price => (
-                                    <li className="py-3 pl-3 pr-4 text-sm">
+                                    <li key={price.title} className="py-3 pl-3 pr-4 text-sm">
                                         <div className="flex">
                                             <PaperClipIcon className="flex-shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
                                             <div>
