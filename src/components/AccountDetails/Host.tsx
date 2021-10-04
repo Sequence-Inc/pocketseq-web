@@ -72,7 +72,7 @@ export const HostAccountInfo = ({ account }) => {
     let approveButton = null;
     let photoIdDialogContent = null;
     let photoIdVerifyContent = (
-        <div className="text-gray-500">(Photo ID not provided yet!)</div>
+        <div className="text-gray-500"> (Photo ID not provided yet!)</div>
     );
     if (!approved && photoId?.large?.url) {
         approveButton = (
@@ -101,6 +101,8 @@ export const HostAccountInfo = ({ account }) => {
                 (Verify Photo ID)
             </button>
         );
+    } else {
+        photoIdVerifyContent = null;
     }
 
     return (

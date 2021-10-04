@@ -24,7 +24,10 @@ import {
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_SPACE_TYPES, GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
+import {
+    GET_ALL_SPACE_TYPES,
+    GET_AVAILABLE_SPACE_TYPES,
+} from "src/apollo/queries/space.queries";
 
 export const itemGridData: IItemGrid[] = [
     {
