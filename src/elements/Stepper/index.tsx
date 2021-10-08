@@ -1,7 +1,15 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 // import Step from './Step';
 import Step from "./step1";
 import { Button } from "@element";
+
+interface IStepperProps {
+    steps: any[];
+    activeStep: number;
+    setActiveStep: Dispatch<SetStateAction<number>>;
+    isEdit?: boolean;
+    children: React.ReactChild;
+}
 
 const Stepper = ({
     steps,
@@ -9,8 +17,7 @@ const Stepper = ({
     setActiveStep,
     isEdit,
     children,
-    loading,
-}) => {
+}: IStepperProps) => {
     return (
         <div className="flex flex-col items-center w-full space-y-4">
             <Step

@@ -29,8 +29,6 @@ const AddNewSpace = () => {
                     steps={steps}
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
-                    loading={loading}
-                    isEdit={false}
                 >
                     {activeStep === 0 ? (
                         <Basic

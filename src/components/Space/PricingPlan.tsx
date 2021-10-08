@@ -5,8 +5,9 @@ import { TrashIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { ADD_PRICING_PLAN, REMOVE_PRICING_PLAN } from "src/apollo/queries/space.queries";
+import { IOtherSpacesProps } from "./NearestStationStep";
 
-const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
+const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
     const [pricePlans, setPricePlans] = useState([]);
     const [toggleForm, setToggleForm] = useState(false);
     const [loading, setLoading] = useState(false);
