@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { NearestStation } from "@comp";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_NEAREST_STATION, GET_STATION_BY_ID, REMOVE_NEAREST_STATION } from "src/apollo/queries/space.queries";
@@ -8,7 +8,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { RefreshIcon } from "@heroicons/react/solid";
 
-const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
+export interface IOtherSpacesProps {
+    activeStep: number;
+    setActiveStep: Dispatch<SetStateAction<number>>;
+    steps: any[];
+    initialValue?: any;
+    spaceId?: any;
+}
+
+const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [toggleForm, setToggleForm] = useState(false);

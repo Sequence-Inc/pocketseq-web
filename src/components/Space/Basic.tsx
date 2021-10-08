@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Button, Select, TextArea, TextField } from "@element";
 import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
@@ -7,10 +7,10 @@ import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
 interface IBasicSpace {
-    activeStep: any;
-    setActiveStep: any;
-    steps: any;
-    setSpaceId: any;
+    activeStep: number;
+    setActiveStep: Dispatch<SetStateAction<number>>;
+    steps: any[];
+    setSpaceId: (id: any) => void;
     initialValue?: any
 }
 
