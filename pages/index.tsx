@@ -184,7 +184,9 @@ const features = [
 ];
 
 export default function Home() {
-    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, { fetchPolicy: "network-only" });
+    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
+        fetchPolicy: "network-only",
+    });
     return (
         <div className="bg-gray-50">
             <Head>
@@ -201,8 +203,8 @@ export default function Home() {
                                 <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     TimeBookとは
                                 </p>
-                                <p className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
-                                    ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
+                                <p className="w-2/3 mx-auto mt-6 text-xl font-light text-gray-500">
+                                    会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる
                                 </p>
                                 <div className="mt-12">
                                     <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">

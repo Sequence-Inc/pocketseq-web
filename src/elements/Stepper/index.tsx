@@ -3,7 +3,14 @@ import React from "react";
 import Step from "./step1";
 import { Button } from "@element";
 
-const Stepper = ({ steps, activeStep, setActiveStep, isEdit, children }) => {
+const Stepper = ({
+    steps,
+    activeStep,
+    setActiveStep,
+    isEdit,
+    children,
+    loading,
+}) => {
     return (
         <div className="flex flex-col items-center w-full space-y-4">
             <Step

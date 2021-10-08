@@ -25,7 +25,7 @@ export const HeroSection = () => {
             <Container className="absolute top-0 left-0 z-10 md:pt-16">
                 <div className="flex flex-col items-center justify-center w-full h-full">
                     <p className="mb-10 text-2xl font-bold text-center text-white sm:text-4xl">
-                        貸切のレンタルスペースで"やってみたい"を叶えよう
+                        「人×場所×体験」を繋げる　目的に合った場所を検索しよう
                     </p>
                     <SearchBox />
                     <p className="mt-10 text-center text-white text-md sm:text-xl">

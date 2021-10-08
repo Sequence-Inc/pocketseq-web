@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@element";
-import { ICategoryItem, RegisterCTAAlt, HeroSection } from "@comp";
+import { ICategoryItem, RegisterCTAGuest, HeroSection } from "@comp";
 import {
     SearchIcon,
     CalendarIcon,
@@ -93,7 +93,7 @@ export default function UserGuide() {
                         </div>
                     </div>
 
-                    <RegisterCTAAlt />
+                    <RegisterCTAGuest />
                 </Container>
             </main>
 

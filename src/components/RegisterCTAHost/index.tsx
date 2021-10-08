@@ -12,7 +12,7 @@ const CTAButton = ({ link, children }: { link: string; children: string }) => {
     );
 };
 
-export const RegisterCTA = () => {
+export const RegisterCTAHost = () => {
     return (
         <div className="relative overflow-hidden bg-gray-800 rounded-2xl">
             <div className="relative h-56 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
@@ -26,10 +26,13 @@ export const RegisterCTA = () => {
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
                 <div className="md:ml-auto md:w-1/2 md:pl-10">
                     <p className="mt-2 text-3xl font-bold tracking-tight text-white">
-                        会員登録すればいろいろな体験とお気に入りの場所が見つかります。
+                        サービス提供者（掲載する）
                     </p>
-                    <p className="mt-5 text-gray-400 text-md">
-                        無料登録でスペースや技術を借りたり提供したりしてみよう
+                    <p className="mt-5 text-gray-300 text-md">
+                        ～自分のスキルを告知できる～
+                    </p>
+                    <p className="mt-5 text-gray-300 text-md">
+                        ～空いてるスペースを活用できる～
                     </p>
                     <div className="flex mt-10 space-x-4">
                         <CTAButton link="/auth/host-register">

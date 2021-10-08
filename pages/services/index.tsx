@@ -6,41 +6,42 @@ import { Container } from "@element";
 import {
     ICategoryItem,
     RegisterCTA,
-    RegisterCTAAlt,
     HeroSection,
+    RegisterCTAGuest,
+    RegisterCTAHost,
 } from "@comp";
 import { Header, Footer } from "@layout";
 
 const categories: ICategoryItem[] = [
     {
-        title: "Business × TimeBook",
+        title: "Business × time book",
         subTitle: "オフサイトMTGやブレストMTGなどに最適",
         photo: "/service1.jpg",
     },
     {
-        title: "Lifestyle × TimeBook",
-        subTitle: "オフサイトMTGやブレストMTGなどに最適",
+        title: "Freelance × time book",
+        subTitle: "フリーランスの方がスキル提供する場所を拡大",
+        photo: "/service6.jpg",
+    },
+    {
+        title: "Lifestyle × time book",
+        subTitle: "体験してみたかった事を気軽に予約",
         photo: "/service2.jpg",
     },
     {
-        title: "Outdoor × TimeBook",
-        subTitle: "オフサイトMTGやブレストMTGなどに最適",
+        title: "Outdoor × time book",
+        subTitle: "家のそばでも旅先でもいつでもオープンスペースを探せます",
         photo: "/service3.jpg",
     },
     {
-        title: "Learning × TimeBook",
-        subTitle: "オフサイトMTGやブレストMTGなどに最適",
-        photo: "/service4.jpg",
-    },
-    {
-        title: "Nightlife × TimeBook",
-        subTitle: "オフサイトMTGやブレストMTGなどに最適",
+        title: "Party × time book",
+        subTitle: "スタイリッシュ空間で特別なパーティを",
         photo: "/service5.jpg",
     },
     {
-        title: "Relax × TimeBook",
-        subTitle: "オフサイトMTGやブレストMTGなどに最適",
-        photo: "/service6.jpg",
+        title: "Learninng × time book",
+        subTitle: "身近な習い事を見つける事ができる",
+        photo: "/service4.jpg",
     },
 ];
 
@@ -65,20 +66,25 @@ export default function Services() {
                                     ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
                                 </p>
                                 <div className="grid grid-cols-1 gap-4 mt-12 sm:grid-cols-2 md:grid-cols-3 lg:gap-6">
-                                    {categories.map(res => (
+                                    {categories.map((res) => (
                                         <Link href="/search">
                                             <a>
                                                 <div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
-                                                    {res.photo &&
+                                                    {res.photo && (
                                                         <Image
                                                             layout="fill"
                                                             src={res.photo}
                                                             alt="category items"
                                                             className="object-cover w-full h-full"
-                                                        />}
+                                                        />
+                                                    )}
                                                     <div className="flex flex-col justify-center p-3 bg-gray-900 bg-opacity-50 text-gray-50 hover:bg-opacity-75">
-                                                        <h4 className="mb-4 text-lg font-semibold">{res.title}</h4>
-                                                        <span className="px-3">{res.subTitle}</span>
+                                                        <h4 className="mb-4 text-lg font-semibold">
+                                                            {res.title}
+                                                        </h4>
+                                                        <span className="px-3">
+                                                            {res.subTitle}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </a>
@@ -89,9 +95,8 @@ export default function Services() {
                         </div>
                     </div>
 
-                    <RegisterCTAAlt />
-
-                    <RegisterCTA />
+                    <RegisterCTAGuest />
+                    <RegisterCTAHost />
                 </Container>
             </main>
 

@@ -30,6 +30,7 @@ const AddNewSpace = () => {
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
                     loading={loading}
+                    isEdit={false}
                 >
                     {activeStep === 0 ? (
                         <Basic
@@ -44,6 +45,7 @@ const AddNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={null}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
@@ -51,6 +53,7 @@ const AddNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={null}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
@@ -58,6 +61,7 @@ const AddNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
+                            initialValue={null}
                         />
                     ) : (
                         <Preview
