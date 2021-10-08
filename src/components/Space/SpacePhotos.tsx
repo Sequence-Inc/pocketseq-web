@@ -3,8 +3,9 @@ import { Button } from "@element";
 import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
+import { IOtherSpacesProps } from "./NearestStationStep";
 
-const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }) => {
+const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
