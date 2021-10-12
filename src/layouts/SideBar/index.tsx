@@ -152,7 +152,7 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                         >
                                             <LogoutIcon className="w-6 h-6 mr-3" />
                                             <span className="truncate">
-                                                Logout
+                                                ログアウト
                                             </span>
                                         </button>
                                     </div>

@@ -1,9 +1,9 @@
-import { PasswordInput, TextField } from '@element'
-import React from 'react'
+import { PasswordInput, TextField } from "@element";
+import React from "react";
 
 const CorporateForm = ({ register, errors, loading }) => {
     return (
-        <div>
+        <div className="space-y-3">
             <TextField
                 {...register("company.name", { required: true })}
                 error={errors?.company?.name ? true : false}
@@ -54,7 +54,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 disabled={loading}
             />
         </div>
-    )
-}
+    );
+};
 
 export default CorporateForm;

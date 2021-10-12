@@ -14,10 +14,10 @@ export const HeroSection = () => {
         >
             <Image
                 layout="fill"
-                src="/hero-image.jpg"
+                src="/hero.jpg"
                 alt="Timebook"
                 role="presentation"
-                className="z-0 object-cover object-bottom w-full h-full"
+                className="z-0 object-cover object-center w-full h-full"
             />
             <div className="absolute top-0 left-0 w-full h-full bg-primary opacity-60">
                 &nbsp;

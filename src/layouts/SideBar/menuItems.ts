@@ -10,13 +10,13 @@ import {
 
 export const navigation = [
     {
-        name: "Host Dashboard",
+        name: "ダッシュボード",
         href: "/host",
         Icon: HomeIcon,
         roles: ["host"],
     },
     {
-        name: "Dashboard",
+        name: "ダッシュボード",
         href: "/admin",
         Icon: HomeIcon,
         roles: ["admin"],
@@ -34,7 +34,7 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Spaces",
+        name: "施設管理",
         href: "#",
         Icon: ViewListIcon,
         roles: ["admin"],
@@ -46,31 +46,31 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Spaces",
+        name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
         roles: ["host"],
     },
     {
-        name: "Reservations",
+        name: "予約の確認",
         href: "#",
         Icon: CalendarIcon,
         roles: ["host"],
     },
     {
-        name: "Messages",
+        name: "メッセージ",
         href: "#",
         Icon: MailIcon,
         roles: ["user", "host"],
     },
     {
-        name: "Settings",
+        name: "設定",
         href: "#",
         Icon: CogIcon,
         roles: ["host"],
     },
     {
-        name: "Back to Timebook",
+        name: "time bookにもどる",
         href: "/",
         Icon: ArrowLeftIcon,
         roles: ["user", "host", "admin"],

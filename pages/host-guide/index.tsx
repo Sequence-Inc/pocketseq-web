@@ -12,6 +12,7 @@ import {
     DocumentTextIcon,
 } from "@heroicons/react/outline";
 import { Header, Footer } from "@layout";
+import { CTA, CTAButton } from "src/components/CTA";
 
 const steps: any[] = [
     {
@@ -101,7 +102,16 @@ export default function HostGuide() {
                             </div>
                         </div>
                     </div>
-                    <RegisterCTA />
+                    <CTA title="信頼への取り組み">
+                        <div className="flex justify-center mt-10 space-x-4">
+                            <CTAButton link="/auth/host-register">
+                                ホスト登録する
+                            </CTAButton>
+                            <CTAButton link="/host-guide/nagare">
+                                詳しく見る
+                            </CTAButton>
+                        </div>
+                    </CTA>
                 </Container>
             </main>
 
