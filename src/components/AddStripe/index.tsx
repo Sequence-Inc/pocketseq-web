@@ -16,19 +16,14 @@ export const AddStripe = ({ account }) => {
                         </div>
                         <div className="flex-1 w-0 ml-5">
                             <h3 className="text-xl font-medium text-gray-700">
-                                Add Payment Details
+                                決済情報の追加
                             </h3>
                             <p className="mt-4 text-gray-600">
-                                Timebook will need some information regarding
-                                your payment where payouts will be made. You can
-                                only add spaces or rent your spaces after
-                                completing this.
+                                Timebookでは、支払いに関する情報登録が必要となります。
+                                こちらの設定が完了後、スペースの追加やレンタルが可能になります。
                             </p>
                             <p className="mt-4 text-gray-600">
-                                By clicking below 'Complete now' button, you
-                                will be taken to our partner payment gateway
-                                Stripe's site. Once you finish providing all
-                                your information you will be returned here.
+                                下の「今すぐ完了」をクリックすると、決済サイト「Stripe」に移動します。
                             </p>
                         </div>
                     </div>

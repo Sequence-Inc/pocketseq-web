@@ -1,9 +1,9 @@
-import { PasswordInput, TextField } from '@element'
-import React from 'react'
+import { PasswordInput, TextField } from "@element";
+import React from "react";
 
 const IndividualForm = ({ register, errors, loading }) => {
     return (
-        <div>
+        <div className="space-y-3">
             <TextField
                 {...register("user.firstName", { required: true })}
                 error={errors?.user?.firstName ? true : false}
@@ -19,7 +19,6 @@ const IndividualForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.user?.lastName?.message}
                 label="Last Name"
                 id="lastName"
-                autoFocus={true}
                 disabled={loading}
             />
             <TextField
@@ -63,7 +62,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 disabled={loading}
             />
         </div>
-    )
-}
+    );
+};
 
 export default IndividualForm;
