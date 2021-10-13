@@ -9,12 +9,12 @@ const Teaser = () => {
                 <title>time book</title>
             </Head>
             <div className="h-screen w-full bg-primary">
-                <div className="relative py-16 bg-primary">
+                <div className="relative py-16">
                     <div
                         className="hidden absolute top-0 inset-x-0 h-1/2 lg:block"
                         aria-hidden="true"
                     />
-                    <div className="max-w-7xl mx-auto bg-primary lg:bg-transparent lg:px-8">
+                    <div className="max-w-7xl mx-auto lg:px-8">
                         <div className="">
                             <div className="relative bg-primary lg:items-center">
                                 <div
@@ -88,7 +88,7 @@ const Teaser = () => {
                                         />
                                     </svg>
                                 </div>
-                                <div className="relative max-w-md mx-auto py-12 px-4 space-y-6 sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0 text-center">
+                                <div className="relative max-w-md mx-auto py-12 px-4 space-y-10 sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0 text-center">
                                     <h2
                                         className="text-3xl font-extrabold text-white my-10"
                                         id="join-heading"
@@ -98,11 +98,22 @@ const Teaser = () => {
                                             className="w-1/2 mx-auto"
                                         />
                                     </h2>
+                                    <div>
+                                        <h2 className="text-white font-bold text-3xl">
+                                            「人x場所x体験」を繋げる
+                                        </h2>
+                                        <p className="text-green-100 text-2xl mt-4">
+                                            さぁ、思い思いの場所と体験を見つけに行こう！
+                                        </p>
+                                    </div>
                                     <Link href="/auth/host-register">
                                         <a className="block w-full py-3 px-5 text-center bg-white border border-transparent rounded-md shadow-md text-base font-medium text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
-                                            事前登録
+                                            施設を掲載する
                                         </a>
                                     </Link>
+                                    <p className="pt-10 text-green-100 text-sm">
+                                        &copy; copyright time book 2021.
+                                    </p>
                                 </div>
                             </div>
                         </div>
