@@ -30,7 +30,7 @@ const Register = () => {
     return (
         <AuthLayout>
             <Head>
-                <title>Signup | Space Rental</title>
+                <title>ホストアカウントのを作成する - time book</title>
             </Head>
             <ErrorModal ref={errorRef} />
             <PinDialog
@@ -44,7 +44,7 @@ const Register = () => {
                     <div className="px-4 pt-6 pb-4 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                         <Logo />
                         <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                            Create a host account
+                            ホストアカウントのを作成する
                         </h2>
                         <form
                             onSubmit={handleSubmit(handleRegister)}
@@ -61,82 +61,80 @@ const Register = () => {
                                             disabled={loading}
                                         >
                                             <RadioGroup.Label className="sr-only">
-                                                Host account
+                                                ホストアカウント
                                             </RadioGroup.Label>
                                             <div className="relative flex bg-white rounded-md">
-                                                {[
-                                                    "Individual",
-                                                    "Corporate",
-                                                ].map((hostType, index) => (
-                                                    <RadioGroup.Option
-                                                        key={hostType}
-                                                        value={hostType}
-                                                        className={({
-                                                            checked,
-                                                        }) =>
-                                                            clsx(
-                                                                index === 0
-                                                                    ? "rounded-l-md"
-                                                                    : "rounded-r-md",
-                                                                checked
-                                                                    ? "bg-green-50 border-green-200 z-1"
-                                                                    : "border-gray-200",
-                                                                "relative border px-4 py-3 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-3 focus:outline-none"
-                                                            )
-                                                        }
-                                                    >
-                                                        {({
-                                                            active,
-                                                            checked,
-                                                        }) => (
-                                                            <>
-                                                                <div className="flex items-center w-full space-x-3 text-sm">
-                                                                    <div
-                                                                        className={clsx(
-                                                                            checked
-                                                                                ? "bg-primary border-transparent"
-                                                                                : "bg-white border-gray-300",
-                                                                            active
-                                                                                ? "ring-2 ring-offset-2 ring-primary"
-                                                                                : "",
-                                                                            "h-4 w-4 rounded-full border flex items-center justify-center"
-                                                                        )}
-                                                                        aria-hidden="true"
-                                                                    >
-                                                                        <span className="rounded-full bg-white w-1.5 h-1.5 m-1" />
+                                                {["個人", "法人"].map(
+                                                    (hostType, index) => (
+                                                        <RadioGroup.Option
+                                                            key={hostType}
+                                                            value={hostType}
+                                                            className={({
+                                                                checked,
+                                                            }) =>
+                                                                clsx(
+                                                                    index === 0
+                                                                        ? "rounded-l-md"
+                                                                        : "rounded-r-md",
+                                                                    checked
+                                                                        ? "bg-green-50 border-green-200 z-1"
+                                                                        : "border-gray-200",
+                                                                    "relative border px-4 py-3 flex w-full cursor-pointer md:pl-4 md:pr-6 focus:outline-none"
+                                                                )
+                                                            }
+                                                        >
+                                                            {({
+                                                                active,
+                                                                checked,
+                                                            }) => (
+                                                                <>
+                                                                    <div className="flex items-center w-full space-x-3 text-sm">
+                                                                        <div
+                                                                            className={clsx(
+                                                                                checked
+                                                                                    ? "bg-primary border-transparent"
+                                                                                    : "bg-white border-gray-300",
+                                                                                active
+                                                                                    ? "ring-2 ring-offset-2 ring-primary"
+                                                                                    : "",
+                                                                                "h-4 w-4 rounded-full border flex items-center justify-center"
+                                                                            )}
+                                                                            aria-hidden="true"
+                                                                        >
+                                                                            <span className="rounded-full bg-white w-1.5 h-1.5 m-1" />
+                                                                        </div>
+                                                                        <RadioGroup.Label
+                                                                            as="div"
+                                                                            className={clsx(
+                                                                                checked
+                                                                                    ? "text-primary"
+                                                                                    : "text-gray-600",
+                                                                                "font-medium w-full"
+                                                                            )}
+                                                                        >
+                                                                            {hostType +
+                                                                                " "}
+                                                                        </RadioGroup.Label>
                                                                     </div>
-                                                                    <RadioGroup.Label
-                                                                        as="div"
-                                                                        className={clsx(
-                                                                            checked
-                                                                                ? "text-primary"
-                                                                                : "text-gray-600",
-                                                                            "font-medium"
-                                                                        )}
-                                                                    >
-                                                                        {
-                                                                            hostType
-                                                                        }
-                                                                    </RadioGroup.Label>
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </RadioGroup.Option>
-                                                ))}
+                                                                </>
+                                                            )}
+                                                        </RadioGroup.Option>
+                                                    )
+                                                )}
                                             </div>
                                         </RadioGroup>
                                     )}
                                 />
                             </div>
 
-                            {watch().hostType === "Corporate" && (
+                            {watch().hostType === "法人" && (
                                 <CorporateForm
                                     register={register}
                                     errors={errors}
                                     loading={loading}
                                 />
                             )}
-                            {watch().hostType === "Individual" && (
+                            {watch().hostType === "個人" && (
                                 <IndividualForm
                                     register={register}
                                     errors={errors}
@@ -150,13 +148,13 @@ const Register = () => {
                                     loading={loading}
                                     type="submit"
                                 >
-                                    Register
+                                    登録する
                                 </Button>
                             </div>
                             <div className="relative text-center">
                                 <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                                 <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                                    Already have an account
+                                    アカウントをお持ちの方
                                 </span>
                             </div>
                             <Button
@@ -165,7 +163,7 @@ const Register = () => {
                                     router.push("/auth/login");
                                 }}
                             >
-                                Login
+                                ログインする
                             </Button>
                         </form>
                     </div>
@@ -237,7 +235,7 @@ const Register = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            Go back to Timebook
+                            time bookにもどる
                         </a>
                     </Link>
                 </div>

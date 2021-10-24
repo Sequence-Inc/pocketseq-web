@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button, PasswordInput } from "@element";
+import { Button, PasswordInput, Logo } from "@element";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthLayout from "src/layouts/AuthLayout";
@@ -53,23 +53,22 @@ const ResetPassword = () => {
     return (
         <AuthLayout>
             <Head>
-                <title>Reset Password | Space Rental</title>
+                <title>パスワードをリセットする - time book</title>
             </Head>
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
-                {/* <Logo /> */}
-                Logo here
+                <Logo />
                 <h3 className="font-medium text-center text-green-600">
-                    Code Verification Successfull
+                    確認コードの確認完了しました
                 </h3>
                 <h2 className="mt-2 text-sm font-normal text-center text-gray-600">
-                    Setup New Password
+                    パスワードをリセットする
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <PasswordInput
                         {...register("password", { required: true })}
                         error={errors.password ? true : false}
                         errorMessage={errors?.password?.message}
-                        label="Password"
+                        label="パスワード"
                         id="password"
                         disabled={isLoading}
                     />
@@ -78,14 +77,14 @@ const ResetPassword = () => {
                         {...register("confirmPassword", { required: true })}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors.confirmPassword?.message}
-                        label="Confirm Password"
+                        label="パスワード認証"
                         id="confirmPassword"
                         disabled={isLoading}
                         hintText="hint password"
                     />
 
                     <Button variant="primary" loading={isLoading} type="submit">
-                        Update Password
+                        パスワードをリセットする
                     </Button>
                 </form>
             </div>
@@ -93,7 +92,7 @@ const ResetPassword = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            Go back to Timebook
+                            time bookにもどる
                         </a>
                     </Link>
                 </div>

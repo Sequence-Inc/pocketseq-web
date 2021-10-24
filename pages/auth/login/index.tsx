@@ -23,7 +23,7 @@ const Login = () => {
     return (
         <>
             <Head>
-                <title>Login | Space Rental</title>
+                <title>ログイン - time book</title>
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
@@ -32,7 +32,7 @@ const Login = () => {
                     <Logo />
                     {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                        Login to your account
+                        ログイン
                     </h2>
                     <form
                         onSubmit={handleSubmit(handleLogin)}
@@ -42,7 +42,7 @@ const Login = () => {
                             {...register("email")}
                             error={errors.email ? true : false}
                             errorMessage={errors?.email?.message}
-                            label="Email Address"
+                            label="メールアドレス"
                             placeholder="eg@eg.com"
                             id="email"
                             disabled={loading}
@@ -53,7 +53,7 @@ const Login = () => {
                             {...register("password")}
                             error={errors.password ? true : false}
                             errorMessage={errors.password?.message}
-                            label="Password"
+                            label="パスワード"
                             id="password"
                             disabled={loading}
                             showForgotPassword
@@ -65,12 +65,12 @@ const Login = () => {
                             loading={loading}
                             type="submit"
                         >
-                            Login
+                            ログインする
                         </Button>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                                Don't have an account
+                                アカウントをお持ちではありませんか？
                             </span>
                         </div>
                         <Button
@@ -80,7 +80,7 @@ const Login = () => {
                                 router.push("/auth/register");
                             }}
                         >
-                            Create Account
+                            アカウントのを作成する
                         </Button>
                     </form>
                 </div>
@@ -88,7 +88,7 @@ const Login = () => {
                     <div className="py-2 text-md ">
                         <Link href="/">
                             <a className="text-gray-500 hover:text-green-600">
-                                Go back to Timebook
+                                time bookにもどる
                             </a>
                         </Link>
                     </div>

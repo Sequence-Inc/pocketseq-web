@@ -15,7 +15,7 @@ const Register = () => {
         handleRegister,
         loading,
         pinRef,
-        errorRef
+        errorRef,
     } = useRegister();
     const router = useRouter();
 
@@ -27,13 +27,13 @@ const Register = () => {
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace('/')}
+                callback={() => router.replace("/")}
                 location="register"
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                    Create an account
+                    アカウントのを作成する
                 </h2>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
@@ -43,7 +43,7 @@ const Register = () => {
                         {...register("firstName", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label="First Name"
+                        label="名前"
                         id="firstName"
                         autoFocus={true}
                         disabled={loading}
@@ -52,7 +52,7 @@ const Register = () => {
                         {...register("lastName", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="Last Name"
+                        label="苗字"
                         id="lastName"
                         disabled={loading}
                     />
@@ -60,7 +60,7 @@ const Register = () => {
                         {...register("firstNameKana", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label="First Name Kana"
+                        label="名前（かな）"
                         id="firstNameKana"
                         disabled={loading}
                     />
@@ -68,7 +68,7 @@ const Register = () => {
                         {...register("lastNameKana", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="Last Name Kana"
+                        label="苗字（かな）"
                         id="lastNameKana"
                         disabled={loading}
                     />
@@ -76,7 +76,7 @@ const Register = () => {
                         {...register("email", { required: true })}
                         error={errors.email ? true : false}
                         errorMessage={errors?.email?.message}
-                        label="Email Address"
+                        label="メールアドレス"
                         id="email"
                         disabled={loading}
                     />
@@ -84,7 +84,7 @@ const Register = () => {
                         {...register("password", { required: true })}
                         error={errors.password ? true : false}
                         errorMessage={errors?.password?.message}
-                        label="Password"
+                        label="パスワード"
                         id="password"
                         disabled={loading}
                     />
@@ -92,18 +92,18 @@ const Register = () => {
                         {...register("confirmPassword", { required: true })}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors?.confirmPassword?.message}
-                        label="Confirm Password"
+                        label="パスワード認証"
                         id="confirmPassword"
                         disabled={loading}
                     />
-                    <div className="text-sm">
+                    {/* <div className="text-sm">
                         <a
                             href="#"
                             className="text-xs text-gray-400 hover:text-lightBlue-500"
                         >
                             Agree to term
                         </a>
-                    </div>
+                    </div> */}
 
                     <div>
                         <Button
@@ -111,13 +111,13 @@ const Register = () => {
                             loading={loading}
                             type="submit"
                         >
-                            Register
+                            登録する
                         </Button>
                     </div>
                     <div className="relative text-center">
                         <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                         <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                            Already have an account
+                            アカウントをお持ちの方
                         </span>
                     </div>
                     <Button
@@ -126,7 +126,7 @@ const Register = () => {
                             router.push("/auth/login");
                         }}
                     >
-                        Login
+                        ログインする
                     </Button>
                 </form>
             </div>
@@ -134,7 +134,7 @@ const Register = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            Go back to Timebook
+                            time bookにもどる
                         </a>
                     </Link>
                 </div>

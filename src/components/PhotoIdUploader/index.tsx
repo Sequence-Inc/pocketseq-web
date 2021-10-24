@@ -35,7 +35,7 @@ export const PhotoIdUploader = () => {
                                 className="w-5 h-5 mr-2 -ml-1"
                                 aria-hidden="true"
                             />
-                            Upload now
+                            アップロードする
                         </a>
                     </Link>
                 </div>
