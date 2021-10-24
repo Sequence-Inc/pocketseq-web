@@ -1,9 +1,15 @@
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
+import Document, {
+    Html,
+    Head,
+    Main,
+    NextScript,
+    DocumentContext,
+} from "next/document";
 
 class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
-        const initialProps = await Document.getInitialProps(ctx)
-        return { ...initialProps }
+        const initialProps = await Document.getInitialProps(ctx);
+        return { ...initialProps };
     }
 
     render() {
@@ -29,6 +35,24 @@ class MyDocument extends Document {
                     />
                     <link rel="apple-touch-icon" href="/apple-icon.png"></link>
                     <meta name="theme-color" content="#317EFB" />
+                    <meta
+                        name="viewport"
+                        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+                    />
+                    <script
+                        async
+                        src="https://www.googletagmanager.com/gtag/js?id=G-5WKZPFK2LT"
+                    />
+                    <script
+                        dangerouslySetInnerHTML={{
+                            __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-5WKZPFK2LT', { page_path: window.location.pathname });
+                            `,
+                        }}
+                    />
                 </Head>
                 <body>
                     <Main />
@@ -36,8 +60,8 @@ class MyDocument extends Document {
                     <div id="modal"></div>
                 </body>
             </Html>
-        )
+        );
     }
 }
 
-export default MyDocument
+export default MyDocument;

@@ -106,11 +106,32 @@ const Teaser = () => {
                                             さぁ、思い思いの場所と体験を見つけに行こう！
                                         </p>
                                     </div>
-                                    <Link href="/auth/host-register">
-                                        <a className="block w-full py-3 px-5 text-center bg-white border border-transparent rounded-md shadow-md text-base font-medium text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
-                                            施設を掲載する
+                                    <div>
+                                        <Link href="/auth/host-register">
+                                            <a className="block w-full py-3 px-5 text-center bg-white border border-transparent rounded-md shadow-md text-base font-medium text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
+                                                施設を掲載する
+                                            </a>
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <p className="text-white">
+                                            アカウントをお持ちの方
+                                            <Link href="/auth/login">
+                                                <a className="text-center bg-primary border border-transparent rounded-md text-base font-medium text-white hover:underline sm:inline-block sm:w-auto">
+                                                    ログインする
+                                                </a>
+                                            </Link>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <a
+                                            href="/time-book-プレスリリース.pdf"
+                                            className=" text-white hover:underline"
+                                        >
+                                            time
+                                            bookについてプレスリリースはこちら
                                         </a>
-                                    </Link>
+                                    </div>
                                     <p className="pt-10 text-green-100 text-sm">
                                         &copy; copyright time book 2021.
                                     </p>
