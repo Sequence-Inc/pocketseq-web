@@ -9,8 +9,6 @@ interface ButtonProps {
     children: React.ReactNode;
     loadingText?: string;
     loading?: boolean;
-    disabled?: boolean;
-    Icon?: React.ComponentType<{ className: string }>;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -21,22 +19,18 @@ const Button = (props: ButtonProps) => {
         type,
         className,
         loadingText,
-        disabled,
         loading,
         children,
-        Icon,
         ...rest
     } = props;
     return (
         <button
             type={type}
-            disabled={loading || disabled}
             className={clsx(
                 "w-full flex items-center justify-center text-sm font-medium",
                 "border border-transparent shadow-sm",
                 "focus:outline-none focus:ring-2 focus:ring-offset-2",
                 {
-                    "opacity-50": disabled || loading,
                     "text-white bg-primary hover:bg-primaryHover focus:ring-primary":
                         variant === "primary",
                     "text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200":
@@ -44,17 +38,13 @@ const Button = (props: ButtonProps) => {
                     "text-gray-500 bg-white hover:bg-gray-100 focus:ring-gray-300":
                         variant === "white",
                     "rounded p-2": !rounded,
-                    "rounded-full px-4 py-2": rounded
+                    "rounded-full px-4 py-2": rounded,
                 },
                 className && className
             )}
             {...rest}
         >
-            {loading
-                ? 'loading...'
-                : !!Icon
-                    ? <div className="flex items-center"><Icon className="w-5 h-5 mr-2 text-inherit" /><span>{children}</span></div>
-                    : children}
+            {children}
         </button>
     );
 };
@@ -65,8 +55,7 @@ Button.defaultProps = {
     className: "",
     rounded: false,
     children: "Submit",
-    disabled: false,
-    onClick: (event) => { },
+    onClick: (event) => {},
 };
 
 export default Button;

@@ -10,7 +10,7 @@ const PinDialogContent = ({
     location,
     emailAddress,
 }) => {
-    const { verifyPin, setCode, resendCode, resetLoading, refetchLoading, verifyLoading } =
+    const { verifyPin, setCode, resendCode, isLoading, resendLoading } =
         usePinDialogContent(response, callback, location);
 
     return (
@@ -35,9 +35,9 @@ const PinDialogContent = ({
                 className="mt-2 text-base font-normal text-center text-lightBlue-600"
                 id="modal-headline"
             >
-                Confirm Reset Password
+                confirmPasswordReset
             </h3>
-            <p className="text-sm text-center text-gray-600">Sent You Code</p>
+            <p className="text-sm text-center text-gray-600">sentYouCode</p>
             <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
                     Verification code
@@ -45,28 +45,26 @@ const PinDialogContent = ({
                 <CodeInput
                     length={6}
                     initialValue=""
-                    onChange={(value: number) => setCode(value)}
+                    onChange={(value) => setCode(value)}
                     type="numeric"
-                    inputMode="numeric"
-                    onComplete={(value: number) => setCode(value)}
+                    inputMode="number"
+                    onComplete={(value) => setCode(value)}
                     autoSelect={true}
                     regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
                 />
             </div>
             <Button
-                variant="primary"
-                type="submit"
                 className="sm:col-start-2"
-                loading={resetLoading || refetchLoading || verifyLoading}
+                loading={isLoading || resendLoading}
             >
-                Verify Code
+                buttonVerifyCode
             </Button>
             <Button
                 variant="white"
-                disabled={resetLoading || refetchLoading || verifyLoading}
+                disabled={isLoading || resendLoading}
                 onClick={() => setModal(false)}
             >
-                Cancel
+                buttonCancel
             </Button>
             <div className="relative text-center">
                 <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
@@ -79,13 +77,13 @@ const PinDialogContent = ({
             </div>
             <Button
                 variant="white"
-                disabled={resetLoading || refetchLoading || verifyLoading}
+                disabled={isLoading || resendLoading}
                 onClick={(e) => {
                     e.preventDefault();
                     resendCode(emailAddress);
                 }}
             >
-                {refetchLoading ? "Resending Code..." : "Resend Code"}
+                {resendLoading ? "buttonResendLoading" : "buttonResendCode"}
             </Button>
         </form>
     );

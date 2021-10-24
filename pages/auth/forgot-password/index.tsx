@@ -138,8 +138,8 @@ const ForgotPassword = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
+export const getServerSideProps = async (context) => {
+    return { props: {} };
+};
 
 export default ForgotPassword;

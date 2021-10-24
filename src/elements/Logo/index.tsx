@@ -15,8 +15,7 @@ const Logo = ({ variant, className }: LogoProps) => {
                 className && className,
                 {
                     "text-green-600": variant === "default",
-                    // "text-white border": variant === "dark",
-                    "text-white": variant === "dark",
+                    "text-white border": variant === "dark",
                 }
             )}
         >
