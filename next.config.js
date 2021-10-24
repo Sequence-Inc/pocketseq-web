@@ -1,9 +1,3 @@
-// module.exports = {
-//     images: {
-//         domains: ["cdnspacemarket.com"],
-//     },
-// };
-
 const withPWA = require("next-pwa");
 const runtimeCaching = require("next-pwa/cache");
 
@@ -13,6 +7,7 @@ module.exports = withPWA({
         domains: [
             "cdnspacemarket.com",
             "timebook-api-dev-media.s3.ap-northeast-1.amazonaws.com",
+            "timebook-api-prod-media.s3.ap-northeast-1.amazonaws.com",
         ],
     },
     pwa: {
@@ -24,4 +19,5 @@ module.exports = withPWA({
         config.experiments = { topLevelAwait: true };
         return config;
     },
+    env: {},
 });
