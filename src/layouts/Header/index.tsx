@@ -1,15 +1,19 @@
-// import { Fragment } from 'react'
-// import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon, ClockIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { Button } from "@element";
+import { GET_SESSION } from "src/apollo/queries/state.queries";
+import { useQuery } from "@apollo/client";
+import { authorizeRole, logout, classNames } from "src/utils/";
+import React, { Fragment } from "react";
+import ClientOnly from "src/components/ClientOnly";
 
 interface INavLinkItems {
     name: string;
     link: string;
+    authenticate?: boolean;
 }
 
 const navLinkItems: INavLinkItems[] = [
@@ -19,7 +23,7 @@ const navLinkItems: INavLinkItems[] = [
     },
     {
         name: "初めての方へ",
-        link: "/guide",
+        link: "/services",
     },
     {
         name: "ヘルプ",
@@ -28,6 +32,18 @@ const navLinkItems: INavLinkItems[] = [
     {
         name: "ログイン",
         link: "/auth/login",
+        authenticate: true,
+    },
+];
+
+const userNavigation = [
+    { name: "Admin Dashboard", href: "/admin", role: ["admin"] },
+    { name: "Host Dashboard", href: "/host", role: ["host"] },
+    { name: "Profile", href: "/user/profile", role: ["user", "host"] },
+    {
+        name: "Settings",
+        href: "/user/settings",
+        role: ["user", "host", "admin"],
     },
 ];
 
@@ -73,8 +89,33 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
     );
 };
 
-const Header = () => {
+const HeaderComp = () => {
     const router = useRouter();
+
+    const { data, loading, error } = useQuery(GET_SESSION);
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error {error.message}</div>;
+
+    const isLoggedIn = data?.isLoggedIn;
+
+    let profile;
+    let currentUser;
+    let profilePhoto;
+
+    if (isLoggedIn) {
+        profile = data?.profile;
+        currentUser =
+            profile.__typename === "UserProfile"
+                ? `${profile?.firstName} ${profile?.lastName}`
+                : `${profile?.name}`;
+        if (profile.profilePhoto) {
+            console.log(profile.profilePhoto);
+            profilePhoto = profile.profilePhoto.thumbnail?.url;
+        } else {
+            profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
+        }
+    }
+
     return (
         <Disclosure
             as="nav"
@@ -115,125 +156,148 @@ const Header = () => {
                             </div>
                             <div className="flex items-center">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
-                                    {navLinkItems.map((item: INavLinkItems) => (
-                                        <NavLink
-                                            key={item.link}
-                                            link={item.link}
-                                            name={item.name}
-                                        />
-                                    ))}
+                                    {navLinkItems.map(
+                                        (
+                                            item: INavLinkItems,
+                                            index: number
+                                        ) => {
+                                            {
+                                                if (
+                                                    isLoggedIn &&
+                                                    item.authenticate
+                                                ) {
+                                                    return null;
+                                                } else {
+                                                    return (
+                                                        <NavLink
+                                                            key={index.toString()}
+                                                            link={item.link}
+                                                            name={item.name}
+                                                        />
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    )}
                                 </div>
                                 <div className="flex-shrink-0">
-                                    {/* <button
-                                        type="button"
-                                        className="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-500 bg-white border-transparent rounded-full shadow-sm bg-whiteborder hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-                                    >
-                                        新規登録
-                                    </button> */}
-                                    <Button
-                                        variant="white"
-                                        rounded
-                                        className="font-light text-gray-500"
-                                        onClick={(event) => {
-                                            event.preventDefault();
-                                            router.push("/auth/register");
-                                        }}
-                                    >
-                                        新規登録
-                                    </Button>
-                                </div>
-                                {/* <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
-                                    <button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        <span className="sr-only">View notifications</span>
-                                        <BellIcon className="w-6 h-6" aria-hidden="true" />
-                                    </button>
-
-                                   
-                                    <Menu as="div" className="relative ml-3">
-                                        {({ open }) => (
-                                            <>
-                                                <div>
-                                                    <Menu.Button className="flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                        <span className="sr-only">Open user menu</span>
-                                                        <img
-                                                            className="w-8 h-8 rounded-full"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                            alt=""
-                                                        />
-                                                    </Menu.Button>
-                                                </div>
-                                                <Transition
-                                                    show={open}
-                                                    as={Fragment}
-                                                    enter="transition ease-out duration-200"
-                                                    enterFrom="transform opacity-0 scale-95"
-                                                    enterTo="transform opacity-100 scale-100"
-                                                    leave="transition ease-in duration-75"
-                                                    leaveFrom="transform opacity-100 scale-100"
-                                                    leaveTo="transform opacity-0 scale-95"
-                                                >
-                                                    <Menu.Items
-                                                        static
-                                                        className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    {/* Profile dropdown */}
+                                    {isLoggedIn && (
+                                        <Menu
+                                            as="div"
+                                            className="relative ml- 8"
+                                        >
+                                            <div>
+                                                <Menu.Button className="flex items-center p-1 text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary focus:ring-white">
+                                                    <span className="sr-only">
+                                                        Open user menu
+                                                    </span>
+                                                    <img
+                                                        className="w-8 h-8 mr-2 rounded-full"
+                                                        src={profilePhoto}
+                                                        alt=""
+                                                    />
+                                                    <div className="mr-2 font-medium text-primary">
+                                                        {currentUser}
+                                                    </div>
+                                                </Menu.Button>
+                                            </div>
+                                            <Transition
+                                                as={Fragment}
+                                                enter="transition ease-out duration-200"
+                                                enterFrom="transform opacity-0 scale-95"
+                                                enterTo="transform opacity-100 scale-100"
+                                                leave="transition ease-in duration-75"
+                                                leaveFrom="transform opacity-100 scale-100"
+                                                leaveTo="transform opacity-0 scale-95"
+                                            >
+                                                <Menu.Items className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                    {userNavigation.map(
+                                                        (item) => {
+                                                            if (
+                                                                authorizeRole(
+                                                                    item.role
+                                                                )
+                                                            ) {
+                                                                return (
+                                                                    <Menu.Item
+                                                                        key={
+                                                                            item.name
+                                                                        }
+                                                                    >
+                                                                        {({
+                                                                            active,
+                                                                        }) => (
+                                                                            <a
+                                                                                href={
+                                                                                    item.href
+                                                                                }
+                                                                                className={classNames(
+                                                                                    active
+                                                                                        ? "bg-gray-100"
+                                                                                        : "",
+                                                                                    "block px-4 py-2 text-sm text-gray-700"
+                                                                                )}
+                                                                            >
+                                                                                {
+                                                                                    item.name
+                                                                                }
+                                                                            </a>
+                                                                        )}
+                                                                    </Menu.Item>
+                                                                );
+                                                            } else {
+                                                                return null;
+                                                            }
+                                                        }
+                                                    )}
+                                                    <button
+                                                        className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            logout();
+                                                        }}
                                                     >
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <a
-                                                                    href="#"
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
-                                                                    )}
-                                                                >
-                                                                    Your Profile
-                                                                </a>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <a
-                                                                    href="#"
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
-                                                                    )}
-                                                                >
-                                                                    Settings
-                                                                </a>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <a
-                                                                    href="#"
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
-                                                                    )}
-                                                                >
-                                                                    Sign out
-                                                                </a>
-                                                            )}
-                                                        </Menu.Item>
-                                                    </Menu.Items>
-                                                </Transition>
-                                            </>
-                                        )}
-                                    </Menu>
-                                </div> */}
+                                                        サインアウト
+                                                    </button>
+                                                </Menu.Items>
+                                            </Transition>
+                                        </Menu>
+                                    )}
+                                    {!isLoggedIn && (
+                                        <Button
+                                            variant="white"
+                                            rounded
+                                            className="font-light text-gray-500"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                router.push("/auth/register");
+                                            }}
+                                        >
+                                            新規登録
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <Disclosure.Panel className="md:hidden">
                         <div className="pt-2 pb-3 space-y-1">
-                            {navLinkItems.map((item: INavLinkItems) => (
-                                <NavLinkOnSmall
-                                    key={item.link}
-                                    name={item.name}
-                                    link={item.link}
-                                />
-                            ))}
+                            {navLinkItems.map(
+                                (item: INavLinkItems, index: number) => (
+                                    <div key={`${index.toString()}`}>
+                                        {isLoggedIn &&
+                                        item.authenticate ? null : (
+                                            <NavLinkOnSmall
+                                                key={item.link}
+                                                name={item.name}
+                                                link={item.link}
+                                            />
+                                        )}
+                                    </div>
+                                )
+                            )}
                         </div>
                     </Disclosure.Panel>
                 </>
@@ -241,5 +305,13 @@ const Header = () => {
         </Disclosure>
     );
 };
+
+const Header = () => (
+    <>
+        <ClientOnly>
+            <HeaderComp />
+        </ClientOnly>
+    </>
+);
 
 export default Header;

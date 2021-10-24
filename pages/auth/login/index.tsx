@@ -6,6 +6,7 @@ import useLogin from "@hooks/useLogin";
 
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
+import ErrorModal from "src/elements/ErrorModal";
 
 const Login = () => {
     const {
@@ -13,24 +14,25 @@ const Login = () => {
         errors,
         handleLogin,
         handleSubmit,
-        isLoading,
+        loading,
         pinRef,
-        getValues,
+        errorRef,
     } = useLogin();
     const router = useRouter();
 
     return (
         <>
             <Head>
-                <title>Login | Space Rental</title>
+                <title>ログイン - time book</title>
             </Head>
-            <PinDialog ref={pinRef} callback={handleLogin} />
+            <PinDialog ref={pinRef} callback={handleLogin} location="login" />
+            <ErrorModal ref={errorRef} />
             <AuthLayout>
                 <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                     <Logo />
                     {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                        Login to your account
+                        ログイン
                     </h2>
                     <form
                         onSubmit={handleSubmit(handleLogin)}
@@ -40,45 +42,45 @@ const Login = () => {
                             {...register("email")}
                             error={errors.email ? true : false}
                             errorMessage={errors?.email?.message}
-                            label="Email Address"
+                            label="メールアドレス"
                             placeholder="eg@eg.com"
                             id="email"
-                            disabled={isLoading}
+                            disabled={loading}
                             autoFocus={true}
                             tabIndex={1}
-                            value={getValues("email")}
                         />
                         <PasswordInput
                             {...register("password")}
                             error={errors.password ? true : false}
                             errorMessage={errors.password?.message}
-                            label="Password"
+                            label="パスワード"
                             id="password"
-                            disabled={isLoading}
+                            disabled={loading}
                             showForgotPassword
                             tabIndex={2}
                         />
                         <Button
                             loadingText="loading"
                             variant="primary"
-                            loading={isLoading}
+                            loading={loading}
                             type="submit"
                         >
-                            Login
+                            ログインする
                         </Button>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                                Don't have an account
+                                アカウントをお持ちではありませんか？
                             </span>
                         </div>
                         <Button
+                            disabled={loading}
                             onClick={(e) => {
                                 e.preventDefault();
                                 router.push("/auth/register");
                             }}
                         >
-                            Create Account
+                            アカウントのを作成する
                         </Button>
                     </form>
                 </div>
@@ -86,7 +88,7 @@ const Login = () => {
                     <div className="py-2 text-md ">
                         <Link href="/">
                             <a className="text-gray-500 hover:text-green-600">
-                                Go back to Timebook
+                                time bookにもどる
                             </a>
                         </Link>
                     </div>
@@ -97,12 +99,6 @@ const Login = () => {
             </AuthLayout>
         </>
     );
-};
-
-// Login.Layout = EmptyLayout;
-
-export const getServerSideProps = async (context) => {
-    return { props: {} };
 };
 
 export default Login;

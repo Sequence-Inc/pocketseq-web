@@ -26,19 +26,17 @@ export const RegisterCTA = () => {
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
                 <div className="md:ml-auto md:w-1/2 md:pl-10">
                     <p className="mt-2 text-3xl font-bold tracking-tight text-white">
-                        いますぐ会員登録して、
-                        <br />
-                        スペースを貸し借りしてみよう
+                        会員登録すればいろいろな体験とお気に入りの場所が見つかります。
                     </p>
                     <p className="mt-5 text-gray-400 text-md">
-                        たったの1分で簡単登録。もちろん登録は無料です。
+                        無料登録でスペースや技術を借りたり提供したりしてみよう
                     </p>
                     <div className="flex mt-10 space-x-4">
-                        <CTAButton link="/auth/register">
-                            アカウント登録する
+                        <CTAButton link="/auth/host-register">
+                            借りたい人はこちら
                         </CTAButton>
-                        <CTAButton link="/about-us">
-                            スペース掲載について
+                        <CTAButton link="/services">
+                            提供したい人はこちら
                         </CTAButton>
                     </div>
                 </div>

@@ -14,20 +14,23 @@ export const HeroSection = () => {
         >
             <Image
                 layout="fill"
-                src="/hero-bg.jpg"
-                alt="category items"
+                src="/hero.jpg"
+                alt="Timebook"
                 role="presentation"
-                className="z-0 object-left-bottom w-full h-full object-cover"
+                className="z-0 object-cover object-center w-full h-full"
             />
+            <div className="absolute top-0 left-0 w-full h-full bg-primary opacity-60">
+                &nbsp;
+            </div>
             <Container className="absolute top-0 left-0 z-10 md:pt-16">
-                <div className="flex flex-col items-center justify-center w-full h-full lg:items-start lg:w-7/12 xl:w-1/2">
-                    <p className="mb-5 text-2xl text-center text-white sm:text-4xl lg:text-left">
-                        貸切のレンタルスペースで"やってみたい"を叶えよう
-                    </p>
-                    <p className="mb-12 text-center text-white text-md sm:text-xl lg:text-left">
-                        15,287件のスペースから、目的に合ったスペースがすぐ見つかる
+                <div className="flex flex-col items-center justify-center w-full h-full">
+                    <p className="mb-10 text-2xl font-bold text-center text-white sm:text-4xl">
+                        「人×場所×体験」を繋げる　目的に合った場所を検索しよう
                     </p>
                     <SearchBox />
+                    <p className="mt-10 text-center text-white text-md sm:text-xl">
+                        15,287件のスペースから、目的に合ったスペースがすぐ見つかる
+                    </p>
                 </div>
             </Container>
         </div>

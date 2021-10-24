@@ -11,7 +11,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { itemGridData } from "..";
+import { itemGridData } from "../main";
 
 const Search = ({ resetToStartObj }) => {
     const [filter, setFilter] = useState<string>("おすすめ");

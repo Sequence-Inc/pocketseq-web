@@ -46,7 +46,7 @@ const ForgotPassword = () => {
     return (
         <AuthLayout>
             <Head>
-                <title>Forgot Password | Space Rental</title>
+                <title>パスワードをリセットする - time book</title>
             </Head>
             <PinDialog
                 ref={pinRef}
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                    Reset Password
+                    パスワードをリセットする
                 </h2>
                 {otherError.trim() !== "" && (
                     <>
@@ -75,7 +75,7 @@ const ForgotPassword = () => {
                                     strokeLinejoin="round"
                                 />
                             </svg>
-                            {otherError}, Try Again Later
+                            {otherError}, あとでもう一度試してみてください
                         </div>
                     </>
                 )}
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
                         errorMessage={
                             errors.email && "Email Address is required"
                         }
-                        label="Email Address"
+                        label="メールアドレス"
                         id="email"
                         type="string"
                         placeholder="eg@eg.com"
@@ -101,13 +101,13 @@ const ForgotPassword = () => {
                         loading={isLoading}
                         type="submit"
                     >
-                        Reset
+                        リセットする
                     </Button>
 
                     <div className="relative text-center">
                         <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                         <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                            Have Account
+                            アカウントをお持ちの方
                         </span>
                     </div>
 
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                             router.push("/auth/login");
                         }}
                     >
-                        Login
+                        ログインする
                     </Button>
                 </form>
             </div>
@@ -126,7 +126,7 @@ const ForgotPassword = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            Go back to Timebook
+                            time bookにもどる
                         </a>
                     </Link>
                 </div>
@@ -138,8 +138,8 @@ const ForgotPassword = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
-    return { props: {} };
-};
+// export const getServerSideProps = async (context) => {
+//     return { props: {} };
+// };
 
 export default ForgotPassword;
