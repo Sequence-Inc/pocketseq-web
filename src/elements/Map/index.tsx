@@ -3,14 +3,13 @@ import GoogleMapReact from "google-map-react";
 import Marker from "./marker";
 import { useState } from "react";
 import SingleMarker from './singleMarker';
-import { useEffect } from 'react';
 
 interface GoogleMapProps {
   markers?: any;
   mark?: any;
   type?: 'multi' | 'single';
   activeIndex?: string | number;
-  setActiveIndex?: (index: string | number) => void;
+  setActiveIndex?: any;
 }
 
 // Return map bounds based on list of markers
@@ -61,15 +60,6 @@ const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex }: GoogleM
 
   const _onChildMouseLeave = () => {
   }
-
-  useEffect(() => {
-    // get users current location 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log({ lat: position.coords.latitude, lng: position.coords.longitude })
-      });
-    }
-  }, [])
 
   return (
     <>

@@ -1,16 +1,15 @@
 import { useForm } from "react-hook-form";
-import { useMutation } from "@apollo/client";
+// import { useMutation } from "react-query";
+// import { axios } from '../../app/network/axios.instance';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRef } from "react";
-import { REGISTER_USER } from "src/apollo/queries/auth.queries";
+import { useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 // form validation schema
 const schema = yup.object().shape({
     firstName: yup.string().required("First Name is required"),
-    firstNameKana: yup.string().required("First Name Kana is required"),
     lastName: yup.string().required("Last Name is required"),
-    lastNameKana: yup.string().required("Last Name Kana is required"),
     email: yup.string().email("Invalid Email").required("Email is required"),
     password: yup.string().required("Password is required"),
     confirmPassword: yup
@@ -19,8 +18,10 @@ const schema = yup.object().shape({
 });
 
 const useRegister = () => {
-    const errorRef = useRef(null);
-    const pinRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState("");
+    const router = useRouter();
+    const pinRef = useRef();
 
     const {
         register,
@@ -32,26 +33,38 @@ const useRegister = () => {
         resolver: yupResolver(schema),
     });
 
-    const [registerUser, { loading }] = useMutation(REGISTER_USER, {
-        onError: (error) => {
-            const err: Error = { ...error.graphQLErrors[0] }
-            errorRef.current?.open(err.message)
-        },
-        onCompleted: ({ registerUser }) => {
-            // debugger;
-            if (registerUser?.action === "verify-email") {
-                // login after successfull user register
-                const obj = { email: watch().email };
-                pinRef?.current.open(obj);
-            }
-        }
-    });
-
     // form submit function
     const handleRegister = async (formData) => {
-        const formModel = { ...formData };
-        delete formModel.confirmPassword
-        registerUser({ variables: { input: formModel } });
+        // setIsLoading(true);
+        // setEmail(getValues('email'));
+        // delete formData.confirmPassword;
+        // try {
+        //     const { data } = await axios.post('register', formData);
+        //     if (data.data.result) {
+        //         // login after successfull user register
+        //         const obj = { email: formData.email };
+        //         pinRef.current.open(obj);
+        //         // handleLogin({ email: formData.email, password: formData.password })
+        //     }
+        // } catch (err) {
+        //     console.log('err_____', err);
+        // } finally {
+        //     setIsLoading(false);
+        // }
+    };
+
+    const handleLogin = async () => {
+        // const body = {
+        //     email: watch().email,
+        //     password: watch().password
+        // };
+        // const loginResponse = await axios.post('login', body);
+        // console.log('loginResponse______', loginResponse);
+        // setCookie(null, 'token', 'value', {
+        //     maxAge: 30 * 24 * 60 * 60,
+        //     path: '/'
+        // });
+        // router.replace('/dashboard/courses');
     };
 
     return {
@@ -59,10 +72,12 @@ const useRegister = () => {
         errors,
         watch,
         handleRegister,
+        handleLogin,
         handleSubmit,
-        loading,
+        isLoading,
+        email,
         pinRef,
-        errorRef
+        getValues,
     };
 };
 
