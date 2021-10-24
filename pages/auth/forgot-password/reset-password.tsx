@@ -104,8 +104,8 @@ const ResetPassword = () => {
     );
 };
 
-export const getStaticProps = async (context) => {
-    return { props: {} };
-};
+// export const getStaticProps = async (context) => {
+//     return { props: {} };
+// };
 
 export default ResetPassword;

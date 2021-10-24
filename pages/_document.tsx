@@ -35,10 +35,7 @@ class MyDocument extends Document {
                     />
                     <link rel="apple-touch-icon" href="/apple-icon.png"></link>
                     <meta name="theme-color" content="#317EFB" />
-                    <meta
-                        name="viewport"
-                        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
-                    />
+
                     <script
                         async
                         src="https://www.googletagmanager.com/gtag/js?id=G-5WKZPFK2LT"
