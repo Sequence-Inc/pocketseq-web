@@ -25,7 +25,7 @@ type CorporateInput = {
 };
 
 type RegisterHost = {
-    hostType: "Individual" | "Corporate";
+    hostType: "個人" | "法人";
     company: CorporateInput | undefined;
     user: UserInput | undefined;
 };
@@ -56,7 +56,7 @@ const useRegisterHost = () => {
     } = useForm<RegisterHost>({
         resolver: yupResolver(schema),
         defaultValues: {
-            hostType: "Individual",
+            hostType: "個人",
             company: undefined,
             user: undefined,
         },
@@ -84,6 +84,8 @@ const useRegisterHost = () => {
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
+        formModel.hostType =
+            formData.hostType === "個人" ? "Individual" : "Corporate";
         formModel.user && delete formModel.user.confirmPassword;
         formModel.compnay && delete formModel.compnay.confirmPassword;
         registerHost({ variables: { input: formModel } });

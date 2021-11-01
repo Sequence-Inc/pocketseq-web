@@ -8,7 +8,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.name", { required: true })}
                 error={errors?.company?.name ? true : false}
                 errorMessage={errors?.company?.name?.message}
-                label="Comapny Name"
+                label="会社名"
                 id="company.name"
                 autoFocus={true}
                 disabled={loading}
@@ -17,7 +17,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.nameKana", { required: true })}
                 error={errors?.company?.nameKana ? true : false}
                 errorMessage={errors?.company?.nameKana?.message}
-                label="Company Name Kana"
+                label="会社名（かな）"
                 id="company.nameKana"
                 disabled={loading}
             />
@@ -25,7 +25,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.email", { required: true })}
                 error={errors?.company?.email ? true : false}
                 errorMessage={errors?.company?.email?.message}
-                label="Email Address"
+                label="メールアドレス"
                 id="company.email"
                 disabled={loading}
             />
@@ -33,7 +33,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.registrationNumber", { required: true })}
                 error={errors?.company?.registrationNumber ? true : false}
                 errorMessage={errors?.company?.registrationNumber?.message}
-                label="Registration Number"
+                label="法人番号"
                 id="company.registrationNumber"
                 disabled={loading}
             />
@@ -41,7 +41,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.password", { required: true })}
                 error={errors?.company?.password ? true : false}
                 errorMessage={errors?.company?.password?.message}
-                label="Password"
+                label="パスワード"
                 id="comany.password"
                 disabled={loading}
             />
@@ -49,7 +49,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.confirmPassword", { required: true })}
                 error={errors?.company?.confirmPassword ? true : false}
                 errorMessage={errors?.company?.confirmPassword?.message}
-                label="Confirm Password"
+                label="パスワード認証"
                 id="company.confirmPassword"
                 disabled={loading}
             />
