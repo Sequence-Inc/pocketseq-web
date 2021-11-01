@@ -13,6 +13,7 @@ const PinDialog = forwardRef(({ callback, location, emailAddress }: PinDialogPro
 
     useImperativeHandle(ref, () => ({
         open: (data = {}) => {
+            debugger
             setResponse(data);
             setModal(true);
         },
