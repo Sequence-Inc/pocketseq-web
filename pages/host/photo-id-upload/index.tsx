@@ -45,8 +45,7 @@ const PhotoIdUpload = () => {
             console.log(err);
             setLoading(false);
         },
-        refetchQueries: [{ query: HOST }],
-        fetchPolicy: "network-only",
+        refetchQueries: [{ query: HOST, fetchPolicy: "network-only" }]
     });
 
     const handleUpload = () => {
@@ -62,7 +61,7 @@ const PhotoIdUpload = () => {
         <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
             <div className="space-y-1 text-center">
                 <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
+                    className="w-12 h-12 mx-auto text-gray-400"
                     stroke="currentColor"
                     fill="none"
                     viewBox="0 0 48 48"
@@ -78,7 +77,7 @@ const PhotoIdUpload = () => {
                 <div className="flex text-sm text-gray-600">
                     <label
                         htmlFor="file-upload"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                        className="relative font-medium bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                     >
                         <span>Upload a file</span>
                         <input
@@ -100,11 +99,11 @@ const PhotoIdUpload = () => {
 
     if (photo) {
         content = (
-            <div className="px-6 pt-5 pb-6 rounded-md overflow-hidden">
+            <div className="px-6 pt-5 pb-6 overflow-hidden rounded-md">
                 <div className="mb-4 text-center">
                     <img
                         src={URL.createObjectURL(photo)}
-                        className="max-h-60 object-contain"
+                        className="object-contain max-h-60"
                     />
                 </div>
                 <div className="text-right">
@@ -112,9 +111,8 @@ const PhotoIdUpload = () => {
                         onClick={() => setPhoto(null)}
                         disabled={loading}
                         type="button"
-                        className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  ${
-                            loading && "opacity-50"
-                        }`}
+                        className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  ${loading && "opacity-50"
+                            }`}
                     >
                         <XIcon
                             className="w-5 h-5 mr-2 -ml-1"
@@ -133,13 +131,13 @@ const PhotoIdUpload = () => {
                 <title>Upload photo ID - Timebook</title>
             </Head>
 
-            <Container className="py-4 sm:py-6 lg:py-8 space-y-8">
-                <div className="overflow-hidden bg-white rounded-lg shadow sm:max-w-lg mx-auto">
+            <Container className="py-4 space-y-8 sm:py-6 lg:py-8">
+                <div className="mx-auto overflow-hidden bg-white rounded-lg shadow sm:max-w-lg">
                     <div className="p-5">
                         <div className="flex items-start">
                             <div className="flex-shrink-0">
                                 <IdentificationIcon
-                                    className="w-7 h-7 text-gray-500"
+                                    className="text-gray-500 w-7 h-7"
                                     aria-hidden="true"
                                 />
                             </div>
@@ -160,7 +158,7 @@ const PhotoIdUpload = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="px-5 py-3 bg-gray-50 text-right">
+                    <div className="px-5 py-3 text-right bg-gray-50">
                         {loading && (
                             <span className="inline-block mr-4 text-gray-500">
                                 Uploading...
@@ -170,9 +168,8 @@ const PhotoIdUpload = () => {
                             disabled={loading}
                             onClick={handleUpload}
                             type="button"
-                            className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                                loading && "opacity-50"
-                            }`}
+                            className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${loading && "opacity-50"
+                                }`}
                         >
                             <UploadIcon
                                 className="w-5 h-5 mr-2 -ml-1"

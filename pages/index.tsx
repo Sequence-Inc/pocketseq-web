@@ -8,21 +8,21 @@ const Teaser = () => {
             <Head>
                 <title>time book</title>
             </Head>
-            <div className="h-screen w-full bg-primary">
+            <div className="w-full h-screen bg-primary">
                 <div className="relative py-16 bg-primary">
                     <div
-                        className="hidden absolute top-0 inset-x-0 h-1/2 lg:block"
+                        className="absolute inset-x-0 top-0 hidden h-1/2 lg:block"
                         aria-hidden="true"
                     />
-                    <div className="max-w-7xl mx-auto bg-primary lg:bg-transparent lg:px-8">
+                    <div className="mx-auto max-w-7xl bg-primary lg:bg-transparent lg:px-8">
                         <div className="">
                             <div className="relative bg-primary lg:items-center">
                                 <div
-                                    className="hidden absolute inset-0 overflow-hidden rounded-3xl lg:block"
+                                    className="absolute inset-0 hidden overflow-hidden rounded-3xl lg:block"
                                     aria-hidden="true"
                                 >
                                     <svg
-                                        className="absolute bottom-full left-full transform translate-y-1/3 -translate-x-2/3 xl:bottom-auto xl:top-0 xl:translate-y-0"
+                                        className="absolute transform bottom-full left-full translate-y-1/3 -translate-x-2/3 xl:bottom-auto xl:top-0 xl:translate-y-0"
                                         width={404}
                                         height={384}
                                         fill="none"
@@ -55,7 +55,7 @@ const Teaser = () => {
                                         />
                                     </svg>
                                     <svg
-                                        className="absolute top-full transform -translate-y-1/3 -translate-x-1/3 xl:-translate-y-1/2"
+                                        className="absolute transform top-full -translate-y-1/3 -translate-x-1/3 xl:-translate-y-1/2"
                                         width={404}
                                         height={384}
                                         fill="none"
@@ -88,9 +88,9 @@ const Teaser = () => {
                                         />
                                     </svg>
                                 </div>
-                                <div className="relative max-w-md mx-auto py-12 px-4 space-y-6 sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0 text-center">
+                                <div className="relative max-w-md px-4 py-12 mx-auto space-y-6 text-center sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0">
                                     <h2
-                                        className="text-3xl font-extrabold text-white my-10"
+                                        className="my-10 text-3xl font-extrabold text-white"
                                         id="join-heading"
                                     >
                                         <img
@@ -99,7 +99,7 @@ const Teaser = () => {
                                         />
                                     </h2>
                                     <Link href="/auth/host-register">
-                                        <a className="block w-full py-3 px-5 text-center bg-white border border-transparent rounded-md shadow-md text-base font-medium text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
+                                        <a className="block w-full px-5 py-3 text-base font-medium text-center bg-white border border-transparent rounded-md shadow-md text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
                                             事前登録
                                         </a>
                                     </Link>
