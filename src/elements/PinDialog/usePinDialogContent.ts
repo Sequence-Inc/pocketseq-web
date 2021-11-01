@@ -31,7 +31,16 @@ const usePinDialogContent = (response, callback, location) => {
 
     const [refetch, { loading: refetchLoading }] = useLazyQuery(RESEND_VERIFICATION_CODE);
 
-    const [verifyResetPasswordRequest, { loading: resetLoading }] = useMutation(VERIFY_RESET_PASSWORD_REQUEST);
+    const [verifyResetPasswordRequest, { loading: resetLoading }] = useMutation(VERIFY_RESET_PASSWORD_REQUEST, {
+        onError: (err) => alert(err?.message),
+        onCompleted: (data) => {
+            const forgotBody = {
+                email: response.email,
+                code
+            };
+            callback(forgotBody);
+        }
+    });
 
     const [forgotPassword] = useMutation(FORGOT_PASSWORD);
 

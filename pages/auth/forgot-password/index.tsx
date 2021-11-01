@@ -5,40 +5,42 @@ import React, { useRef, useState } from "react";
 import { Button, TextField, PinDialog, Logo } from "@element";
 import { useForm } from "react-hook-form";
 import AuthLayout from "src/layouts/AuthLayout";
+import { useMutation } from "@apollo/client";
+import { FORGOT_PASSWORD, LOGIN } from "src/apollo/queries/auth.queries";
 
 const ForgotPassword = () => {
     const router = useRouter();
-    const pinRef = useRef();
+    const pinRef = useRef(null);
     const {
         register,
         formState: { errors },
         handleSubmit,
-        getValues,
+        watch,
     } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [otherError, setOtherError] = useState("");
+    const [mutate] = useMutation(FORGOT_PASSWORD, {
+        onError: (err) => {
+            const error: Error = { ...err.graphQLErrors[0] };
+            setOtherError(err.message);
+        },
+    });
 
     const onSubmit = async (formData) => {
-        // setIsLoading(true);
-        // setOtherError('');
-        // setEmail(getValues('email'));
-        // try {
-        //     const { data } = await axios.post('forgotPassword', formData);
-        //     if (data.result) {
-        //         pinRef.current.open(formData);
-        //     }
-        // } catch (err) {
-        //     console.log(err);
-        //     setOtherError(err.message);
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        setIsLoading(true);
+        setOtherError('');
+        setEmail(watch().email);
+        const data = await mutate({ variables: { email: formData.email } })
+        if (data?.data?.forgotPassword) {
+            pinRef.current.open(formData);
+        }
+        setIsLoading(false);
     };
 
     const handleResetRedirect = (queryData) => {
         router.push({
-            pathname: "/forgot-password/reset-password",
+            pathname: "/auth/forgot-password/reset-password",
             query: { email: queryData.email, code: queryData.code },
         });
     };
@@ -90,7 +92,6 @@ const ForgotPassword = () => {
                         id="email"
                         type="string"
                         placeholder="eg@eg.com"
-                        value={email}
                         disabled={isLoading}
                         autoFocus={true}
                     />

@@ -35,7 +35,7 @@ const Register = () => {
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace("/")}
+                callback={() => router.replace("/login")}
                 emailAddress={email}
                 location="register"
             />
@@ -168,28 +168,28 @@ const Register = () => {
                         </form>
                     </div>
                 </div>
-                <div className="col-span-3 flex items-center">
+                <div className="flex items-center col-span-3">
                     <div className="w-ful">
-                        <div className="grid grid-cols-3 gap-6 w-full">
-                            <h2 className="col-span-3 text-xl font-medium text-primary w-full">
+                        <div className="grid w-full grid-cols-3 gap-6">
+                            <h2 className="w-full col-span-3 text-xl font-medium text-primary">
                                 導入の流れ
                             </h2>
                             <div>
-                                <h3 className="bg-primary text-white font-medium text-lg text-center py-2">
+                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
                                     会員登録
                                 </h3>
                                 <div className="pl-5">
-                                    <ul className="text-sm text-gray-600 mt-4 list-disc">
+                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
                                         <li>施設(企業)情報のご登録</li>
                                     </ul>
                                 </div>
                             </div>
                             <div>
-                                <h3 className="bg-primary text-white font-medium text-lg text-center py-2">
+                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
                                     事前審査
                                 </h3>
                                 <div className="pl-5">
-                                    <ul className="text-sm text-gray-600 mt-4 list-disc">
+                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
                                         <li>身分証明の確認</li>
                                         <li>免許(宿泊業など)の確認</li>
                                         <li>感染対策の確認</li>
@@ -197,11 +197,11 @@ const Register = () => {
                                 </div>
                             </div>
                             <div>
-                                <h3 className="bg-primary text-white font-medium text-lg text-center py-2">
+                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
                                     掲載開始
                                 </h3>
                                 <div className="pl-5">
-                                    <ul className="text-sm text-gray-600 mt-4 list-disc">
+                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
                                         <li>ホスト用アカウントの発行</li>
                                         <li>掲載開始</li>
                                         <li>SNSなどで拡散</li>

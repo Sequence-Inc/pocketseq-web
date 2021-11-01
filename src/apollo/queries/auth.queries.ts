@@ -134,3 +134,14 @@ export const LOGIN = gql`
         }
     }
 `;
+
+export const RESET_PASSWORD = gql`
+    mutation ResetPassword($input: ResetPasswordInput!){
+        resetPassword(input: $input){
+            message
+            action
+        }
+    }
+`;
+
+

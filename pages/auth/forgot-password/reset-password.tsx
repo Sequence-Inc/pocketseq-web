@@ -7,6 +7,8 @@ import { Button, PasswordInput, Logo } from "@element";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthLayout from "src/layouts/AuthLayout";
+import { useMutation } from "@apollo/client";
+import { RESET_PASSWORD } from "src/apollo/queries/auth.queries";
 
 const schema = yup.object().shape({
     password: yup.string().min(8).required(),
@@ -15,7 +17,7 @@ const schema = yup.object().shape({
         .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
-const ResetPassword = () => {
+const ResetPassword = ({ email, code }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const {
@@ -25,27 +27,26 @@ const ResetPassword = () => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+    const [resetPassword, { loading: resetLoading }] = useMutation(RESET_PASSWORD, {
+        onError: (err) => alert(err?.message),
+        onCompleted: (data) => {
+            router.replace("/auth/login");
+        }
+    });
 
     const onSubmit = async (formData) => {
-        // setIsLoading(true);
-        // try {
-        //     const resetBody = {
-        //         email: router.query.email,
-        //         code: router.query.code,
-        //         newPassword: formData.password
-        //     };
-        //     const { data } = await axios.post('resetPassword', resetBody);
-        //     toast.success(data.data.message);
-        //     router.replace('/auth/login');
-        // } catch (err) {
-        //     console.log(err);
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        setIsLoading(true);
+        const resetBody = {
+            email,
+            code: parseInt(code),
+            newPassword: formData.password
+        };
+        await resetPassword({ variables: { input: resetBody } });
+        setIsLoading(false);
     };
 
     useEffect(() => {
-        if (!router.query.email && !router.query.code) {
+        if (!email && !code) {
             router.replace("/auth/login");
         }
     }, []);
@@ -65,7 +66,7 @@ const ResetPassword = () => {
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <PasswordInput
-                        {...register("password", { required: true })}
+                        {...register("password")}
                         error={errors.password ? true : false}
                         errorMessage={errors?.password?.message}
                         label="パスワード"
@@ -74,7 +75,7 @@ const ResetPassword = () => {
                     />
 
                     <PasswordInput
-                        {...register("confirmPassword", { required: true })}
+                        {...register("confirmPassword")}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors.confirmPassword?.message}
                         label="パスワード認証"
@@ -104,8 +105,13 @@ const ResetPassword = () => {
     );
 };
 
-// export const getStaticProps = async (context) => {
-//     return { props: {} };
-// };
+export const getServerSideProps = async (context) => {
+    return {
+        props: {
+            email: context.query.email,
+            code: context.query.code
+        }
+    };
+};
 
 export default ResetPassword;

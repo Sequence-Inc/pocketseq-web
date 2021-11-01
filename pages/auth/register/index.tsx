@@ -27,7 +27,7 @@ const Register = () => {
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace("/")}
+                callback={() => router.replace('/login')}
                 location="register"
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
