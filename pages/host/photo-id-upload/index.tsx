@@ -45,8 +45,7 @@ const PhotoIdUpload = () => {
             console.log(err);
             setLoading(false);
         },
-        refetchQueries: [{ query: HOST }],
-        fetchPolicy: "network-only",
+        refetchQueries: [{ query: HOST, fetchPolicy: "network-only" }],
     });
 
     const handleUpload = () => {
