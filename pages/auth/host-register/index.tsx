@@ -44,7 +44,7 @@ const Register = () => {
                     <div className="px-4 pt-6 pb-4 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                         <Logo />
                         <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                            ホストアカウントのを作成する
+                            ホストアカウントを作成する
                         </h2>
                         <form
                             onSubmit={handleSubmit(handleRegister)}
