@@ -20,8 +20,13 @@ const Logo = ({ variant, className }: LogoProps) => {
                 }
             )}
         >
-            <ClockIcon className="w-8 h-8 " />
-            <span className="ml-2 text-lg font-medium h-7">Time Book</span>
+            {/* <ClockIcon className="w-8 h-8 " /> */}
+            <img
+                src="/timebook-logomark.svg"
+                alt="time book logo"
+                className="w-10 h-10"
+            />
+            <span className="ml-2 text-lg font-medium h-7">time book</span>
         </div>
     );
 };

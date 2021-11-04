@@ -120,8 +120,8 @@ const Teaser = () => {
                                         />
                                     </h2>
                                     <div>
-                                        <h2 className="text-white font-bold text-3xl">
-                                            「人x場所x体験」を繋げる
+                                        <h2 className="text-white font-bold text-5xl">
+                                            「人x場所×体験」を繋げる
                                         </h2>
                                         <p className="text-green-100 text-2xl mt-4">
                                             さぁ、思い思いの場所と体験を見つけに行こう！
@@ -146,7 +146,8 @@ const Teaser = () => {
                                     </div>
                                     <div>
                                         <a
-                                            href="/time-book-プレスリリース.pdf"
+                                            href="https://prtimes.jp/main/html/rd/p/000000002.000089436.html"
+                                            target="_blank"
                                             className=" text-white hover:underline"
                                         >
                                             time

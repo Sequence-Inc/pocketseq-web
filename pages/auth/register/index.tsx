@@ -27,49 +27,49 @@ const Register = () => {
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace('/login')}
+                callback={() => router.replace("/login")}
                 location="register"
             />
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                    アカウントのを作成する
+                    アカウントを作成する
                 </h2>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
                     className="space-y-4"
                 >
                     <TextField
-                        {...register("firstName", { required: true })}
-                        error={errors.firstName ? true : false}
-                        errorMessage={errors?.firstName?.message}
-                        label="名前"
-                        id="firstName"
-                        autoFocus={true}
-                        disabled={loading}
-                    />
-                    <TextField
                         {...register("lastName", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="苗字"
+                        label="性"
                         id="lastName"
                         disabled={loading}
                     />
                     <TextField
-                        {...register("firstNameKana", { required: true })}
+                        {...register("firstName", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label="名前（かな）"
-                        id="firstNameKana"
+                        label="名"
+                        id="firstName"
+                        autoFocus={true}
                         disabled={loading}
                     />
                     <TextField
                         {...register("lastNameKana", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="苗字（かな）"
+                        label="性（かな）"
                         id="lastNameKana"
+                        disabled={loading}
+                    />
+                    <TextField
+                        {...register("firstNameKana", { required: true })}
+                        error={errors.firstName ? true : false}
+                        errorMessage={errors?.firstName?.message}
+                        label="名（かな）"
+                        id="firstNameKana"
                         disabled={loading}
                     />
                     <TextField
