@@ -61,12 +61,12 @@ export const AccountsList = ({ filterOptions }) => {
 
     if (error) return <NetworkHelper type="error" message={error.message} />;
 
-    if (data.allAccounts.length === 0) {
+    if (data.allAccounts.data.length === 0) {
         return <NetworkHelper type="no-data" />;
     }
 
     // return null;
-    const normalizedForm = data.allAccounts.map((account) => {
+    const normalizedForm = data.allAccounts.data.map((account) => {
         const newAccountData = { ...account };
         if (account.__typename === "UserProfile") {
             newAccountData.name = `${account.firstName} ${account.lastName}`;
