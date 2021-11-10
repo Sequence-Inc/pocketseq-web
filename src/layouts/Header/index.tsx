@@ -3,7 +3,7 @@ import { MenuIcon, XIcon, ClockIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { Button } from "@element";
+import { Button, Logo } from "@element";
 import { GET_SESSION } from "src/apollo/queries/state.queries";
 import { useQuery } from "@apollo/client";
 import { authorizeRole, logout, classNames } from "src/utils/";
@@ -147,10 +147,11 @@ const HeaderComp = () => {
                                 </div>
                                 <Link href="/">
                                     <a className="flex items-center flex-shrink-0">
-                                        <ClockIcon className="w-8 h-8 text-white" />
+                                        {/* <ClockIcon className="w-8 h-8 text-white" />
                                         <span className="hidden w-auto ml-2 text-lg font-medium text-white h-7 lg:flex lg:items-center">
                                             Time Book
-                                        </span>
+                                        </span> */}
+                                        <Logo variant="dark" />
                                     </a>
                                 </Link>
                             </div>
