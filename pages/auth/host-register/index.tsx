@@ -15,6 +15,7 @@ import IndividualForm from "src/components/IndividualForm";
 const Register = () => {
     const {
         register,
+        reset,
         control,
         errors,
         watch,
@@ -59,6 +60,7 @@ const Register = () => {
                                         <RadioGroup
                                             {...field}
                                             disabled={loading}
+                                            onChange={(v) => { reset({ hostType: v, terms: false }); field.onChange(v) }}
                                         >
                                             <RadioGroup.Label className="sr-only">
                                                 ホストアカウント
@@ -131,16 +133,48 @@ const Register = () => {
                                 <CorporateForm
                                     register={register}
                                     errors={errors}
+                                    watch={watch}
                                     loading={loading}
                                 />
                             )}
                             {watch().hostType === "個人" && (
                                 <IndividualForm
                                     register={register}
+                                    watch={watch}
                                     errors={errors}
                                     loading={loading}
                                 />
                             )}
+
+                            <Controller
+                                key={watch().hostType}
+                                name="terms"
+                                control={control}
+                                rules={{ validate: (val) => val && true }}
+                                render={({ field }: any) => (
+                                    <div>
+                                        <input
+                                            {...field}
+                                            id="terms"
+                                            aria-describedby="terms-description"
+                                            type="checkbox"
+                                            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                        />
+                                        <label htmlFor="terms" className="ml-3 text-sm text-gray-500 align-baseline">
+                                            I agree to {" "}
+                                            <a href="#" className="inline-block text-gray-500 hover:text-primary" target="_blank">
+                                                terms and conditions
+                                            </a>
+                                        </label>
+                                    </div>
+                                )}
+                            />
+                            {errors?.terms && (
+                                <span className="text-xs text-red-600">
+                                    You must agree to terms and conditions to continue
+                                </span>
+                            )}
+
 
                             <div>
                                 <Button
@@ -243,7 +277,7 @@ const Register = () => {
                     &copy; Copyright 2021 Sequence Co., Ltd.
                 </div>
             </div>
-        </AuthLayout>
+        </AuthLayout >
     );
 };
 
