@@ -15,7 +15,7 @@ type UserInput = {
     confirmPassword: string;
 };
 
-type CorporateInput = {
+type companyInput = {
     email: string;
     password: string;
     name: string;
@@ -26,14 +26,19 @@ type CorporateInput = {
 
 type RegisterHost = {
     hostType: "個人" | "法人";
-    company: CorporateInput | undefined;
+    company: companyInput | undefined;
     user: UserInput | undefined;
+    terms: boolean;
 };
 
 // form validation schema
 const schema = yup.object().shape({
-    // name: yup.string().required("Company Name is required"),
-    // nameKana: yup.string().required("Company Name Kana is required"),
+    hostType: yup.string().required("Host Type is required"),
+    company: yup.object({
+        name: yup.string().required("Name is required"),
+    })
+    // name: yup.string().required("company Name is required"),
+    // nameKana: yup.string().required("company Name Kana is required"),
     // email: yup.string().email("Invalid Email").required("Email is required"),
     // registrationNumber: yup.string().required("Registration Number is required"),
     // password: yup.string().required("Password is required"),
@@ -49,16 +54,16 @@ const useRegisterHost = () => {
 
     const {
         register,
+        reset,
         control,
         formState: { errors },
         watch,
         handleSubmit,
     } = useForm<RegisterHost>({
-        resolver: yupResolver(schema),
+        // resolver: yupResolver(schema),
         defaultValues: {
             hostType: "個人",
-            company: undefined,
-            user: undefined,
+            terms: false
         },
     });
 
@@ -85,14 +90,17 @@ const useRegisterHost = () => {
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
         formModel.hostType =
-            formData.hostType === "個人" ? "Individual" : "Corporate";
+            formData.hostType === "個人" ? "Individual" : "company";
         formModel.user && delete formModel.user.confirmPassword;
-        formModel.compnay && delete formModel.compnay.confirmPassword;
-        registerHost({ variables: { input: formModel } });
+        formModel.company && delete formModel.company.confirmPassword;
+        delete formModel.terms;
+        console.log(formModel)
+        // registerHost({ variables: { input: formModel } });
     };
 
     return {
         register,
+        reset,
         control,
         errors,
         watch,
