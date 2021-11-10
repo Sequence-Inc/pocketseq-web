@@ -16,32 +16,32 @@ const categories: ICategoryItem[] = [
     {
         title: "Business × time book",
         subTitle: "オフサイトMTGやブレストMTGなどに最適",
-        photo: "/service1.jpg",
+        photo: "/services/meeting.jpg",
     },
     {
         title: "Freelance × time book",
         subTitle: "フリーランスの方がスキル提供する場所を拡大",
-        photo: "/service6.jpg",
+        photo: "/services/makeup.jpg",
     },
     {
         title: "Lifestyle × time book",
         subTitle: "体験してみたかった事を気軽に予約",
-        photo: "/service2.jpg",
+        photo: "/services/sauna.jpg",
     },
     {
         title: "Outdoor × time book",
         subTitle: "家のそばでも旅先でもいつでもオープンスペースを探せます",
-        photo: "/service3.jpg",
+        photo: "/services/lifestyle.jpg",
     },
     {
         title: "Party × time book",
         subTitle: "スタイリッシュ空間で特別なパーティを",
-        photo: "/service5.jpg",
+        photo: "/services/music.jpg",
     },
     {
         title: "Learninng × time book",
         subTitle: "身近な習い事を見つける事ができる",
-        photo: "/service4.jpg",
+        photo: "/services/party.jpg",
     },
 ];
 
@@ -67,7 +67,7 @@ export default function Services() {
                                 </p>
                                 <div className="grid grid-cols-1 gap-4 mt-12 sm:grid-cols-2 md:grid-cols-3 lg:gap-6">
                                     {categories.map((res) => (
-                                        <Link href="/search">
+                                        <Link href="/search" key={res.photo}>
                                             <a>
                                                 <div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                                                     {res.photo && (
