@@ -3,11 +3,11 @@ import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 import { clientTypeDefs, cache } from "./cache";
 import { getSession, logout } from "src/utils/auth";
 import { onError } from 'apollo-link-error';
-import { fromPromise } from 'apollo-link';
+// import { fromPromise } from 'apollo-link';
 
-const getNewToken = async () => {
-    return await { accessToken: "gg", refreshToken: "gg" }
-}
+// const getNewToken = async () => {
+//     return await { accessToken: "gg", refreshToken: "gg" }
+// }
 
 const errorLink = onError(
     ({ graphQLErrors, networkError, operation, forward }) => {

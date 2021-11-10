@@ -1,7 +1,10 @@
 import { PasswordInput, TextField } from "@element";
-import React from "react";
+import React, { useRef } from "react";
 
-const IndividualForm = ({ register, errors, loading }) => {
+const IndividualForm = ({ register, watch, errors, loading }) => {
+    const password = useRef({});
+    password.current = watch().user?.password;
+
     return (
         <div className="space-y-3">
             <TextField
@@ -54,9 +57,9 @@ const IndividualForm = ({ register, errors, loading }) => {
                 disabled={loading}
             />
             <PasswordInput
-                {...register("user.confirmPassword", { required: true })}
+                {...register("user.confirmPassword", { validate: (val) => val === password.current && true })}
                 error={errors?.user?.confirmPassword ? true : false}
-                errorMessage={errors?.user?.confirmPassword?.message}
+                errorMessage="The passwords do not match"
                 label="パスワード認証"
                 id="confirmPassword"
                 disabled={loading}
