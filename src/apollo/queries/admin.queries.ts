@@ -6,6 +6,7 @@ import {
     RESULT,
     SPACE_TYPE,
     IMAGE_UPLOAD_RESULT,
+    PAGINATION,
 } from "./core.queries";
 
 export const ACCOUNTS = gql`
@@ -14,8 +15,11 @@ export const ACCOUNTS = gql`
         $paginate: PaginationOption!
     ) {
         allAccounts(filters: $filters, paginate: $paginate) {
-            ${USER_ACCOUNT}
-            ${COMPANY_ACCOUNT}
+            data{
+                ${USER_ACCOUNT}
+                ${COMPANY_ACCOUNT}
+            }
+            ${PAGINATION}
         }
     }
 `;
@@ -27,6 +31,7 @@ export const SPACE_TYPES = gql`
         }
     }
 `;
+
 export const PREFECTURES = gql`
     query prefectures {
         allPrefectures {

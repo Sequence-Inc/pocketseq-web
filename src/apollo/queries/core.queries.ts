@@ -184,3 +184,10 @@ export const STATION = `
     longitude
     latitude
 `;
+
+export const PAGINATION = `
+    paginationInfo{
+        hasNext
+        hasPrevious
+    }
+`;

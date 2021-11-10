@@ -5,36 +5,36 @@ const IndividualForm = ({ register, errors, loading }) => {
     return (
         <div className="space-y-3">
             <TextField
-                {...register("user.firstName", { required: true })}
-                error={errors?.user?.firstName ? true : false}
-                errorMessage={errors?.user?.firstName?.message}
-                label="名前"
-                id="firstName"
-                autoFocus={true}
-                disabled={loading}
-            />
-            <TextField
                 {...register("user.lastName", { required: true })}
                 error={errors?.user?.lastName ? true : false}
                 errorMessage={errors?.user?.lastName?.message}
-                label="苗字"
+                label="性"
                 id="lastName"
                 disabled={loading}
             />
             <TextField
-                {...register("user.firstNameKana", { required: true })}
-                error={errors?.user?.firstNameKana ? true : false}
-                errorMessage={errors?.user?.firstNameKana?.message}
-                label="名前（かな）"
-                id="firstNameKana"
+                {...register("user.firstName", { required: true })}
+                error={errors?.user?.firstName ? true : false}
+                errorMessage={errors?.user?.firstName?.message}
+                label="名"
+                id="firstName"
+                autoFocus={true}
                 disabled={loading}
             />
             <TextField
                 {...register("user.lastNameKana", { required: true })}
                 error={errors?.user?.lastNameKana ? true : false}
                 errorMessage={errors?.user?.lastNameKana?.message}
-                label="苗字（かな）"
+                label="性（かな）"
                 id="lastNameKana"
+                disabled={loading}
+            />
+            <TextField
+                {...register("user.firstNameKana", { required: true })}
+                error={errors?.user?.firstNameKana ? true : false}
+                errorMessage={errors?.user?.firstNameKana?.message}
+                label="名（かな）"
+                id="firstNameKana"
                 disabled={loading}
             />
             <TextField
