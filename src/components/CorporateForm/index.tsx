@@ -13,6 +13,7 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 errorMessage="Company name is required"
                 label="会社名"
                 id="company.name"
+                placeholder="例）株式会社タイムブック"
                 autoFocus={true}
                 disabled={loading}
             />
@@ -22,6 +23,7 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 errorMessage="Company name kana is required"
                 label="会社名（かな）"
                 id="company.nameKana"
+                placeholder="例）カ）タイムブック"
                 disabled={loading}
             />
             <TextField
@@ -30,6 +32,7 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 errorMessage="Company email is required"
                 label="メールアドレス"
                 id="company.email"
+                placeholder="例）info@timebook.co.jp"
                 disabled={loading}
             />
             <TextField
@@ -38,6 +41,7 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 errorMessage="Registration number is required"
                 label="法人番号"
                 id="company.registrationNumber"
+                placeholder="例）1234567890123"
                 disabled={loading}
             />
             <PasswordInput
@@ -49,10 +53,12 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 disabled={loading}
             />
             <PasswordInput
-                {...register("company.confirmPassword", { validate: (val) => val === password.current && true })}
+                {...register("company.confirmPassword", {
+                    validate: (val) => val === password.current && true,
+                })}
                 error={errors?.company?.confirmPassword ? true : false}
-                errorMessage="The passwords do not match"
-                label="パスワード認証"
+                errorMessage={errors?.company?.confirmPassword?.message}
+                label="パスワード確認"
                 id="company.confirmPassword"
                 disabled={loading}
             />

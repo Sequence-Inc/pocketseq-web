@@ -47,7 +47,11 @@ const useLogin = () => {
             if (error?.action === "verify-email") {
                 pinRef?.current.open(watch());
             } else {
-                errorRef.current?.open(error.message);
+                if (error.message) {
+                    errorRef.current?.open(error.message);
+                } else if (err.message) {
+                    errorRef.current?.open(err.message);
+                }
             }
         },
     });
