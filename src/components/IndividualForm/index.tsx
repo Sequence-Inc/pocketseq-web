@@ -9,7 +9,9 @@ const IndividualForm = ({ register, errors, loading }) => {
                 error={errors?.user?.lastName ? true : false}
                 errorMessage={errors?.user?.lastName?.message}
                 label="性"
+                placeholder="例）山田"
                 id="lastName"
+                autoFocus={true}
                 disabled={loading}
             />
             <TextField
@@ -18,7 +20,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.user?.firstName?.message}
                 label="名"
                 id="firstName"
-                autoFocus={true}
+                placeholder="例）太郎"
                 disabled={loading}
             />
             <TextField
@@ -26,6 +28,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 error={errors?.user?.lastNameKana ? true : false}
                 errorMessage={errors?.user?.lastNameKana?.message}
                 label="性（かな）"
+                placeholder="例）ヤマダ"
                 id="lastNameKana"
                 disabled={loading}
             />
@@ -34,6 +37,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 error={errors?.user?.firstNameKana ? true : false}
                 errorMessage={errors?.user?.firstNameKana?.message}
                 label="名（かな）"
+                placeholder="例）タロウ"
                 id="firstNameKana"
                 disabled={loading}
             />
@@ -43,6 +47,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.user?.email?.message}
                 label="メールアドレス"
                 id="email"
+                placeholder="例）taro@mail.com"
                 disabled={loading}
             />
             <PasswordInput
@@ -57,7 +62,7 @@ const IndividualForm = ({ register, errors, loading }) => {
                 {...register("user.confirmPassword", { required: true })}
                 error={errors?.user?.confirmPassword ? true : false}
                 errorMessage={errors?.user?.confirmPassword?.message}
-                label="パスワード認証"
+                label="パスワード確認"
                 id="confirmPassword"
                 disabled={loading}
             />

@@ -27,19 +27,22 @@ const ResetPassword = ({ email, code }) => {
     } = useForm({
         resolver: yupResolver(schema),
     });
-    const [resetPassword, { loading: resetLoading }] = useMutation(RESET_PASSWORD, {
-        onError: (err) => alert(err?.message),
-        onCompleted: (data) => {
-            router.replace("/auth/login");
+    const [resetPassword, { loading: resetLoading }] = useMutation(
+        RESET_PASSWORD,
+        {
+            onError: (err) => alert(err?.message),
+            onCompleted: (data) => {
+                router.replace("/auth/login");
+            },
         }
-    });
+    );
 
     const onSubmit = async (formData) => {
         setIsLoading(true);
         const resetBody = {
             email,
             code: parseInt(code),
-            newPassword: formData.password
+            newPassword: formData.password,
         };
         await resetPassword({ variables: { input: resetBody } });
         setIsLoading(false);
@@ -78,7 +81,7 @@ const ResetPassword = ({ email, code }) => {
                         {...register("confirmPassword")}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors.confirmPassword?.message}
-                        label="パスワード認証"
+                        label="パスワード確認"
                         id="confirmPassword"
                         disabled={isLoading}
                         hintText="hint password"
@@ -109,8 +112,8 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             email: context.query.email,
-            code: context.query.code
-        }
+            code: context.query.code,
+        },
     };
 };
 

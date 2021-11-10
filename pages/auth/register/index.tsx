@@ -45,6 +45,8 @@ const Register = () => {
                         errorMessage={errors?.lastName?.message}
                         label="性"
                         id="lastName"
+                        placeholder="例）山田"
+                        autoFocus={true}
                         disabled={loading}
                     />
                     <TextField
@@ -53,7 +55,7 @@ const Register = () => {
                         errorMessage={errors?.firstName?.message}
                         label="名"
                         id="firstName"
-                        autoFocus={true}
+                        placeholder="例）太郎"
                         disabled={loading}
                     />
                     <TextField
@@ -62,6 +64,7 @@ const Register = () => {
                         errorMessage={errors?.lastName?.message}
                         label="性（かな）"
                         id="lastNameKana"
+                        placeholder="例）ヤマダ"
                         disabled={loading}
                     />
                     <TextField
@@ -70,6 +73,7 @@ const Register = () => {
                         errorMessage={errors?.firstName?.message}
                         label="名（かな）"
                         id="firstNameKana"
+                        placeholder="例）タロウ"
                         disabled={loading}
                     />
                     <TextField
@@ -78,6 +82,7 @@ const Register = () => {
                         errorMessage={errors?.email?.message}
                         label="メールアドレス"
                         id="email"
+                        placeholder="例）taro@mail.com"
                         disabled={loading}
                     />
                     <PasswordInput

@@ -43,7 +43,7 @@ const Login = () => {
                             error={errors.email ? true : false}
                             errorMessage={errors?.email?.message}
                             label="メールアドレス"
-                            placeholder="eg@eg.com"
+                            placeholder="taro@mail.com"
                             id="email"
                             disabled={loading}
                             autoFocus={true}

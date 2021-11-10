@@ -10,6 +10,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.company?.name?.message}
                 label="会社名"
                 id="company.name"
+                placeholder="例）株式会社タイムブック"
                 autoFocus={true}
                 disabled={loading}
             />
@@ -19,6 +20,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.company?.nameKana?.message}
                 label="会社名（かな）"
                 id="company.nameKana"
+                placeholder="例）カ）タイムブック"
                 disabled={loading}
             />
             <TextField
@@ -27,6 +29,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.company?.email?.message}
                 label="メールアドレス"
                 id="company.email"
+                placeholder="例）info@timebook.co.jp"
                 disabled={loading}
             />
             <TextField
@@ -35,6 +38,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 errorMessage={errors?.company?.registrationNumber?.message}
                 label="法人番号"
                 id="company.registrationNumber"
+                placeholder="例）1234567890123"
                 disabled={loading}
             />
             <PasswordInput
@@ -49,7 +53,7 @@ const CorporateForm = ({ register, errors, loading }) => {
                 {...register("company.confirmPassword", { required: true })}
                 error={errors?.company?.confirmPassword ? true : false}
                 errorMessage={errors?.company?.confirmPassword?.message}
-                label="パスワード認証"
+                label="パスワード確認"
                 id="company.confirmPassword"
                 disabled={loading}
             />
