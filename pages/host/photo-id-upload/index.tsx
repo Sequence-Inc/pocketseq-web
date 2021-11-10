@@ -79,7 +79,7 @@ const PhotoIdUpload = () => {
                         htmlFor="file-upload"
                         className="relative font-medium bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                     >
-                        <span>Upload a file</span>
+                        <span>写真アップロード</span>
                         <input
                             id="file-upload"
                             name="file-upload"
@@ -90,9 +90,9 @@ const PhotoIdUpload = () => {
                             disabled={loading}
                         />
                     </label>
-                    <p className="pl-1">or drag and drop</p>
+                    <p className="pl-1">アップロードする</p>
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                <p className="text-xs text-gray-500">JPEGファイルのみ対応</p>
             </div>
         </div>
     );
@@ -143,14 +143,10 @@ const PhotoIdUpload = () => {
                             </div>
                             <div className="flex-1 w-0 ml-5">
                                 <h3 className="text-xl font-medium text-gray-700">
-                                    Upload photo id
+                                    アップロードする
                                 </h3>
                                 <p className="mt-4 text-gray-600">
-                                    Timebook will need to verify your identity
-                                    before letting you post spaces on our
-                                    platform. Your photo id document will be
-                                    reviewed by our staff and approved in timely
-                                    manner.
+                                    現在、運転免許証またはパスポートが、政府発行の有効な写真付き身分証明書として認められています。
                                 </p>
                                 <div className="mt-8 mr-8 sm:max-w-md">
                                     {content}
@@ -161,7 +157,7 @@ const PhotoIdUpload = () => {
                     <div className="px-5 py-3 text-right bg-gray-50">
                         {loading && (
                             <span className="inline-block mr-4 text-gray-500">
-                                Uploading...
+                                アップロード中...
                             </span>
                         )}
                         <button
@@ -175,7 +171,7 @@ const PhotoIdUpload = () => {
                                 className="w-5 h-5 mr-2 -ml-1"
                                 aria-hidden="true"
                             />
-                            Upload
+                            アップロードする
                         </button>
                     </div>
                 </div>

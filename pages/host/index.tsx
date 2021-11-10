@@ -47,7 +47,7 @@ const HostDashboard = ({ currentSession }) => {
         return (
             <HostLayout>
                 <Head>
-                    <title>Host - Timebook</title>
+                    <title>ホスト管理 - time book</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
@@ -64,7 +64,7 @@ const HostDashboard = ({ currentSession }) => {
         return (
             <HostLayout>
                 <Head>
-                    <title>Host - Timebook</title>
+                    <title>ホスト管理 - time book</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
@@ -158,7 +158,7 @@ const HostDashboard = ({ currentSession }) => {
     return (
         <HostLayout>
             <Head>
-                <title>Host - Timebook</title>
+                <title>ホスト管理 - time book</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                 <div className="w-full mx-auto h-full space-y-6">{content}</div>
