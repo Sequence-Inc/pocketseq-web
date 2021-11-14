@@ -17,7 +17,7 @@ const EditNewSpace = () => {
     const [activeStep, setActiveStep] = useState(0);
     const router = useRouter();
     const { id } = router.query;
-    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id }, fetchPolicy: "network-only", skip: !id })
+    const { data, refetch } = useQuery(GET_SPACE_BY_ID, { variables: { id }, fetchPolicy: "network-only", skip: !id })
     const steps = [
         "Basic",
         "Nearest Stations",
@@ -66,6 +66,7 @@ const EditNewSpace = () => {
                             steps={steps}
                             spaceId={spaceId}
                             initialValue={data?.spaceById?.spacePricePlans}
+                            refetch={refetch}
                         />
                     ) : null}
                 </Stepper>

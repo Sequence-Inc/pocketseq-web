@@ -115,24 +115,37 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
                     </div>
                 </div>
             </div>
-            <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                {initialValue ? null : <><Button
-                    className="w-auto px-8"
-                    disabled={loading || !hasPrevious}
-                    onClick={handlePrevious}
-                >
-                    previous
-                </Button>
+
+            {initialValue ?
+                <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                     <Button
                         type="submit"
                         variant="primary"
                         className="w-auto px-8"
                         loading={loading}
                     >
-                        {hasNext ? "Next" : "Save"}
-                    </Button></>}
-            </div>
-        </form>
+                        Save
+                    </Button>
+                </div> :
+                <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                    <Button
+                        className="w-auto px-8"
+                        disabled={loading || !hasPrevious}
+                        onClick={handlePrevious}
+                    >
+                        previous
+                    </Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-auto px-8"
+                        loading={loading}
+                    >
+                        Next
+                    </Button>
+                </div>
+            }
+        </form >
     );
 };
 
