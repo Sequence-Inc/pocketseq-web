@@ -84,7 +84,9 @@ export const GET_STATIONS_BY_LINE = gql`
 export const ADD_SPACE = gql`
     mutation AddSpace($input: AddSpaceInput!) {
         addSpace(input: $input) {
-            spaceId
+            space{
+                id
+            }
             result {
                 message
                 action
@@ -149,8 +151,13 @@ export const ADD_SPACE_ADDRESS = gql`
     mutation AddSpaceAddress($spaceId: ID!
     $address: AddAddressInput!) {
         addSpaceAddress(spaceId: $spaceId, address:$address) {
-            message
-            action
+            address{
+                id
+            }
+            result {
+                message
+                action
+            }
         }
     }
 `;
@@ -178,8 +185,13 @@ export const ADD_NEAREST_STATION = gql`
     mutation AddNearestStations($spaceId: ID!
     $stations: [AddNearestStationInput]!) {
         addNearestStations(spaceId: $spaceId, stations:$stations) {
-            message
-            action
+            result {
+                message
+                action
+            }
+            nearestStations{
+                time
+            }
         }
     }
 `;
@@ -209,8 +221,13 @@ export const ADD_PRICING_PLAN = gql`
     mutation AddSpacePricePlans($spaceId: ID!
         $pricePlans: [AddSpacePricePlanInput]!) {
         addSpacePricePlans(spaceId: $spaceId, pricePlans:$pricePlans) {
-            message
-            action
+            result {
+                message
+                action
+            }
+            spacePricePlans {
+                id
+            }
         }
     }
 `;

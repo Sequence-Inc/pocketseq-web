@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { ADD_PRICING_PLAN, REMOVE_PRICING_PLAN } from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
 
-const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
+const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue, refetch }: IOtherSpacesProps) => {
     const [pricePlans, setPricePlans] = useState([]);
     const [toggleForm, setToggleForm] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -37,6 +37,7 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
                 id: data.addSpacePricePlans.id
             }
             setPricePlans([...pricePlans, newPlan]);
+            refetch();
             setToggleForm(false);
         }
     };

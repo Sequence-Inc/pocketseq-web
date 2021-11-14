@@ -167,10 +167,10 @@ export const useBasicSpace = (fn, initialValue) => {
         } else {
             const addSpacesData = await mutate({ variables: { input: basicModel } });
             await Promise.all([
-                mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.spaceId, address: addressModel } }),
-                mutateSpaceTypes({ variables: { input: { spaceId: addSpacesData.data.addSpace.spaceId, spaceTypeIds: [formData.spaceTypes] } } })
+                mutateSpaceAddress({ variables: { spaceId: addSpacesData.data.addSpace.space.id, address: addressModel } }),
+                mutateSpaceTypes({ variables: { input: { spaceId: addSpacesData.data.addSpace.space.id, spaceTypeIds: [formData.spaceTypes] } } })
             ]);
-            addSpacesData.data.addSpace.spaceId && fn(addSpacesData.data.addSpace.spaceId);
+            addSpacesData.data.addSpace.space.id && fn(addSpacesData.data.addSpace.space.id);
         }
         setLoading(false)
     })
