@@ -113,7 +113,22 @@ export const useBasicSpace = (fn, initialValue) => {
     const [zipCode, setZipCode] = useState("");
     const [freeCoords, setFreeCoords] = useState<{ lat: any; lng: any } | undefined>();
     const [cache, setCache] = useState({});
-    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
+    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm({
+        defaultValues: {
+            name: undefined,
+            description: undefined,
+            maximumCapacity: undefined,
+            numberOfSeats: undefined,
+            needApproval: false,
+            spaceSize: undefined,
+            spaceTypes: undefined,
+            zipCode: undefined,
+            prefecture: undefined,
+            city: undefined,
+            addressLine1: undefined,
+            addressLine2: undefined
+        }
+    });
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
@@ -132,6 +147,7 @@ export const useBasicSpace = (fn, initialValue) => {
             setValue('numberOfSeats', initialValue?.numberOfSeats)
             setValue('spaceSize', initialValue?.spaceSize)
             setValue('spaceTypes', initialValue?.spaceTypes[0]?.id)
+            setValue('needApproval', initialValue?.needApproval)
             setValue('zipCode', initialValue?.address?.postalCode)
             setValue('prefecture', initialValue?.address?.prefecture?.id)
             setValue('city', initialValue?.address?.city)
@@ -148,7 +164,8 @@ export const useBasicSpace = (fn, initialValue) => {
             description: formData.description,
             maximumCapacity: formData.maximumCapacity,
             numberOfSeats: formData.numberOfSeats,
-            spaceSize: formData.spaceSize
+            spaceSize: formData.spaceSize,
+            needApproval: formData.needApproval
         };
         const addressModel = {
             postalCode: formData.zipCode,

@@ -194,9 +194,10 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 name="needApproval"
                                 control={control}
                                 render={({ field }: any) => (
-                                    <div>
+                                    <div>{console.log(field)}
                                         <input
                                             {...field}
+                                            checked={field.value}
                                             id="needApproval"
                                             aria-describedby="needApproval-description"
                                             type="checkbox"
@@ -209,11 +210,6 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 )}
                             />
                         </div>
-                        {errors?.terms && (
-                            <span className="text-xs text-red-600">
-                                You must agree to terms and conditions to continue
-                            </span>
-                        )}
 
                         <div className="">
                             <TextField

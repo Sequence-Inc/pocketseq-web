@@ -251,6 +251,7 @@ export const GET_SPACE_BY_ID = gql`
                 maximumCapacity
                 numberOfSeats
                 spaceSize
+                needApproval
                 spaceTypes {
                     id
                     title
