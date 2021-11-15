@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Button, Select, TextArea, TextField } from "@element";
+import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
 import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
@@ -12,9 +12,10 @@ interface IBasicSpace {
     steps: any[];
     setSpaceId: (id: any) => void;
     initialValue?: any
+    spaceLoading?: boolean;
 }
 
-const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: IBasicSpace) => {
+const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spaceLoading }: IBasicSpace) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -23,6 +24,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
         setZipCode,
         cache,
         setCache,
+        freeCoords,
+        setFreeCoords,
         register,
         control,
         errors,
@@ -31,12 +34,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
         onSubmit,
     } = useBasicSpace(handleNext, initialValue);
 
-    const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
-
-    const handlePrevious = (): void => {
-        if (hasPrevious) setActiveStep(activeStep - 1);
-    };
 
     function handleNext(id): void {
         if (hasNext) setActiveStep(activeStep + 1);
@@ -83,7 +81,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
     }, [watch().zipCode]);
 
     return (
-        <form onSubmit={onSubmit}>{console.log(watch())}
+        <>
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                     Space
@@ -93,203 +91,243 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     add valid information.
                 </p>
             </div>
-            <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
-                <div className="">
-                    <TextField
-                        {...register("name", {
-                            required: true,
-                        })}
-                        label="Name"
-                        error={errors.name && true}
-                        errorMessage="Name is required"
-                        autoFocus
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-                <div className="">
-                    <TextArea
-                        {...register("description", {
-                            required: true,
-                        })}
-                        label="Description"
-                        error={errors.description && true}
-                        errorMessage="Description is required"
-                        disabled={loading}
-                        rows={4}
-                        singleRow
-                    />
-                </div>
-                <div className="">
-                    <TextField
-                        {...register("maximumCapacity", {
-                            required: true,
-                            setValueAs: (val) => parseInt(val),
-                        })}
-                        label="Maximum Capacity"
-                        error={errors.maximumCapacity && true}
-                        errorMessage="Maximum Capacity is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <TextField
-                        {...register("numberOfSeats", {
-                            required: true,
-                            setValueAs: (val) => parseInt(val),
-                        })}
-                        label="Number Of seats"
-                        error={errors.numberOfSeats && true}
-                        errorMessage="Number Of seats is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <TextField
-                        {...register("spaceSize", {
-                            required: true,
-                            setValueAs: (val) => parseFloat(val),
-                        })}
-                        label="Space Size"
-                        error={errors.spaceSize && true}
-                        errorMessage="Space Size is required"
-                        type="number"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-
-                <div className="">
-                    <Controller
-                        name="spaceTypes"
-                        control={control}
-                        rules={{ required: true }}
-                        defaultValue={initialValue?.spaceTypes}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                label="Space Types"
-                                options={spaceTypes?.availableSpaceTypes || []}
-                                error={errors.spaceTypes && true}
-                                errorMessage="Space Types is required"
-                                labelKey="title"
-                                valueKey="id"
+            {spaceLoading ? <div className="flex items-center justify-center h-content">
+                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
+            </div> :
+                <form onSubmit={onSubmit}>
+                    <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                        <div className="">
+                            <TextField
+                                {...register("name", {
+                                    required: true,
+                                })}
+                                label="Name"
+                                error={errors.name && true}
+                                errorMessage="Name is required"
+                                autoFocus
                                 disabled={loading}
                                 singleRow
                             />
-                        )}
-                    />
-                </div>
-                <div className="">
-                    <TextField
-                        {...register("zipCode", {
-                            required: true,
-                        })}
-                        label="Postal code"
-                        error={errors.zipCode && true}
-                        errorMessage="Zip Code is required"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-                <div className="">
-                    <Controller
-                        name={`prefecture`}
-                        control={control}
-                        rules={{ required: true }}
-                        defaultValue={initialValue?.address?.Prefecture?.id}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                label="Prefecture"
-                                options={
-                                    prefectures?.availablePrefectures || []
-                                }
-                                error={errors?.prefecture && true}
-                                onChange={(event) => {
-                                    field.onChange(event);
-                                }}
-                                errorMessage="Prefecture is required"
-                                labelKey="name"
-                                valueKey="id"
+                        </div>
+                        <div className="">
+                            <TextArea
+                                {...register("description", {
+                                    required: true,
+                                })}
+                                label="Description"
+                                error={errors.description && true}
+                                errorMessage="Description is required"
+                                disabled={loading}
+                                rows={4}
+                                singleRow
+                            />
+                        </div>
+                        <div className="">
+                            <TextField
+                                {...register("maximumCapacity", {
+                                    required: true,
+                                    setValueAs: (val) => parseInt(val),
+                                })}
+                                label="Maximum Capacity"
+                                error={errors.maximumCapacity && true}
+                                errorMessage="Maximum Capacity is required"
+                                type="number"
                                 disabled={loading}
                                 singleRow
                             />
+                        </div>
+
+                        <div className="">
+                            <TextField
+                                {...register("numberOfSeats", {
+                                    required: true,
+                                    setValueAs: (val) => parseInt(val),
+                                })}
+                                label="Number Of seats"
+                                error={errors.numberOfSeats && true}
+                                errorMessage="Number Of seats is required"
+                                type="number"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+
+                        <div className="">
+                            <TextField
+                                {...register("spaceSize", {
+                                    required: true,
+                                    setValueAs: (val) => parseFloat(val),
+                                })}
+                                label="Space Size"
+                                error={errors.spaceSize && true}
+                                errorMessage="Space Size is required"
+                                type="number"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+
+                        <div className="">
+                            <Controller
+                                name="spaceTypes"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label="Space Types"
+                                        options={spaceTypes?.availableSpaceTypes || []}
+                                        error={errors.spaceTypes && true}
+                                        errorMessage="Space Types is required"
+                                        labelKey="title"
+                                        valueKey="id"
+                                        disabled={loading}
+                                        singleRow
+                                    />
+                                )}
+                            />
+                        </div>
+
+                        <div className="items-center flex-none sm:space-x-4 sm:flex">
+                            <div className="w-60" />
+                            <Controller
+                                name="needApproval"
+                                control={control}
+                                render={({ field }: any) => (
+                                    <div>
+                                        <input
+                                            {...field}
+                                            id="needApproval"
+                                            aria-describedby="needApproval-description"
+                                            type="checkbox"
+                                            className="w-4 h-4 border-gray-300 rounded cursor-pointer text-primary focus:ring-primary"
+                                        />
+                                        <label htmlFor="needApproval" className="ml-3 text-sm font-medium text-gray-600 align-baseline cursor-pointer">
+                                            enable need host approval
+                                        </label>
+                                    </div>
+                                )}
+                            />
+                        </div>
+                        {errors?.terms && (
+                            <span className="text-xs text-red-600">
+                                You must agree to terms and conditions to continue
+                            </span>
                         )}
-                    />
-                </div>
-                <div className="">
-                    <TextField
-                        {...register("city", {
-                            required: true,
-                        })}
-                        defaultValue={initialValue?.address?.city}
-                        label="City"
-                        error={errors.city && true}
-                        errorMessage="City is required"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-                <div className="">
-                    <TextField
-                        {...register("addressLine1", {
-                            required: true,
-                        })}
-                        defaultValue={initialValue?.address?.addressLine1}
-                        label="Address Line 1"
-                        error={errors.zipCode && true}
-                        errorMessage="Address Line 1 is required"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-                <div className="">
-                    <TextField
-                        {...register("addressLine2", {
-                            required: true,
-                        })}
-                        defaultValue={initialValue?.address?.addressLine2}
-                        label="Address Line 2"
-                        error={errors.zipCode && true}
-                        errorMessage="Address Line 2 is required"
-                        disabled={loading}
-                        singleRow
-                    />
-                </div>
-            </div>
-            {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    Save
-                </Button>
-            </div> : <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
-                    className="w-auto px-8"
-                    disabled={true}
-                >
-                    previous
-                </Button>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    Next
-                </Button>
-            </div>}
-        </form>
+
+                        <div className="">
+                            <TextField
+                                {...register("zipCode", {
+                                    required: true,
+                                })}
+                                label="Postal code"
+                                error={errors.zipCode && true}
+                                errorMessage="Zip Code is required"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+                        <div className="">
+                            <Controller
+                                name={`prefecture`}
+                                control={control}
+                                rules={{ required: true }}
+                                defaultValue={initialValue?.address?.Prefecture?.id}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label="Prefecture"
+                                        options={
+                                            prefectures?.availablePrefectures || []
+                                        }
+                                        error={errors?.prefecture && true}
+                                        onChange={(event) => {
+                                            field.onChange(event);
+                                        }}
+                                        errorMessage="Prefecture is required"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        disabled={loading}
+                                        singleRow
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div className="">
+                            <TextField
+                                {...register("city", {
+                                    required: true,
+                                })}
+                                defaultValue={initialValue?.address?.city}
+                                label="City"
+                                error={errors.city && true}
+                                errorMessage="City is required"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+                        <div className="">
+                            <TextField
+                                {...register("addressLine1", {
+                                    required: true,
+                                })}
+                                defaultValue={initialValue?.address?.addressLine1}
+                                label="Address Line 1"
+                                error={errors.zipCode && true}
+                                errorMessage="Address Line 1 is required"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+                        <div className="">
+                            <TextField
+                                {...register("addressLine2", {
+                                    required: true,
+                                })}
+                                defaultValue={initialValue?.address?.addressLine2}
+                                label="Address Line 2"
+                                error={errors.zipCode && true}
+                                errorMessage="Address Line 2 is required"
+                                disabled={loading}
+                                singleRow
+                            />
+                        </div>
+                    </div>
+                    <div className="w-full pt-3 h-80">
+                        <GoogleMap
+                            freeCoords={freeCoords}
+                            setFreeCoords={setFreeCoords}
+                            mark={initialValue ? { lat: initialValue?.address?.latitude, lng: initialValue?.address?.longitude } : undefined}
+                        />
+                    </div>
+                    {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            className="w-auto px-8"
+                            loading={loading}
+                        >
+                            Save
+                        </Button>
+                    </div> :
+                        <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                            <Button
+                                className="w-auto px-8"
+                                disabled={true}
+                            >
+                                previous
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                className="w-auto px-8"
+                                loading={loading}
+                            >
+                                Next
+                            </Button>
+                        </div>}
+                </form>}
+        </>
     );
 };
 

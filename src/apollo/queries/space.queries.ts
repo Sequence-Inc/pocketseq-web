@@ -286,6 +286,31 @@ export const GET_SPACE_BY_ID = gql`
                     lastMinuteDiscount
                     maintenanceFee
                 }
+                photos {
+                    id
+                    mime
+                    type
+                    thumbnail {
+                        width
+                        height
+                        url
+                    }
+                    small {
+                        width
+                        height
+                        url
+                    }
+                    medium {
+                        width
+                        height
+                        url
+                    }
+                    large {
+                        width
+                        height
+                        url
+                    }
+                }
         }
     }
 `;

@@ -8,9 +8,11 @@ import { useEffect } from 'react';
 interface GoogleMapProps {
   markers?: any;
   mark?: any;
-  type?: 'multi' | 'single';
+  type?: 'multi' | 'single' | 'free';
   activeIndex?: string | number;
   setActiveIndex?: (index: string | number) => void;
+  freeCoords?: any;
+  setFreeCoords?: any;
 }
 
 // Return map bounds based on list of markers
@@ -45,12 +47,13 @@ const apiIsLoaded = (map, maps, markers) => {
   bindResizeListener(map, maps, bounds);
 };
 
-const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex }: GoogleMapProps) => {
+const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex, freeCoords, setFreeCoords }: GoogleMapProps) => {
   const [alive, setAlive] = useState<boolean>(false);
   const JAPAN_CENTER_COORDS = {
     lat: 36.2048,
     lng: 138.2529
   }
+  console.log(mark, freeCoords)
 
   function distanceToMouse({ x, y }, { x: mouseX, y: mouseY }) {
     return Math.sqrt((x - mouseX) * (x - mouseX) + (y - mouseY) * (y - mouseY))
@@ -70,6 +73,11 @@ const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex }: GoogleM
       });
     }
   }, [])
+
+  const changeCoords = ({ x, y, lat, lng, event }) => {
+    console.log({ x, y, lat, lng })
+    setFreeCoords({ x, y, lat, lng })
+  }
 
   return (
     <>
@@ -110,14 +118,30 @@ const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex }: GoogleM
             defaultCenter={mark}
           >
             <SingleMarker lat={mark.lat} lng={mark.lng} />
-          </GoogleMapReact> : null}
+          </GoogleMapReact> : <GoogleMapReact
+            bootstrapURLKeys={{
+              key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
+              language: "ja",
+              region: "JP"
+            }}
+            onClick={changeCoords}
+            defaultZoom={10}
+            defaultCenter={mark || JAPAN_CENTER_COORDS}
+          >
+            {freeCoords ?
+              <SingleMarker lat={freeCoords.lat} lng={freeCoords.lng} /> : null}
+          </GoogleMapReact>}
     </>
   );
 }
 
 GoogleMap.defaultProps = {
-  type: 'single',
-  activeIndex: -1
+  type: 'free',
+  activeIndex: -1,
+  mark: {
+    lat: 36.2048,
+    lng: 138.2529
+  }
 }
 
 export default GoogleMap;

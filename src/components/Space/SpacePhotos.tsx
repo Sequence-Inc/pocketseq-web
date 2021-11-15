@@ -4,14 +4,22 @@ import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
+import { useEffect } from "react";
 
-const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
+const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initialValue }: IOtherSpacesProps) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    useEffect(() => {
+        if (initialValue?.length) {
+            const newPhotos = initialValue.map((res: any) => res.thumbnail?.url);
+            setPhotos(newPhotos);
+        }
+    }, [])
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
@@ -33,8 +41,8 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
     const handleSubmit = async (e) => {
         e.preventDefault();
         // get upload URL for all the photos
-        const imageInputs = photos.map(res => ({ mime: res.type }));
-        console.log(imageInputs, photos)
+        const newPhotos = photos.filter(res => typeof res === "object")
+        const imageInputs = newPhotos.map(res => ({ mime: res.type }));
         const { data, errors } = await mutate({ variables: { spaceId, imageInputs } })
         if (errors) {
             console.log("Errors", errors);
@@ -51,9 +59,11 @@ const SpacePhotos = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
                             "Content-Type": mime,
                         },
                     };
-                    axios.put(url, photos[index], options);
+                    axios.put(url, newPhotos[index], options);
                 }));
-                handleNext();
+                if (initialValue) {
+                    refetch();
+                } else handleNext();
             } catch (err) {
                 console.log(err)
             }
@@ -161,19 +171,20 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                     return (
                         <div key={index} className="relative">
                             <img
-                                src={(window.URL
+                                src={typeof photo === "object" ? (window.URL
                                     ? URL
                                     : webkitURL
-                                ).createObjectURL(photo)}
+                                ).createObjectURL(photo) : photo}
                                 className="object-cover rounded-lg w-36 h-36"
                             />
-                            <button
-                                type="button"
-                                onClick={() => deletePhoto(index)}
-                                className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
-                            >
-                                Remove
-                            </button>
+                            {typeof photo === "object" ?
+                                <button
+                                    type="button"
+                                    onClick={() => deletePhoto(index)}
+                                    className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
+                                >
+                                    Remove
+                                </button> : null}
                         </div>
                     );
                 })}
