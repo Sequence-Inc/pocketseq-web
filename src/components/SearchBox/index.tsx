@@ -9,6 +9,9 @@ import {
 import React from "react";
 import { Popover } from "@element";
 import { useState } from "react";
+import {
+    connectRefinementList,
+} from 'react-instantsearch-dom';
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
@@ -23,12 +26,18 @@ const purposeList = [
     "レッスン・講座",
 ];
 
-export const SearchBox = () => {
+export const SearchBox = connectRefinementList(({ items, refine }) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
+    // console.log(items);
 
     const router = useRouter();
+
+    const handleSearch = () => {
+        refine([area, purpose, date]);
+    }
+
     return (
         <div className="flex flex-col sm:flex-row space-y-2.5 sm:space-y-0 sm:space-x-2.5">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
@@ -60,7 +69,7 @@ export const SearchBox = () => {
                                 value={area}
                                 onChange={(e) => setArea(e.target.value)}
                             />
-                            <p className="text-xs text-gray-700 mt-2">
+                            <p className="mt-2 text-xs text-gray-700">
                                 ※駅は５つまで選択可能です。都道府県・市区町村を複数入力することはできません。
                             </p>
                         </div>
@@ -106,9 +115,8 @@ export const SearchBox = () => {
                             {purposeList.map((item: string, index: number) => (
                                 <li
                                     key={index.toString()}
-                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
-                                        purpose === item ? "bg-gray-100" : ""
-                                    }`}
+                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${purpose === item ? "bg-gray-100" : ""
+                                        }`}
                                     onClick={() => setPurpose(item)}
                                 >
                                     {item}
@@ -149,8 +157,9 @@ export const SearchBox = () => {
                     variant="white"
                     className="px-5 py-3"
                     onClick={(event) => {
-                        event.preventDefault();
-                        router.push("/search");
+                        // event.preventDefault();
+                        // router.push("/search");
+                        handleSearch();
                     }}
                 >
                     <Tag
@@ -166,4 +175,4 @@ export const SearchBox = () => {
             </div>
         </div>
     );
-};
+})

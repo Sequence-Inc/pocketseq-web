@@ -4,6 +4,12 @@ import Marker from "./marker";
 import { useState } from "react";
 import SingleMarker from './singleMarker';
 import { useEffect } from 'react';
+import {
+  GoogleMapsLoader,
+  GeoSearch,
+  Control,
+  Marker as GeoMarker,
+} from 'react-instantsearch-dom-maps';
 
 interface GoogleMapProps {
   markers?: any;
@@ -74,32 +80,47 @@ const GoogleMap = ({ markers, mark, type, activeIndex, setActiveIndex }: GoogleM
   return (
     <>
       {(type === "multi" && markers?.length !== 0) ?
-        <GoogleMapReact
-          bootstrapURLKeys={{
-            key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
-            language: "ja",
-            region: "JP"
-          }}
-          defaultZoom={10}
-          defaultCenter={JAPAN_CENTER_COORDS}
-          yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, markers)}
-          onChildMouseEnter={_onChildMouseEnter}
-          onChildMouseLeave={_onChildMouseLeave}
-          distanceToMouse={distanceToMouse}
-        >
-          {type === "multi" && markers.map((marker) => (
-            <Marker
-              key={marker.id}
-              lat={marker.coords?.lat}
-              lng={marker.coords?.lng}
-              alive={alive}
-              setAlive={setAlive}
-              activeIndex={activeIndex}
-              setActiveIndex={setActiveIndex}
-              marker={marker} />
-          ))}
-        </GoogleMapReact> : (type === "single" && mark) ?
+        <GoogleMapsLoader apiKey="AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU" endpoint='https://maps.googleapis.com/maps/api/js?v=weekly'>
+          {google => (
+            <GeoSearch google={google}>
+              {({ hits }) => (
+                <div>
+                  <Control />
+                  {hits.map(hit => (
+                    <GeoMarker key={hit.objectID} hit={hit} />
+                  ))}
+                </div>
+              )}
+            </GeoSearch>
+          )}
+        </GoogleMapsLoader>
+        // <GoogleMapReact
+        //   bootstrapURLKeys={{
+        //     key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
+        //     language: "ja",
+        //     region: "JP"
+        //   }}
+        //   defaultZoom={10}
+        //   defaultCenter={JAPAN_CENTER_COORDS}
+        //   yesIWantToUseGoogleMapApiInternals
+        //   onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, markers)}
+        //   onChildMouseEnter={_onChildMouseEnter}
+        //   onChildMouseLeave={_onChildMouseLeave}
+        //   distanceToMouse={distanceToMouse}
+        // >
+        //   {type === "multi" && markers.map((marker) => (
+        //     <Marker
+        //       key={marker.id}
+        //       lat={marker.coords?.lat}
+        //       lng={marker.coords?.lng}
+        //       alive={alive}
+        //       setAlive={setAlive}
+        //       activeIndex={activeIndex}
+        //       setActiveIndex={setActiveIndex}
+        //       marker={marker} />
+        //   ))}
+        // </GoogleMapReact> 
+        : (type === "single" && mark) ?
           <GoogleMapReact
             bootstrapURLKeys={{
               key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
