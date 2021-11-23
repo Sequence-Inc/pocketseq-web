@@ -55,8 +55,8 @@ const GoogleMap = ({
 }: GoogleMapProps) => {
     const [alive, setAlive] = useState<boolean>(false);
     const JAPAN_CENTER_COORDS = {
-        lat: 36.2048,
-        lng: 138.2529,
+        lat: 35.6762,
+        lng: 139.6503,
     };
 
     function distanceToMouse({ x, y }, { x: mouseX, y: mouseY }) {
@@ -86,7 +86,7 @@ const GoogleMap = ({
             {type === "multi" && markers?.length !== 0 ? (
                 <GoogleMapReact
                     bootstrapURLKeys={{
-                        key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
+                        key: "AIzaSyA-jsLh5KLSTf3n9GU8nLcfkr54vjj8KuU",
                         language: "ja",
                         region: "JP",
                     }}
@@ -125,6 +125,7 @@ const GoogleMap = ({
                     }}
                     defaultZoom={10}
                     defaultCenter={mark}
+                    zoom={zoom}
                 >
                     <SingleMarker lat={mark.lat} lng={mark.lng} />
                 </GoogleMapReact>

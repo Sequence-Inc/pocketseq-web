@@ -327,6 +327,7 @@ const Basic = ({
                                       }
                                     : undefined
                             }
+                            zoom={15}
                         />
                     </div>
                     {initialValue ? (
