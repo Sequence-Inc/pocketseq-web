@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactComponentElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,27 +12,11 @@ import {
 import { Button, Price, Tag, Title } from "@element";
 import router from "next/router";
 
-interface Coords {
-    lat: number;
-    lng: number;
-}
-
-export interface IItemGrid {
-    id?: string | number;
-    location: string;
-    rating: number;
-    cases: number;
-    title: string;
-    price: number;
-    people: number;
-    area: string;
-    tag: string;
-    photo: string;
-    coords?: Coords;
-}
+import { IPhoto, ISpace } from "../../types/timebookTypes";
+import { FormatPrice, FormatShortAddress } from "src/utils";
 
 export interface ItemGridProps {
-    data: IItemGrid;
+    data: ISpace;
     activeIndex?: string | number;
     setActiveIndex?: any;
 }
@@ -42,10 +26,29 @@ export const ItemGrid = ({
     activeIndex,
     setActiveIndex,
 }: ItemGridProps) => {
+    const {
+        id,
+        name,
+        description,
+        maximumCapacity,
+        spaceSize,
+        spaceTypes,
+        spacePricePlans,
+        address,
+        photos,
+    } = data;
+
+    const location: string = FormatShortAddress(address);
+    const spaceType = spaceTypes[0]; // Todo: implement multiple space types later
+
+    const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
+
+    const photo: IPhoto = photos[0];
+
     return (
         <div
             className={`p-2 space-y-4 bg-white rounded-2xl ${
-                activeIndex === data?.id ? "bg-gray-100" : ""
+                activeIndex === id ? "bg-gray-100" : ""
             }`}
             onMouseEnter={() => setActiveIndex && setActiveIndex(data?.id)}
             onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
@@ -53,8 +56,8 @@ export const ItemGrid = ({
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                 <Image
                     layout="fill"
-                    src={data?.photo}
-                    alt={data?.title}
+                    src={photo.medium.url}
+                    alt={name}
                     className="object-cover object-left-top w-full h-full"
                 />
             </div>
@@ -69,29 +72,31 @@ export const ItemGrid = ({
                                 textStyle="text-sm text-gray-500"
                                 numberOfLines={1}
                             >
-                                {data?.location}
+                                {location}
                             </Tag>
                         </a>
                     </Link>
 
                     <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
                         <div className="text-sm font-semibold text-gray-600">
-                            {data?.rating}{" "}
+                            {rating.points}{" "}
                             <span className="font-light text-gray-400">
-                                ({data?.cases}件)
+                                ({rating.reviews}件)
                             </span>
                         </div>
                     </Tag>
                 </div>
 
                 {/* title section */}
-                <Link href={`/space/${encodeURIComponent(data?.id)}`}>
+                <Link href={`/space/${encodeURIComponent(id)}`}>
                     <a className="block">
-                        <Title numberOfLines={2}>{data?.title}</Title>
+                        <Title numberOfLines={2}>{name}</Title>
                     </a>
                 </Link>
                 {/* price section */}
-                <Price amount={data?.price} />
+                <Price
+                    amount={FormatPrice("HOURLY", spacePricePlans, true, true)}
+                />
 
                 {/* metadata section */}
                 <div className="flex justify-start space-x-4">
@@ -99,13 +104,13 @@ export const ItemGrid = ({
                         Icon={UserGroupIcon}
                         textStyle="text-sm text-gray-500"
                         iconStyle="text-gray-300"
-                    >{`〜${data?.people}人`}</Tag>
+                    >{`〜${maximumCapacity}人`}</Tag>
                     <Tag
                         Icon={HomeIcon}
                         textStyle="text-sm text-gray-500"
                         iconStyle="text-gray-300"
                     >
-                        {data?.area}
+                        {spaceSize}m²
                     </Tag>
                     <Tag
                         Icon={TagIcon}
@@ -113,7 +118,7 @@ export const ItemGrid = ({
                         iconStyle="text-gray-300"
                         numberOfLines={1}
                     >
-                        {data?.tag}
+                        {spaceType.title}
                     </Tag>
                 </div>
 

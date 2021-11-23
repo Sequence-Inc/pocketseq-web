@@ -3,8 +3,10 @@ import React from "react";
 import { useMemo } from "react";
 import { useTable } from "react-table";
 
+import useTranslation from "next-translate/useTranslation";
+
 const Table = ({ columns, data }) => {
-    console.log(columns, data);
+    const { t } = useTranslation("adminhost");
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({
             columns: useMemo(() => columns, []),
@@ -81,13 +83,13 @@ const Table = ({ columns, data }) => {
                             href="#"
                             className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                         >
-                            Previous
+                            {t("previous-page")}
                         </a>
                         <a
                             href="#"
                             className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                         >
-                            Next
+                            {t("next-page")}
                         </a>
                     </div>
                 </nav>

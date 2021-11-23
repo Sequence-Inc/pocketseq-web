@@ -6,15 +6,23 @@ import { useEffect } from "react";
 import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
+import useTranslation from "next-translate/useTranslation";
+
 interface IBasicSpace {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any
+    initialValue?: any;
 }
 
-const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: IBasicSpace) => {
+const Basic = ({
+    activeStep,
+    setActiveStep,
+    steps,
+    setSpaceId,
+    initialValue,
+}: IBasicSpace) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -33,6 +41,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const { t } = useTranslation("adminhost");
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
@@ -55,8 +65,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                        prefix +
-                        ".js"
+                            prefix +
+                            ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -83,14 +93,14 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
     }, [watch().zipCode]);
 
     return (
-        <form onSubmit={onSubmit}>{console.log(watch())}
+        <form onSubmit={onSubmit}>
+            {console.log(watch())}
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Space
+                    スペース
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    This information will be displayed publicly so be sure to
-                    add valid information.
+                    この情報は公開されますので、有効な情報を入力してください。
                 </p>
             </div>
             <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
@@ -99,7 +109,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         {...register("name", {
                             required: true,
                         })}
-                        label="Name"
+                        label={t("space-name")}
                         error={errors.name && true}
                         errorMessage="Name is required"
                         autoFocus
@@ -112,7 +122,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         {...register("description", {
                             required: true,
                         })}
-                        label="Description"
+                        label={t("space-description")}
                         error={errors.description && true}
                         errorMessage="Description is required"
                         disabled={loading}
@@ -126,7 +136,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                             setValueAs: (val) => parseInt(val),
                         })}
-                        label="Maximum Capacity"
+                        label={t("max-capacity")}
                         error={errors.maximumCapacity && true}
                         errorMessage="Maximum Capacity is required"
                         type="number"
@@ -141,7 +151,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                             setValueAs: (val) => parseInt(val),
                         })}
-                        label="Number Of seats"
+                        label={t("space-number-of-seats")}
                         error={errors.numberOfSeats && true}
                         errorMessage="Number Of seats is required"
                         type="number"
@@ -156,7 +166,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                             setValueAs: (val) => parseFloat(val),
                         })}
-                        label="Space Size"
+                        label={t("space-size")}
                         error={errors.spaceSize && true}
                         errorMessage="Space Size is required"
                         type="number"
@@ -174,7 +184,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         render={({ field }) => (
                             <Select
                                 {...field}
-                                label="Space Types"
+                                label={t("space-types")}
                                 options={spaceTypes?.availableSpaceTypes || []}
                                 error={errors.spaceTypes && true}
                                 errorMessage="Space Types is required"
@@ -191,7 +201,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         {...register("zipCode", {
                             required: true,
                         })}
-                        label="Postal code"
+                        label={t("address-postal-code")}
                         error={errors.zipCode && true}
                         errorMessage="Zip Code is required"
                         disabled={loading}
@@ -207,7 +217,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                         render={({ field }) => (
                             <Select
                                 {...field}
-                                label="Prefecture"
+                                label={t("address-prefecture")}
                                 options={
                                     prefectures?.availablePrefectures || []
                                 }
@@ -230,7 +240,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.city}
-                        label="City"
+                        label={t("address-city")}
                         error={errors.city && true}
                         errorMessage="City is required"
                         disabled={loading}
@@ -243,7 +253,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.addressLine1}
-                        label="Address Line 1"
+                        label={t("address-line-1")}
                         error={errors.zipCode && true}
                         errorMessage="Address Line 1 is required"
                         disabled={loading}
@@ -256,7 +266,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.addressLine2}
-                        label="Address Line 2"
+                        label={t("address-line-2")}
                         error={errors.zipCode && true}
                         errorMessage="Address Line 2 is required"
                         disabled={loading}
@@ -264,31 +274,32 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: I
                     />
                 </div>
             </div>
-            {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    Save
-                </Button>
-            </div> : <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                <Button
-                    className="w-auto px-8"
-                    disabled={true}
-                >
-                    previous
-                </Button>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-auto px-8"
-                    loading={loading}
-                >
-                    Next
-                </Button>
-            </div>}
+            {initialValue ? (
+                <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-auto px-8"
+                        loading={loading}
+                    >
+                        {t("save")}
+                    </Button>
+                </div>
+            ) : (
+                <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                    <Button className="w-auto px-8" disabled={true}>
+                        {t("previous-page")}
+                    </Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-auto px-8"
+                        loading={loading}
+                    >
+                        {t("next-page")}
+                    </Button>
+                </div>
+            )}
         </form>
     );
 };
