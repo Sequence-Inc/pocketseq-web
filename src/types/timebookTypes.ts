@@ -77,3 +77,15 @@ export interface IRating {
     points: number;
     reviews: number;
 }
+
+export interface ILocationMarker {
+    id: string | number;
+    coords: {
+        lat: number;
+        lng: number;
+    };
+    name: string;
+    price: number;
+    rating: IRating;
+    photo: IPhoto;
+}
