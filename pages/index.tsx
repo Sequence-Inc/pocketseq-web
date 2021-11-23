@@ -15,7 +15,6 @@ import {
 import {
     CategoryItem,
     ItemGrid,
-    IItemGrid,
     ICategoryItem,
     IExploreItem,
     RegisterCTA,
@@ -169,7 +168,7 @@ const Teaser = () => {
 
 export default Teaser;
 
-export const itemGridData: IItemGrid[] = [
+export const itemGridData = [
     {
         id: 1,
         photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
