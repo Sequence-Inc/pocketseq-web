@@ -67,11 +67,8 @@ const SpaceDetail = ({ spaceId }) => {
     } = space;
 
     const location: string = FormatShortAddress(address);
-    const spaceType = spaceTypes[0]; // Todo: implement multiple space types later
 
     const rating: IRating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
-
-    const photo: IPhoto = photos[0];
 
     const titleInfo: ISpaceInfoTitleProps = {
         name,
