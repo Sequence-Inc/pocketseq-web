@@ -12,6 +12,8 @@ interface GoogleMapProps {
     activeIndex?: string | number;
     setActiveIndex?: (index: string | number) => void;
     zoom?: number;
+    freeCoords?: any;
+    setFreeCoords?: any;
 }
 
 // Return map bounds based on list of markers

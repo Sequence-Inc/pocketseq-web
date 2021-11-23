@@ -37,7 +37,7 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue, 
                 id: data.addSpacePricePlans.id
             }
             setPricePlans([...pricePlans, newPlan]);
-            refetch();
+            initialValue && refetch();
             setToggleForm(false);
         }
     };

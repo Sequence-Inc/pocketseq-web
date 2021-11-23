@@ -111,8 +111,24 @@ export default useAddSpace;
 
 export const useBasicSpace = (fn, initialValue) => {
     const [zipCode, setZipCode] = useState("");
+    const [freeCoords, setFreeCoords] = useState<{ lat: any; lng: any } | undefined>();
     const [cache, setCache] = useState({});
-    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm();
+    const { register, control, formState: { errors }, watch, setValue, handleSubmit } = useForm({
+        defaultValues: {
+            name: undefined,
+            description: undefined,
+            maximumCapacity: undefined,
+            numberOfSeats: undefined,
+            needApproval: false,
+            spaceSize: undefined,
+            spaceTypes: undefined,
+            zipCode: undefined,
+            prefecture: undefined,
+            city: undefined,
+            addressLine1: undefined,
+            addressLine2: undefined
+        }
+    });
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
@@ -130,12 +146,14 @@ export const useBasicSpace = (fn, initialValue) => {
             setValue('maximumCapacity', initialValue?.maximumCapacity)
             setValue('numberOfSeats', initialValue?.numberOfSeats)
             setValue('spaceSize', initialValue?.spaceSize)
-            setValue('spaceTypes', initialValue?.spaceTypes?.id)
+            setValue('spaceTypes', initialValue?.spaceTypes[0]?.id)
+            setValue('needApproval', initialValue?.needApproval)
             setValue('zipCode', initialValue?.address?.postalCode)
             setValue('prefecture', initialValue?.address?.prefecture?.id)
             setValue('city', initialValue?.address?.city)
             setValue('addressLine1', initialValue?.address?.addressLine1)
             setValue('addressLine2', initialValue?.address?.addressLine2)
+            setFreeCoords({ lat: initialValue?.address?.latitude, lng: initialValue?.address?.longitude })
         }
     }, [initialValue])
 
@@ -146,7 +164,8 @@ export const useBasicSpace = (fn, initialValue) => {
             description: formData.description,
             maximumCapacity: formData.maximumCapacity,
             numberOfSeats: formData.numberOfSeats,
-            spaceSize: formData.spaceSize
+            spaceSize: formData.spaceSize,
+            needApproval: formData.needApproval
         };
         const addressModel = {
             postalCode: formData.zipCode,
@@ -154,8 +173,8 @@ export const useBasicSpace = (fn, initialValue) => {
             city: formData.city,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            latitude: 0,
-            longitude: 0
+            latitude: freeCoords?.lat || 0,
+            longitude: freeCoords?.lng || 0
         };
         if (initialValue) {
             const updateSpacesData = await updateSpace({ variables: { input: { ...basicModel, id: initialValue.id } } });
@@ -175,7 +194,7 @@ export const useBasicSpace = (fn, initialValue) => {
         setLoading(false)
     })
 
-    return { zipCode, setZipCode, cache, setCache, register, control, errors, watch, setValue, onSubmit, loading, prefectures }
+    return { zipCode, setZipCode, cache, setCache, freeCoords, setFreeCoords, register, control, errors, watch, setValue, onSubmit, loading, prefectures }
 }
 
 export const usePriceSpace = () => {

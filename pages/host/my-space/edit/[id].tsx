@@ -22,7 +22,11 @@ const EditNewSpace = () => {
     const { t } = useTranslation("adminhost");
 
     const { id } = router.query;
-    const { data, refetch } = useQuery(GET_SPACE_BY_ID, {
+    const {
+        data,
+        loading: spaceLoading,
+        refetch,
+    } = useQuery(GET_SPACE_BY_ID, {
         variables: { id },
         fetchPolicy: "network-only",
         skip: !id,
@@ -51,6 +55,7 @@ const EditNewSpace = () => {
                             setActiveStep={setActiveStep}
                             setSpaceId={setSpaceId}
                             initialValue={data?.spaceById}
+                            spaceLoading={spaceLoading}
                         />
                     ) : activeStep === 1 ? (
                         <NearestStationStep
@@ -65,8 +70,9 @@ const EditNewSpace = () => {
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
-                            spaceId={spaceId}
-                            initialValue={{ img: null }}
+                            refetch={refetch}
+                            spaceId={spaceId || id}
+                            initialValue={data?.spaceById?.photos}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
