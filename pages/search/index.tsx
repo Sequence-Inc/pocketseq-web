@@ -30,11 +30,7 @@ const Search = ({ resetToStartObj }) => {
     const [page, setPage] = useState<number>(1);
     const [activeIndex, setActiveIndex] = useState<string | number>(-1);
 
-    const {
-        data: searchResults,
-        loading,
-        error,
-    } = useQuery(GET_TOP_PICK_SPACES, {
+    const { data, loading, error } = useQuery(GET_TOP_PICK_SPACES, {
         variables: {
             paginationInfo: {
                 take: 4,
@@ -52,7 +48,9 @@ const Search = ({ resetToStartObj }) => {
         return <h3>Loading...</h3>;
     }
 
-    const locationMarkers: ILocationMarker[] = searchResults.allSpaces.map(
+    const searchResults: ISpace[] = data.allSpaces.data;
+
+    const locationMarkers: ILocationMarker[] = searchResults.map(
         (space: ISpace) => {
             return {
                 id: space.id,

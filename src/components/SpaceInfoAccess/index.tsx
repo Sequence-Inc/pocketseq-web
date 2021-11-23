@@ -46,7 +46,7 @@ export const SpaceInfoAccess = ({
                 <div className="w-full h-full">
                     <GoogleMap
                         mark={{ lat: address.latitude, lng: address.longitude }}
-                        zoom={50}
+                        zoom={15}
                     />
                 </div>
             </div>
