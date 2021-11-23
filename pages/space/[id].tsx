@@ -85,10 +85,11 @@ const SpaceDetail = ({ spaceId }) => {
                 <title>{name} - time book</title>
             </Head>
             <Container className="mt-16">
-                <SpaceInfoBanner photos={photos} />
                 <div className="relative flex space-x-12">
                     <div className="flex-1">
+                        <div className="h-6"></div>
                         <SpaceInfoTitle titleInfo={titleInfo} />
+                        <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
                         <div className="w-full my-6 border-t border-gray-300" />
