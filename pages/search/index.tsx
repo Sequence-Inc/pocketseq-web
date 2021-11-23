@@ -13,16 +13,14 @@ import Link from "next/link";
 import React from "react";
 import { useState } from "react";
 import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
-import { ISpace } from "src/types/timebookTypes";
+import {
+    ILocationMarker,
+    IPhoto,
+    IRating,
+    ISpace,
+} from "src/types/timebookTypes";
+import { FormatPrice } from "src/utils";
 // import { itemGridData } from "../index";
-
-export interface ILocationMarker {
-    id: string | number;
-    coords: {
-        lat: number;
-        lng: number;
-    };
-}
 
 const Search = ({ resetToStartObj }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
@@ -57,6 +55,13 @@ const Search = ({ resetToStartObj }) => {
                 coords: {
                     lat: space.address.latitude,
                     lng: space.address.longitude,
+                },
+                name: space.name,
+                price: FormatPrice("HOURLY", space.spacePricePlans, true, true),
+                photo: space.photos[0],
+                rating: {
+                    reviews: 1,
+                    points: 5,
                 },
             };
         }

@@ -14,13 +14,6 @@ import withAuth from "src/utils/withAuth";
 const HostDashboard = ({ currentSession }) => {
     const { data, loading, error } = useQuery(GET_PROFILE);
 
-    if (loading)
-        return (
-            <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
-            </div>
-        );
-
     if (error)
         return (
             <div className="flex items-center justify-center h-content">
@@ -28,7 +21,13 @@ const HostDashboard = ({ currentSession }) => {
             </div>
         );
 
-    console.log(data);
+    if (loading)
+        return (
+            <div className="flex items-center justify-center h-content">
+                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
+            </div>
+        );
+
     return (
         <HostLayout>
             <Head>

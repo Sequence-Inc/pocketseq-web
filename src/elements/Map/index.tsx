@@ -4,9 +4,10 @@ import Marker from "./marker";
 import { useState } from "react";
 import SingleMarker from "./singleMarker";
 import { useEffect } from "react";
+import { ILocationMarker } from "src/types/timebookTypes";
 
 interface GoogleMapProps {
-    markers?: any;
+    markers?: ILocationMarker[];
     mark?: any;
     type?: "multi" | "single";
     activeIndex?: string | number;

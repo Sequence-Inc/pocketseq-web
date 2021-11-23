@@ -6,21 +6,28 @@ import { StarIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { useRef } from "react";
 import useOutsideAlerter from "@hooks/useOutsideAlerter";
+import { ILocationMarker } from "src/types/timebookTypes";
+import { PriceFormatter } from "src/utils";
 
 interface MyMarkerProps {
     lat: number;
     lng: number;
-    marker: any;
+    marker: ILocationMarker;
     alive: boolean;
     setAlive: (bool: boolean) => void;
     activeIndex: string | number;
     setActiveIndex: (id: string | number) => void;
 }
 
-const MyMarker = ({ marker, alive, setAlive, activeIndex, setActiveIndex }: MyMarkerProps) => {
-
+const MyMarker = ({
+    marker,
+    alive,
+    setAlive,
+    activeIndex,
+    setActiveIndex,
+}: MyMarkerProps) => {
     const wrapperRef = useRef();
-    useOutsideAlerter(wrapperRef, handleOutsideClick)
+    useOutsideAlerter(wrapperRef, handleOutsideClick);
 
     function handleOutsideClick() {
         setActiveIndex(-1);
@@ -37,44 +44,51 @@ const MyMarker = ({ marker, alive, setAlive, activeIndex, setActiveIndex }: MyMa
             <button
                 className={clsx(
                     "rounded-full px-3 text-lg font-bold flex justify-center relative",
-                    "hover:bg-gray-900 focus:outline-none hover:text-white", {
-                    "bg-gray-900 text-white": activeIndex === marker?.id,
-                    "bg-white text-gray-800": activeIndex !== marker?.id
-                })}
-                onClick={handleClick}>
-                <span className="text-center" title={marker?.title}>
-                    {`$${marker?.price}`}
+                    "hover:bg-gray-900 focus:outline-none hover:text-white",
+                    {
+                        "bg-gray-900 text-white": activeIndex === marker.id,
+                        "bg-white text-gray-800": activeIndex !== marker.id,
+                    }
+                )}
+                onClick={handleClick}
+            >
+                <span className="text-center" title={marker.name}>
+                    {`${PriceFormatter(marker.price)}`}
                 </span>
             </button>
-            {alive && activeIndex === marker?.id &&
-                <Link href={`/space/${marker?.id}`}>
-                    <a ref={wrapperRef} className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8">
+            {alive && activeIndex === marker.id && (
+                <Link href={`/space/${marker.id}`}>
+                    <a
+                        ref={wrapperRef}
+                        className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8"
+                    >
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
                             <Image
-                                src={marker?.photo}
+                                src={marker.photo.medium.url}
                                 layout="fill"
                             />
                         </div>
-                        <div className='p-1.5 space-y-1.5'>
+                        <div className="p-1.5 space-y-1.5">
                             <Tag
                                 Icon={StarIcon}
                                 iconSize={4}
                                 iconStyle="text-yellow-400 text-xs"
                             >
                                 <div className="text-xs font-semibold text-gray-600">
-                                    {marker?.rating}{" "}
+                                    {marker.rating.points}{" "}
                                     <span className="font-light text-gray-400">
-                                        ({marker?.cases}件)
+                                        ({marker.rating.reviews}件)
                                     </span>
                                 </div>
                             </Tag>
-                            <Title numberOfLines={2}>{marker?.title}</Title>
+                            <Title numberOfLines={2}>{marker.name}</Title>
                             <div className="mt-1">
-                                <Price amount={marker?.price} />
+                                <Price amount={marker.price} />
                             </div>
                         </div>
                     </a>
-                </Link>}
+                </Link>
+            )}
         </div>
     );
 };
