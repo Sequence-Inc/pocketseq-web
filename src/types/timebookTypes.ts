@@ -1,27 +1,27 @@
 import { IncomingMessage } from "http";
 
 export interface ISpace {
-    id?: string | number;
-    description: string;
+    id: string | number;
+    description?: string;
     maximumCapacity: number;
     name: string;
-    nearestStations: INearestStation[];
+    nearestStations?: INearestStation[];
     numberOfSeats: number;
     spacePricePlans: ISpacePricePlan[];
     spaceSize: number;
     spaceTypes: ISpaceType[];
     address: IAddress;
-    photos: IPhoto[];
+    photos?: IPhoto[];
 }
 
 export interface IAddress {
-    id: string | number;
+    id?: string | number;
     addressLine1?: string;
     addressLine2?: string;
     city: string;
     latitude: number;
     longitude: number;
-    postalCode: string;
+    postalCode?: string;
     prefecture: IPrefecture;
 }
 export interface IPrefecture {
@@ -42,13 +42,13 @@ export interface IStation {
 export type TSpacePrice = "HOURLY" | "DAILY";
 
 export interface ISpacePricePlan {
-    id: string | number;
+    id?: string | number;
     amount: number;
-    cooldownTime: number;
+    cooldownTime?: number;
     duration: number;
-    lastMinuteDiscount: number;
-    maintenanceFee: number;
-    title: string;
+    lastMinuteDiscount?: number;
+    maintenanceFee?: number;
+    title?: string;
     type: TSpacePrice;
 }
 
