@@ -27,7 +27,11 @@ export const HeroSection = () => {
                     <p className="mb-10 text-2xl font-bold text-center text-white sm:text-4xl">
                         「人×場所×体験」を繋げる　目的に合った場所を検索しよう
                     </p>
-                    <SearchBox />
+                    <SearchBox
+                        onChange={() => {
+                            return null;
+                        }}
+                    />
                     <p className="mt-10 text-center text-white text-md sm:text-xl">
                         15,287件のスペースから、目的に合ったスペースがすぐ見つかる
                     </p>

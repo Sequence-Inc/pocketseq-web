@@ -30,9 +30,7 @@ const Secondary = ({ resetToStartObj }) => {
     const [area, setArea] = useState(null);
     const [spaceTypes, setSpaceTypes] = useState(null);
 
-    const [algoliaSearchResults, setAlgoliaSearchResults] = useState<ISpace[]>(
-        []
-    );
+    const [algoliaSearchResults, setAlgoliaSearchResults] = useState([]);
 
     useEffect(() => {
         console.log(area, spaceTypes);

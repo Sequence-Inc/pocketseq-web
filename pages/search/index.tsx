@@ -74,7 +74,11 @@ const Search = ({ resetToStartObj }) => {
             <div className="relative grid grid-cols-1 lg:grid-cols-9">
                 <div className="px-6 py-10 mt-16 lg:col-span-5">
                     <div className="flex justify-center">
-                        <SearchBox />
+                        <SearchBox
+                            onChange={() => {
+                                return null;
+                            }}
+                        />
                     </div>
                     <div className="pt-10">
                         <p className="text-gray-500">300+ 件</p>

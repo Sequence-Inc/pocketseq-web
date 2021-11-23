@@ -64,11 +64,6 @@ export const SearchBox = ({ onChange }) => {
         return <h3>Loading...</h3>;
     }
 
-    // if (data) {
-    //     setSpaceTypes(data.availableSpaceTypes);
-    // }
-    console.log(area, purpose);
-    const router = useRouter();
     return (
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
