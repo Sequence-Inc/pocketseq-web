@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/client";
 import { GridViewSearch, ListViewSearch, SearchBox } from "@comp";
 import { Alert, GoogleMap, Pagination, Pill, Select } from "@element";
 import {
@@ -11,7 +12,17 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { itemGridData } from "../main";
+import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
+import { ISpace } from "src/types/timebookTypes";
+// import { itemGridData } from "../index";
+
+export interface ILocationMarker {
+    id: string | number;
+    coords: {
+        lat: number;
+        lng: number;
+    };
+}
 
 const Search = ({ resetToStartObj }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
@@ -19,6 +30,39 @@ const Search = ({ resetToStartObj }) => {
     const [page, setPage] = useState<number>(1);
     const [activeIndex, setActiveIndex] = useState<string | number>(-1);
 
+    const {
+        data: searchResults,
+        loading,
+        error,
+    } = useQuery(GET_TOP_PICK_SPACES, {
+        variables: {
+            paginationInfo: {
+                take: 4,
+                skip: 0,
+            },
+        },
+        fetchPolicy: "network-only",
+    });
+
+    if (error) {
+        return <h3>Error occurred: {error.message}</h3>;
+    }
+
+    if (loading) {
+        return <h3>Loading...</h3>;
+    }
+
+    const locationMarkers: ILocationMarker[] = searchResults.allSpaces.map(
+        (space: ISpace) => {
+            return {
+                id: space.id,
+                coords: {
+                    lat: space.address.latitude,
+                    lng: space.address.longitude,
+                },
+            };
+        }
+    );
     return (
         <MainLayout>
             <Head>
@@ -104,14 +148,14 @@ const Search = ({ resetToStartObj }) => {
                                 {sort === "list" ? (
                                     <div className="divide-y divide-gray-100">
                                         <ListViewSearch
-                                            lists={itemGridData}
+                                            lists={searchResults}
                                             activeIndex={activeIndex}
                                             setActiveIndex={setActiveIndex}
                                         />
                                     </div>
                                 ) : sort === "grid" ? (
                                     <GridViewSearch
-                                        lists={itemGridData}
+                                        lists={searchResults}
                                         activeIndex={activeIndex}
                                         setActiveIndex={setActiveIndex}
                                     />
@@ -129,7 +173,7 @@ const Search = ({ resetToStartObj }) => {
                 </div>
                 <div className="sticky top-0 right-0 hidden w-full h-screen col-span-4 pt-16 lg:block">
                     <GoogleMap
-                        markers={itemGridData}
+                        markers={locationMarkers}
                         type="multi"
                         activeIndex={activeIndex}
                         setActiveIndex={setActiveIndex}

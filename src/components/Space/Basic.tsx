@@ -6,16 +6,25 @@ import { useEffect } from "react";
 import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
+import useTranslation from "next-translate/useTranslation";
+
 interface IBasicSpace {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any
+    initialValue?: any;
     spaceLoading?: boolean;
 }
 
-const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spaceLoading }: IBasicSpace) => {
+const Basic = ({
+    activeStep,
+    setActiveStep,
+    steps,
+    setSpaceId,
+    initialValue,
+    spaceLoading,
+}: IBasicSpace) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -36,6 +45,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
 
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
+    const { t } = useTranslation("adminhost");
+
     function handleNext(id): void {
         if (hasNext) setActiveStep(activeStep + 1);
         setSpaceId(id);
@@ -53,8 +64,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                        prefix +
-                        ".js"
+                            prefix +
+                            ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -84,16 +95,17 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
         <>
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Space
+                    スペース
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    This information will be displayed publicly so be sure to
-                    add valid information.
+                    この情報は公開されますので、有効な情報を入力してください。
                 </p>
             </div>
-            {spaceLoading ? <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
-            </div> :
+            {spaceLoading ? (
+                <div className="flex items-center justify-center h-content">
+                    <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
+                </div>
+            ) : (
                 <form onSubmit={onSubmit}>
                     <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
                         <div className="">
@@ -101,7 +113,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 {...register("name", {
                                     required: true,
                                 })}
-                                label="Name"
+                                label={t("space-name")}
                                 error={errors.name && true}
                                 errorMessage="Name is required"
                                 autoFocus
@@ -114,7 +126,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 {...register("description", {
                                     required: true,
                                 })}
-                                label="Description"
+                                label={t("space-description")}
                                 error={errors.description && true}
                                 errorMessage="Description is required"
                                 disabled={loading}
@@ -128,7 +140,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                     required: true,
                                     setValueAs: (val) => parseInt(val),
                                 })}
-                                label="Maximum Capacity"
+                                label={t("max-capacity")}
                                 error={errors.maximumCapacity && true}
                                 errorMessage="Maximum Capacity is required"
                                 type="number"
@@ -143,7 +155,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                     required: true,
                                     setValueAs: (val) => parseInt(val),
                                 })}
-                                label="Number Of seats"
+                                label={t("space-number-of-seats")}
                                 error={errors.numberOfSeats && true}
                                 errorMessage="Number Of seats is required"
                                 type="number"
@@ -158,7 +170,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                     required: true,
                                     setValueAs: (val) => parseFloat(val),
                                 })}
-                                label="Space Size"
+                                label={t("space-size")}
                                 error={errors.spaceSize && true}
                                 errorMessage="Space Size is required"
                                 type="number"
@@ -175,8 +187,11 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        label="Space Types"
-                                        options={spaceTypes?.availableSpaceTypes || []}
+                                        label={t("space-types")}
+                                        options={
+                                            spaceTypes?.availableSpaceTypes ||
+                                            []
+                                        }
                                         error={errors.spaceTypes && true}
                                         errorMessage="Space Types is required"
                                         labelKey="title"
@@ -194,7 +209,8 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 name="needApproval"
                                 control={control}
                                 render={({ field }: any) => (
-                                    <div>{console.log(field)}
+                                    <div>
+                                        {console.log(field)}
                                         <input
                                             {...field}
                                             checked={field.value}
@@ -203,7 +219,10 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                             type="checkbox"
                                             className="w-4 h-4 border-gray-300 rounded cursor-pointer text-primary focus:ring-primary"
                                         />
-                                        <label htmlFor="needApproval" className="ml-3 text-sm font-medium text-gray-600 align-baseline cursor-pointer">
+                                        <label
+                                            htmlFor="needApproval"
+                                            className="ml-3 text-sm font-medium text-gray-600 align-baseline cursor-pointer"
+                                        >
                                             enable need host approval
                                         </label>
                                     </div>
@@ -216,7 +235,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 {...register("zipCode", {
                                     required: true,
                                 })}
-                                label="Postal code"
+                                label={t("address-postal-code")}
                                 error={errors.zipCode && true}
                                 errorMessage="Zip Code is required"
                                 disabled={loading}
@@ -228,13 +247,16 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 name={`prefecture`}
                                 control={control}
                                 rules={{ required: true }}
-                                defaultValue={initialValue?.address?.Prefecture?.id}
+                                defaultValue={
+                                    initialValue?.address?.Prefecture?.id
+                                }
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        label="Prefecture"
+                                        label={t("address-prefecture")}
                                         options={
-                                            prefectures?.availablePrefectures || []
+                                            prefectures?.availablePrefectures ||
+                                            []
                                         }
                                         error={errors?.prefecture && true}
                                         onChange={(event) => {
@@ -255,7 +277,7 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                     required: true,
                                 })}
                                 defaultValue={initialValue?.address?.city}
-                                label="City"
+                                label={t("address-city")}
                                 error={errors.city && true}
                                 errorMessage="City is required"
                                 disabled={loading}
@@ -267,8 +289,10 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 {...register("addressLine1", {
                                     required: true,
                                 })}
-                                defaultValue={initialValue?.address?.addressLine1}
-                                label="Address Line 1"
+                                defaultValue={
+                                    initialValue?.address?.addressLine1
+                                }
+                                label={t("address-line-1")}
                                 error={errors.zipCode && true}
                                 errorMessage="Address Line 1 is required"
                                 disabled={loading}
@@ -280,8 +304,10 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 {...register("addressLine2", {
                                     required: true,
                                 })}
-                                defaultValue={initialValue?.address?.addressLine2}
-                                label="Address Line 2"
+                                defaultValue={
+                                    initialValue?.address?.addressLine2
+                                }
+                                label={t("address-line-2")}
                                 error={errors.zipCode && true}
                                 errorMessage="Address Line 2 is required"
                                 disabled={loading}
@@ -293,25 +319,31 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                         <GoogleMap
                             freeCoords={freeCoords}
                             setFreeCoords={setFreeCoords}
-                            mark={initialValue ? { lat: initialValue?.address?.latitude, lng: initialValue?.address?.longitude } : undefined}
+                            mark={
+                                initialValue
+                                    ? {
+                                          lat: initialValue?.address?.latitude,
+                                          lng: initialValue?.address?.longitude,
+                                      }
+                                    : undefined
+                            }
                         />
                     </div>
-                    {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            className="w-auto px-8"
-                            loading={loading}
-                        >
-                            Save
-                        </Button>
-                    </div> :
-                        <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                    {initialValue ? (
+                        <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                             <Button
+                                type="submit"
+                                variant="primary"
                                 className="w-auto px-8"
-                                disabled={true}
+                                loading={loading}
                             >
-                                previous
+                                {t("save")}
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                            <Button className="w-auto px-8" disabled={true}>
+                                {t("previous-page")}
                             </Button>
                             <Button
                                 type="submit"
@@ -319,10 +351,12 @@ const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue, spa
                                 className="w-auto px-8"
                                 loading={loading}
                             >
-                                Next
+                                {t("next-page")}
                             </Button>
-                        </div>}
-                </form>}
+                        </div>
+                    )}
+                </form>
+            )}
         </>
     );
 };

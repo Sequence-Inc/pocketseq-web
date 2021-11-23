@@ -1,0 +1,25 @@
+{
+    "login": "ログイン",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "password-confirm": "パスワード認証",
+    "do-login": "ログインする",
+    "dont-have-an-account": "アカウントをお持ちではありませんか？",
+    "register-an-account": "アカウントを作成する",
+    "back-to-timebook": "トップに戻る",
+    "forgot-password": "パスワードをお忘れですか",
+    "copyright": "&copy; Copyright 2021 Sequence Co., Ltd.",
+
+    "lastname": "性",
+    "lastname-example": "例）山田",
+    "firstname": "名",
+    "firstname-example": "例）太郎",
+    "lastname-kana": "性（かな）",
+    "lastname-kana-example": "例）ヤマダ",
+    "firstname-kana": "名（かな）",
+    "firstname-kana-example": "例）タロウ",
+    "do-register": "登録する",
+    "already-have-an-account": "アカウントをお持ちの方",
+    "email-example": "例）taro@mail.com",
+    "settings": "設定"
+}

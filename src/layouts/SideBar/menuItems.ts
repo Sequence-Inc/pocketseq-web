@@ -70,7 +70,7 @@ export const navigation = [
         roles: ["host"],
     },
     {
-        name: "time bookにもどる",
+        name: "トップに戻る",
         href: "/",
         Icon: ArrowLeftIcon,
         roles: ["user", "host", "admin"],

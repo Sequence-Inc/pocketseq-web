@@ -1,32 +1,94 @@
-import { FloatingPrice, HostProfile, SpaceUtilities, SpaceInfoTitle, SpaceInfoBanner, SpaceInfoRecommended, SpaceInfoAccess, SpaceInfoReviews } from "@comp";
+import {
+    FloatingPrice,
+    HostProfile,
+    SpaceUtilities,
+    SpaceInfoTitle,
+    SpaceInfoBanner,
+    SpaceInfoRecommended,
+    SpaceInfoAccess,
+    SpaceInfoReviews,
+    ISpaceInfoTitleProps,
+} from "@comp";
 import { Container, Tag } from "@element";
 import React from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import { useQuery } from "@apollo/client";
+import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
+import { FormatPrice, FormatShortAddress, PriceFormatter } from "src/utils";
+import { IPhoto, IRating, ISpace } from "src/types/timebookTypes";
+import Head from "next/head";
 
-const ContentSection = ({ title, description }: { title: string, description: string }) => {
+const ContentSection = ({
+    title,
+    description,
+}: {
+    title: string;
+    description: string;
+}) => {
     return (
         <div>
-            <p className="mb-4 text-lg font-bold text-gray-700">{title}</p>
-            <div className="mb-4 text-sm text-gray-500">
-                {description}
-            </div>
+            <h2 className="mb-4 text-lg font-bold text-gray-700">{title}</h2>
+            <div className="mb-4 text-sm text-gray-500">{description}</div>
             <Link href="/">
                 <a className="text-gray-600 underline">もっと見る</a>
             </Link>
         </div>
-    )
-}
+    );
+};
 
-const SpaceDetail = () => {
+const SpaceDetail = ({ spaceId }) => {
+    const { data, loading, error } = useQuery(GET_SPACE_BY_ID, {
+        variables: { id: spaceId },
+    });
+
+    if (error) {
+        console.log("error while loading space");
+        return <h3>Error occurred. Please contact administrator</h3>;
+    }
+
+    if (loading) {
+        return <h3>Loading...</h3>;
+    }
+
+    const space: ISpace = data.spaceById;
+    const {
+        id,
+        name,
+        description,
+        maximumCapacity,
+        spaceSize,
+        spaceTypes,
+        spacePricePlans,
+        nearestStations,
+        address,
+        photos,
+    } = space;
+
+    const location: string = FormatShortAddress(address);
+
+    const rating: IRating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
+
+    const titleInfo: ISpaceInfoTitleProps = {
+        name,
+        maximumCapacity,
+        spaceSize,
+        spaceTypes,
+        location,
+        rating,
+    };
+
     return (
         <MainLayout>
+            <Head>
+                <title>{name} - time book</title>
+            </Head>
             <Container className="mt-16">
-                <SpaceInfoBanner />
+                <SpaceInfoBanner photos={photos} />
                 <div className="relative flex space-x-12">
                     <div className="flex-1">
-                        <SpaceInfoTitle />
+                        <SpaceInfoTitle titleInfo={titleInfo} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
                         <div className="w-full my-6 border-t border-gray-300" />
@@ -63,44 +125,74 @@ const SpaceDetail = () => {
                         {/* About Sapce */}
                         <ContentSection
                             title="スペースについて"
-                            description="総面積1000㎡、BBQ場付きの完全なプライベート空間！
-                    オーナーの遊び心いっぱいの、とても素敵なログハウスです！
-
-                    樹木の香りのする森の中で、大人も子どもも贅沢な時間を楽しめます。リビングにはミラーボールやプロジェクター、壁掛スクリーンがあり、ご家族や仲間内でのパーティーに最適です。"
+                            description={description}
                         />
 
                         {/* divider */}
                         <div className="w-full my-6 border-t border-gray-300" />
 
-
                         {/* Services / equipment */}
-                        <ContentSection
+                        {/* <ContentSection
                             title="サービス・設備"
                             description="ママ会、女子会、おうちデート、映画鑑賞、カップル利用、ファミリー会（子連れ歓迎）、誕生日会、セミナー、ワークショップ、写真撮影、ロケ撮影、商品撮影、商用撮影、ストックフォト、キッチンスタジオ、撮影スタジオ、ハウススタジオ、パーティールーム、レンタルスペース、宿泊可能"
-                        />
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        /> */}
+                        {/* <div className="w-full my-6 border-t border-gray-300" /> */}
 
                         {/* access section */}
-                        <SpaceInfoAccess />
+                        <SpaceInfoAccess
+                            address={address}
+                            nearestStations={nearestStations}
+                        />
 
+                        {/* divider */}
+                        <div className="w-full my-6 border-t border-gray-300" />
+                        {/* Price Plans */}
+                        <div>
+                            <h2 className="mb-4 text-lg font-bold text-gray-700">
+                                料金プラン
+                            </h2>
+                            {spacePricePlans.map((plan, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-between text-xl py-4 px-5 my-4 text-gray-800 bg-gray-50 rounded-xl border border-gray-100"
+                                >
+                                    <h3>{plan.title}</h3>
+                                    <p>
+                                        {PriceFormatter(plan.amount)}
+                                        <span className="text-gray-700 text-base">
+                                            /
+                                            {plan.duration > 1
+                                                ? plan.duration
+                                                : ""}
+                                            {plan.type === "HOURLY"
+                                                ? "時間"
+                                                : "日"}
+                                        </span>
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                         {/* divider */}
                         <div className="w-full my-6 border-t border-gray-300" />
 
                         {/* reviews and comment section */}
                         <SpaceInfoReviews />
-
                     </div>
                     <div className="hidden md:block">
-                        <FloatingPrice />
+                        <FloatingPrice pricePlans={spacePricePlans} />
                     </div>
                 </div>
             </Container>
 
             {/* recommended section */}
-            <SpaceInfoRecommended />
-
+            {/* <SpaceInfoRecommended /> */}
         </MainLayout>
     );
 };
 
 export default SpaceDetail;
+
+export async function getServerSideProps(context) {
+    const { id } = context.query;
+    return { props: { spaceId: id } };
+}
