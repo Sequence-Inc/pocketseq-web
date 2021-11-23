@@ -13,13 +13,9 @@ import { ADD_PHOTO_ID, HOST } from "../../../src/apollo/queries/host.queries";
 import axios from "axios";
 import router from "next/router";
 
-import useTranslation from "next-translate/useTranslation";
-
 const PhotoIdUpload = () => {
     const [loading, setLoading] = useState(null);
     const [photo, setPhoto] = useState(null);
-
-    const { t } = useTranslation("adminhost");
 
     const handleSelectPhoto = (event) => {
         const file = event.target.files[0];
@@ -83,7 +79,7 @@ const PhotoIdUpload = () => {
                         htmlFor="file-upload"
                         className="relative font-medium bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                     >
-                        <span>{t("select-photo")}</span>
+                        <span>写真アップロード</span>
                         <input
                             id="file-upload"
                             name="file-upload"
@@ -94,7 +90,7 @@ const PhotoIdUpload = () => {
                             disabled={loading}
                         />
                     </label>
-                    {/* <p className="pl-1">アップロードする</p> */}
+                    <p className="pl-1">アップロードする</p>
                 </div>
                 <p className="text-xs text-gray-500">JPEGファイルのみ対応</p>
             </div>
@@ -115,15 +111,14 @@ const PhotoIdUpload = () => {
                         onClick={() => setPhoto(null)}
                         disabled={loading}
                         type="button"
-                        className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  ${
-                            loading && "opacity-50"
-                        }`}
+                        className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  ${loading && "opacity-50"
+                            }`}
                     >
                         <XIcon
                             className="w-5 h-5 mr-2 -ml-1"
                             aria-hidden="true"
                         />
-                        {t("clear")}
+                        Clear photo
                     </button>
                 </div>
             </div>
@@ -169,9 +164,8 @@ const PhotoIdUpload = () => {
                             disabled={loading}
                             onClick={handleUpload}
                             type="button"
-                            className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                                loading && "opacity-50"
-                            }`}
+                            className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${loading && "opacity-50"
+                                }`}
                         >
                             <UploadIcon
                                 className="w-5 h-5 mr-2 -ml-1"

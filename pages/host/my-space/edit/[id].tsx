@@ -11,27 +11,18 @@ import { useQuery } from "@apollo/client";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { useRouter } from "next/router";
 
-import useTranslation from "next-translate/useTranslation";
-
 const EditNewSpace = () => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
     const [activeStep, setActiveStep] = useState(0);
     const router = useRouter();
-
-    const { t } = useTranslation("adminhost");
-
     const { id } = router.query;
-    const { data, refetch } = useQuery(GET_SPACE_BY_ID, {
-        variables: { id },
-        fetchPolicy: "network-only",
-        skip: !id,
-    });
+    const { data } = useQuery(GET_SPACE_BY_ID, { variables: { id }, fetchPolicy: "network-only", skip: !id })
     const steps = [
-        t("space-basic"),
-        t("space-nearest-stations"),
-        t("space-photos"),
-        t("space-pricing-plans"),
+        "Basic",
+        "Nearest Stations",
+        "Photos",
+        "Pricing Plans"
     ];
 
     return (
@@ -75,7 +66,6 @@ const EditNewSpace = () => {
                             steps={steps}
                             spaceId={spaceId}
                             initialValue={data?.spaceById?.spacePricePlans}
-                            refetch={refetch}
                         />
                     ) : null}
                 </Stepper>

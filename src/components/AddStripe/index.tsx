@@ -1,11 +1,8 @@
 import { LibraryIcon, PlusIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
-import useTranslation from "next-translate/useTranslation";
-
 export const AddStripe = ({ account }) => {
     const { url } = account;
-    const { t } = useTranslation("adminhost");
     return (
         <>
             <div className="overflow-hidden bg-white rounded-lg shadow">
@@ -22,14 +19,11 @@ export const AddStripe = ({ account }) => {
                                 決済情報の追加
                             </h3>
                             <p className="mt-4 text-gray-600">
-                                time book では、口座情報の登録が
-                                必要となります。こちらの設定が
-                                完了後スペースやサービスの登録
-                                が可能になります。
+                                Timebookでは、支払いに関する情報登録が必要となります。
+                                こちらの設定が完了後、スペースの追加やレンタルが可能になります。
                             </p>
                             <p className="mt-4 text-gray-600">
-                                下の「登録する」をクリックする と決済サイト「
-                                stripe 」に移行しま す。
+                                下の「今すぐ完了」をクリックすると、決済サイト「Stripe」に移動します。
                             </p>
                         </div>
                     </div>
@@ -43,7 +37,7 @@ export const AddStripe = ({ account }) => {
                             className="w-5 h-5 mr-2 -ml-1"
                             aria-hidden="true"
                         />
-                        {t("register")}
+                        Complete now
                     </a>
                 </div>
             </div>

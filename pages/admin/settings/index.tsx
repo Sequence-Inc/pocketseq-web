@@ -10,8 +10,6 @@ import { SpaceTypesList, PrefecturesList } from "@comp";
 
 import { classNames } from "src/utils";
 
-import useTranslation from "next-translate/useTranslation";
-
 function AdminSettings() {
     let [tabs] = useState([
         {
@@ -24,12 +22,10 @@ function AdminSettings() {
         },
     ]);
 
-    const { t } = useTranslation("adminhost");
-
     return (
         <HostLayout>
             <Head>
-                <title>{t("settings")} - Timebook</title>
+                <title>Settings - Timebook</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -44,7 +40,7 @@ function AdminSettings() {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            {t("settings")}
+                                            Settings
                                         </h1>
                                     </div>
                                     <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">

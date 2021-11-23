@@ -6,23 +6,15 @@ import { useEffect } from "react";
 import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
-import useTranslation from "next-translate/useTranslation";
-
 interface IBasicSpace {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any;
+    initialValue?: any
 }
 
-const Basic = ({
-    activeStep,
-    setActiveStep,
-    steps,
-    setSpaceId,
-    initialValue,
-}: IBasicSpace) => {
+const Basic = ({ activeStep, setActiveStep, steps, setSpaceId, initialValue }: IBasicSpace) => {
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -41,8 +33,6 @@ const Basic = ({
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
-
-    const { t } = useTranslation("adminhost");
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
@@ -65,8 +55,8 @@ const Basic = ({
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                            prefix +
-                            ".js"
+                        prefix +
+                        ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -93,14 +83,14 @@ const Basic = ({
     }, [watch().zipCode]);
 
     return (
-        <form onSubmit={onSubmit}>
-            {console.log(watch())}
+        <form onSubmit={onSubmit}>{console.log(watch())}
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    スペース
+                    Space
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    この情報は公開されますので、有効な情報を入力してください。
+                    This information will be displayed publicly so be sure to
+                    add valid information.
                 </p>
             </div>
             <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
@@ -109,7 +99,7 @@ const Basic = ({
                         {...register("name", {
                             required: true,
                         })}
-                        label={t("space-name")}
+                        label="Name"
                         error={errors.name && true}
                         errorMessage="Name is required"
                         autoFocus
@@ -122,7 +112,7 @@ const Basic = ({
                         {...register("description", {
                             required: true,
                         })}
-                        label={t("space-description")}
+                        label="Description"
                         error={errors.description && true}
                         errorMessage="Description is required"
                         disabled={loading}
@@ -136,7 +126,7 @@ const Basic = ({
                             required: true,
                             setValueAs: (val) => parseInt(val),
                         })}
-                        label={t("max-capacity")}
+                        label="Maximum Capacity"
                         error={errors.maximumCapacity && true}
                         errorMessage="Maximum Capacity is required"
                         type="number"
@@ -151,7 +141,7 @@ const Basic = ({
                             required: true,
                             setValueAs: (val) => parseInt(val),
                         })}
-                        label={t("space-number-of-seats")}
+                        label="Number Of seats"
                         error={errors.numberOfSeats && true}
                         errorMessage="Number Of seats is required"
                         type="number"
@@ -166,7 +156,7 @@ const Basic = ({
                             required: true,
                             setValueAs: (val) => parseFloat(val),
                         })}
-                        label={t("space-size")}
+                        label="Space Size"
                         error={errors.spaceSize && true}
                         errorMessage="Space Size is required"
                         type="number"
@@ -184,7 +174,7 @@ const Basic = ({
                         render={({ field }) => (
                             <Select
                                 {...field}
-                                label={t("space-types")}
+                                label="Space Types"
                                 options={spaceTypes?.availableSpaceTypes || []}
                                 error={errors.spaceTypes && true}
                                 errorMessage="Space Types is required"
@@ -201,7 +191,7 @@ const Basic = ({
                         {...register("zipCode", {
                             required: true,
                         })}
-                        label={t("address-postal-code")}
+                        label="Postal code"
                         error={errors.zipCode && true}
                         errorMessage="Zip Code is required"
                         disabled={loading}
@@ -217,7 +207,7 @@ const Basic = ({
                         render={({ field }) => (
                             <Select
                                 {...field}
-                                label={t("address-prefecture")}
+                                label="Prefecture"
                                 options={
                                     prefectures?.availablePrefectures || []
                                 }
@@ -240,7 +230,7 @@ const Basic = ({
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.city}
-                        label={t("address-city")}
+                        label="City"
                         error={errors.city && true}
                         errorMessage="City is required"
                         disabled={loading}
@@ -253,7 +243,7 @@ const Basic = ({
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.addressLine1}
-                        label={t("address-line-1")}
+                        label="Address Line 1"
                         error={errors.zipCode && true}
                         errorMessage="Address Line 1 is required"
                         disabled={loading}
@@ -266,7 +256,7 @@ const Basic = ({
                             required: true,
                         })}
                         defaultValue={initialValue?.address?.addressLine2}
-                        label={t("address-line-2")}
+                        label="Address Line 2"
                         error={errors.zipCode && true}
                         errorMessage="Address Line 2 is required"
                         disabled={loading}
@@ -274,32 +264,31 @@ const Basic = ({
                     />
                 </div>
             </div>
-            {initialValue ? (
-                <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        className="w-auto px-8"
-                        loading={loading}
-                    >
-                        {t("save")}
-                    </Button>
-                </div>
-            ) : (
-                <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                    <Button className="w-auto px-8" disabled={true}>
-                        {t("previous-page")}
-                    </Button>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        className="w-auto px-8"
-                        loading={loading}
-                    >
-                        {t("next-page")}
-                    </Button>
-                </div>
-            )}
+            {initialValue ? <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-auto px-8"
+                    loading={loading}
+                >
+                    Save
+                </Button>
+            </div> : <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
+                <Button
+                    className="w-auto px-8"
+                    disabled={true}
+                >
+                    previous
+                </Button>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-auto px-8"
+                    loading={loading}
+                >
+                    Next
+                </Button>
+            </div>}
         </form>
     );
 };

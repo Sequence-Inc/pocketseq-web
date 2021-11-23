@@ -15,8 +15,6 @@ import { useEffect } from "react";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import router from "next/router";
 
-import useTranslation from "next-translate/useTranslation";
-
 interface IColumns {
     Header: string;
     accessor: string;
@@ -25,18 +23,17 @@ interface IColumns {
     Cell?: any;
 }
 
+const keys = [
+    { name: "Name", key: "name" },
+    { name: "Maximum Capacity", key: "maximumCapacity" },
+    { name: "Space Size", key: "spaceSize" },
+    { name: "Space Types", key: "spaceTypes" },
+];
+
 const MySpace = () => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const { data } = useQuery(MY_SPACES, { fetchPolicy: "network-only" });
 
-    const { t } = useTranslation("adminhost");
-
-    const keys = [
-        { name: t("space-name"), key: "name" },
-        { name: t("max-capacity"), key: "maximumCapacity" },
-        { name: t("space-size"), key: "spaceSize" },
-        { name: t("space-types"), key: "spaceTypes" },
-    ];
     const columnClassName = (key) => {
         if (key === "maximumCapacity") return "w-44";
         if (key === "name") return "min-w-10 text-left";
@@ -83,9 +80,7 @@ const MySpace = () => {
                     <button
                         className="flex mx-auto focus:outline-none"
                         onClick={() => {
-                            router.push(
-                                `/host/my-space/edit/${row.original.id}`
-                            );
+                            router.push(`/host/my-space/edit/${row.original.id}`)
                         }}
                     >
                         <PencilAltIcon className="w-5 h-5 text-gray-400" />
@@ -115,7 +110,7 @@ const MySpace = () => {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            {t("my-spaces")}
+                                            My Spaces
                                         </h1>
                                     </div>
                                     <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -137,7 +132,7 @@ const MySpace = () => {
                             <Link href="/host/my-space/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
-                                        {t("add-space")}
+                                        Add new space
                                     </Button>
                                 </a>
                             </Link>

@@ -1,30 +1,9 @@
-import { Rating, Tag } from "@element";
-import {
-    HomeIcon,
-    LocationMarkerIcon,
-    TagIcon,
-} from "@heroicons/react/outline";
-import UserGroupIcon from "@heroicons/react/outline/UserGroupIcon";
-import React from "react";
-import { IAddress, IRating, ISpace, ISpaceType } from "src/types/timebookTypes";
-import { FormatShortAddress } from "src/utils";
+import { Rating, Tag } from '@element'
+import { HomeIcon, LocationMarkerIcon, TagIcon } from '@heroicons/react/outline'
+import UserGroupIcon from '@heroicons/react/outline/UserGroupIcon'
+import React from 'react'
 
-export interface ISpaceInfoTitleProps {
-    name: string;
-    maximumCapacity: number;
-    spaceSize: number;
-    spaceTypes: ISpaceType[];
-    rating: IRating;
-    location: string;
-}
-
-export const SpaceInfoTitle = ({
-    titleInfo,
-}: {
-    titleInfo: ISpaceInfoTitleProps;
-}) => {
-    const { name, maximumCapacity, spaceSize, spaceTypes, rating, location } =
-        titleInfo;
+export const SpaceInfoTitle = () => {
     return (
         <>
             <div className="mb-3">
@@ -34,17 +13,15 @@ export const SpaceInfoTitle = ({
                     textStyle="text-sm text-gray-500"
                     numberOfLines={1}
                 >
-                    {location}
+                    大阪府大阪市天王寺区
                 </Tag>
             </div>
-            <h2 className="mb-3 text-xl font-medium text-gray-700">{name}</h2>
+            <h2 className="mb-3 text-xl font-medium text-gray-700">いこい【丸々貸切一軒家・毎回清掃】インドア花見/デート/女子会/撮影/パーティー/おしゃれ/かわいい/キッチン</h2>
             <div className="flex items-center space-x-3">
                 <Rating />
                 <div className="text-sm">
-                    <p className="inline-block font-bold text-gray-600">
-                        {rating.points}
-                    </p>
-                    <span className="text-gray-500">({rating.reviews}件)</span>
+                    <p className="inline-block font-bold text-gray-600">4.52</p>
+                    <span className="text-gray-500">(99件)</span>
                 </div>
                 <Tag
                     Icon={UserGroupIcon}
@@ -52,8 +29,9 @@ export const SpaceInfoTitle = ({
                     textStyle="text-sm text-gray-500"
                     numberOfLines={1}
                 >
-                    〜{maximumCapacity}人
+                    〜15人
                 </Tag>
+
 
                 <Tag
                     Icon={HomeIcon}
@@ -61,8 +39,9 @@ export const SpaceInfoTitle = ({
                     textStyle="text-sm text-gray-500"
                     numberOfLines={1}
                 >
-                    {spaceSize}m²
+                    24m
                 </Tag>
+
 
                 <Tag
                     Icon={TagIcon}
@@ -70,9 +49,9 @@ export const SpaceInfoTitle = ({
                     textStyle="text-sm text-gray-500"
                     numberOfLines={1}
                 >
-                    {spaceTypes[0].title}
+                    貸し会議室
                 </Tag>
             </div>
         </>
-    );
-};
+    )
+}

@@ -4,4 +4,3 @@ export * from "./priceFormatter";
 export * from "./withAuth";
 export * from "./classHelper";
 export * from "./auth";
-export * from "./stringHelper";

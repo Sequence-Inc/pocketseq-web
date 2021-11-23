@@ -1,8 +1,7 @@
-// const withPWA = require("next-pwa");
-// const runtimeCaching = require("next-pwa/cache");
-const nextTranslate = require("next-translate");
+const withPWA = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
 
-module.exports = nextTranslate({
+module.exports = withPWA({
     reactStrictMode: true,
     images: {
         domains: [
@@ -11,13 +10,14 @@ module.exports = nextTranslate({
             "timebook-api-prod-media.s3.ap-northeast-1.amazonaws.com",
         ],
     },
-    // pwa: {
-    //     dest: "public",
-    //     runtimeCaching,
-    //     disable: true,
-    // },
+    pwa: {
+        dest: "public",
+        runtimeCaching,
+        disable: true,
+    },
     webpack: (config) => {
         config.experiments = { topLevelAwait: true };
         return config;
     },
+    env: {},
 });
