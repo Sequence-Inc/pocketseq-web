@@ -7,8 +7,6 @@ import { AuthLayout } from "@layout";
 import Link from "next/link";
 import ErrorModal from "src/elements/ErrorModal";
 
-import useTranslation from "next-translate/useTranslation";
-
 const Register = () => {
     const {
         register,
@@ -21,12 +19,10 @@ const Register = () => {
     } = useRegister();
     const router = useRouter();
 
-    const { t } = useTranslation("common");
-
     return (
         <AuthLayout>
             <Head>
-                <title>{t("register-an-account")} | Space Rental</title>
+                <title>Signup | Space Rental</title>
             </Head>
             <ErrorModal ref={errorRef} />
             <PinDialog
@@ -37,7 +33,7 @@ const Register = () => {
             <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                    {t("register-an-account")}
+                    アカウントを作成する
                 </h2>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
@@ -47,9 +43,9 @@ const Register = () => {
                         {...register("lastName", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label={t("lastname")}
+                        label="性"
                         id="lastName"
-                        placeholder={t("lastname-example")}
+                        placeholder="例）山田"
                         autoFocus={true}
                         disabled={loading}
                     />
@@ -57,43 +53,43 @@ const Register = () => {
                         {...register("firstName", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label={t("firstname")}
+                        label="名"
                         id="firstName"
-                        placeholder={t("firstname-example")}
+                        placeholder="例）太郎"
                         disabled={loading}
                     />
                     <TextField
                         {...register("lastNameKana", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label={t("lastname-kana")}
+                        label="性（かな）"
                         id="lastNameKana"
-                        placeholder={t("lastname-kana-example")}
+                        placeholder="例）ヤマダ"
                         disabled={loading}
                     />
                     <TextField
                         {...register("firstNameKana", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label={t("firstname-kana")}
+                        label="名（かな）"
                         id="firstNameKana"
-                        placeholder={t("firstname-kana-example")}
+                        placeholder="例）タロウ"
                         disabled={loading}
                     />
                     <TextField
                         {...register("email", { required: true })}
                         error={errors.email ? true : false}
                         errorMessage={errors?.email?.message}
-                        label={t("email")}
+                        label="メールアドレス"
                         id="email"
-                        placeholder={t("email-example")}
+                        placeholder="例）taro@mail.com"
                         disabled={loading}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}
                         error={errors.password ? true : false}
                         errorMessage={errors?.password?.message}
-                        label={t("password")}
+                        label="パスワード"
                         id="password"
                         disabled={loading}
                     />
@@ -101,7 +97,7 @@ const Register = () => {
                         {...register("confirmPassword", { required: true })}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors?.confirmPassword?.message}
-                        label={t("password-confirm")}
+                        label="パスワード認証"
                         id="confirmPassword"
                         disabled={loading}
                     />
@@ -120,13 +116,13 @@ const Register = () => {
                             loading={loading}
                             type="submit"
                         >
-                            {t("do-register")}
+                            登録する
                         </Button>
                     </div>
                     <div className="relative text-center">
                         <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                         <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                            {t("already-have-an-account")}
+                            アカウントをお持ちの方
                         </span>
                     </div>
                     <Button
@@ -135,7 +131,7 @@ const Register = () => {
                             router.push("/auth/login");
                         }}
                     >
-                        {t("do-login")}
+                        ログインする
                     </Button>
                 </form>
             </div>
@@ -143,12 +139,12 @@ const Register = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            {t("back-to-timebook")}
+                            time bookにもどる
                         </a>
                     </Link>
                 </div>
                 <div className="py-2 text-sm text-gray-500">
-                    {t("copyright")}
+                    &copy; Copyright 2021 Sequence Co., Ltd.
                 </div>
             </div>
         </AuthLayout>

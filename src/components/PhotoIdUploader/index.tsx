@@ -2,10 +2,7 @@ import { IdentificationIcon, UploadIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 
-import useTranslation from "next-translate/useTranslation";
-
 export const PhotoIdUploader = () => {
-    const { t } = useTranslation("adminhost");
     return (
         <>
             <div className="overflow-hidden bg-white rounded-lg shadow">
@@ -38,7 +35,7 @@ export const PhotoIdUploader = () => {
                                 className="w-5 h-5 mr-2 -ml-1"
                                 aria-hidden="true"
                             />
-                            {t("do-upload")}
+                            アップロードする
                         </a>
                     </Link>
                 </div>

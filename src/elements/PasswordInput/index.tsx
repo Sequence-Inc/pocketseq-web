@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 
-import useTranslation from "next-translate/useTranslation";
-
 interface PasswordInputProps {
     label: string;
     id?: string;
@@ -30,8 +28,6 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
             hintText,
             ...rest
         } = props;
-
-        const { t } = useTranslation("common");
         return (
             <div className={className}>
                 <div className="flex flex-wrap items-end justify-between">
@@ -44,7 +40,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
                     {showForgotPassword && (
                         <Link href="/auth/forgot-password">
                             <a className="inline-block text-xs font-normal text-gray-500 hover:text-primary">
-                                {t("forgot-password")}
+                                パスワードをお忘れですか
                             </a>
                         </Link>
                     )}
