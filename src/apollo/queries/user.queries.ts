@@ -1,41 +1,47 @@
 import { gql } from "@apollo/client";
+import { COMPANY_ACCOUNT, USER_ACCOUNT } from "./core.queries";
 
 export const GET_PROFILE = gql`
     query GetProfile {
         myProfile {
-            ... on UserProfile {
-                id
-                email
-                firstName
-                lastName
-                firstNameKana
-                lastNameKana
-                phoneNumber
-                address {
-                    id
-                    addressLine1
-                    addressLine2
-                    city
-                    longitude
-                    latitude
-                    postalCode
-                    prefecture {
-                        id
-                        name
-                        nameKana
-                        nameRomaji
-                        available
-                    }
-                }
-            }
-            ... on CompanyProfile {
-                id
-                email
-                name
-                nameKana
-                phoneNumber
-                registrationNumber
-            }
+            ${USER_ACCOUNT}
+            ${COMPANY_ACCOUNT}
+        }
+    }
+`;
+
+export const GET_PROFILE_FOR_SETTINGS = gql`
+    query GetProfileForSettings {
+        myProfile {
+            ${USER_ACCOUNT}
+            ${COMPANY_ACCOUNT}
+        }
+        paymentSource{
+            id
+            token
+            type
+            expMonth
+            expYear
+            last4
+            brand
+            country
+            customer
+        }
+    }
+`;
+
+export const ADD_PAYMENT_METHOD = gql`
+    mutation addPaymentMethod($paymentMethodId: String!) {
+        addPaymentMethod(paymentMethodId: $paymentMethodId) {
+            id
+            token
+            type
+            expMonth
+            expYear
+            last4
+            brand
+            country
+            customer
         }
     }
 `;

@@ -27,16 +27,6 @@ export const SpaceInfoTitle = ({
         titleInfo;
     return (
         <>
-            <div className="mb-3">
-                <Tag
-                    Icon={LocationMarkerIcon}
-                    iconStyle="text-gray-300"
-                    textStyle="text-sm text-gray-500"
-                    numberOfLines={1}
-                >
-                    {location}
-                </Tag>
-            </div>
             <h2 className="mb-3 text-xl font-medium text-gray-700">{name}</h2>
             <div className="flex items-center space-x-3">
                 <Rating />
@@ -63,7 +53,6 @@ export const SpaceInfoTitle = ({
                 >
                     {spaceSize}m²
                 </Tag>
-
                 <Tag
                     Icon={TagIcon}
                     iconStyle="text-gray-400"
@@ -71,6 +60,14 @@ export const SpaceInfoTitle = ({
                     numberOfLines={1}
                 >
                     {spaceTypes[0].title}
+                </Tag>
+                <Tag
+                    Icon={LocationMarkerIcon}
+                    iconStyle="text-gray-300"
+                    textStyle="text-sm text-gray-500"
+                    numberOfLines={1}
+                >
+                    {location}
                 </Tag>
             </div>
         </>

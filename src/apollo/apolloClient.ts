@@ -2,7 +2,7 @@ import { ApolloClient, HttpLink } from "@apollo/client";
 import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 import { clientTypeDefs, cache } from "./cache";
 import { getSession, logout } from "src/utils/auth";
-import { onError } from 'apollo-link-error';
+import { onError } from "apollo-link-error";
 // import { fromPromise } from 'apollo-link';
 
 // const getNewToken = async () => {
@@ -32,10 +32,10 @@ const errorLink = onError(
                     //         return forward(operation);
                     //     });
                 }
-            }
-            )
+            });
         }
-    });
+    }
+);
 
 // const getNewToken = async () => {
 //     const token = await "ss";
@@ -81,12 +81,12 @@ if (typeof window !== "undefined") {
 }
 
 const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_API_URL,
-    // uri: "http://localhost:3001/dev/graphql",
+    // uri: process.env.NEXT_PUBLIC_API_URL,
+    uri: "http://localhost:3001/dev/graphql",
     headers: {
         Authorization: token,
     },
-})
+});
 
 const createApolloClient = () => {
     return new ApolloClient({

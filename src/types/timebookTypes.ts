@@ -89,3 +89,15 @@ export interface ILocationMarker {
     rating: IRating;
     photo: IPhoto;
 }
+
+export interface IPaymentMethod {
+    id: string | number;
+    token: string;
+    type: string;
+    expMonth: number;
+    expYear: number;
+    last4: number;
+    brand: string;
+    country: string;
+    customer: string | number;
+}
