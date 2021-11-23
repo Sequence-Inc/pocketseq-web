@@ -64,9 +64,9 @@ const HostDashboard = ({ currentSession }) => {
                                 <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                                     <div className="flex">
                                         <img
-                                            className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
+                                            className="h-24 w-24 rounded-full ring-4 ring-white bg-white sm:h-32 sm:w-32"
                                             src={profilePhoto}
-                                            alt=""
+                                            alt={name}
                                         />
                                     </div>
                                     <div className="mt-6 sm:flex-1 sm:min-w-0 sm:flex sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">

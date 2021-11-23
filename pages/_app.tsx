@@ -7,7 +7,7 @@ import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "src/apollo/apollo";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function TimeBook({ Component, pageProps }: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);
 
     const router = useRouter();
@@ -38,4 +38,4 @@ function MyApp({ Component, pageProps }: AppProps) {
     );
 }
 
-export default MyApp;
+export default TimeBook;
