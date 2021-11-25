@@ -36,7 +36,7 @@ const schema = yup.object().shape({
     hostType: yup.string().required("Host Type is required"),
     company: yup.object({
         name: yup.string().required("Name is required"),
-    })
+    }),
     // name: yup.string().required("company Name is required"),
     // nameKana: yup.string().required("company Name Kana is required"),
     // email: yup.string().email("Invalid Email").required("Email is required"),
@@ -63,7 +63,7 @@ const useRegisterHost = () => {
         // resolver: yupResolver(schema),
         defaultValues: {
             hostType: "個人",
-            terms: false
+            terms: false,
         },
     });
 
@@ -94,8 +94,8 @@ const useRegisterHost = () => {
         formModel.user && delete formModel.user.confirmPassword;
         formModel.company && delete formModel.company.confirmPassword;
         delete formModel.terms;
-        console.log(formModel)
-        // registerHost({ variables: { input: formModel } });
+        console.log(formModel);
+        registerHost({ variables: { input: formModel } });
     };
 
     return {
