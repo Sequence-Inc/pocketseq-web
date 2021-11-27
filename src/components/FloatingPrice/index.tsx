@@ -6,6 +6,8 @@ import { ISpacePricePlan } from "src/types/timebookTypes";
 import { FormatPrice, PriceFormatter } from "src/utils";
 
 import DatePicker from "react-datepicker";
+import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
+import { useQuery } from "@apollo/client";
 
 export const FloatingPrice = ({
     pricePlans,
@@ -16,6 +18,9 @@ export const FloatingPrice = ({
     const [end, setEnd] = useState(null);
     const [subtotal, setSubtotal] = useState(null);
     const [hours, setHours] = useState(null);
+    const [paymentSources, setPaymentSources] = useState(null);
+    const [paymentSourcesError, setPaymentSourcesError] = useState(null);
+    const [paymentSourcesLoading, setPaymentSourcesLoading] = useState(false);
 
     useEffect(() => {
         if (start !== null && end !== null) {
@@ -43,6 +48,31 @@ export const FloatingPrice = ({
     const priceCalculation = () => {
         // Todo: Calculate based on price plans
         return hours * price;
+    };
+
+    const handleReservation = (selectedPaymentSource: string = null) => {
+        if (!selectedPaymentSource && !paymentSources) {
+            const {
+                data,
+                loading: paymentSourcesLoading,
+                error,
+            } = useQuery(GET_PAYMENT_SOURCES);
+            if (error) {
+                // setPaymentSources()
+                setPaymentSourcesError(error.message);
+            }
+            if (paymentSourcesLoading) {
+                setPaymentSourcesLoading(true);
+            }
+        }
+        // get payment method
+
+        // select payment method
+        return null;
+    };
+
+    const renderPaymentSource = () => {
+        return null;
     };
 
     const hoursCalculation = () => {
@@ -155,7 +185,15 @@ export const FloatingPrice = ({
                 {hoursCalculation()}
 
                 {/* button row */}
-                <Button variant="primary">予約可能状況を確認する</Button>
+                <Button
+                    variant="primary"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReservation();
+                    }}
+                >
+                    予約可能状況を確認する
+                </Button>
 
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
@@ -173,6 +211,7 @@ export const FloatingPrice = ({
                     <span>シェア</span>
                 </Button>
             </div>
+            <div>{renderPaymentSource()}</div>
         </div>
     );
 };

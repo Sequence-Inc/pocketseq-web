@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
-import { Container } from "@element";
+import { Button, Container } from "@element";
 import { useQuery } from "@apollo/client";
 
 import { GET_PROFILE_FOR_SETTINGS } from "src/apollo/queries/user.queries";
@@ -81,12 +81,6 @@ const HostDashboard = ({ currentSession }) => {
         }
     };
 
-    const handleAddCard = (e) => {
-        e.preventDefault();
-
-        return null;
-    };
-
     return (
         <HostLayout>
             <Head>
@@ -101,7 +95,13 @@ const HostDashboard = ({ currentSession }) => {
                         <h3 className="flex justify-between border-b border-gray-300 py-2 mb-4">
                             <span>Payment methods</span>
                             <Link href="/user/settings/add-card">
-                                <a>+ Add card</a>
+                                <Button
+                                    variant="primary"
+                                    type="button"
+                                    className="inline-block w-auto"
+                                >
+                                    + Add card
+                                </Button>
                             </Link>
                         </h3>
                         <div className="space-y-3">
