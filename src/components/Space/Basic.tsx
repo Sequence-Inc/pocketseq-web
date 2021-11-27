@@ -315,12 +315,20 @@ const Basic = ({
                             />
                         </div>
                     </div>
-                    <div className="w-full pt-3 h-80">
-                        <GoogleMap
-                            setFreeCoords={setFreeCoords}
-                            mark={freeCoords}
-                            zoom={15}
-                        />
+                    <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                        <label
+                            htmlFor="Map"
+                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
+                        >
+                            Map
+                        </label>
+                        <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
+                            <GoogleMap
+                                setFreeCoords={setFreeCoords}
+                                mark={freeCoords}
+                                zoom={15}
+                            />
+                        </div>
                     </div>
                     {initialValue ? (
                         <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
