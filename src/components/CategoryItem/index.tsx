@@ -9,7 +9,6 @@ export interface ICategoryItem {
 }
 
 export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
-    console.log(photo);
     return (
         <Link href="/search">
             <a>

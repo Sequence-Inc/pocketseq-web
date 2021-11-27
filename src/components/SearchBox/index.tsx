@@ -9,37 +9,64 @@ import {
 import React from "react";
 import { Popover } from "@element";
 import { useState } from "react";
-import {
-    connectRefinementList,
-} from 'react-instantsearch-dom';
+import { useQuery } from "@apollo/client";
+import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
+import { selectionSetMatchesResult } from "@apollo/client/cache/inmemory/helpers";
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
-const purposeList = [
-    "パーティー",
-    "飲み会",
-    "ビジネス",
-    "撮影・収録",
-    "趣味・遊び",
-    "スポーツ・フィットネス",
-    "勉強・読書",
-    "レッスン・講座",
+
+const areaList = [
+    "千代田区",
+    "中央区",
+    "港区",
+    "新宿区",
+    "文京区",
+    "台東区",
+    "墨田区",
+    "江東区",
+    "品川区",
+    "目黒区",
+    "大田区",
+    "世田谷区",
+    "渋谷区",
+    "中野区",
+    "杉並区",
+    "豊島区",
+    "北区",
+    "荒川区",
+    "板橋区",
+    "練馬区",
+    "足立区",
+    "葛飾区",
+    "江戸川区",
 ];
 
-export const SearchBox = connectRefinementList(({ items, refine }) => {
+export const SearchBox = ({ onChange }) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
     // console.log(items);
 
-    const router = useRouter();
+    // const [loading, setLoading] = useState<boolean>(true);
+    const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
 
-    const handleSearch = () => {
-        refine([area, purpose, date]);
+    const {
+        data,
+        loading: spaceTypesLoading,
+        error,
+    } = useQuery(GET_AVAILABLE_SPACE_TYPES);
+
+    if (error) {
+        return <h3>Error occurred while fetching space types</h3>;
+    }
+
+    if (spaceTypesLoading) {
+        return <h3>Loading...</h3>;
     }
 
     return (
-        <div className="flex flex-col sm:flex-row space-y-2.5 sm:space-y-0 sm:space-x-2.5">
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
                 {/* area search box */}
                 <Popover
@@ -58,7 +85,7 @@ export const SearchBox = connectRefinementList(({ items, refine }) => {
                         </Tag>
                     }
                 >
-                    <div className="w-64 p-4 bg-white rounded-3xl">
+                    {/* <div className="w-64 p-4 bg-white rounded-3xl">
                         <p className="text-lg text-primary text-semibold">
                             エリア
                         </p>
@@ -78,6 +105,31 @@ export const SearchBox = connectRefinementList(({ items, refine }) => {
                                 適用する
                             </Button>
                         </div>
+                    </div> */}
+                    <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
+                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                            エリア
+                        </p>
+                        {/* <div className="flex px-4 space-x-3">
+                            <button className="text-sm text-gray-800">
+                                時間貸し
+                            </button>
+                            <button className="text-sm text-gray-300">
+                                宿泊
+                            </button>
+                        </div> */}
+                        <ul className="overflow-scroll max-h-60">
+                            {areaList.map((item: string, index: number) => (
+                                <li
+                                    key={index.toString()}
+                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${area === item ? "bg-gray-100" : ""
+                                        }`}
+                                    onClick={() => setArea(item)}
+                                >
+                                    {item}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </Popover>
 
@@ -99,29 +151,33 @@ export const SearchBox = connectRefinementList(({ items, refine }) => {
                     }
                     position="center"
                 >
-                    <div className="relative overflow-hidden bg-white w-52 -left-1/2 rounded-3xl">
+                    <div className="relative z-50 overflow-hidden bg-white shadow-lg w-52 -left-1/2 rounded-3xl">
                         <p className="px-4 pt-4 mb-1 text-lg text-semibold">
                             利用目的
                         </p>
-                        <div className="flex px-4 space-x-3">
+                        {/* <div className="flex px-4 space-x-3">
                             <button className="text-sm text-gray-800">
                                 時間貸し
                             </button>
                             <button className="text-sm text-gray-300">
                                 宿泊
                             </button>
-                        </div>
+                        </div> */}
                         <ul className="mt-2">
-                            {purposeList.map((item: string, index: number) => (
-                                <li
-                                    key={index.toString()}
-                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${purpose === item ? "bg-gray-100" : ""
-                                        }`}
-                                    onClick={() => setPurpose(item)}
-                                >
-                                    {item}
-                                </li>
-                            ))}
+                            {data.availableSpaceTypes.map(
+                                (item: any, index: number) => (
+                                    <li
+                                        key={index.toString()}
+                                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${purpose === item.title
+                                            ? "bg-gray-100"
+                                            : ""
+                                            }`}
+                                        onClick={() => setPurpose(item.title)}
+                                    >
+                                        {item.title}
+                                    </li>
+                                )
+                            )}
                         </ul>
                     </div>
                 </Popover>
@@ -155,11 +211,10 @@ export const SearchBox = connectRefinementList(({ items, refine }) => {
                 <Button
                     rounded
                     variant="white"
-                    className="px-5 py-3"
+                    className="px-5 py-5"
                     onClick={(event) => {
-                        // event.preventDefault();
-                        // router.push("/search");
-                        handleSearch();
+                        event.preventDefault();
+                        onChange({ area, purpose });
                     }}
                 >
                     <Tag
@@ -175,4 +230,4 @@ export const SearchBox = connectRefinementList(({ items, refine }) => {
             </div>
         </div>
     );
-})
+}

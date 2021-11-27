@@ -2,7 +2,7 @@ import { ApolloClient, HttpLink } from "@apollo/client";
 import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 import { clientTypeDefs, cache } from "./cache";
 import { getSession, logout } from "src/utils/auth";
-import { onError } from 'apollo-link-error';
+import { onError } from "apollo-link-error";
 // import { fromPromise } from 'apollo-link';
 
 // const getNewToken = async () => {
@@ -32,10 +32,10 @@ const errorLink = onError(
                     //         return forward(operation);
                     //     });
                 }
-            }
-            )
+            });
         }
-    });
+    }
+);
 
 // const getNewToken = async () => {
 //     const token = await "ss";
@@ -86,7 +86,7 @@ const httpLink = new HttpLink({
     headers: {
         Authorization: token,
     },
-})
+});
 
 const createApolloClient = () => {
     return new ApolloClient({

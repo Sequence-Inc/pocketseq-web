@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/client";
 import { GridViewSearch, ListViewSearch, SearchBox } from "@comp";
 import { Alert, GoogleMap, Pagination, Pill, Select } from "@element";
 import {
@@ -11,13 +12,18 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { itemGridData } from "../main";
+// import { itemGridData } from "../main";
 import qs from 'qs';
 import {
     InstantSearch
 } from 'react-instantsearch-dom';
 import algoliasearch from 'algoliasearch';
 import { useRouter } from "next/router";
+import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
+import { ILocationMarker, ISpace } from "src/types/timebookTypes";
+import { FormatPrice } from "src/utils";
+
+const itemGridData = [];
 
 const DEBOUNCE_TIME = 400;
 const searchClient = algoliasearch(
@@ -69,6 +75,44 @@ const Search = () => {
         setSearchState(nextSearchState);
     }
 
+    const { data, loading, error } = useQuery(GET_TOP_PICK_SPACES, {
+        variables: {
+            paginationInfo: {
+                take: 4,
+                skip: 0,
+            },
+        },
+        fetchPolicy: "network-only",
+    });
+
+    if (error) {
+        return <h3>Error occurred: {error.message}</h3>;
+    }
+
+    if (loading) {
+        return <h3>Loading...</h3>;
+    }
+
+    const searchResults: ISpace[] = data.allSpaces.data;
+
+    const locationMarkers: ILocationMarker[] = searchResults.map(
+        (space: ISpace) => {
+            return {
+                id: space.id,
+                coords: {
+                    lat: space.address.latitude,
+                    lng: space.address.longitude,
+                },
+                name: space.name,
+                price: FormatPrice("HOURLY", space.spacePricePlans, true, true),
+                photo: space.photos[0],
+                rating: {
+                    reviews: 1,
+                    points: 5,
+                },
+            };
+        }
+    );
     return (
         <MainLayout>
             <Head>
@@ -84,7 +128,7 @@ const Search = () => {
                 <div className="relative grid grid-cols-1 lg:grid-cols-9">
                     <div className="px-6 py-10 mt-16 lg:col-span-5">
                         <div className="flex justify-center">
-                            <SearchBox attribute="space" />
+                            <SearchBox onChange={() => { }} />
                         </div>
                         <div className="pt-10">
                             <p className="text-gray-500">300+ 件</p>
