@@ -64,8 +64,8 @@ const Basic = ({
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                            prefix +
-                            ".js"
+                        prefix +
+                        ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -317,16 +317,8 @@ const Basic = ({
                     </div>
                     <div className="w-full pt-3 h-80">
                         <GoogleMap
-                            freeCoords={freeCoords}
                             setFreeCoords={setFreeCoords}
-                            mark={
-                                initialValue
-                                    ? {
-                                          lat: initialValue?.address?.latitude,
-                                          lng: initialValue?.address?.longitude,
-                                      }
-                                    : undefined
-                            }
+                            mark={freeCoords}
                             zoom={15}
                         />
                     </div>

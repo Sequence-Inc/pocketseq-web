@@ -13,7 +13,6 @@ interface GoogleMapProps {
     activeIndex?: string | number;
     setActiveIndex?: (index: string | number) => void;
     zoom?: number;
-    freeCoords?: any;
     setFreeCoords?: any;
 }
 
@@ -53,6 +52,7 @@ const GoogleMap = ({
     activeIndex,
     setActiveIndex,
     zoom,
+    setFreeCoords
 }: GoogleMapProps) => {
     const [alive, setAlive] = useState<boolean>(false);
     const JAPAN_CENTER_COORDS = {
@@ -69,6 +69,11 @@ const GoogleMap = ({
     const _onChildMouseEnter = (key, childProps) => { };
 
     const _onChildMouseLeave = () => { };
+
+    const changeMarks = (markEvent: any) => {
+        const { lat, lng } = markEvent;
+        setFreeCoords({ lat, lng });
+    }
 
     useEffect(() => {
         // get users current location
@@ -116,7 +121,7 @@ const GoogleMap = ({
                             />
                         ))}
                 </GoogleMapReact>
-            ) : type === "single" && mark ? (
+            ) : type === "single" ? (
                 <GoogleMapReact
                     bootstrapURLKeys={{
                         key: "AIzaSyA-jsLh5KLSTf3n9GU8nLcfkr54vjj8KuU",
@@ -124,11 +129,13 @@ const GoogleMap = ({
                         language: "ja",
                         region: "JP",
                     }}
+                    onClick={changeMarks}
                     defaultZoom={10}
-                    defaultCenter={mark}
+                    defaultCenter={mark || JAPAN_CENTER_COORDS}
                     zoom={zoom}
                 >
-                    <SingleMarker lat={mark.lat} lng={mark.lng} />
+                    {mark &&
+                        <SingleMarker lat={mark.lat} lng={mark.lng} />}
                 </GoogleMapReact>
             ) : null}
         </>
