@@ -230,4 +230,9 @@ export const SPACE = `
     photos {
         ${PHOTO}
     }
+    host {
+        accountId
+        name
+        createdAt
+    }
 `;

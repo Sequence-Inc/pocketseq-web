@@ -330,6 +330,18 @@ const Basic = ({
                             />
                         </div>
                     </div>
+                    <div className="px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                        <label
+                            htmlFor="Map"
+                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
+                        >
+                            Current Coordinates
+                        </label>
+                        <div className="w-full overflow-hidden rounded-md sm:w-96">
+                            <p>Latitude: {freeCoords?.lat}</p>
+                            <p>Longitude: {freeCoords?.lng}</p>
+                        </div>
+                    </div>
                     {initialValue ? (
                         <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                             <Button
