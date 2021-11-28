@@ -1,4 +1,9 @@
-import { IncomingMessage } from "http";
+interface IHOST {
+    accountId: string;
+    name: string;
+    updatedAt: Date;
+    profilePhoto: IPhoto;
+}
 
 export interface ISpace {
     id: string | number;
@@ -12,6 +17,7 @@ export interface ISpace {
     spaceTypes: ISpaceType[];
     address: IAddress;
     photos?: IPhoto[];
+    host?: IHOST;
 }
 
 export interface IAddress {
