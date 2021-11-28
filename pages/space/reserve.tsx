@@ -11,6 +11,7 @@ import Link from "next/link";
 import { LoadingSpinner } from "@comp";
 import { render } from "@headlessui/react/dist/utils/render";
 import { DateFromTimeStamp, FormatPrice, PriceFormatter } from "src/utils";
+import { appendErrors } from "react-hook-form";
 
 const Reserve = ({
     spaceId,
@@ -22,6 +23,7 @@ const Reserve = ({
     spaceName,
     address,
 }) => {
+    const [reservationComplete, setReservationComplete] = useState(null);
     const {
         data: paymentMethods,
         loading: paymentMethodsLoading,
@@ -56,7 +58,7 @@ const Reserve = ({
 
     const handleReservation = async (paymentSourceId: string) => {
         try {
-            const data = await reserveSpace({
+            const { data, errors } = await reserveSpace({
                 variables: {
                     input: {
                         fromDateTime: parseInt(start, 10) * 1000,
@@ -67,6 +69,9 @@ const Reserve = ({
                 },
             });
             console.log("reserveSpace Data", data);
+            if (!errors) {
+                setReservationComplete(data);
+            }
         } catch (error) {
             // console.log(error.message);
         }
@@ -141,56 +146,50 @@ const Reserve = ({
                                     Reserving...
                                 </div>
                             )}
-                            <div>
-                                <div className=" flex justify-between items-center">
-                                    <h2 className="font-bold">
-                                        Select a payment method
-                                    </h2>
-                                    <Link href="/user/settings/add-card">
-                                        <a target="_blank">
-                                            <Button
-                                                type="button"
-                                                variant="white"
-                                                className="inline-block"
-                                            >
-                                                Add card
-                                            </Button>
-                                        </a>
-                                    </Link>
+                            {reservationComplete ? (
+                                <div className="space-y-3">
+                                    <h3 className="font-bold text-lg text-green-800">
+                                        Reservation complete
+                                    </h3>
+                                    <div className="space-y-1">
+                                        <p>
+                                            {
+                                                reservationComplete.reserveSpace
+                                                    .description
+                                            }
+                                        </p>
+                                        <p>
+                                            Reservation ID:{" "}
+                                            {
+                                                reservationComplete.reserveSpace
+                                                    .transactionId
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="space-y-3 pt-1">
+                                        <div>
+                                            <Link href="/user/profile">
+                                                <Button variant="primary">
+                                                    Go to profile
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                        <div>
+                                            <Link href="/">
+                                                <Button variant="secondary">
+                                                    Go back to home
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="space-y-3 mt-4">
-                                    {paymentSource &&
-                                        paymentSource.map((card, index) => {
-                                            return (
-                                                <div
-                                                    key={index}
-                                                    className="flex justify-between py-3 px-6 rounded-lg bg-primary text-white hover:bg-green-700 cursor-pointer"
-                                                    onClick={(event) => {
-                                                        event.preventDefault();
-                                                        if (
-                                                            !reservationLoading
-                                                        ) {
-                                                            handleReservation(
-                                                                card.id
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    <span>
-                                                        <span className="inline-block mr-4">
-                                                            {card.brand.toUpperCase()}
-                                                        </span>
-                                                        {card.expMonth}/
-                                                        {card.expYear}
-                                                    </span>
-                                                    <span>
-                                                        ... {card.last4}
-                                                    </span>
-                                                </div>
-                                            );
-                                        })}
-                                </div>
-                            </div>
+                            ) : (
+                                <PaymentMethods
+                                    paymentSource={paymentSource}
+                                    reservationLoading={reservationLoading}
+                                    handleReservation={handleReservation}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -217,3 +216,53 @@ export async function getServerSideProps(context) {
         },
     };
 }
+
+const PaymentMethods = ({
+    paymentSource,
+    reservationLoading,
+    handleReservation,
+}) => {
+    return (
+        <div>
+            <div className=" flex justify-between items-center">
+                <h2 className="font-bold">Select a payment method</h2>
+                <Link href="/user/settings/add-card">
+                    <a target="_blank">
+                        <Button
+                            type="button"
+                            variant="white"
+                            className="inline-block"
+                        >
+                            Add card
+                        </Button>
+                    </a>
+                </Link>
+            </div>
+            <div className="space-y-3 mt-4">
+                {paymentSource &&
+                    paymentSource.map((card, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className="flex justify-between py-3 px-6 rounded-lg bg-primary text-white hover:bg-green-700 cursor-pointer"
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    if (!reservationLoading) {
+                                        handleReservation(card.id);
+                                    }
+                                }}
+                            >
+                                <span>
+                                    <span className="inline-block mr-4">
+                                        {card.brand.toUpperCase()}
+                                    </span>
+                                    {card.expMonth}/{card.expYear}
+                                </span>
+                                <span>... {card.last4}</span>
+                            </div>
+                        );
+                    })}
+            </div>
+        </div>
+    );
+};
