@@ -20,6 +20,15 @@ export const GET_PROFILE_FOR_SETTINGS = gql`
     }
 `;
 
+export const UPDATE_USER_PROFILE = gql`
+    mutation UpdateMyProfile($input: UpdateMyProfileInput!) {
+        updateMyProfile(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const GET_PAYMENT_SOURCES = gql`
     query GetPaymentSources {
         ${PAYMENT_SOURCE}
