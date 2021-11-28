@@ -64,8 +64,8 @@ const Basic = ({
                     console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                            prefix +
-                            ".js"
+                        prefix +
+                        ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -315,20 +315,32 @@ const Basic = ({
                             />
                         </div>
                     </div>
-                    <div className="w-full pt-3 h-80">
-                        <GoogleMap
-                            freeCoords={freeCoords}
-                            setFreeCoords={setFreeCoords}
-                            mark={
-                                initialValue
-                                    ? {
-                                          lat: initialValue?.address?.latitude,
-                                          lng: initialValue?.address?.longitude,
-                                      }
-                                    : undefined
-                            }
-                            zoom={15}
-                        />
+                    <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                        <label
+                            htmlFor="Map"
+                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
+                        >
+                            Map
+                        </label>
+                        <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
+                            <GoogleMap
+                                setFreeCoords={setFreeCoords}
+                                mark={freeCoords}
+                                zoom={15}
+                            />
+                        </div>
+                    </div>
+                    <div className="px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                        <label
+                            htmlFor="Map"
+                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
+                        >
+                            Current Coordinates
+                        </label>
+                        <div className="w-full overflow-hidden rounded-md sm:w-96">
+                            <p>Latitude: {freeCoords?.lat}</p>
+                            <p>Longitude: {freeCoords?.lng}</p>
+                        </div>
                     </div>
                     {initialValue ? (
                         <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">

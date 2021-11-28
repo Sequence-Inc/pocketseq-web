@@ -208,6 +208,17 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
                     onChange={(event) => setTitle(event.target.value)}
                 />
             </div>
+            <div>
+                <TextField
+                    label="Duration"
+                    error={null}
+                    errorMessage="Duration is required"
+                    autoFocus
+                    singleRow
+                    value={duration}
+                    onChange={(event) => setDuration(event.target.value)}
+                />
+            </div>
             <div className="">
                 <Select
                     label="Plan Type"
@@ -245,17 +256,6 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
                     onChange={(event) =>
                         setLastMinuteDiscount(event.target.value)
                     }
-                />
-            </div>
-            <div>
-                <TextField
-                    label="Duration"
-                    error={null}
-                    errorMessage="Duration is required"
-                    autoFocus
-                    singleRow
-                    value={duration}
-                    onChange={(event) => setDuration(event.target.value)}
                 />
             </div>
             <div>

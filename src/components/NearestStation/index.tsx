@@ -119,7 +119,7 @@ export const NearestStation = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <TextField
+                {/* <TextField
                     // defaultValue={}
                     label="Via"
                     // error={}
@@ -127,6 +127,15 @@ export const NearestStation = ({ onAdd, closeForm }) => {
                     disabled={loading}
                     onChange={(event) => setVia(event.target.value)}
                     value={via}
+                    singleRow
+                /> */}
+                <Select
+                    label="Via"
+                    value={via}
+                    options={["徒歩", "車／タクシー", "バス"]}
+                    onChange={(event) => setVia(event as string)}
+                    errorMessage="Via is required"
+                    disabled={loading}
                     singleRow
                 />
             </div>
