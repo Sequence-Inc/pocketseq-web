@@ -88,9 +88,20 @@ const HostDashboard = ({ currentSession }) => {
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 w-full">
                 <div className="space-y-6">
-                    <h2 className="text-lg font-medium leading-6 text-gray-900">
-                        Settings
-                    </h2>
+                    <div className="flex justify-between">
+                        <h2 className="text-xl font-medium leading-6 text-gray-900">
+                            Settings
+                        </h2>
+                        <Link href="/user/profile/">
+                            <Button
+                                variant="secondary"
+                                type="button"
+                                className="inline-block w-auto"
+                            >
+                                Go back to profile
+                            </Button>
+                        </Link>
+                    </div>
                     <div>
                         <h3 className="flex justify-between border-b border-gray-300 py-2 mb-4">
                             <span>Payment methods</span>

@@ -8,6 +8,7 @@ import {
     SpaceInfoAccess,
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
+    LoadingSpinner,
 } from "@comp";
 import { Container, Tag } from "@element";
 import React from "react";

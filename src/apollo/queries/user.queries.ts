@@ -47,3 +47,16 @@ export const SETUP_INTENT = gql`
         setupIntent
     }
 `;
+
+export const RESERVE_SPACE = gql`
+    mutation ReserveSpace($input: ReserveSpaceInput) {
+        reserveSpace(input: $input) {
+            transactionId
+            intentId
+            intentCode
+            amount
+            description
+            currency
+        }
+    }
+`;

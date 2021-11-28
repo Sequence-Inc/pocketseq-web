@@ -15,7 +15,9 @@ const tabs = [
     { name: "Recognition", href: "#", current: false },
 ];
 const HostDashboard = ({ currentSession }) => {
-    const { data, loading, error } = useQuery(GET_PROFILE);
+    const { data, loading, error } = useQuery(GET_PROFILE, {
+        fetchPolicy: "network-only",
+    });
 
     if (loading)
         return (
