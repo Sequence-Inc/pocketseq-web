@@ -8,6 +8,7 @@ import {
     SpaceInfoAccess,
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
+    LoadingSpinner,
 } from "@comp";
 import { Button, Container, Tag } from "@element";
 import React from "react";
@@ -202,7 +203,10 @@ const SpaceDetail = ({ spaceId }) => {
                         <SpaceInfoReviews />
                     </div>
                     <div className="hidden md:block">
-                        <FloatingPrice pricePlans={spacePricePlans} />
+                        <FloatingPrice
+                            pricePlans={spacePricePlans}
+                            space={space}
+                        />
                     </div>
                 </div>
             </Container>

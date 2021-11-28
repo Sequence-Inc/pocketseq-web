@@ -2,17 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Button, Price } from "@element";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
-import { ISpacePricePlan } from "src/types/timebookTypes";
-import { FormatPrice, PriceFormatter } from "src/utils";
+import { ISpace, ISpacePricePlan } from "src/types/timebookTypes";
+import { FormatPrice, GetTimeStamp, PriceFormatter } from "src/utils";
 
 import DatePicker from "react-datepicker";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import Link from "next/link";
 
 export const FloatingPrice = ({
     pricePlans,
+    space,
 }: {
     pricePlans: ISpacePricePlan[];
+    space: ISpace;
 }) => {
     const [start, setStart] = useState(null);
     const [end, setEnd] = useState(null);
@@ -48,31 +51,6 @@ export const FloatingPrice = ({
     const priceCalculation = () => {
         // Todo: Calculate based on price plans
         return hours * price;
-    };
-
-    const handleReservation = (selectedPaymentSource: string = null) => {
-        if (!selectedPaymentSource && !paymentSources) {
-            const {
-                data,
-                loading: paymentSourcesLoading,
-                error,
-            } = useQuery(GET_PAYMENT_SOURCES);
-            if (error) {
-                // setPaymentSources()
-                setPaymentSourcesError(error.message);
-            }
-            if (paymentSourcesLoading) {
-                setPaymentSourcesLoading(true);
-            }
-        }
-        // get payment method
-
-        // select payment method
-        return null;
-    };
-
-    const renderPaymentSource = () => {
-        return null;
     };
 
     const hoursCalculation = () => {
@@ -135,6 +113,16 @@ export const FloatingPrice = ({
         return null;
     };
 
+    const params = `?spaceId=${space.id}&start=${GetTimeStamp(
+        start
+    )}&end=${GetTimeStamp(
+        end
+    )}&hours=${hours}&price=${price}&amount=${priceCalculation()}&spaceName=${
+        space.name
+    }&address=${space.address.prefecture.name}${space.address.city}${
+        space.address.addressLine1
+    }${space.address.addressLine2}`;
+
     return (
         <div className="sticky w-full lg:w-96 top-20">
             <div className="p-5 space-y-4 border border-gray-200 rounded-lg">
@@ -185,15 +173,9 @@ export const FloatingPrice = ({
                 {hoursCalculation()}
 
                 {/* button row */}
-                <Button
-                    variant="primary"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handleReservation();
-                    }}
-                >
-                    予約可能状況を確認する
-                </Button>
+                <Link href={`/space/reserve/${params}`}>
+                    <Button variant="primary">予約可能状況を確認する</Button>
+                </Link>
 
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
@@ -211,7 +193,6 @@ export const FloatingPrice = ({
                     <span>シェア</span>
                 </Button>
             </div>
-            <div>{renderPaymentSource()}</div>
         </div>
     );
 };

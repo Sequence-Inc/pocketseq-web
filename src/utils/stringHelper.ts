@@ -54,3 +54,52 @@ const FormatPriceString = (
     }
     return null;
 };
+
+export const GetTimeStamp = (date: Date): number => {
+    const dateObject = new Date(date);
+    return Math.floor(dateObject.getTime() / 1000);
+};
+
+export const DateFromTimeStamp = (
+    date: number,
+    type: "full-date" | "long-date" | "date" | "date-time" | "time"
+): string => {
+    const newDate = new Date(date * 1000);
+    let options = null;
+
+    if (type === "full-date") {
+        options = {
+            years: "long" as "long",
+            month: "long" as "long",
+            day: "2-digit" as "2-digit",
+            hour: "2-digit" as "2-digit",
+            minute: "2-digit" as "2-digit",
+        };
+    } else if (type === "long-date") {
+        options = {
+            years: "long" as "long",
+            month: "long" as "long",
+            day: "2-digit" as "2-digit",
+        };
+    } else if (type === "date") {
+        options = {
+            month: "long" as "long",
+            day: "2-digit" as "2-digit",
+            timeZone: "Asia/Tokyo",
+        };
+    } else if (type === "date-time") {
+        options = {
+            month: "long" as "long",
+            day: "2-digit" as "2-digit",
+            hour: "2-digit" as "2-digit",
+            minute: "2-digit" as "2-digit",
+        };
+    } else if (type === "time") {
+        options = {
+            hour: "2-digit" as "2-digit",
+            minute: "2-digit" as "2-digit",
+        };
+        return newDate.toLocaleTimeString("ja-JP", options);
+    }
+    return newDate.toLocaleDateString("ja-JP", options);
+};
