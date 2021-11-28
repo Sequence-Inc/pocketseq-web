@@ -236,3 +236,17 @@ export const SPACE = `
         createdAt
     }
 `;
+
+export const PAYMENT_SOURCE = `
+    paymentSource{
+        id
+        token
+        type
+        expMonth
+        expYear
+        last4
+        brand
+        country
+        customer
+    }
+`;

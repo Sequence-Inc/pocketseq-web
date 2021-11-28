@@ -7,7 +7,7 @@ import HostLayout from "src/layouts/HostLayout";
 import { Container } from "@element";
 import { HOST } from "src/apollo/queries/host.queries";
 import DashboardCard from "src/components/DashboardCard";
-import { PhotoIdUploader, AddStripe } from "src/components";
+import { PhotoIdUploader, AddStripe, LoadingSpinner } from "src/components";
 
 interface IBalanceInput {
     currency: string;
@@ -50,11 +50,7 @@ const HostDashboard = ({ currentSession }) => {
                     <title>ホスト管理 - time book</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
-                    <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
-                        <div className="flex items-center justify-center h-content">
-                            <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
-                        </div>
-                    </div>
+                    <LoadingSpinner />
                 </Container>
             </HostLayout>
         );

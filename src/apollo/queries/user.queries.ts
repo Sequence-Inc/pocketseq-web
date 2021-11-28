@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { COMPANY_ACCOUNT, USER_ACCOUNT } from "./core.queries";
+import { COMPANY_ACCOUNT, PAYMENT_SOURCE, USER_ACCOUNT } from "./core.queries";
 
 export const GET_PROFILE = gql`
     query GetProfile {
@@ -16,17 +16,13 @@ export const GET_PROFILE_FOR_SETTINGS = gql`
             ${USER_ACCOUNT}
             ${COMPANY_ACCOUNT}
         }
-        paymentSource{
-            id
-            token
-            type
-            expMonth
-            expYear
-            last4
-            brand
-            country
-            customer
-        }
+        ${PAYMENT_SOURCE}
+    }
+`;
+
+export const GET_PAYMENT_SOURCES = gql`
+    query GetPaymentSources {
+        ${PAYMENT_SOURCE}
     }
 `;
 
@@ -43,5 +39,11 @@ export const ADD_PAYMENT_METHOD = gql`
             country
             customer
         }
+    }
+`;
+
+export const SETUP_INTENT = gql`
+    query SetupIntent {
+        setupIntent
     }
 `;
