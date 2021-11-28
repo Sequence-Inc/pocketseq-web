@@ -9,11 +9,11 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import clsx from 'clsx';
 
-const Messages = ({ name, recipientIds }) => {
+const Messages = ({ name, recipientIds, userId }) => {
     const [newChat, setNewChat] = useState<{ name: string; recipientIds: string | string[] } | undefined>();
     const [activeChat, setActiveChat] = useState<any>();
     const [message, setMessage] = useState<string | undefined>();
-    const activeUser = activeChat?.members?.filter(res => res.id !== recipientIds) || [];
+    const activeUser = activeChat?.members?.filter(res => res.accountId !== userId)[0];
 
     const { data, refetch } = useQuery(MY_CHAT, { fetchPolicy: "network-only" });
     const [mutate] = useMutation(CREATE_NEW_CHAT);
@@ -36,6 +36,12 @@ const Messages = ({ name, recipientIds }) => {
             router.push(`/messages?name=${activeHost?.firstName}%20${activeHost?.lastName}&recipientIds=${activeHost?.accountId}`)
         }
     }, [data]);
+
+    const changeActiveChat = (chat: any) => {
+        setActiveChat(chat);
+        const activeMember = chat.members?.filter(res => res.accountId !== userId)[0];
+        router.push(`/messages?name=${chat?.id ? activeMember?.firstName + " " + activeMember?.lastName : chat?.name}&recipientIds=${chat?.id ? activeMember?.accountId : chat?.recipientIds}`)
+    }
 
     const sendMessage = async () => {
         try {
@@ -75,13 +81,14 @@ const Messages = ({ name, recipientIds }) => {
                     <div className="flex flex-col justify-between h-[calc(100vh-64px)] flex-1 pb-2">
                         <div className="flex justify-between px-4 py-3 bg-white border-b-2 border-gray-200 sm:items-center">
                             <div className="flex items-center space-x-4">
-                                {activeUser[0]?.profilePhoto?.thumbnail?.url ?
-                                    <img src={activeUser[0]?.profilePhoto?.thumbnail?.url} alt="" className="w-10 h-10 rounded-full sm:w-16 sm:h-16" />
+                                {activeUser?.profilePhoto?.thumbnail?.url ?
+                                    <img src={activeUser?.profilePhoto?.thumbnail?.url} alt="" className="w-10 h-10 rounded-full sm:w-16 sm:h-16" />
                                     : <div className="w-10 h-10 bg-gray-200 rounded-full sm:w-16 sm:h-16" />}
                                 <div className="flex flex-col leading-tight">
                                     <div className="flex items-center mt-1 text-2xl">
                                         <span className="mr-3 text-gray-700">
-                                            {activeUser[0]?.firstName}{" "}{activeUser[0]?.firstName}
+                                            {activeUser ? activeUser?.firstName + " " + activeUser?.lastName : activeChat?.name}
+                                            {console.log(activeUser, activeChat, activeUser ? activeUser?.firstName + " " + activeUser?.lastName : activeChat?.name)}
                                         </span>
                                         {/* <span className="text-green-500">
                                             <svg width="10" height="10">
@@ -111,7 +118,7 @@ const Messages = ({ name, recipientIds }) => {
                             </div> */}
                         </div>
                         <div id="messages" className="flex flex-col p-3 space-y-4 overflow-y-auto scrolling-touch scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2">
-                            {activeChat?.messages.map(res => {
+                            {activeChat?.messages?.map(res => {
                                 return res.sender.id === recipientIds ?
                                     <div className="chat-message">
                                         <div className="flex items-end">
@@ -155,7 +162,7 @@ const Messages = ({ name, recipientIds }) => {
                                 <input
                                     type="text"
                                     placeholder="Write Something"
-                                    // className="w-full py-3 pl-12 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full focus:outline-none focus:placeholder-gray-400"
+                                    autoFocus
                                     className="w-full px-6 py-3 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full focus:outline-none focus:placeholder-gray-400"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
@@ -198,7 +205,11 @@ const Messages = ({ name, recipientIds }) => {
                         {/* Your content */}
                         <ul role="list" className="divide-y divide-gray-200">
                             {newChat &&
-                                <li key={newChat.name} className="flex items-center p-4 cursor-pointer">
+                                <li
+                                    key={newChat.name}
+                                    className="flex items-center p-4 cursor-pointer"
+                                    onClick={() => changeActiveChat(newChat)}
+                                >
                                     <div className="w-10 h-10 bg-gray-200 rounded-full" />
                                     <div className="ml-3">
                                         <p className="text-sm font-medium text-gray-900">{newChat.name}</p>
@@ -206,14 +217,15 @@ const Messages = ({ name, recipientIds }) => {
                                 </li>
                             }
                             {data?.myChats?.map((person) => {
-                                const filteredPerson = person.members?.find(res => res.accountId === recipientIds);
+                                // const filteredPerson = person.members[1];
+                                const filteredPerson = person.members?.filter(res => res.accountId !== userId)[0];
                                 const isActive = person.id === activeChat?.id;
-                                console.log("FFFFF", filteredPerson)
+                                console.log("FFFFF", filteredPerson, person.members, userId)
                                 return (
                                     <li
                                         key={person.id}
                                         className={clsx("flex items-center p-4", isActive ? "bg-gray-50" : "cursor-pointer")}
-                                        onClick={() => setActiveChat(person)}
+                                        onClick={() => changeActiveChat(person)}
                                     >
                                         {filteredPerson?.profilePhoto?.thumbnail?.url ?
                                             <img className="w-10 h-10 rounded-full" src={filteredPerson.profilePhoto?.thumbnail?.url} alt="" />
@@ -237,7 +249,8 @@ const Messages = ({ name, recipientIds }) => {
 export default Messages;
 
 export async function getServerSideProps(context) {
+    const userId = context.req.cookies?.session_profile ? JSON.parse(context.req.cookies?.session_profile)?.id : null;
     const name = Object.keys(context.query).length ? context.query?.name : null;
     const recipientIds = Object.keys(context.query).length ? context.query?.recipientIds : null;
-    return { props: { name, recipientIds } };
+    return { props: { name, recipientIds, userId } };
 }
