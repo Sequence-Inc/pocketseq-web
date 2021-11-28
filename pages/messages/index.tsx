@@ -4,7 +4,7 @@ import HostLayout from 'src/layouts/HostLayout';
 import { Container } from "@element";
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_NEW_CHAT, MY_CHAT, SEND_MESSAGE } from 'src/apollo/queries/chat.queries';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import clsx from 'clsx';
@@ -28,6 +28,12 @@ const Messages = ({ name, recipientIds }) => {
                 setNewChat({ name: name as string, recipientIds: recipientIds });
                 setActiveChat({ name: name as string, recipientIds: recipientIds });
             }
+        }
+        const activeMember = data?.myChats[0]
+        if (activeMember && !recipientIds) {
+            const activeHost = activeMember.members[0];
+            setActiveChat(activeMember);
+            router.push(`/messages?name=${activeHost?.firstName}%20${activeHost?.lastName}&recipientIds=${activeHost?.accountId}`)
         }
     }, [data]);
 
@@ -202,17 +208,18 @@ const Messages = ({ name, recipientIds }) => {
                             {data?.myChats?.map((person) => {
                                 const filteredPerson = person.members?.find(res => res.accountId === recipientIds);
                                 const isActive = person.id === activeChat?.id;
+                                console.log("FFFFF", filteredPerson)
                                 return (
                                     <li
                                         key={person.id}
                                         className={clsx("flex items-center p-4", isActive ? "bg-gray-50" : "cursor-pointer")}
                                         onClick={() => setActiveChat(person)}
                                     >
-                                        {filteredPerson.profilePhoto?.thumbnail?.url ?
+                                        {filteredPerson?.profilePhoto?.thumbnail?.url ?
                                             <img className="w-10 h-10 rounded-full" src={filteredPerson.profilePhoto?.thumbnail?.url} alt="" />
                                             : <div className="w-10 h-10 bg-gray-200 rounded-full" />}
                                         <div className="ml-3">
-                                            <p className="text-sm font-medium text-gray-900">{filteredPerson.firstName} {filteredPerson.lastName}</p>
+                                            <p className="text-sm font-medium text-gray-900">{filteredPerson?.firstName} {filteredPerson?.lastName}</p>
                                         </div>
                                     </li>
                                 )
@@ -230,6 +237,7 @@ const Messages = ({ name, recipientIds }) => {
 export default Messages;
 
 export async function getServerSideProps(context) {
-    const { name, recipientIds } = context.query;
+    const name = Object.keys(context.query).length ? context.query?.name : null;
+    const recipientIds = Object.keys(context.query).length ? context.query?.recipientIds : null;
     return { props: { name, recipientIds } };
 }
