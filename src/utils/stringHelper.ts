@@ -54,3 +54,13 @@ const FormatPriceString = (
     }
     return null;
 };
+
+export const GetTimeStamp = (date: Date): number => {
+    const dateObject = new Date(date);
+    return Math.floor(dateObject.getTime() / 1000);
+};
+
+export const DateFromTimeStamp = (date: number): string => {
+    const newDate = new Date(date * 1000);
+    return newDate.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" });
+};

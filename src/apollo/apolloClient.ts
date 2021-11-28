@@ -81,8 +81,8 @@ if (typeof window !== "undefined") {
 }
 
 const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_API_URL,
-    // uri: "http://localhost:3001/dev/graphql",
+    // uri: process.env.NEXT_PUBLIC_API_URL,
+    uri: "http://localhost:3001/dev/graphql",
     // uri: "http://6daa-2400-1a00-b010-4faa-284b-fc06-735d-9c1.ngrok.io/dev/graphql",
     headers: {
         Authorization: token,
