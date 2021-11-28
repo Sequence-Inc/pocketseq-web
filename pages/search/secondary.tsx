@@ -55,8 +55,8 @@ const Secondary = ({ resetToStartObj }) => {
                             address: {
                                 prefecture: { name: result.prefecture },
                                 city: result.city,
-                                latitude: result._geoloc.lat,
-                                longitude: result._geoloc.lng,
+                                latitude: result._geoloc?.lat,
+                                longitude: result._geoloc?.lng,
                             },
                             photos: [
                                 { medium: { url: "/services/lifestyle.jpg" } },

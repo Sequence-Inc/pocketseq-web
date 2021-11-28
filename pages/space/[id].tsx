@@ -9,16 +9,18 @@ import {
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
 } from "@comp";
-import { Container, Tag } from "@element";
+import { Button, Container, Tag } from "@element";
 import React from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { FormatPrice, FormatShortAddress, PriceFormatter } from "src/utils";
 import { IPhoto, IRating, ISpace } from "src/types/timebookTypes";
 import Head from "next/head";
+import { CREATE_NEW_CHAT } from "src/apollo/queries/chat.queries";
+import { useRouter } from "next/router";
 
 const ContentSection = ({
     title,
@@ -39,8 +41,10 @@ const ContentSection = ({
 };
 
 const SpaceDetail = ({ spaceId }) => {
+    const router = useRouter();
     const { data, loading, error } = useQuery(GET_SPACE_BY_ID, {
         variables: { id: spaceId },
+        fetchPolicy: "network-only"
     });
 
     if (error) {
@@ -64,6 +68,7 @@ const SpaceDetail = ({ spaceId }) => {
         nearestStations,
         address,
         photos,
+        host,
     } = space;
 
     const location: string = FormatShortAddress(address);
@@ -78,6 +83,10 @@ const SpaceDetail = ({ spaceId }) => {
         location,
         rating,
     };
+
+    const sendMessage = () => {
+        if (host) router.push(`/messages?name=${host?.name}&recipientIds=${host?.accountId}`);
+    }
 
     return (
         <MainLayout>
@@ -95,10 +104,23 @@ const SpaceDetail = ({ spaceId }) => {
                         <div className="w-full my-6 border-t border-gray-300" />
                         {/* host profile */}
                         <div>
-                            <HostProfile
-                                title="ホストはZero Share (株式会社LDKプロジェクト)さん"
-                                description="2015年8月年からメンバー"
-                            />
+                            <div className="space-y-6 sm:flex sm:space-y-0">
+                                <div className="flex-1">{console.log(host)}
+                                    <HostProfile
+                                        title={host?.name}
+                                        description="2015年8月年からメンバー"
+                                    />
+                                </div>
+                                <Button
+                                    variant="primary"
+                                    rounded
+                                    className="w-auto px-4 h-9"
+                                    onClick={sendMessage}
+
+                                >
+                                    Send Message
+                                </Button>
+                            </div>
                             <div className="flex mt-6 space-x-3">
                                 <Tag
                                     Icon={StarIcon}
@@ -155,12 +177,12 @@ const SpaceDetail = ({ spaceId }) => {
                             {spacePricePlans.map((plan, index) => (
                                 <div
                                     key={index}
-                                    className="flex justify-between text-xl py-4 px-5 my-4 text-gray-800 bg-gray-50 rounded-xl border border-gray-100"
+                                    className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
                                 >
                                     <h3>{plan.title}</h3>
                                     <p>
                                         {PriceFormatter(plan.amount)}
-                                        <span className="text-gray-700 text-base">
+                                        <span className="text-base text-gray-700">
                                             /
                                             {plan.duration > 1
                                                 ? plan.duration

@@ -46,6 +46,7 @@ export const SearchBox = ({ onChange }) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
+    // console.log(items);
 
     // const [loading, setLoading] = useState<boolean>(true);
     const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
@@ -65,7 +66,7 @@ export const SearchBox = ({ onChange }) => {
     }
 
     return (
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
                 {/* area search box */}
                 <Popover
@@ -95,7 +96,7 @@ export const SearchBox = ({ onChange }) => {
                                 value={area}
                                 onChange={(e) => setArea(e.target.value)}
                             />
-                            <p className="text-xs text-gray-700 mt-2">
+                            <p className="mt-2 text-xs text-gray-700">
                                 ※駅は５つまで選択可能です。都道府県・市区町村を複数入力することはできません。
                             </p>
                         </div>
@@ -105,7 +106,7 @@ export const SearchBox = ({ onChange }) => {
                             </Button>
                         </div>
                     </div> */}
-                    <div className="relative overflow-hidden bg-white w-52 left-0 rounded-3xl z-50 shadow-lg">
+                    <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
                         <p className="px-4 pt-4 mb-1 text-lg text-semibold">
                             エリア
                         </p>
@@ -117,13 +118,12 @@ export const SearchBox = ({ onChange }) => {
                                 宿泊
                             </button>
                         </div> */}
-                        <ul className="max-h-60 overflow-scroll">
+                        <ul className="overflow-scroll max-h-60">
                             {areaList.map((item: string, index: number) => (
                                 <li
                                     key={index.toString()}
-                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
-                                        area === item ? "bg-gray-100" : ""
-                                    }`}
+                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${area === item ? "bg-gray-100" : ""
+                                        }`}
                                     onClick={() => setArea(item)}
                                 >
                                     {item}
@@ -151,7 +151,7 @@ export const SearchBox = ({ onChange }) => {
                     }
                     position="center"
                 >
-                    <div className="relative overflow-hidden bg-white w-52 -left-1/2 rounded-3xl z-50 shadow-lg">
+                    <div className="relative z-50 overflow-hidden bg-white shadow-lg w-52 -left-1/2 rounded-3xl">
                         <p className="px-4 pt-4 mb-1 text-lg text-semibold">
                             利用目的
                         </p>
@@ -168,11 +168,10 @@ export const SearchBox = ({ onChange }) => {
                                 (item: any, index: number) => (
                                     <li
                                         key={index.toString()}
-                                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
-                                            purpose === item.title
-                                                ? "bg-gray-100"
-                                                : ""
-                                        }`}
+                                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${purpose === item.title
+                                            ? "bg-gray-100"
+                                            : ""
+                                            }`}
                                         onClick={() => setPurpose(item.title)}
                                     >
                                         {item.title}
@@ -231,4 +230,4 @@ export const SearchBox = ({ onChange }) => {
             </div>
         </div>
     );
-};
+}

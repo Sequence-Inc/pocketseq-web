@@ -6,7 +6,9 @@ import {
     CogIcon,
     UsersIcon,
     MailIcon,
+    UserCircleIcon
 } from "@heroicons/react/outline";
+// import {  } from "@heroicons/react/solid";
 
 export const navigation = [
     {
@@ -46,6 +48,18 @@ export const navigation = [
         roles: ["admin"],
     },
     {
+        name: "Profile",
+        href: "/user/profile",
+        Icon: UserCircleIcon,
+        roles: ["user"],
+    },
+    {
+        name: "Settings",
+        href: "/user/settings",
+        Icon: CogIcon,
+        roles: ["user"],
+    },
+    {
         name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
@@ -59,7 +73,7 @@ export const navigation = [
     },
     {
         name: "メッセージ",
-        href: "#",
+        href: "/messages",
         Icon: MailIcon,
         roles: ["user", "host"],
     },
