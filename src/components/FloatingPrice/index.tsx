@@ -96,7 +96,7 @@ export const FloatingPrice = ({
                 // calculate price
                 const subtotal = priceCalculation();
                 content = (
-                    <div className="space-y-2 mt-3">
+                    <div className="mt-3 space-y-2">
                         <div className="flex justify-between">
                             <span>時間:</span>
                             <span>{hours}時間</span>
@@ -107,7 +107,7 @@ export const FloatingPrice = ({
                         </div>
                         <div className="flex justify-between">
                             <span>小計:</span>
-                            <span className="font-bold text-xl">
+                            <span className="text-xl font-bold">
                                 {PriceFormatter(subtotal)}
                             </span>
                         </div>
@@ -115,7 +115,7 @@ export const FloatingPrice = ({
                 );
             }
             return (
-                <div className=" border border-gray-100 shadow-sm rounded-lg p-4">
+                <div className="p-4 border border-gray-100 rounded-lg shadow-sm ">
                     <div className="text-right">
                         <a
                             onClick={(e) => {
@@ -136,7 +136,7 @@ export const FloatingPrice = ({
     };
 
     return (
-        <div className="sticky w-full lg:w-96 top-20">
+        <div className="w-full md:sticky lg:w-96 md:top-20">
             <div className="p-5 space-y-4 border border-gray-200 rounded-lg">
                 {/* price row */}
                 <div className="flex justify-between">
@@ -146,7 +146,7 @@ export const FloatingPrice = ({
 
                 {/* date and time row */}
                 <div>
-                    <p className="text-sm font-bold text-gray-500 mb-2">
+                    <p className="mb-2 text-sm font-bold text-gray-500">
                         チェックイン
                     </p>
                     <DatePicker
@@ -160,11 +160,11 @@ export const FloatingPrice = ({
                         showTimeSelect
                         timeIntervals={60}
                         dateFormat="Pp"
-                        className="w-full text-sm text-gray-700 placeholder-gray-400 px-3 py-2 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
+                        className="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
                     />
                 </div>
                 <div>
-                    <p className="text-sm font-bold text-gray-500 mb-2">
+                    <p className="mb-2 text-sm font-bold text-gray-500">
                         チェックアウト
                     </p>
                     <DatePicker
@@ -178,7 +178,7 @@ export const FloatingPrice = ({
                         timeIntervals={60}
                         showTimeSelect
                         dateFormat="Pp"
-                        className="w-full text-sm text-gray-700 placeholder-gray-400 px-3 py-2 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
+                        className="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
                     />
                 </div>
 
