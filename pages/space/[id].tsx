@@ -101,6 +101,10 @@ const SpaceDetail = ({ spaceId }) => {
                         <SpaceInfoTitle titleInfo={titleInfo} />
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="block md:hidden">
+                            <FloatingPrice pricePlans={spacePricePlans} />
+                        </div>
+                        <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
                         <div className="w-full my-6 border-t border-gray-300" />
                         {/* host profile */}
