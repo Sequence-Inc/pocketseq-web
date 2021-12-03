@@ -102,7 +102,7 @@ const SpaceDetail = ({ spaceId }) => {
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <div className="block md:hidden">
-                            <FloatingPrice pricePlans={spacePricePlans} />
+                            <FloatingPrice pricePlans={spacePricePlans} space={space} />
                         </div>
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
