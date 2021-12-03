@@ -69,3 +69,30 @@ export const RESERVE_SPACE = gql`
         }
     }
 `;
+
+export const MY_RESERVATION = gql`
+    query MyReservations($paginate: PaginationOption, $filter: MyReservationFilter){
+        myReservations(paginate: $paginate, filter:$filter){
+            data {
+            id
+            fromDateTime
+            toDateTime
+            status
+            createdAt
+            updatedAt
+            approved
+            approvedOn
+            space {
+                id
+                name
+            }
+            }
+            paginationInfo {
+            hasNext
+            hasPrevious
+            nextCursor
+            }
+        }
+    }
+`;
+

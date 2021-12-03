@@ -5,7 +5,21 @@ import { useTable } from "react-table";
 
 import useTranslation from "next-translate/useTranslation";
 
-const Table = ({ columns, data }) => {
+export interface IColumns {
+    Header: string;
+    accessor: string;
+    className?: string;
+    childClassName?: string;
+    Cell?: any;
+}
+interface ITableProps {
+    columns: any;
+    data: any[],
+    paginate?: any;
+    handlePaginate?: (type: 'prev' | 'next') => void;
+}
+
+const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
     const { t } = useTranslation("adminhost");
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({
@@ -71,26 +85,23 @@ const Table = ({ columns, data }) => {
                     className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
                     aria-label="Pagination"
                 >
-                    <div className="hidden sm:block">
-                        <p className="text-sm text-gray-700">
-                            Showing <span className="font-medium">1</span> to{" "}
-                            <span className="font-medium">10</span> of{" "}
-                            <span className="font-medium">20</span> results
-                        </p>
-                    </div>
                     <div className="flex justify-between flex-1 sm:justify-end">
-                        <a
-                            href="#"
-                            className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                        <button
+                            className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            disabled={!paginate?.hasPrevious}
+                            type="button"
+                            onClick={() => { handlePaginate('next') }}
                         >
                             {t("previous-page")}
-                        </a>
-                        <a
-                            href="#"
-                            className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                        </button>
+                        <button
+                            className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            disabled={!paginate?.hasNext}
+                            type="button"
+                            onClick={() => { handlePaginate('prev') }}
                         >
                             {t("next-page")}
-                        </a>
+                        </button>
                     </div>
                 </nav>
             </div>

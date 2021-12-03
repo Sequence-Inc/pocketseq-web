@@ -113,15 +113,13 @@ export const FloatingPrice = ({
         return null;
     };
 
-    const params = `?spaceId=${space.id}&start=${GetTimeStamp(
+    const params = `?spaceId=${space?.id}&start=${GetTimeStamp(
         start
     )}&end=${GetTimeStamp(
         end
-    )}&hours=${hours}&price=${price}&amount=${priceCalculation()}&spaceName=${
-        space.name
-    }&address=${space.address.prefecture.name}${space.address.city}${
-        space.address.addressLine1
-    }${space.address.addressLine2}`;
+    )}&hours=${hours}&price=${price}&amount=${priceCalculation()}&spaceName=${space.name
+        }&address=${space.address.prefecture.name}${space.address.city}${space.address.addressLine1
+        }${space.address.addressLine2}`;
 
     return (
         <div className="w-full md:sticky lg:w-96 md:top-20">
