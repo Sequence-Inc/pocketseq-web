@@ -34,7 +34,7 @@ const Register = () => {
                 callback={() => router.replace("/auth/login")}
                 location="register"
             />
-            <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+            <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 lg:space-y-6 bg-white border border-gray-100 rounded-lg shadow-sm">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     {t("register-an-account")}
@@ -139,7 +139,7 @@ const Register = () => {
                     </Button>
                 </form>
             </div>
-            <div className="flex flex-col items-center py-2 mt-2 w-96">
+            <div className="w-96 lg:w-1/3 mx-auto py-2 mt-2 text-center">
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">

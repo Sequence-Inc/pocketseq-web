@@ -32,7 +32,7 @@ const Login = () => {
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
             <AuthLayout>
-                <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+                <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <Logo />
                     {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
@@ -41,7 +41,7 @@ const Login = () => {
                     </h2>
                     <form
                         onSubmit={handleSubmit(handleLogin)}
-                        className="space-y-4"
+                        className="space-y-4 lg:space-y-6"
                     >
                         <TextField
                             {...register("email")}
@@ -89,15 +89,15 @@ const Login = () => {
                         </Button>
                     </form>
                 </div>
-                <div className="flex flex-col items-center py-2 mt-2 w-96">
-                    <div className="py-2 text-md ">
+                <div className="py-2 mt-2 w-96 lg:w-1/3 mx-auto">
+                    <div className="py-2 text-md text-center">
                         <Link href="/">
                             <a className="text-gray-500 hover:text-green-600">
                                 {t("back-to-timebook")}
                             </a>
                         </Link>
                     </div>
-                    <div className="py-2 text-sm text-gray-500">
+                    <div className="py-2 text-sm text-gray-500 text-center">
                         &copy; Copyright 2021 Sequence Co., Ltd.
                     </div>
                 </div>
