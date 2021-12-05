@@ -3,8 +3,8 @@ import algoliasearch, { SearchClient } from "algoliasearch";
 export type AlgoliaClient = SearchClient;
 
 export const algoliaClient: AlgoliaClient = algoliasearch(
-    "K2PIS0458U",
-    "6c2c5bb09c6f0da1002a51d1995969bd"
+    process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
 );
 
 export const spaceIndex = algoliaClient.initIndex(`space_dev`);

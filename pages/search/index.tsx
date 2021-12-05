@@ -13,11 +13,9 @@ import Link from "next/link";
 import React from "react";
 import { useState } from "react";
 // import { itemGridData } from "../main";
-import qs from 'qs';
-import {
-    InstantSearch
-} from 'react-instantsearch-dom';
-import algoliasearch from 'algoliasearch';
+import qs from "qs";
+import { InstantSearch } from "react-instantsearch-dom";
+import algoliasearch from "algoliasearch";
 import { useRouter } from "next/router";
 import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
 import { ILocationMarker, ISpace } from "src/types/timebookTypes";
@@ -27,19 +25,19 @@ const itemGridData = [];
 
 const DEBOUNCE_TIME = 400;
 const searchClient = algoliasearch(
-    'latency',
-    '6be0576ff61c053d5f9a3225e2a90f76'
+    process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
 );
 
 const createURL = (state) => `?${qs.stringify(state)}`;
 
 const searchStateToUrl = (location, searchState) =>
-    searchState ? `${location.pathname}${createURL(searchState)}` : '';
+    searchState ? `${location.pathname}${createURL(searchState)}` : "";
 
 const urlToSearchState = (router) => {
     const parsedQuery = qs.parse(router?.query);
     console.log(parsedQuery);
-    return parsedQuery
+    return parsedQuery;
 };
 
 const Search = () => {
@@ -63,13 +61,13 @@ const Search = () => {
 
     function onSearchStateChange(nextSearchState) {
         clearTimeout(setStateId.current);
-        console.log(searchStateToUrl(location, nextSearchState),
-            nextSearchState)
+        console.log(
+            searchStateToUrl(location, nextSearchState),
+            nextSearchState
+        );
 
         setStateId.current = setTimeout(() => {
-            router.push(
-                searchStateToUrl(location, nextSearchState)
-            );
+            router.push(searchStateToUrl(location, nextSearchState));
         }, DEBOUNCE_TIME);
 
         setSearchState(nextSearchState);
@@ -128,7 +126,7 @@ const Search = () => {
                 <div className="relative grid grid-cols-1 lg:grid-cols-9">
                     <div className="px-6 py-10 mt-16 lg:col-span-5">
                         <div className="flex justify-center">
-                            <SearchBox onChange={() => { }} />
+                            <SearchBox onChange={() => {}} />
                         </div>
                         <div className="pt-10">
                             <p className="text-gray-500">300+ 件</p>
@@ -148,9 +146,9 @@ const Search = () => {
                                     <Alert Icon={SpeakerphoneIcon}>
                                         <p>
                                             We are currently suspending all new
-                                            bookings for the Go To Travel Campaign.
-                                            We will update the details on our FAQ
-                                            page as needed.
+                                            bookings for the Go To Travel
+                                            Campaign. We will update the details
+                                            on our FAQ page as needed.
                                             <Link href="/">
                                                 <a className="font-medium">
                                                     {" "}

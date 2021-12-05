@@ -79,7 +79,7 @@ const CardForm = () => {
                 //`Elements` instance that was used to create the Payment Element
                 elements,
                 confirmParams: {
-                    return_url: "http://localhost:8088/user/settings",
+                    return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/user/settings`,
                 },
             });
         } catch (error) {
