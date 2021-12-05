@@ -3,22 +3,22 @@ import clsx from "clsx";
 import Image from "next/image";
 import { Container } from "@element";
 import { SearchBox } from "@comp";
-import {
-    InstantSearch
-} from 'react-instantsearch-dom';
+import { InstantSearch } from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch";
 import { useRouter } from "next/router";
-import qs from "qs";
 
 const searchClient = algoliasearch(
-    'latency',
-    '6be0576ff61c053d5f9a3225e2a90f76'
+    "latency",
+    "6be0576ff61c053d5f9a3225e2a90f76"
 );
 
-const createURL = (state) => `?${qs.stringify(state)}`;
+const createURL = (state) => {
+    const queryParams = new URLSearchParams(state);
+    `?${queryParams.toString()}`;
+};
 
 const searchStateToUrl = (location, searchState) =>
-    searchState ? `/search${createURL(searchState)}` : '';
+    searchState ? `/search${createURL(searchState)}` : "";
 
 export const HeroSection = () => {
     const router = useRouter();
@@ -28,9 +28,7 @@ export const HeroSection = () => {
         clearTimeout(setStateId.current);
 
         setStateId.current = setTimeout(() => {
-            router.push(
-                searchStateToUrl(location, nextSearchState)
-            );
+            router.push(searchStateToUrl(location, nextSearchState));
         }, 400);
     }
 
@@ -64,7 +62,8 @@ export const HeroSection = () => {
                         <SearchBox
                             onChange={() => {
                                 return null;
-                            }} />
+                            }}
+                        />
 
                         <p className="mt-10 text-center text-white text-md sm:text-xl">
                             15,287件のスペースから、目的に合ったスペースがすぐ見つかる
