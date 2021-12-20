@@ -106,7 +106,7 @@ const HeaderComp = () => {
         profile = data?.profile;
         currentUser =
             profile.__typename === "UserProfile"
-                ? `${profile?.firstName} ${profile?.lastName}`
+                ? `${profile?.lastName} ${profile?.firstName}`
                 : `${profile?.name}`;
         if (profile.profilePhoto) {
             console.log(profile.profilePhoto);

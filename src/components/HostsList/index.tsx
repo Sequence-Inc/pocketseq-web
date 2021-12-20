@@ -68,7 +68,7 @@ export const HostsList = ({ filterOptions }) => {
         const newAccountData = { ...account };
         if (account.__typename === "UserProfile") {
             newAccountData.name = account.host?.name;
-            newAccountData.kanriSha = `${account.firstName} ${account.lastName}`;
+            newAccountData.kanriSha = `${account.lastName} ${account.firstName}`;
         }
         return newAccountData;
     });

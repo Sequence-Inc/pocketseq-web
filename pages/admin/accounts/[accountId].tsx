@@ -74,7 +74,7 @@ function AccountDetails({ accountId }) {
 
     let name;
     if (account.__typename === "UserProfile") {
-        name = `${account.firstName} ${account.lastName}`;
+        name = `${account.lastName} ${account.firstName}`;
     } else {
         name = account.name;
     }
