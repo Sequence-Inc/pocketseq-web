@@ -6,7 +6,16 @@ import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
 import { useEffect } from "react";
 
-const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initialValue }: IOtherSpacesProps) => {
+import useTranslation from "next-translate/useTranslation";
+
+const SpacePhotos = ({
+    activeStep,
+    setActiveStep,
+    refetch,
+    steps,
+    spaceId,
+    initialValue,
+}: IOtherSpacesProps) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
@@ -14,12 +23,16 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
+    const { t } = useTranslation("adminhost");
+
     useEffect(() => {
         if (initialValue?.length) {
-            const newPhotos = initialValue.map((res: any) => res.thumbnail?.url);
+            const newPhotos = initialValue.map(
+                (res: any) => res.thumbnail?.url
+            );
             setPhotos(newPhotos);
         }
-    }, [])
+    }, []);
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
@@ -41,9 +54,11 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
     const handleSubmit = async (e) => {
         e.preventDefault();
         // get upload URL for all the photos
-        const newPhotos = photos.filter(res => typeof res === "object")
-        const imageInputs = newPhotos.map(res => ({ mime: res.type }));
-        const { data, errors } = await mutate({ variables: { spaceId, imageInputs } })
+        const newPhotos = photos.filter((res) => typeof res === "object");
+        const imageInputs = newPhotos.map((res) => ({ mime: res.type }));
+        const { data, errors } = await mutate({
+            variables: { spaceId, imageInputs },
+        });
         if (errors) {
             console.log("Errors", errors);
             // alert(errors.message);
@@ -52,20 +67,22 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
         }
         if (data) {
             try {
-                await Promise.all(data.addSpacePhotos.map((token, index) => {
-                    const { url, mime } = token;
-                    const options = {
-                        headers: {
-                            "Content-Type": mime,
-                        },
-                    };
-                    axios.put(url, newPhotos[index], options);
-                }));
+                await Promise.all(
+                    data.addSpacePhotos.map((token, index) => {
+                        const { url, mime } = token;
+                        const options = {
+                            headers: {
+                                "Content-Type": mime,
+                            },
+                        };
+                        axios.put(url, newPhotos[index], options);
+                    })
+                );
                 if (initialValue) {
                     refetch();
                 } else handleNext();
             } catch (err) {
-                console.log(err)
+                console.log(err);
             }
         }
     };
@@ -74,16 +91,15 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
         <form onSubmit={handleSubmit}>
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Space Photos
+                    {t("photo-title")}
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    This information will be displayed publicly so be sure to
-                    add valid information.
+                    {t("photo-description")}
                 </p>
             </div>
             <div className="max-w-lg px-4 py-2 mx-auto space-y-4 sm:px-6 sm:py-6">
                 <SelectedPhotos photos={photos} deletePhoto={handleDelete} />
-                <h3>Select photos</h3>
+                <h3>{t("photo-select")}</h3>
                 <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div className="space-y-1 text-center">
                         <svg
@@ -100,12 +116,12 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <div className="flex text-sm text-gray-600">
+                        <div className="flex justify-center text-sm text-gray-600">
                             <label
                                 htmlFor="file-upload"
-                                className="relative font-medium bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
+                                className="relative font-medium text-center bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                             >
-                                <span>Upload a file</span>
+                                <span>{t("photo-upload")}</span>
                                 <input
                                     id="file-upload"
                                     name="file-upload"
@@ -117,16 +133,16 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
                                     disabled={loading}
                                 />
                             </label>
-                            <p className="pl-1">or drag and drop</p>
+                            {/* <p className="pl-1">or drag and drop</p> */}
                         </div>
-                        <p className="text-xs text-gray-500">
-                            only JPEG files allowed
+                        <p className="text-xs text-gray-500 text-center">
+                            {t("photo-upload-description")}
                         </p>
                     </div>
                 </div>
             </div>
 
-            {initialValue ?
+            {initialValue ? (
                 <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                     <Button
                         type="submit"
@@ -134,16 +150,17 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
                         className="w-auto px-8"
                         loading={loading}
                     >
-                        Save
+                        {t("save")}
                     </Button>
-                </div> :
+                </div>
+            ) : (
                 <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
                     <Button
                         className="w-auto px-8"
                         disabled={loading || !hasPrevious}
                         onClick={handlePrevious}
                     >
-                        previous
+                        {t("previous-page")}
                     </Button>
                     <Button
                         type="submit"
@@ -151,11 +168,11 @@ const SpacePhotos = ({ activeStep, setActiveStep, refetch, steps, spaceId, initi
                         className="w-auto px-8"
                         loading={loading}
                     >
-                        Next
+                        {t("next-page")}
                     </Button>
                 </div>
-            }
-        </form >
+            )}
+        </form>
     );
 };
 
@@ -171,20 +188,25 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                     return (
                         <div key={index} className="relative">
                             <img
-                                src={typeof photo === "object" ? (window.URL
-                                    ? URL
-                                    : webkitURL
-                                ).createObjectURL(photo) : photo}
+                                src={
+                                    typeof photo === "object"
+                                        ? (window.URL
+                                              ? URL
+                                              : webkitURL
+                                          ).createObjectURL(photo)
+                                        : photo
+                                }
                                 className="object-cover rounded-lg w-36 h-36"
                             />
-                            {typeof photo === "object" ?
+                            {typeof photo === "object" ? (
                                 <button
                                     type="button"
                                     onClick={() => deletePhoto(index)}
                                     className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
                                 >
                                     Remove
-                                </button> : null}
+                                </button>
+                            ) : null}
                         </div>
                     );
                 })}

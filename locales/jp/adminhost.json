@@ -7,6 +7,11 @@
     "clear": "削除",
     "register": "登録する",
 
+    "cancel": "キャンセル",
+    "previous-page": "前のページ",
+    "next-page": "次のページ",
+    "save": "保存",
+
     "add-space": "スペースの追加",
     "my-spaces": "マイスペース",
     "space-name": "スペース名",
@@ -22,13 +27,24 @@
     "address-line-1": "番地",
     "address-line-2": "建物名・部屋番号",
 
-    "previous-page": "前のページ",
-    "next-page": "次のページ",
-    "save": "保存",
-
     "space-basic": "施設基本情報",
     "space-nearest-stations": "最寄り駅",
     "space-photos": "施設画像",
     "space-pricing-plans": "料金プラン",
-    "space-preview": "プレビュー"
+    "space-preview": "プレビュー",
+
+    "price-plan-title": "料金プラン",
+    "price-plan-description": "スペースに応じて、該当する料金プランを追加してください。",
+    "price-plan-add": "料金プラン追加",
+    "price-plan-name": "プラン名",
+    "price-plan-price": "料金",
+    "price-plan-discount": "直前割引",
+    "price-plan-cooldown": "リセット時間",
+    "price-plan-handling-fee": "手数料",
+
+    "photo-title": "施設画像",
+    "photo-description": "この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。",
+    "photo-select": "画像選択",
+    "photo-upload": "アップロード",
+    "photo-upload-description": "JPEGファイルでご登録下さい。"
 }
