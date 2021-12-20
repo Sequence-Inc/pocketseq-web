@@ -40,8 +40,8 @@ const HostDashboard = ({ currentSession }) => {
         profilePhoto = profile.profilePhoto.small.url;
     }
 
-    const name = `${profile.firstName} ${profile.lastName}`;
-    const nameKana = `${profile.firstNameKana} ${profile.lastNameKana}`;
+    const name = `${profile.lastName} ${profile.firstName}`;
+    const nameKana = `${profile.lastNameKana} ${profile.firstNameKana}`;
 
     const fields = {
         Phone: "(555) 123-4567",

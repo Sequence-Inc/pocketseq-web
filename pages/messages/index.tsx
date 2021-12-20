@@ -1,59 +1,100 @@
-import Head from 'next/head';
-import React from 'react'
-import HostLayout from 'src/layouts/HostLayout';
+import Head from "next/head";
+import React from "react";
+import HostLayout from "src/layouts/HostLayout";
 import { Container } from "@element";
-import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_NEW_CHAT, MY_CHAT, SEND_MESSAGE } from 'src/apollo/queries/chat.queries';
-import router, { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import clsx from 'clsx';
+import { useMutation, useQuery } from "@apollo/client";
+import {
+    CREATE_NEW_CHAT,
+    MY_CHAT,
+    SEND_MESSAGE,
+} from "src/apollo/queries/chat.queries";
+import router, { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useState } from "react";
+import clsx from "clsx";
 
 const Messages = ({ name, recipientIds, userId }) => {
-    const [newChat, setNewChat] = useState<{ name: string; recipientIds: string | string[] } | undefined>();
+    const [newChat, setNewChat] = useState<
+        { name: string; recipientIds: string | string[] } | undefined
+    >();
     const [activeChat, setActiveChat] = useState<any>();
     const [message, setMessage] = useState<string | undefined>();
-    const activeUser = activeChat?.members?.filter(res => res.accountId !== userId)[0];
+    const activeUser = activeChat?.members?.filter(
+        (res) => res.accountId !== userId
+    )[0];
 
-    const { data, refetch } = useQuery(MY_CHAT, { fetchPolicy: "network-only" });
+    const { data, refetch } = useQuery(MY_CHAT, {
+        fetchPolicy: "network-only",
+    });
     const [mutate] = useMutation(CREATE_NEW_CHAT);
     const [sendMessageMutate] = useMutation(SEND_MESSAGE);
 
     useEffect(() => {
         if (data && recipientIds) {
-            const activeChat = data?.myChats.find(res => res.type === "SINGLE" && res.members.some(mem => mem.accountId === recipientIds));
+            const activeChat = data?.myChats.find(
+                (res) =>
+                    res.type === "SINGLE" &&
+                    res.members.some((mem) => mem.accountId === recipientIds)
+            );
             if (activeChat) {
                 setActiveChat(activeChat);
             } else {
-                setNewChat({ name: name as string, recipientIds: recipientIds });
-                setActiveChat({ name: name as string, recipientIds: recipientIds });
+                setNewChat({
+                    name: name as string,
+                    recipientIds: recipientIds,
+                });
+                setActiveChat({
+                    name: name as string,
+                    recipientIds: recipientIds,
+                });
             }
         }
-        const activeMember = data?.myChats[0]
+        const activeMember = data?.myChats[0];
         if (activeMember && !recipientIds) {
             const activeHost = activeMember.members[0];
             setActiveChat(activeMember);
-            router.push(`/messages?name=${activeHost?.firstName}%20${activeHost?.lastName}&recipientIds=${activeHost?.accountId}`)
+            router.push(
+                `/messages?name=${activeHost?.firstName}%20${activeHost?.lastName}&recipientIds=${activeHost?.accountId}`
+            );
         }
     }, [data]);
 
     const changeActiveChat = (chat: any) => {
         setActiveChat(chat);
-        const activeMember = chat.members?.filter(res => res.accountId !== userId)[0];
-        router.push(`/messages?name=${chat?.id ? activeMember?.firstName + " " + activeMember?.lastName : chat?.name}&recipientIds=${chat?.id ? activeMember?.accountId : chat?.recipientIds}`)
-    }
+        const activeMember = chat.members?.filter(
+            (res) => res.accountId !== userId
+        )[0];
+        router.push(
+            `/messages?name=${
+                chat?.id
+                    ? activeMember?.firstName + " " + activeMember?.lastName
+                    : chat?.name
+            }&recipientIds=${
+                chat?.id ? activeMember?.accountId : chat?.recipientIds
+            }`
+        );
+    };
 
     const sendMessage = async () => {
         try {
             if (activeChat?.id) {
-                const chatData = await sendMessageMutate({ variables: { input: { message, chatId: activeChat?.id } } });
+                const chatData = await sendMessageMutate({
+                    variables: { input: { message, chatId: activeChat?.id } },
+                });
                 if (chatData.data) {
                     setNewChat(undefined);
                     setMessage(undefined);
                     refetch();
                 }
             } else {
-                const chatData = await mutate({ variables: { input: { message, recipientIds: activeChat?.recipientIds } } });
+                const chatData = await mutate({
+                    variables: {
+                        input: {
+                            message,
+                            recipientIds: activeChat?.recipientIds,
+                        },
+                    },
+                });
                 if (chatData.data) {
                     setNewChat(undefined);
                     setMessage(undefined);
@@ -61,10 +102,9 @@ const Messages = ({ name, recipientIds, userId }) => {
                 }
             }
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
-
-    }
+    };
 
     return (
         <HostLayout>
@@ -81,14 +121,35 @@ const Messages = ({ name, recipientIds, userId }) => {
                     <div className="flex flex-col justify-between h-[calc(100vh-64px)] flex-1 pb-2">
                         <div className="flex justify-between px-4 py-3 bg-white border-b-2 border-gray-200 sm:items-center">
                             <div className="flex items-center space-x-4">
-                                {activeUser?.profilePhoto?.thumbnail?.url ?
-                                    <img src={activeUser?.profilePhoto?.thumbnail?.url} alt="" className="w-10 h-10 rounded-full sm:w-16 sm:h-16" />
-                                    : <div className="w-10 h-10 bg-gray-200 rounded-full sm:w-16 sm:h-16" />}
+                                {activeUser?.profilePhoto?.thumbnail?.url ? (
+                                    <img
+                                        src={
+                                            activeUser?.profilePhoto?.thumbnail
+                                                ?.url
+                                        }
+                                        alt=""
+                                        className="w-10 h-10 rounded-full sm:w-16 sm:h-16"
+                                    />
+                                ) : (
+                                    <div className="w-10 h-10 bg-gray-200 rounded-full sm:w-16 sm:h-16" />
+                                )}
                                 <div className="flex flex-col leading-tight">
                                     <div className="flex items-center mt-1 text-2xl">
                                         <span className="mr-3 text-gray-700">
-                                            {activeUser ? activeUser?.firstName + " " + activeUser?.lastName : activeChat?.name}
-                                            {console.log(activeUser, activeChat, activeUser ? activeUser?.firstName + " " + activeUser?.lastName : activeChat?.name)}
+                                            {activeUser
+                                                ? activeUser?.lastName +
+                                                  " " +
+                                                  activeUser?.firstName
+                                                : activeChat?.name}
+                                            {console.log(
+                                                activeUser,
+                                                activeChat,
+                                                activeUser
+                                                    ? activeUser?.lastName +
+                                                          " " +
+                                                          activeUser?.firstName
+                                                    : activeChat?.name
+                                            )}
                                         </span>
                                         {/* <span className="text-green-500">
                                             <svg width="10" height="10">
@@ -117,9 +178,12 @@ const Messages = ({ name, recipientIds, userId }) => {
                                 </button>
                             </div> */}
                         </div>
-                        <div id="messages" className="flex flex-col p-3 space-y-4 overflow-y-auto scrolling-touch scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2">
-                            {activeChat?.messages?.map(res => {
-                                return res.sender.id === recipientIds ?
+                        <div
+                            id="messages"
+                            className="flex flex-col p-3 space-y-4 overflow-y-auto scrolling-touch scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
+                        >
+                            {activeChat?.messages?.map((res) => {
+                                return res.sender.id === recipientIds ? (
                                     <div className="chat-message">
                                         <div className="flex items-end">
                                             <div className="flex flex-col items-start order-2 max-w-xs mx-2 space-y-2 text-xs">
@@ -129,11 +193,22 @@ const Messages = ({ name, recipientIds, userId }) => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            {res.profilePhoto?.thumbnail?.url ?
-                                                <img src={res.profilePhoto?.thumbnail?.url} alt="My profile" className="order-2 w-6 h-6 rounded-full" />
-                                                : <div className="order-2 w-6 h-6 bg-gray-200 rounded-full" />}
+                                            {res.profilePhoto?.thumbnail
+                                                ?.url ? (
+                                                <img
+                                                    src={
+                                                        res.profilePhoto
+                                                            ?.thumbnail?.url
+                                                    }
+                                                    alt="My profile"
+                                                    className="order-2 w-6 h-6 rounded-full"
+                                                />
+                                            ) : (
+                                                <div className="order-2 w-6 h-6 bg-gray-200 rounded-full" />
+                                            )}
                                         </div>
-                                    </div> :
+                                    </div>
+                                ) : (
                                     <div className="chat-message">
                                         <div className="flex items-end justify-end">
                                             <div className="flex flex-col items-end order-1 max-w-xs mx-2 space-y-2 text-xs">
@@ -143,11 +218,22 @@ const Messages = ({ name, recipientIds, userId }) => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            {res.profilePhoto?.thumbnail?.url ?
-                                                <img src={res.profilePhoto?.thumbnail?.url} alt="My profile" className="order-2 w-6 h-6 rounded-full" />
-                                                : <div className="order-2 w-6 h-6 bg-gray-200 rounded-full" />}
+                                            {res.profilePhoto?.thumbnail
+                                                ?.url ? (
+                                                <img
+                                                    src={
+                                                        res.profilePhoto
+                                                            ?.thumbnail?.url
+                                                    }
+                                                    alt="My profile"
+                                                    className="order-2 w-6 h-6 rounded-full"
+                                                />
+                                            ) : (
+                                                <div className="order-2 w-6 h-6 bg-gray-200 rounded-full" />
+                                            )}
                                         </div>
                                     </div>
+                                );
                             })}
                         </div>
                         <div className="px-4 pt-4 mb-2 border-t-2 border-gray-200 sm:mb-0">
@@ -189,7 +275,12 @@ const Messages = ({ name, recipientIds, userId }) => {
                                         className="inline-flex items-center justify-center w-10 h-10 mr-2 text-white transition duration-500 ease-in-out rounded-full bg-primary hover:opacity-50 focus:outline-none"
                                         onClick={sendMessage}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6 transform rotate-90">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            className="w-6 h-6 transform rotate-90"
+                                        >
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
                                         </svg>
                                     </button>
@@ -204,7 +295,7 @@ const Messages = ({ name, recipientIds, userId }) => {
                     <div className="relative flex flex-col h-full overflow-y-auto border-gray-200 w-96">
                         {/* Your content */}
                         <ul role="list" className="divide-y divide-gray-200">
-                            {newChat &&
+                            {newChat && (
                                 <li
                                     key={newChat.name}
                                     className="flex items-center p-4 cursor-pointer"
@@ -212,29 +303,56 @@ const Messages = ({ name, recipientIds, userId }) => {
                                 >
                                     <div className="w-10 h-10 bg-gray-200 rounded-full" />
                                     <div className="ml-3">
-                                        <p className="text-sm font-medium text-gray-900">{newChat.name}</p>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {newChat.name}
+                                        </p>
                                     </div>
                                 </li>
-                            }
+                            )}
                             {data?.myChats?.map((person) => {
                                 // const filteredPerson = person.members[1];
-                                const filteredPerson = person.members?.filter(res => res.accountId !== userId)[0];
+                                const filteredPerson = person.members?.filter(
+                                    (res) => res.accountId !== userId
+                                )[0];
                                 const isActive = person.id === activeChat?.id;
-                                console.log("FFFFF", filteredPerson, person.members, userId)
+                                console.log(
+                                    "FFFFF",
+                                    filteredPerson,
+                                    person.members,
+                                    userId
+                                );
                                 return (
                                     <li
                                         key={person.id}
-                                        className={clsx("flex items-center p-4", isActive ? "bg-gray-50" : "cursor-pointer")}
+                                        className={clsx(
+                                            "flex items-center p-4",
+                                            isActive
+                                                ? "bg-gray-50"
+                                                : "cursor-pointer"
+                                        )}
                                         onClick={() => changeActiveChat(person)}
                                     >
-                                        {filteredPerson?.profilePhoto?.thumbnail?.url ?
-                                            <img className="w-10 h-10 rounded-full" src={filteredPerson.profilePhoto?.thumbnail?.url} alt="" />
-                                            : <div className="w-10 h-10 bg-gray-200 rounded-full" />}
+                                        {filteredPerson?.profilePhoto?.thumbnail
+                                            ?.url ? (
+                                            <img
+                                                className="w-10 h-10 rounded-full"
+                                                src={
+                                                    filteredPerson.profilePhoto
+                                                        ?.thumbnail?.url
+                                                }
+                                                alt=""
+                                            />
+                                        ) : (
+                                            <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                                        )}
                                         <div className="ml-3">
-                                            <p className="text-sm font-medium text-gray-900">{filteredPerson?.firstName} {filteredPerson?.lastName}</p>
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {filteredPerson?.lastName}{" "}
+                                                {filteredPerson?.firstName}
+                                            </p>
                                         </div>
                                     </li>
-                                )
+                                );
                             })}
                         </ul>
                     </div>
@@ -243,14 +361,18 @@ const Messages = ({ name, recipientIds, userId }) => {
 
             {/* </Container> */}
         </HostLayout>
-    )
-}
+    );
+};
 
 export default Messages;
 
 export async function getServerSideProps(context) {
-    const userId = context.req.cookies?.session_profile ? JSON.parse(context.req.cookies?.session_profile)?.id : null;
+    const userId = context.req.cookies?.session_profile
+        ? JSON.parse(context.req.cookies?.session_profile)?.id
+        : null;
     const name = Object.keys(context.query).length ? context.query?.name : null;
-    const recipientIds = Object.keys(context.query).length ? context.query?.recipientIds : null;
+    const recipientIds = Object.keys(context.query).length
+        ? context.query?.recipientIds
+        : null;
     return { props: { name, recipientIds, userId } };
 }
