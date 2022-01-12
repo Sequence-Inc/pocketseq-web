@@ -120,7 +120,7 @@ const Teaser = () => {
                                     </h2>
                                     <div>
                                         <h2 className="text-5xl font-bold text-white">
-                                            「人x場所×体験」を繋げる
+                                            「人×場所×体験」を繋げる
                                         </h2>
                                         <p className="mt-4 text-2xl text-green-100">
                                             さぁ、思い思いの場所と体験を見つけに行こう！

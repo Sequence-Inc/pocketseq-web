@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRef } from "react";
 import { REGISTER_USER } from "src/apollo/queries/auth.queries";
+import { Console } from "console";
 
 // form validation schema
 const schema = yup.object().shape({
@@ -27,15 +28,16 @@ const useRegister = () => {
         formState: { errors },
         watch,
         handleSubmit,
-        getValues,
+        control,
+        setError,
     } = useForm({
         resolver: yupResolver(schema),
     });
 
     const [registerUser, { loading }] = useMutation(REGISTER_USER, {
         onError: (error) => {
-            const err: Error = { ...error.graphQLErrors[0] }
-            errorRef.current?.open(err.message)
+            const err: Error = { ...error.graphQLErrors[0] };
+            errorRef.current?.open(err.message);
         },
         onCompleted: ({ registerUser }) => {
             // debugger;
@@ -44,14 +46,19 @@ const useRegister = () => {
                 const obj = { email: watch().email };
                 pinRef?.current.open(obj);
             }
-        }
+        },
     });
 
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
-        delete formModel.confirmPassword
-        registerUser({ variables: { input: formModel } });
+        if (!formModel.terms) {
+            setError("terms", { type: "manual", message: "Need to accept" });
+        } else {
+            delete formModel.confirmPassword;
+            delete formModel.terms;
+            registerUser({ variables: { input: formModel } });
+        }
     };
 
     return {
@@ -62,7 +69,8 @@ const useRegister = () => {
         handleSubmit,
         loading,
         pinRef,
-        errorRef
+        errorRef,
+        control,
     };
 };
 

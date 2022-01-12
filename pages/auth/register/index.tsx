@@ -4,6 +4,7 @@ import useRegister from "@hooks/useRegister";
 import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
+import { Controller } from "react-hook-form";
 import Link from "next/link";
 import ErrorModal from "src/elements/ErrorModal";
 
@@ -18,6 +19,8 @@ const Register = () => {
         loading,
         pinRef,
         errorRef,
+        watch,
+        control,
     } = useRegister();
     const router = useRouter();
 
@@ -105,14 +108,44 @@ const Register = () => {
                         id="confirmPassword"
                         disabled={loading}
                     />
-                    {/* <div className="text-sm">
-                        <a
-                            href="#"
-                            className="text-xs text-gray-400 hover:text-lightBlue-500"
-                        >
-                            Agree to term
-                        </a>
-                    </div> */}
+                    <Controller
+                        key={watch().terms}
+                        name="terms"
+                        control={control}
+                        rules={{ validate: (val) => val && true }}
+                        render={({ field }: any) => (
+                            <div>
+                                <input
+                                    {...register("terms", {
+                                        required: true,
+                                        validate: (val) => val && true,
+                                    })}
+                                    id="terms"
+                                    aria-describedby="terms-description"
+                                    type="checkbox"
+                                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                />
+                                <label
+                                    htmlFor="terms"
+                                    className="ml-3 text-sm text-gray-500 align-baseline"
+                                >
+                                    I agree to{" "}
+                                    <a
+                                        href="#"
+                                        className="inline-block text-gray-500 hover:text-primary"
+                                        target="_blank"
+                                    >
+                                        terms and conditions
+                                    </a>
+                                </label>
+                            </div>
+                        )}
+                    />
+                    {errors?.terms && (
+                        <span className="text-xs text-red-600">
+                            You must agree to terms and conditions to continue
+                        </span>
+                    )}
 
                     <div>
                         <Button
@@ -129,6 +162,7 @@ const Register = () => {
                             {t("already-have-an-account")}
                         </span>
                     </div>
+
                     <Button
                         onClick={(e) => {
                             e.preventDefault();
