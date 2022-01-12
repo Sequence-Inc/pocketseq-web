@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 
 interface ButtonProps {
-    variant?: "primary" | "secondary" | "white";
+    variant?: "primary" | "secondary" | "white" | "disabled";
     rounded?: boolean;
     type?: "button" | "submit";
     className?: string;
@@ -43,6 +43,8 @@ const Button = (props: ButtonProps) => {
                         variant === "secondary",
                     "text-gray-700 bg-white hover:bg-gray-100 focus:ring-gray-300":
                         variant === "white",
+                    "text-gray-600 bg-gray-100 hover:bg-gray-100 focus:ring-gray-100 cursor-default":
+                        variant === "disabled",
                     "rounded p-2": !rounded,
                     "rounded-full px-4 py-2": rounded,
                 },
