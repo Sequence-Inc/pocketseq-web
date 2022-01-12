@@ -23,6 +23,7 @@ const Reserve = ({
     spaceName,
     address,
 }) => {
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [reservationComplete, setReservationComplete] = useState(null);
     const {
         data: paymentMethods,
@@ -56,24 +57,38 @@ const Reserve = ({
         );
     }
 
-    const handleReservation = async (paymentSourceId: string) => {
+    const handleReservation = async () => {
         try {
+            if (!selectedPaymentMethod) {
+                alert("Select card for payment");
+                return;
+            }
             const { data, errors } = await reserveSpace({
                 variables: {
                     input: {
                         fromDateTime: parseInt(start, 10) * 1000,
                         toDateTime: parseInt(end, 10) * 1000,
                         spaceId,
-                        paymentSourceId,
+                        paymentSourceId: selectedPaymentMethod,
                     },
                 },
             });
-            console.log("reserveSpace Data", data);
+            // console.log("reserveSpace Data", data);
             if (!errors) {
                 setReservationComplete(data);
             }
         } catch (error) {
             // console.log(error.message);
+        }
+    };
+
+    const selectPaymentMethod = (paymentSourceId: string) => {
+        if (paymentSourceId) {
+            if (paymentSourceId === selectedPaymentMethod) {
+                setSelectedPaymentMethod(null);
+            } else {
+                setSelectedPaymentMethod(paymentSourceId);
+            }
         }
     };
 
@@ -184,11 +199,39 @@ const Reserve = ({
                                     </div>
                                 </div>
                             ) : (
-                                <PaymentMethods
-                                    paymentSource={paymentSource}
-                                    reservationLoading={reservationLoading}
-                                    handleReservation={handleReservation}
-                                />
+                                <div className="space-y-6">
+                                    <div>
+                                        <PaymentMethods
+                                            paymentSource={paymentSource}
+                                            reservationLoading={
+                                                reservationLoading
+                                            }
+                                            selectPaymentMethod={
+                                                selectPaymentMethod
+                                            }
+                                            currentPaymentMethod={
+                                                selectedPaymentMethod
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <Button
+                                            type="button"
+                                            variant={
+                                                selectedPaymentMethod === null
+                                                    ? "disabled"
+                                                    : "primary"
+                                            }
+                                            className="inline-block"
+                                            disabled={
+                                                selectedPaymentMethod === null
+                                            }
+                                            onClick={handleReservation}
+                                        >
+                                            Pay and Reserve
+                                        </Button>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -220,7 +263,8 @@ export async function getServerSideProps(context) {
 const PaymentMethods = ({
     paymentSource,
     reservationLoading,
-    handleReservation,
+    currentPaymentMethod,
+    selectPaymentMethod,
 }) => {
     return (
         <div>
@@ -238,17 +282,26 @@ const PaymentMethods = ({
                     </a>
                 </Link>
             </div>
-            <div className="space-y-3 mt-4">
+            <div className="space-y-4 mt-4">
                 {paymentSource &&
                     paymentSource.map((card, index) => {
+                        let style =
+                            "flex justify-between py-3 px-6 rounded-lg cursor-pointer ";
+                        if (card.id === currentPaymentMethod) {
+                            style +=
+                                "border-2 border-primary bg-green-50 text-green-700";
+                        } else {
+                            style +=
+                                "border-2 border-gray-100 text-gray-700 hover:bg-gray-50";
+                        }
                         return (
                             <div
                                 key={index}
-                                className="flex justify-between py-3 px-6 rounded-lg bg-primary text-white hover:bg-green-700 cursor-pointer"
+                                className={style}
                                 onClick={(event) => {
                                     event.preventDefault();
                                     if (!reservationLoading) {
-                                        handleReservation(card.id);
+                                        selectPaymentMethod(card.id);
                                     }
                                 }}
                             >

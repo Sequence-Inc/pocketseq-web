@@ -4,14 +4,11 @@ import Link from "next/link";
 const Footer = () => {
     return (
         <footer className="bg-gray-800" aria-labelledby="footer-heading">
-            <h2 id="footer-heading" className="sr-only">
-                Footer
-            </h2>
             <div className="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:py-16 lg:px-8">
                 <div className="grid grid-cols-2 gap-8">
                     <div className="md:grid md:grid-cols-2 md:gap-8">
-                        <div>
-                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
+                        {/* <div>
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200">
                                 レンタルスペースを探す
                             </h3>
                             <ul className="mt-4 space-y-2">
@@ -25,9 +22,9 @@ const Footer = () => {
                                     </li>
                                 ))}
                             </ul>
-                        </div>
-                        <div className="mt-12 md:mt-0">
-                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
+                        </div> */}
+                        <div>
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200">
                                 ご利用ガイド
                             </h3>
                             <ul className="mt-4 space-y-2">
@@ -42,11 +39,9 @@ const Footer = () => {
                                 ))}
                             </ul>
                         </div>
-                    </div>
-                    <div className="md:grid md:grid-cols-2 md:gap-8">
                         <div>
-                            <h3 className="text-lg font-medium tracking-wider text-gray-200 uppercase">
-                                スペースマーケットについて
+                            <h3 className="text-lg font-medium tracking-wider text-gray-200">
+                                time bookについて
                             </h3>
                             <ul className="mt-4 space-y-2">
                                 {navigation.company.map((item) => (
@@ -60,26 +55,42 @@ const Footer = () => {
                                 ))}
                             </ul>
                         </div>
+                    </div>
+                    <div className="md:grid md:grid-cols-2 md:gap-8">
+                        <div>
+                            {/* <h3 className="text-lg font-medium tracking-wider text-gray-200">
+                                time bookについて
+                            </h3>
+                            <ul className="mt-4 space-y-2">
+                                {navigation.company.map((item) => (
+                                    <li key={item.name}>
+                                        <Link href={item.href}>
+                                            <a className="text-sm text-gray-300 hover:text-white">
+                                                {item.name}
+                                            </a>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul> */}
+                        </div>
                         <div className="flex justify-center mt-12 md:mt-0">
                             <div>
                                 <h2 className="text-lg font-semibold tracking-wider text-gray-400 uppercase">
-                                    Time Book
+                                    time book
                                 </h2>
                                 <div className="flex mt-4 space-x-6 md:order-2">
                                     {navigation.social.map((item) => (
-                                        <a
-                                            key={item.name}
-                                            href={item.href}
-                                            className="text-gray-400 hover:text-gray-300"
-                                        >
-                                            <span className="sr-only">
-                                                {item.name}
-                                            </span>
-                                            <item.icon
-                                                className="w-6 h-6"
-                                                aria-hidden="true"
-                                            />
-                                        </a>
+                                        <Link href={item.href} key={item.name}>
+                                            <a className="text-gray-400 hover:text-gray-300">
+                                                <span className="sr-only">
+                                                    {item.name}
+                                                </span>
+                                                <item.icon
+                                                    className="w-6 h-6"
+                                                    aria-hidden="true"
+                                                />
+                                            </a>
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
@@ -88,17 +99,16 @@ const Footer = () => {
                 </div>
                 <div className="flex flex-col items-center pt-8 mt-8 border-t border-gray-700 lg:flex-row">
                     <p className="mt-8 mr-8 text-base text-gray-400 md:mt-0">
-                        &copy; 2021 Space Rental K.K.
+                        &copy; 2022 time book
                     </p>
                     <nav className="flex flex-wrap">
                         {navigation.others.map((item) => (
                             <div key={item.name} className="px-5 py-2">
-                                <a
-                                    href={item.href}
-                                    className="text-sm text-gray-400 hover:text-white"
-                                >
-                                    {item.name}
-                                </a>
+                                <Link href={item.href}>
+                                    <a className="text-sm text-gray-400 hover:text-white">
+                                        {item.name}
+                                    </a>
+                                </Link>
                             </div>
                         ))}
                     </nav>
@@ -123,16 +133,16 @@ const navigation = {
         { name: "初めての方へ", href: "/services" },
         { name: "ゲストの方へ", href: "/user-guide" },
         { name: "ホストの方へ", href: "/host-guide" },
-        { name: "スペースを掲載するには", href: "#" },
-        { name: "スペースマーケットリワード", href: "#" },
     ],
     company: [
-        { name: "法人のご利用について", href: "#" },
-        { name: "プライバシーポリシー / 情報セキュリティ方針", href: "#" },
-        { name: "スペースマーケット利用規約", href: "#" },
+        {
+            name: "プライバシーポリシー",
+            href: "/downloads/プライバシーポリシー.pdf",
+        },
+        { name: "timebook利用規約", href: "#" },
         { name: "ゲスト規約", href: "#" },
         { name: "ホスト規約", href: "#" },
-        { name: "スマートフォンアプリ", href: "#" },
+        // { name: "アプリ", href: "#" },
     ],
     social: [
         {
@@ -172,11 +182,11 @@ const navigation = {
         },
     ],
     others: [
-        { name: "運営会社", href: "#" },
-        { name: "採用情報", href: "#" },
-        { name: "約款", href: "#" },
-        { name: "特定商取引法に基づく表示", href: "#" },
+        { name: "運営会社", href: "https://www.sequence-inc.jp/" },
+        // { name: "採用情報", href: "#" },
+        { name: "約款", href: "/about/terms" },
+        { name: "特定商取引法に基づく表示", href: "/about/bylaws" },
         { name: "よくある質問", href: "#" },
-        { name: "お問い合わせ", href: "#" },
+        { name: "お問い合わせ", href: "mailto:info@timebook.jp" },
     ],
 };

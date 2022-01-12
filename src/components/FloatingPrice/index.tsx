@@ -117,9 +117,11 @@ export const FloatingPrice = ({
         start
     )}&end=${GetTimeStamp(
         end
-    )}&hours=${hours}&price=${price}&amount=${priceCalculation()}&spaceName=${space.name
-        }&address=${space.address.prefecture.name}${space.address.city}${space.address.addressLine1
-        }${space.address.addressLine2}`;
+    )}&hours=${hours}&price=${price}&amount=${priceCalculation()}&spaceName=${
+        space.name
+    }&address=${space.address.prefecture.name}${space.address.city}${
+        space.address.addressLine1
+    }${space.address.addressLine2}`;
 
     return (
         <div className="w-full md:sticky lg:w-96 md:top-20">
@@ -141,8 +143,8 @@ export const FloatingPrice = ({
                         placeholderText="日時を追加"
                         minDate={currentDateTime}
                         maxDate={maxDateTime}
-                        minTime={minTime}
-                        maxTime={maxTime}
+                        // minTime={minTime}
+                        // maxTime={maxTime}
                         showTimeSelect
                         timeIntervals={60}
                         dateFormat="Pp"
@@ -159,8 +161,8 @@ export const FloatingPrice = ({
                         placeholderText="日時を追加"
                         minDate={currentDateTime}
                         maxDate={maxDateTime}
-                        minTime={minTime}
-                        maxTime={maxTime}
+                        // minTime={minTime}
+                        // maxTime={maxTime}
                         timeIntervals={60}
                         showTimeSelect
                         dateFormat="Pp"
