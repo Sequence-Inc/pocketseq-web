@@ -4,8 +4,11 @@ import useRegister from "@hooks/useRegister";
 import { PasswordInput, TextField, PinDialog, Button, Logo } from "@element";
 import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
+import { Controller } from "react-hook-form";
 import Link from "next/link";
 import ErrorModal from "src/elements/ErrorModal";
+
+import useTranslation from "next-translate/useTranslation";
 
 const Register = () => {
     const {
@@ -16,24 +19,28 @@ const Register = () => {
         loading,
         pinRef,
         errorRef,
+        watch,
+        control,
     } = useRegister();
     const router = useRouter();
+
+    const { t } = useTranslation("common");
 
     return (
         <AuthLayout>
             <Head>
-                <title>Signup | Space Rental</title>
+                <title>{t("register-an-account")} | Space Rental</title>
             </Head>
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace("/login")}
+                callback={() => router.replace("/auth/login")}
                 location="register"
             />
-            <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+            <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 lg:space-y-6 bg-white border border-gray-100 rounded-lg shadow-sm">
                 <Logo />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                    アカウントを作成する
+                    {t("register-an-account")}
                 </h2>
                 <form
                     onSubmit={handleSubmit(handleRegister)}
@@ -43,9 +50,9 @@ const Register = () => {
                         {...register("lastName", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="性"
+                        label={t("lastname")}
                         id="lastName"
-                        placeholder="例）山田"
+                        placeholder={t("lastname-example")}
                         autoFocus={true}
                         disabled={loading}
                     />
@@ -53,43 +60,43 @@ const Register = () => {
                         {...register("firstName", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label="名"
+                        label={t("firstname")}
                         id="firstName"
-                        placeholder="例）太郎"
+                        placeholder={t("firstname-example")}
                         disabled={loading}
                     />
                     <TextField
                         {...register("lastNameKana", { required: true })}
                         error={errors.lastName ? true : false}
                         errorMessage={errors?.lastName?.message}
-                        label="性（かな）"
+                        label={t("lastname-kana")}
                         id="lastNameKana"
-                        placeholder="例）ヤマダ"
+                        placeholder={t("lastname-kana-example")}
                         disabled={loading}
                     />
                     <TextField
                         {...register("firstNameKana", { required: true })}
                         error={errors.firstName ? true : false}
                         errorMessage={errors?.firstName?.message}
-                        label="名（かな）"
+                        label={t("firstname-kana")}
                         id="firstNameKana"
-                        placeholder="例）タロウ"
+                        placeholder={t("firstname-kana-example")}
                         disabled={loading}
                     />
                     <TextField
                         {...register("email", { required: true })}
                         error={errors.email ? true : false}
                         errorMessage={errors?.email?.message}
-                        label="メールアドレス"
+                        label={t("email")}
                         id="email"
-                        placeholder="例）taro@mail.com"
+                        placeholder={t("email-example")}
                         disabled={loading}
                     />
                     <PasswordInput
                         {...register("password", { required: true })}
                         error={errors.password ? true : false}
                         errorMessage={errors?.password?.message}
-                        label="パスワード"
+                        label={t("password")}
                         id="password"
                         disabled={loading}
                     />
@@ -97,18 +104,48 @@ const Register = () => {
                         {...register("confirmPassword", { required: true })}
                         error={errors.confirmPassword ? true : false}
                         errorMessage={errors?.confirmPassword?.message}
-                        label="パスワード認証"
+                        label={t("password-confirm")}
                         id="confirmPassword"
                         disabled={loading}
                     />
-                    {/* <div className="text-sm">
-                        <a
-                            href="#"
-                            className="text-xs text-gray-400 hover:text-lightBlue-500"
-                        >
-                            Agree to term
-                        </a>
-                    </div> */}
+                    <Controller
+                        key={watch().terms}
+                        name="terms"
+                        control={control}
+                        rules={{ validate: (val) => val && true }}
+                        render={({ field }: any) => (
+                            <div>
+                                <input
+                                    {...register("terms", {
+                                        required: true,
+                                        validate: (val) => val && true,
+                                    })}
+                                    id="terms"
+                                    aria-describedby="terms-description"
+                                    type="checkbox"
+                                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                />
+                                <label
+                                    htmlFor="terms"
+                                    className="ml-3 text-sm text-gray-500 align-baseline"
+                                >
+                                    I agree to{" "}
+                                    <a
+                                        href="#"
+                                        className="inline-block text-gray-500 hover:text-primary"
+                                        target="_blank"
+                                    >
+                                        terms and conditions
+                                    </a>
+                                </label>
+                            </div>
+                        )}
+                    />
+                    {errors?.terms && (
+                        <span className="text-xs text-red-600">
+                            You must agree to terms and conditions to continue
+                        </span>
+                    )}
 
                     <div>
                         <Button
@@ -116,35 +153,36 @@ const Register = () => {
                             loading={loading}
                             type="submit"
                         >
-                            登録する
+                            {t("do-register")}
                         </Button>
                     </div>
                     <div className="relative text-center">
                         <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                         <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                            アカウントをお持ちの方
+                            {t("already-have-an-account")}
                         </span>
                     </div>
+
                     <Button
                         onClick={(e) => {
                             e.preventDefault();
                             router.push("/auth/login");
                         }}
                     >
-                        ログインする
+                        {t("do-login")}
                     </Button>
                 </form>
             </div>
-            <div className="flex flex-col items-center py-2 mt-2 w-96">
+            <div className="w-96 lg:w-1/3 mx-auto py-2 mt-2 text-center">
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            time bookにもどる
+                            {t("back-to-timebook")}
                         </a>
                     </Link>
                 </div>
                 <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 Sequence Co., Ltd.
+                    {t("copyright")}
                 </div>
             </div>
         </AuthLayout>

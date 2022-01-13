@@ -9,16 +9,21 @@ import PricingPlan from "src/components/Space/PricingPlan";
 import SpacePhotos from "src/components/Space/SpacePhotos";
 import Preview from "src/components/Space/Preview";
 
+import useTranslation from "next-translate/useTranslation";
+
 const AddNewSpace = () => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
     const [activeStep, setActiveStep] = useState(0);
+
+    const { t } = useTranslation("adminhost");
+
     const steps = [
-        "Basic",
-        "Nearest Stations",
-        "Photos",
-        "Pricing Plans",
-        "Preview",
+        t("space-basic"),
+        t("space-nearest-stations"),
+        t("space-photos"),
+        t("space-pricing-plans"),
+        t("space-preview"),
     ];
 
     return (

@@ -6,7 +6,10 @@ import {
     CogIcon,
     UsersIcon,
     MailIcon,
+    UserCircleIcon,
+    BadgeCheckIcon
 } from "@heroicons/react/outline";
+// import {  } from "@heroicons/react/solid";
 
 export const navigation = [
     {
@@ -46,6 +49,24 @@ export const navigation = [
         roles: ["admin"],
     },
     {
+        name: "Profile",
+        href: "/user/profile",
+        Icon: UserCircleIcon,
+        roles: ["user"],
+    },
+    {
+        name: "Settings",
+        href: "/user/settings",
+        Icon: CogIcon,
+        roles: ["user"],
+    },
+    {
+        name: "My Reservations",
+        href: "/user/reservation-list",
+        Icon: BadgeCheckIcon,
+        roles: ["user"],
+    },
+    {
         name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
@@ -59,7 +80,7 @@ export const navigation = [
     },
     {
         name: "メッセージ",
-        href: "#",
+        href: "/messages",
         Icon: MailIcon,
         roles: ["user", "host"],
     },
@@ -70,7 +91,13 @@ export const navigation = [
         roles: ["host"],
     },
     {
-        name: "time bookにもどる",
+        name: "Reservations",
+        href: "/host/reservation-list",
+        Icon: BadgeCheckIcon,
+        roles: ["host"],
+    },
+    {
+        name: "トップに戻る",
         href: "/",
         Icon: ArrowLeftIcon,
         roles: ["user", "host", "admin"],

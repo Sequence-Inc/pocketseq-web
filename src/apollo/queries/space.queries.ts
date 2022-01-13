@@ -5,6 +5,8 @@ import {
     PREFECTURE,
     SPACE_PRICE_PLAN,
     STATION,
+    SPACE,
+    PAGINATION,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -84,7 +86,9 @@ export const GET_STATIONS_BY_LINE = gql`
 export const ADD_SPACE = gql`
     mutation AddSpace($input: AddSpaceInput!) {
         addSpace(input: $input) {
-            spaceId
+            space {
+                id
+            }
             result {
                 message
                 action
@@ -144,21 +148,23 @@ export const GET_STATION_BY_ID = gql`
     }
     `;
 
-
 export const ADD_SPACE_ADDRESS = gql`
-    mutation AddSpaceAddress($spaceId: ID!
-    $address: AddAddressInput!) {
-        addSpaceAddress(spaceId: $spaceId, address:$address) {
-            message
-            action
+    mutation AddSpaceAddress($spaceId: ID!, $address: AddAddressInput!) {
+        addSpaceAddress(spaceId: $spaceId, address: $address) {
+            address {
+                id
+            }
+            result {
+                message
+                action
+            }
         }
     }
 `;
 
 export const UPDATE_SPACE_ADDRESS = gql`
-    mutation UpdateSpaceAddress($spaceId: ID!
-    $address: UpdateAddressInput!) {
-        updateSpaceAddress(spaceId: $spaceId, address:$address) {
+    mutation UpdateSpaceAddress($spaceId: ID!, $address: UpdateAddressInput!) {
+        updateSpaceAddress(spaceId: $spaceId, address: $address) {
             message
             action
         }
@@ -175,11 +181,18 @@ export const UPDATE_TYPES_IN_SPACE = gql`
 `;
 
 export const ADD_NEAREST_STATION = gql`
-    mutation AddNearestStations($spaceId: ID!
-    $stations: [AddNearestStationInput]!) {
-        addNearestStations(spaceId: $spaceId, stations:$stations) {
-            message
-            action
+    mutation AddNearestStations(
+        $spaceId: ID!
+        $stations: [AddNearestStationInput]!
+    ) {
+        addNearestStations(spaceId: $spaceId, stations: $stations) {
+            result {
+                message
+                action
+            }
+            nearestStations {
+                time
+            }
         }
     }
 `;
@@ -194,9 +207,8 @@ export const REMOVE_NEAREST_STATION = gql`
 `;
 
 export const GET_UPLOAD_TOKEN = gql`
-    mutation AddSpacePhotos($spaceId: ID!
-        $imageInputs: [ImageUploadInput]!) {
-        addSpacePhotos(spaceId: $spaceId, imageInputs:$imageInputs) {
+    mutation AddSpacePhotos($spaceId: ID!, $imageInputs: [ImageUploadInput]!) {
+        addSpacePhotos(spaceId: $spaceId, imageInputs: $imageInputs) {
             type
             url
             mime
@@ -206,11 +218,18 @@ export const GET_UPLOAD_TOKEN = gql`
 `;
 
 export const ADD_PRICING_PLAN = gql`
-    mutation AddSpacePricePlans($spaceId: ID!
-        $pricePlans: [AddSpacePricePlanInput]!) {
-        addSpacePricePlans(spaceId: $spaceId, pricePlans:$pricePlans) {
-            message
-            action
+    mutation AddSpacePricePlans(
+        $spaceId: ID!
+        $pricePlans: [AddSpacePricePlanInput]!
+    ) {
+        addSpacePricePlans(spaceId: $spaceId, pricePlans: $pricePlans) {
+            result {
+                message
+                action
+            }
+            spacePricePlans {
+                id
+            }
         }
     }
 `;
@@ -224,51 +243,21 @@ export const REMOVE_PRICING_PLAN = gql`
     }
 `;
 
-
 export const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
         spaceById(id: $id) {
-                id
-                name
-                description
-                maximumCapacity
-                numberOfSeats
-                spaceSize
-                spaceTypes {
-                    id
-                    title
-                }
-                address {
-                    id
-                    postalCode
-                    prefecture {
-                        id
-                        name
-                    }
-                    city
-                    addressLine1
-                    addressLine2
-                    latitude
-                    longitude
-                }
-                nearestStations {
-                    station {
-                        id
-                        stationName
-                    }
-                    time
-                    via
-                }
-                spacePricePlans {
-                    id
-                    title
-                    type
-                    amount
-                    duration
-                    cooldownTime
-                    lastMinuteDiscount
-                    maintenanceFee
-                }
+            ${SPACE}
+        }
+    }
+`;
+
+export const GET_TOP_PICK_SPACES = gql`
+    query top_picks($paginate: PaginationOption){
+        allSpaces(paginate: $paginate){
+            data {
+                ${SPACE}
+            }
+            ${PAGINATION} 
         }
     }
 `;

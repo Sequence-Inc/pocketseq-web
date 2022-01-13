@@ -36,13 +36,13 @@ const Register = () => {
             <ErrorModal ref={errorRef} />
             <PinDialog
                 ref={pinRef}
-                callback={() => router.replace("/login")}
+                callback={() => router.replace("/auth/login")}
                 emailAddress={email}
                 location="register"
             />
-            <div className="grid grid-cols-5 gap-10 mt-20">
+            <div className="w-full lg:w-10/12 mx-auto px-5 lg:px-0 grid grid-cols-1 lg:grid-cols-5 lg:gap-10 lg:mt-20">
                 <div className="col-span-2">
-                    <div className="px-4 pt-6 pb-4 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+                    <div className="w-full md:w-2/3 lg:w-full mx-auto px-4 pt-6 pb-4 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                         <Logo />
                         <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                             ホストアカウントを作成する
@@ -60,7 +60,13 @@ const Register = () => {
                                         <RadioGroup
                                             {...field}
                                             disabled={loading}
-                                            onChange={(v) => { reset({ hostType: v, terms: false }); field.onChange(v) }}
+                                            onChange={(v) => {
+                                                reset({
+                                                    hostType: v,
+                                                    terms: false,
+                                                });
+                                                field.onChange(v);
+                                            }}
                                         >
                                             <RadioGroup.Label className="sr-only">
                                                 ホストアカウント
@@ -160,9 +166,16 @@ const Register = () => {
                                             type="checkbox"
                                             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                         />
-                                        <label htmlFor="terms" className="ml-3 text-sm text-gray-500 align-baseline">
-                                            I agree to {" "}
-                                            <a href="#" className="inline-block text-gray-500 hover:text-primary" target="_blank">
+                                        <label
+                                            htmlFor="terms"
+                                            className="ml-3 text-sm text-gray-500 align-baseline"
+                                        >
+                                            I agree to{" "}
+                                            <a
+                                                href="#"
+                                                className="inline-block text-gray-500 hover:text-primary"
+                                                target="_blank"
+                                            >
                                                 terms and conditions
                                             </a>
                                         </label>
@@ -171,10 +184,10 @@ const Register = () => {
                             />
                             {errors?.terms && (
                                 <span className="text-xs text-red-600">
-                                    You must agree to terms and conditions to continue
+                                    You must agree to terms and conditions to
+                                    continue
                                 </span>
                             )}
-
 
                             <div>
                                 <Button
@@ -201,45 +214,59 @@ const Register = () => {
                             </Button>
                         </form>
                     </div>
+                    <div className="flex flex-col items-center py-2 mt-2 w-full">
+                        <div className="py-2 text-md ">
+                            <Link href="/">
+                                <a className="text-gray-500 hover:text-green-600">
+                                    time bookにもどる
+                                </a>
+                            </Link>
+                        </div>
+                        <div className="py-2 text-sm text-gray-500">
+                            &copy; Copyright 2021 Sequence Co., Ltd.
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center col-span-3">
-                    <div className="w-ful">
-                        <div className="grid w-full grid-cols-3 gap-6">
-                            <h2 className="w-full col-span-3 text-xl font-medium text-primary">
+                <div className="flex items-start col-span-3 relative">
+                    <div className="w-full">
+                        <div>
+                            <h2 className="text-xl font-medium text-primary my-5">
                                 導入の流れ
                             </h2>
-                            <div>
-                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
-                                    会員登録
-                                </h3>
-                                <div className="pl-5">
-                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
-                                        <li>施設(企業)情報のご登録</li>
-                                    </ul>
+                            <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+                                <div className="flex-1">
+                                    <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
+                                        1. 会員登録
+                                    </h3>
+                                    <div className="pl-5">
+                                        <ul className="mt-4 text-sm text-gray-600 list-disc">
+                                            <li>施設(企業)情報のご登録</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
-                                    事前審査
-                                </h3>
-                                <div className="pl-5">
-                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
-                                        <li>身分証明の確認</li>
-                                        <li>免許(宿泊業など)の確認</li>
-                                        <li>感染対策の確認</li>
-                                    </ul>
+                                <div className="flex-1">
+                                    <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
+                                        2. 事前審査
+                                    </h3>
+                                    <div className="pl-5">
+                                        <ul className="mt-4 text-sm text-gray-600 list-disc">
+                                            <li>身分証明の確認</li>
+                                            <li>免許(宿泊業など)の確認</li>
+                                            <li>感染対策の確認</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
-                                    掲載開始
-                                </h3>
-                                <div className="pl-5">
-                                    <ul className="mt-4 text-sm text-gray-600 list-disc">
-                                        <li>ホスト用アカウントの発行</li>
-                                        <li>掲載開始</li>
-                                        <li>SNSなどで拡散</li>
-                                    </ul>
+                                <div className="flex-1">
+                                    <h3 className="py-2 text-lg font-medium text-center text-white bg-primary">
+                                        3. 掲載開始
+                                    </h3>
+                                    <div className="pl-5">
+                                        <ul className="mt-4 text-sm text-gray-600 list-disc">
+                                            <li>ホスト用アカウントの発行</li>
+                                            <li>掲載開始</li>
+                                            <li>SNSなどで拡散</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -265,19 +292,7 @@ const Register = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col items-center py-2 mt-2 w-96">
-                <div className="py-2 text-md ">
-                    <Link href="/">
-                        <a className="text-gray-500 hover:text-green-600">
-                            time bookにもどる
-                        </a>
-                    </Link>
-                </div>
-                <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 Sequence Co., Ltd.
-                </div>
-            </div>
-        </AuthLayout >
+        </AuthLayout>
     );
 };
 

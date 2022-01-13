@@ -30,7 +30,7 @@ const IndividualForm = ({ register, watch, errors, loading }) => {
                 {...register("user.lastNameKana", { required: true })}
                 error={errors?.user?.lastNameKana ? true : false}
                 errorMessage={errors?.user?.lastNameKana?.message}
-                label="性（かな）"
+                label="性（カナ）"
                 placeholder="例）ヤマダ"
                 id="lastNameKana"
                 disabled={loading}
@@ -39,7 +39,7 @@ const IndividualForm = ({ register, watch, errors, loading }) => {
                 {...register("user.firstNameKana", { required: true })}
                 error={errors?.user?.firstNameKana ? true : false}
                 errorMessage={errors?.user?.firstNameKana?.message}
-                label="名（かな）"
+                label="名（カナ）"
                 placeholder="例）タロウ"
                 id="firstNameKana"
                 disabled={loading}

@@ -10,8 +10,14 @@ const PinDialogContent = ({
     location,
     emailAddress,
 }) => {
-    const { verifyPin, setCode, resendCode, resetLoading, refetchLoading, verifyLoading } =
-        usePinDialogContent(response, callback, location);
+    const {
+        verifyPin,
+        setCode,
+        resendCode,
+        resetLoading,
+        refetchLoading,
+        verifyLoading,
+    } = usePinDialogContent(response, callback, location);
 
     return (
         <form onSubmit={verifyPin} className="space-y-4">
@@ -35,12 +41,14 @@ const PinDialogContent = ({
                 className="mt-2 text-base font-normal text-center text-lightBlue-600"
                 id="modal-headline"
             >
-                Confirm Reset Password
+                パスワードリセットコードを確認
             </h3>
-            <p className="text-sm text-center text-gray-600">Sent You Code</p>
+            <p className="text-sm text-center text-gray-600">
+                確認コードをメールでお送りしました
+            </p>
             <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                    Verification code
+                    確認コード入力
                 </label>
                 <CodeInput
                     length={6}
@@ -59,24 +67,24 @@ const PinDialogContent = ({
                 className="sm:col-start-2"
                 loading={resetLoading || refetchLoading || verifyLoading}
             >
-                Verify Code
+                確認する
             </Button>
             <Button
                 variant="white"
                 disabled={resetLoading || refetchLoading || verifyLoading}
                 onClick={() => setModal(false)}
             >
-                Cancel
+                キャンセル
             </Button>
             <div className="relative text-center">
                 <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                 <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                    codeNotReceived
+                    コードを受け取っていない場合
                 </span>
             </div>
-            <div className="text-xs text-center text-gray-500">
-                makeSureNotReceiveCode
-            </div>
+            {/* <div className="text-xs text-center text-gray-500">
+                コードを受け取っていない場合
+            </div> */}
             <Button
                 variant="white"
                 disabled={resetLoading || refetchLoading || verifyLoading}
@@ -85,7 +93,7 @@ const PinDialogContent = ({
                     resendCode(emailAddress);
                 }}
             >
-                {refetchLoading ? "Resending Code..." : "Resend Code"}
+                {refetchLoading ? "Resending Code..." : "コードを再送する"}
             </Button>
         </form>
     );

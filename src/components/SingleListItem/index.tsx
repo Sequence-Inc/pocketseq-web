@@ -11,12 +11,33 @@ import { ItemGridProps } from "@comp";
 import { Button, Price, Tag, Title } from "@element";
 import Image from "next/image";
 import router from "next/router";
+import { FormatPrice, FormatShortAddress } from "src/utils";
+import { IPhoto, ISpace } from "../../types/timebookTypes";
 
 export const SingleListItem = ({
     data,
     activeIndex,
     setActiveIndex,
 }: ItemGridProps) => {
+    const {
+        id,
+        name,
+        description,
+        maximumCapacity,
+        spaceSize,
+        spaceTypes,
+        spacePricePlans,
+        address,
+        photos,
+    } = data;
+
+    const location: string = FormatShortAddress(address);
+    const spaceType = spaceTypes[0]; // Todo: implement multiple space types later
+
+    const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
+
+    const photo: IPhoto = photos[0];
+
     return (
         <div
             className={`flex flex-col sm:flex-row space-x-6 ${
@@ -27,27 +48,34 @@ export const SingleListItem = ({
         >
             <div className="w-full overflow-hidden rounded-lg sm:w-60 aspect-w-16 aspect-h-9 sm:aspect-h-1">
                 <Image
-                    src={data?.photo}
-                    alt="category items"
+                    src={photo.medium.url}
+                    alt={name}
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
                 />
             </div>
             <div className="w-full space-y-2">
-                <Title>{data?.title}</Title>
+                <Title>{name}</Title>
                 {/* price section */}
                 <div className="flex items-end space-x-4">
-                    <Price amount={data?.price} />
+                    <Price
+                        amount={FormatPrice(
+                            "HOURLY",
+                            spacePricePlans,
+                            true,
+                            true
+                        )}
+                    />
                     <Tag
                         Icon={StarIcon}
                         iconSize={5}
                         iconStyle="text-yellow-400"
                     >
                         <div className="text-sm font-semibold text-gray-600">
-                            {data?.rating}{" "}
+                            {rating.points}{" "}
                             <span className="font-light text-gray-400">
-                                ({data?.cases}件)
+                                ({rating.reviews}件)
                             </span>
                         </div>
                     </Tag>
@@ -59,20 +87,20 @@ export const SingleListItem = ({
                         Icon={UserGroupIcon}
                         iconStyle="text-gray-300"
                         textStyle="text-sm text-gray-500"
-                    >{`〜${data?.people}人`}</Tag>
+                    >{`〜${maximumCapacity}人`}</Tag>
                     <Tag
                         Icon={HomeIcon}
                         iconStyle="text-gray-300"
                         textStyle="text-sm text-gray-500"
                     >
-                        {data?.area}
+                        {spaceSize}m²
                     </Tag>
                     <Tag
                         Icon={TagIcon}
                         iconStyle="text-gray-300"
                         textStyle="text-sm text-gray-500"
                     >
-                        {data?.tag}
+                        {spaceType.title}
                     </Tag>
                     <Tag
                         Icon={LocationMarkerIcon}
@@ -80,7 +108,7 @@ export const SingleListItem = ({
                         numberOfLines={1}
                         textStyle="text-sm text-gray-500"
                     >
-                        {data?.location}
+                        {location}
                     </Tag>
                 </div>
 
@@ -88,7 +116,7 @@ export const SingleListItem = ({
                 <div className="flex justify-center w-full pt-2 space-x-4 sm:w-60">
                     <Button
                         variant="primary"
-                        onClick={() => router.push(`/space/${data?.id}`)}
+                        onClick={() => router.push(`/space/${id}`)}
                     >
                         もっと見る
                     </Button>

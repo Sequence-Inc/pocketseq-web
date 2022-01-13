@@ -191,3 +191,62 @@ export const PAGINATION = `
         hasPrevious
     }
 `;
+
+export const SPACE_TYPES = `
+    spaceTypes {
+        id
+        title
+    }
+`;
+
+export const NEAREST_STATIONS = `
+    nearestStations {
+        station {
+            id
+            stationName
+        }
+        time
+        via
+    }
+`;
+
+export const SPACE = `
+    id
+    name
+    description
+    maximumCapacity
+    numberOfSeats
+    spaceSize
+    needApproval
+
+    ${SPACE_TYPES}
+    address {
+        ${ADDRESS}
+    }
+    ${NEAREST_STATIONS}
+    spacePricePlans {
+        ${SPACE_PRICE_PLAN}
+    }
+    photos {
+        ${PHOTO}
+    }
+    host {
+        accountId
+        name
+        createdAt
+    }
+`;
+
+export const PAYMENT_SOURCE = `
+    paymentSource{
+        id
+        token
+        type
+        expMonth
+        expYear
+        last4
+        brand
+        country
+        customer
+    }
+`;

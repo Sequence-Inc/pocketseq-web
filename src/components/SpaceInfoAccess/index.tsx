@@ -1,35 +1,53 @@
-import { GoogleMap, Tag } from '@element'
-import { MapIcon } from '@heroicons/react/outline'
-import React from 'react'
+import { GoogleMap, Tag } from "@element";
+import { MapIcon } from "@heroicons/react/outline";
+import React from "react";
 
-export const SpaceInfoAccess = () => {
+import { IAddress, INearestStation } from "../../types/timebookTypes";
+
+export interface ISpaceAccessInfoProps {
+    address: IAddress;
+    nearestStations: INearestStation[];
+}
+
+export const SpaceInfoAccess = ({
+    address,
+    nearestStations,
+}: ISpaceAccessInfoProps) => {
+    const { prefecture, city, addressLine1, addressLine2 } = address;
+    const fullAddress = `${prefecture.name}${city}${addressLine1}${addressLine2}`;
+
+    const renderNearestStation = (station: INearestStation): string => {
+        return `${station.station.stationName}より${station.via}${station.time}分`;
+    };
     return (
         <div>
             <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>
             <div className="flex mb-4">
                 <p className="w-32 text-sm font-bold text-gray-800">住所</p>
-                <div className="text-sm text-gray-500">大阪府大阪市天王寺区四天王寺1-8-14</div>
-            </div>
-            <div className="flex mb-4">
-                <p className="w-32 text-sm font-bold text-gray-800">最寄駅</p>
-                <div className="text-sm text-gray-500">
-                    <ul>
-                        <li>大阪メトロ谷町線 四天王寺前夕陽ヶ丘駅 徒歩1分</li>
-                        <li>大阪メトロ堺筋線 恵美須町駅 徒歩14分</li>
-                        <li>大阪メトロ谷町線 天王寺駅 徒歩14分</li>
-                        <li>大阪メトロ谷町線 谷町九丁目駅 徒歩16分</li>
-                        <li>近鉄大阪線 大阪上本町駅 徒歩20分-8-14</li>
-                    </ul>
-                </div>
+                <div className="text-sm text-gray-500">{fullAddress}</div>
             </div>
             <div className="flex mb-4">
                 <p className="w-32 text-sm font-bold text-gray-800">アクセス</p>
-                <div className="text-sm text-gray-500">大阪メトロ谷町線四天王寺夕陽ヶ丘駅より徒歩30秒</div>
+                <div className="text-sm text-gray-500">
+                    <ul>
+                        {nearestStations.map((station, index) => {
+                            return (
+                                <li key={index}>
+                                    {renderNearestStation(station)}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
             </div>
+
             {/* <div className="w-full mt-6 mb-4 rounded bg-green-50 aspect-w-16 aspect-h-6" /> */}
-            <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-6">
+            <div className="w-full mt-6 mb-4 rounded aspect-w-16 aspect-h-9">
                 <div className="w-full h-full">
-                    <GoogleMap mark={{ lat: 34.6619, lng: 135.5205 }} />
+                    <GoogleMap
+                        mark={{ lat: address.latitude, lng: address.longitude }}
+                        zoom={15}
+                    />
                 </div>
             </div>
             <div className="flex justify-end">
@@ -44,5 +62,5 @@ export const SpaceInfoAccess = () => {
                 </Tag>
             </div>
         </div>
-    )
-}
+    );
+};

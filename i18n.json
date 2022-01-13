@@ -1,0 +1,7 @@
+{
+    "locales": ["jp"],
+    "defaultLocale": "jp",
+    "pages": {
+        "*": ["common", "adminhost"]
+    }
+}

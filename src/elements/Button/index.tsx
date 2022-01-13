@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 
 interface ButtonProps {
-    variant?: "primary" | "secondary" | "white";
+    variant?: "primary" | "secondary" | "white" | "disabled";
     rounded?: boolean;
     type?: "button" | "submit";
     className?: string;
@@ -39,22 +39,29 @@ const Button = (props: ButtonProps) => {
                     "opacity-50": disabled || loading,
                     "text-white bg-primary hover:bg-primaryHover focus:ring-primary":
                         variant === "primary",
-                    "text-gray-400 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200":
+                    "text-gray-600 bg-gray-100 hover:bg-gray-200 focus:ring-gray-200":
                         variant === "secondary",
-                    "text-gray-500 bg-white hover:bg-gray-100 focus:ring-gray-300":
+                    "text-gray-700 bg-white hover:bg-gray-100 focus:ring-gray-300":
                         variant === "white",
+                    "text-gray-600 bg-gray-100 hover:bg-gray-100 focus:ring-gray-100 cursor-default":
+                        variant === "disabled",
                     "rounded p-2": !rounded,
-                    "rounded-full px-4 py-2": rounded
+                    "rounded-full px-4 py-2": rounded,
                 },
                 className && className
             )}
             {...rest}
         >
-            {loading
-                ? 'loading...'
-                : !!Icon
-                    ? <div className="flex items-center"><Icon className="w-5 h-5 mr-2 text-inherit" /><span>{children}</span></div>
-                    : children}
+            {loading ? (
+                "loading..."
+            ) : !!Icon ? (
+                <div className="flex items-center">
+                    <Icon className="w-5 h-5 mr-2 text-inherit" />
+                    <span>{children}</span>
+                </div>
+            ) : (
+                children
+            )}
         </button>
     );
 };
@@ -66,7 +73,7 @@ Button.defaultProps = {
     rounded: false,
     children: "Submit",
     disabled: false,
-    onClick: (event) => { },
+    onClick: (event) => {},
 };
 
 export default Button;

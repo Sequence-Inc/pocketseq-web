@@ -1,7 +1,7 @@
 import { ItemGrid } from "@comp";
 import { Container } from "@element";
 import { ChevronRightIcon } from "@heroicons/react/solid";
-import { itemGridData } from "@page/main";
+import { itemGridData } from "@page/index";
 import React from "react";
 
 export const SpaceInfoRecommended = () => {
@@ -19,9 +19,9 @@ export const SpaceInfoRecommended = () => {
                     </a>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {itemGridData.map((item, index) => (
+                    {/* {itemGridData.map((item, index) => (
                         <ItemGrid key={index} data={item} />
-                    ))}
+                    ))} */}
                 </div>
             </Container>
         </div>

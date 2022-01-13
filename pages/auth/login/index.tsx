@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { AuthLayout } from "@layout";
 import ErrorModal from "src/elements/ErrorModal";
 
+import useTranslation from "next-translate/useTranslation";
+
 const Login = () => {
     const {
         register,
@@ -20,29 +22,32 @@ const Login = () => {
     } = useLogin();
     const router = useRouter();
 
+    const { t } = useTranslation("common");
+
     return (
         <>
             <Head>
-                <title>ログイン - time book</title>
+                <title>{t("login")} - time book</title>
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
             <AuthLayout>
-                <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+                <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <Logo />
                     {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                        ログイン
+                        {/* ログイン */}
+                        {t("login")}
                     </h2>
                     <form
                         onSubmit={handleSubmit(handleLogin)}
-                        className="space-y-4"
+                        className="space-y-4 lg:space-y-6"
                     >
                         <TextField
                             {...register("email")}
                             error={errors.email ? true : false}
                             errorMessage={errors?.email?.message}
-                            label="メールアドレス"
+                            label={t("email")}
                             placeholder="taro@mail.com"
                             id="email"
                             disabled={loading}
@@ -53,7 +58,7 @@ const Login = () => {
                             {...register("password")}
                             error={errors.password ? true : false}
                             errorMessage={errors.password?.message}
-                            label="パスワード"
+                            label={t("password")}
                             id="password"
                             disabled={loading}
                             showForgotPassword
@@ -65,12 +70,12 @@ const Login = () => {
                             loading={loading}
                             type="submit"
                         >
-                            ログインする
+                            {t("do-login")}
                         </Button>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
-                                アカウントをお持ちではありませんか？
+                                {t("dont-have-an-account")}
                             </span>
                         </div>
                         <Button
@@ -80,19 +85,19 @@ const Login = () => {
                                 router.push("/auth/register");
                             }}
                         >
-                            アカウントのを作成する
+                            {t("register-an-account")}
                         </Button>
                     </form>
                 </div>
-                <div className="flex flex-col items-center py-2 mt-2 w-96">
-                    <div className="py-2 text-md ">
+                <div className="py-2 mt-2 w-96 lg:w-1/3 mx-auto">
+                    <div className="py-2 text-md text-center">
                         <Link href="/">
                             <a className="text-gray-500 hover:text-green-600">
-                                time bookにもどる
+                                {t("back-to-timebook")}
                             </a>
                         </Link>
                     </div>
-                    <div className="py-2 text-sm text-gray-500">
+                    <div className="py-2 text-sm text-gray-500 text-center">
                         &copy; Copyright 2021 Sequence Co., Ltd.
                     </div>
                 </div>

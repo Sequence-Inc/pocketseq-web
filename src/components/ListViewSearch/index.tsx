@@ -1,7 +1,16 @@
 import { SingleListItem } from "@comp";
 import React from "react";
+import { ISpace } from "src/types/timebookTypes";
 
-export const ListViewSearch = ({ lists, activeIndex, setActiveIndex }) => {
+export const ListViewSearch = ({
+    lists,
+    activeIndex,
+    setActiveIndex,
+}: {
+    lists: ISpace[];
+    activeIndex: string | number;
+    setActiveIndex: any;
+}) => {
     return (
         <>
             {lists.map((list) => (

@@ -14,6 +14,7 @@ export interface IOtherSpacesProps {
     steps: any[];
     initialValue?: any;
     spaceId?: any;
+    refetch?: any;
 }
 
 const NearestStationStep = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {

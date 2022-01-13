@@ -27,3 +27,5 @@ export * from "./NetworkHelper";
 export * from "./SpaceTypesList";
 export * from "./PrefecturesList";
 export * from "./NearestStation";
+export * from "./LoadingSpinner";
+export * from "./PageHeader";

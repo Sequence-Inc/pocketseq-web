@@ -27,3 +27,38 @@ export const ADD_PHOTO_ID = gql`
         }
     }
 `;
+
+export const RESERVATIONS = gql`
+    query Reservations($spaceId: ID, $paginate: PaginationOption, $filter: ReservationsFilter){
+        reservations(spaceId: $spaceId, paginate: $paginate, filter:$filter){
+            data {
+            id
+            fromDateTime
+            toDateTime
+            status
+            createdAt
+            updatedAt
+            approved
+            approvedOn
+            space {
+                id
+                name
+            }
+            }
+            paginationInfo {
+            hasNext
+            hasPrevious
+            nextCursor
+            }
+        }
+    }
+`;
+
+export const APPROVE_RESERVATION = gql`
+    mutation ApproveReservation($reservationId: ID!){
+        approveReservation(reservationId: $reservationId){
+            message
+            action
+        }
+    }
+`;

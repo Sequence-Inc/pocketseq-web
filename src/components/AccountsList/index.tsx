@@ -69,8 +69,8 @@ export const AccountsList = ({ filterOptions }) => {
     const normalizedForm = data.allAccounts.data.map((account) => {
         const newAccountData = { ...account };
         if (account.__typename === "UserProfile") {
-            newAccountData.name = `${account.firstName} ${account.lastName}`;
-            newAccountData.nameKana = `${account.firstNameKana} ${account.lastNameKana}`;
+            newAccountData.name = `${account.lastName} ${account.firstName}`;
+            newAccountData.nameKana = `${account.lastNameKana} ${account.firstNameKana}`;
         }
         return newAccountData;
     });

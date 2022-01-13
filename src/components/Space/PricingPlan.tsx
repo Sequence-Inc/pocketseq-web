@@ -4,10 +4,22 @@ import { PlusIcon } from "@heroicons/react/outline";
 import { TrashIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { ADD_PRICING_PLAN, REMOVE_PRICING_PLAN } from "src/apollo/queries/space.queries";
+import {
+    ADD_PRICING_PLAN,
+    REMOVE_PRICING_PLAN,
+} from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
 
-const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }: IOtherSpacesProps) => {
+import useTranslation from "next-translate/useTranslation";
+
+const PricingPlan = ({
+    activeStep,
+    setActiveStep,
+    steps,
+    spaceId,
+    initialValue,
+    refetch,
+}: IOtherSpacesProps) => {
     const [pricePlans, setPricePlans] = useState([]);
     const [toggleForm, setToggleForm] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -17,26 +29,34 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
     const router = useRouter();
     const { id } = router.query;
 
+    const { t } = useTranslation("adminhost");
+
     useEffect(() => {
-        if (initialValue) setPricePlans(initialValue)
-    }, [initialValue])
+        if (initialValue) setPricePlans(initialValue);
+    }, [initialValue]);
 
     const showForm = () => {
         setToggleForm(true);
-    }
+    };
 
     const closeForm = () => {
         setToggleForm(false);
-    }
+    };
 
     const addPlan = async (plan) => {
-        const { data } = await mutate({ variables: { spaceId: initialValue ? id : spaceId, pricePlans: [plan] } })
+        const { data } = await mutate({
+            variables: {
+                spaceId: initialValue ? id : spaceId,
+                pricePlans: [plan],
+            },
+        });
         if (data) {
             const newPlan = {
                 ...plan,
-                id: data.addSpacePricePlans.id
-            }
+                id: data.addSpacePricePlans.id,
+            };
             setPricePlans([...pricePlans, newPlan]);
+            initialValue && refetch();
             setToggleForm(false);
         }
     };
@@ -44,13 +64,20 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
         setLoading(true);
         setActivePlan(index);
         try {
-            const { data } = await mutateRemovePrice({ variables: { input: { id: priceId, spaceId: initialValue ? id : spaceId } } })
+            const { data } = await mutateRemovePrice({
+                variables: {
+                    input: {
+                        id: priceId,
+                        spaceId: initialValue ? id : spaceId,
+                    },
+                },
+            });
             if (data) {
                 const newPlans = pricePlans.filter((_, idx) => idx !== index);
                 setPricePlans(newPlans);
             }
         } catch (err) {
-            console.log(err)
+            console.log(err);
         } finally {
             setLoading(false);
         }
@@ -69,20 +96,20 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
 
     const handlePricingPlan = async () => {
         if (pricePlans.length > 0) handleNext();
-    }
+    };
 
     return (
         <div className="">
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Price plan
+                    {t("price-plan-title")}
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                    Please add the applicable pricing plan for your space.
+                    {t("price-plan-description")}
                 </p>
             </div>
             <div className="w-full my-6 space-y-3 sm:w-96 sm:ml-64">
-                <h3 className="font-medium text-gray-700">Price Plans</h3>
+                {/* <h3 className="font-medium text-gray-700">Price Plans</h3> */}
                 {pricePlans.map((price, index) => {
                     return (
                         <PricePlanItem
@@ -96,8 +123,10 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
                 })}
             </div>
             <div className="mb-8">
-                {toggleForm && <PricePlanForm addPlan={addPlan} closeForm={closeForm} />}
-                {toggleForm ? null :
+                {toggleForm && (
+                    <PricePlanForm addPlan={addPlan} closeForm={closeForm} />
+                )}
+                {toggleForm ? null : (
                     <div className="items-center flex-none sm:space-x-4 sm:flex">
                         <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
                             &nbsp;
@@ -108,22 +137,32 @@ const PricingPlan = ({ activeStep, setActiveStep, steps, spaceId, initialValue }
                                 className="flex items-center justify-center w-full p-2 text-sm font-medium text-gray-500 bg-gray-100 border border-transparent rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-gray-200 focus:ring-gray-300"
                             >
                                 <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
-                                Add Pricing Plan
+                                {t("price-plan-add")}
                             </button>
                         </div>
-                    </div>}
+                    </div>
+                )}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue ? null : <><Button
-                    className="w-auto px-8"
-                    disabled={!hasPrevious || loading}
-                    onClick={handlePrevious}
-                >
-                    Previous
-                </Button>
-                    <Button variant="primary" className="w-auto px-8" onClick={handlePricingPlan} loading={loading}>
-                        Next
-                    </Button></>}
+                {initialValue ? null : (
+                    <>
+                        <Button
+                            className="w-auto px-8"
+                            disabled={!hasPrevious || loading}
+                            onClick={handlePrevious}
+                        >
+                            {t("previous-page")}
+                        </Button>
+                        <Button
+                            variant="primary"
+                            className="w-auto px-8"
+                            onClick={handlePricingPlan}
+                            loading={loading}
+                        >
+                            {t("next-page")}
+                        </Button>
+                    </>
+                )}
             </div>
         </div>
     );
@@ -152,13 +191,26 @@ const PricePlanItem = ({ index, pricePlan, removePlan, isLoading }) => {
                 {title} - ￥{amount}/{duration}
                 {type === "HOURLY" ? "時間" : "日"}
             </div>
-            {isLoading ? <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                className="w-6 h-6 mr-3 text-green-200 animate-spin" viewBox="0 0 50 50">
-                <path fill="currentColor" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-                </path>
-            </svg> : <button onClick={() => removePlan(index, id)}>
-                <TrashIcon className="w-6 h-6 text-green-200 hover:text-green-100" />
-            </button>}
+            {isLoading ? (
+                <svg
+                    version="1.1"
+                    id="loader-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    className="w-6 h-6 mr-3 text-green-200 animate-spin"
+                    viewBox="0 0 50 50"
+                >
+                    <path
+                        fill="currentColor"
+                        d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+                    ></path>
+                </svg>
+            ) : (
+                <button onClick={() => removePlan(index, id)}>
+                    <TrashIcon className="w-6 h-6 text-green-200 hover:text-green-100" />
+                </button>
+            )}
         </div>
     );
 };
@@ -173,13 +225,15 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
     const [maintenanceFee, setMaintenanceFee] = useState<string>();
     const [loading, setLoading] = useState(false);
 
+    const { t } = useTranslation("adminhost");
+
     const planTypes = [{ title: "HOURLY" }, { title: "DAILY" }];
 
     const handleSubmit = async () => {
-        setLoading(true)
+        setLoading(true);
         if (!title || !type || !amount || parseInt(amount) <= 0 || !duration) {
             alert("Please provide title, plan type, price and duration.");
-            setLoading(false)
+            setLoading(false);
             return;
         }
         await addPlan({
@@ -191,14 +245,14 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             cooldownTime: parseInt(cooldownTime),
             maintenanceFee: parseFloat(maintenanceFee),
         });
-        setLoading(false)
+        setLoading(false);
     };
 
     return (
         <div className="space-y-4">
             <div>
                 <TextField
-                    label="Title"
+                    label={t("price-plan-name")}
                     error={null}
                     errorMessage="Title is required"
                     autoFocus
@@ -224,7 +278,18 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             </div>
             <div>
                 <TextField
-                    label="Price"
+                    label="Duration"
+                    error={null}
+                    errorMessage="Duration is required"
+                    autoFocus
+                    singleRow
+                    value={duration}
+                    onChange={(event) => setDuration(event.target.value)}
+                />
+            </div>
+            <div>
+                <TextField
+                    label={t("price-plan-price")}
                     error={null}
                     errorMessage="Price is required"
                     autoFocus
@@ -235,7 +300,7 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             </div>
             <div>
                 <TextField
-                    label="Last minute discount"
+                    label={t("price-plan-discount")}
                     error={null}
                     errorMessage=""
                     autoFocus
@@ -248,18 +313,7 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             </div>
             <div>
                 <TextField
-                    label="Duration"
-                    error={null}
-                    errorMessage="Duration is required"
-                    autoFocus
-                    singleRow
-                    value={duration}
-                    onChange={(event) => setDuration(event.target.value)}
-                />
-            </div>
-            <div>
-                <TextField
-                    label="Cooldown time"
+                    label={t("price-plan-cooldown")}
                     error={null}
                     errorMessage="Cooldown time is required"
                     autoFocus
@@ -270,7 +324,7 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             </div>
             <div>
                 <TextField
-                    label="Maintenance fee"
+                    label={t("price-plan-handling-fee")}
                     error={null}
                     errorMessage=""
                     autoFocus
@@ -289,10 +343,10 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
                         onClick={handleSubmit}
                         loading={loading}
                     >
-                        Add station
+                        {t("price-plan-add")}
                     </Button>
                     <Button onClick={closeForm} disabled={loading}>
-                        Cancel
+                        {t("cancel")}
                     </Button>
                 </div>
             </div>
