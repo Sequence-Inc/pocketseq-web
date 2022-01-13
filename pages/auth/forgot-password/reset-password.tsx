@@ -59,7 +59,7 @@ const ResetPassword = ({ email, code }) => {
             <Head>
                 <title>パスワードをリセットする - time book</title>
             </Head>
-            <div className="px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm w-96">
+            <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                 <Logo />
                 <h3 className="font-medium text-center text-green-600">
                     確認コードの確認完了しました
@@ -84,7 +84,7 @@ const ResetPassword = ({ email, code }) => {
                         label="パスワード確認"
                         id="confirmPassword"
                         disabled={isLoading}
-                        hintText="hint password"
+                        hintText=""
                     />
 
                     <Button variant="primary" loading={isLoading} type="submit">
@@ -92,7 +92,7 @@ const ResetPassword = ({ email, code }) => {
                     </Button>
                 </form>
             </div>
-            <div className="flex flex-col items-center py-2 mt-2 w-96">
+            <div className="py-2 mt-2 w-96 lg:w-1/3 mx-auto text-center">
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
