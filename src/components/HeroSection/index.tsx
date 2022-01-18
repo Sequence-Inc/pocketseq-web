@@ -46,18 +46,18 @@ export const HeroSection = () => {
             >
                 <Image
                     layout="fill"
-                    src="/hero.jpg"
-                    alt="Timebook"
+                    src="/images/hero-01.jpg"
+                    alt="time book"
                     role="presentation"
                     className="z-0 object-cover object-center w-full h-full"
                 />
-                <div className="absolute top-0 left-0 w-full h-full bg-primary opacity-60">
+                <div className="absolute top-0 left-0 w-full h-full bg-primary opacity-0">
                     &nbsp;
                 </div>
                 <Container className="absolute top-0 left-0 z-10 md:pt-16">
                     <div className="flex flex-col items-center justify-center w-full h-full">
                         <p className="mb-10 text-2xl font-bold text-center text-white sm:text-4xl">
-                            「人×場所×体験」を繋げる　目的に合った場所を検索しよう
+                            「人×場所×体験」を繋げる 目的に合った場所を検索しよう
                         </p>
                         <SearchBox
                             onChange={() => {
