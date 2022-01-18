@@ -137,11 +137,12 @@ const navigation = {
     company: [
         {
             name: "プライバシーポリシー",
-            href: "/downloads/プライバシーポリシー.pdf",
+            href: "/terms/privacy-policy",
         },
-        { name: "timebook利用規約", href: "#" },
-        { name: "ゲスト規約", href: "#" },
-        { name: "ホスト規約", href: "#" },
+        { name: "timebook利用規約", href: "/about/terms" },
+        { name: "ゲスト規約", href: "/terms/guest-terms" },
+        { name: "ホスト規約", href: "/terms/host-terms" },
+
         // { name: "アプリ", href: "#" },
     ],
     social: [
