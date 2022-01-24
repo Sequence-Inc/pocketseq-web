@@ -122,9 +122,11 @@ export const SearchBox = ({ onChange }) => {
                             {areaList.map((item: string, index: number) => (
                                 <li
                                     key={index.toString()}
+
                                     className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
                                         area === item ? "bg-gray-100" : ""
                                     }`}
+
                                     onClick={() => setArea(item)}
                                 >
                                     {item}
@@ -169,11 +171,13 @@ export const SearchBox = ({ onChange }) => {
                                 (item: any, index: number) => (
                                     <li
                                         key={index.toString()}
+
                                         className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
                                             purpose === item.title
                                                 ? "bg-gray-100"
                                                 : ""
                                         }`}
+
                                         onClick={() => setPurpose(item.title)}
                                     >
                                         {item.title}
@@ -213,7 +217,7 @@ export const SearchBox = ({ onChange }) => {
                 <Button
                     rounded
                     variant="white"
-                    className="px-5 py-3"
+                    className="px-5 py-5"
                     onClick={(event) => {
                         event.preventDefault();
                         onChange({ area, purpose });
@@ -234,4 +238,4 @@ export const SearchBox = ({ onChange }) => {
             </div>
         </div>
     );
-};
+}
