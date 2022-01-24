@@ -19,7 +19,7 @@ interface INavLinkItems {
 const navLinkItems: INavLinkItems[] = [
     {
         name: "スペース掲載",
-        link: "/space",
+        link: "/auth/host-register",
     },
     {
         name: "初めての方へ",
