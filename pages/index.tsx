@@ -3,26 +3,38 @@ import Head from "next/head";
 import Link from "next/link";
 
 import {
-    FlagIcon,
-    StarIcon,
-    LocationMarkerIcon,
-    ChevronRightIcon,
     BookmarkAltIcon,
     FireIcon,
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
 
-import {
-    CategoryItem,
-    ItemGrid,
-    ICategoryItem,
-    IExploreItem,
-    RegisterCTA,
-    SingleExploreItem,
-    HeroSection,
-} from "@comp";
+import { ICategoryItem, IExploreItem } from "@comp";
+
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const Teaser = () => {
+    const { data: session } = useSession();
+    if (session) {
+        console.log("Logged In", session);
+        const name =
+            session.user.name ||
+            `${session.user.lastName} ${session.user.firstName}`;
+        return (
+            <>
+                Signed in as {name} <br />
+                <button onClick={() => signOut()}>Sign out</button>
+            </>
+        );
+    } else {
+        console.log("Not Logged In");
+        return (
+            <>
+                Not signed in <br />
+                <button onClick={() => signIn()}>Sign in</button>
+            </>
+        );
+    }
+
     return (
         <>
             <Head>

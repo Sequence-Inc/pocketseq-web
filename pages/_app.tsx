@@ -6,8 +6,12 @@ import { useRouter } from "next/router";
 import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "src/apollo/apollo";
+import { SessionProvider } from "next-auth/react";
 
-function TimeBook({ Component, pageProps }: AppProps) {
+function TimeBook({
+    Component,
+    pageProps: { session, ...pageProps },
+}: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);
 
     const router = useRouter();
@@ -26,15 +30,17 @@ function TimeBook({ Component, pageProps }: AppProps) {
     }, [router.events]);
 
     return (
-        <ApolloProvider client={apolloClient}>
-            <Head>
-                <meta
-                    name="viewport"
-                    content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
-                />
-            </Head>
-            <Component {...pageProps} />
-        </ApolloProvider>
+        <SessionProvider session={session}>
+            <ApolloProvider client={apolloClient}>
+                <Head>
+                    <meta
+                        name="viewport"
+                        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+                    />
+                </Head>
+                <Component {...pageProps} />
+            </ApolloProvider>
+        </SessionProvider>
     );
 }
 
