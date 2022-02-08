@@ -45,7 +45,7 @@ const SpaceDetail = ({ spaceId }) => {
     const router = useRouter();
     const { data, loading, error } = useQuery(GET_SPACE_BY_ID, {
         variables: { id: spaceId },
-        fetchPolicy: "network-only"
+        fetchPolicy: "network-only",
     });
 
     if (error) {
@@ -86,13 +86,44 @@ const SpaceDetail = ({ spaceId }) => {
     };
 
     const sendMessage = () => {
-        if (host) router.push(`/messages?name=${host?.name}&recipientIds=${host?.accountId}`);
-    }
+        if (host)
+            router.push(
+                `/messages?name=${host?.name}&recipientIds=${host?.accountId}`
+            );
+    };
+
+    const getPublicPhoto = (photos) => {
+        const mediaId = photos[0].id;
+        return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/small/${mediaId}.jpeg`;
+    };
 
     return (
         <MainLayout>
             <Head>
-                <title>{name} - time book</title>
+                <title>
+                    {name} | 「人×場所×体験」を繋げる
+                    目的に合った場所を検索しよう
+                </title>
+                <meta
+                    name="description"
+                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                <meta
+                    name="keywords"
+                    content="timebook,タイムブック,レンタルスペース, ペット可"
+                />
+                <meta
+                    property="og:title"
+                    content={`${name} | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
+                />
+                <meta
+                    property="og:description"
+                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                <meta
+                    property="og:image"
+                    content={`${getPublicPhoto(photos)}`}
+                />
             </Head>
             <Container className="mt-16">
                 <div className="relative flex space-x-12">
@@ -102,7 +133,10 @@ const SpaceDetail = ({ spaceId }) => {
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <div className="block md:hidden">
-                            <FloatingPrice pricePlans={spacePricePlans} space={space} />
+                            <FloatingPrice
+                                pricePlans={spacePricePlans}
+                                space={space}
+                            />
                         </div>
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
@@ -110,7 +144,8 @@ const SpaceDetail = ({ spaceId }) => {
                         {/* host profile */}
                         <div>
                             <div className="space-y-6 sm:flex sm:space-y-0">
-                                <div className="flex-1">{console.log(host)}
+                                <div className="flex-1">
+                                    {/* {console.log(host)} */}
                                     <HostProfile
                                         title={host?.name}
                                         description="2015年8月年からメンバー"
@@ -121,7 +156,6 @@ const SpaceDetail = ({ spaceId }) => {
                                     rounded
                                     className="w-auto px-4 h-9"
                                     onClick={sendMessage}
-
                                 >
                                     Send Message
                                 </Button>
