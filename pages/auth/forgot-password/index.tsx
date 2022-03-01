@@ -10,7 +10,7 @@ import { FORGOT_PASSWORD, LOGIN } from "src/apollo/queries/auth.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ userSession }) => {
     const router = useRouter();
     const pinRef = useRef(null);
     const {
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
     };
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
                 <title>パスワードをリセットする - {config.appName}</title>
             </Head>

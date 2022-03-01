@@ -19,7 +19,7 @@ const schema = yup.object().shape({
         .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
-const ResetPassword = ({ email, code }) => {
+const ResetPassword = ({ email, code, userSession }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const {
@@ -57,7 +57,7 @@ const ResetPassword = ({ email, code }) => {
     }, []);
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
                 <title>パスワードをリセットする - {config.appName}</title>
             </Head>

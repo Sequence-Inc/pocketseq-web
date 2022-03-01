@@ -52,7 +52,7 @@ const DayOfWeekOverride = ({ userSession }) => {
                         onSave={(value) => console.log(value)}
                     />
                     <BusinessHourManager
-                        defaultValue={{ startTime: 9, endTime: 18 }}
+                        defaultValue={{ openingHr: 9, closingHr: 18 }}
                         onSave={(value) => {
                             console.log(value);
                             return;

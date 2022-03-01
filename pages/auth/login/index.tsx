@@ -12,7 +12,7 @@ import useTranslation from "next-translate/useTranslation";
 import { getCsrfToken, getSession } from "next-auth/react";
 import { config } from "src/utils";
 
-const Login = ({ csrfToken }) => {
+const Login = ({ csrfToken, userSession }) => {
     const {
         register,
         errors,
@@ -35,7 +35,7 @@ const Login = ({ csrfToken }) => {
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
-            <AuthLayout>
+            <AuthLayout userSession={userSession}>
                 <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <Logo />
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">

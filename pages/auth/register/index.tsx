@@ -11,7 +11,7 @@ import ErrorModal from "src/elements/ErrorModal";
 import useTranslation from "next-translate/useTranslation";
 import { getSession } from "next-auth/react";
 
-const Register = () => {
+const Register = ({ userSession }) => {
     const {
         register,
         errors,
@@ -28,7 +28,7 @@ const Register = () => {
     const { t } = useTranslation("common");
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
                 <title>{t("register-an-account")} | Space Rental</title>
             </Head>

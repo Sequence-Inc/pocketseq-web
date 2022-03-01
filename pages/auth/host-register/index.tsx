@@ -14,7 +14,7 @@ import IndividualForm from "src/components/IndividualForm";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 
-const Register = () => {
+const Register = ({ userSession }) => {
     const {
         register,
         reset,
@@ -31,7 +31,7 @@ const Register = () => {
     const router = useRouter();
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
                 <title>ホストアカウントのを作成する - {config.appName}</title>
             </Head>
