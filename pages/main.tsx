@@ -57,19 +57,19 @@ const features = [
         name: "Secure",
         icon: ShieldCheckIcon,
         description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+            "time bookはゲスト・ホストを含めすべてのユーザー様の個人情報保護の重要性を認識したうえで個人情報保護法を遵守いたします。",
     },
     {
         name: "Save Spaces",
         icon: BookmarkAltIcon,
         description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+            "より多くのゲストがご利用できるようより多くのスペースを確保してまいります。",
     },
     {
         name: "Popular",
         icon: FireIcon,
         description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+            "ホストの皆様の大切なスペースを「こだわり」を持ったユーザーの皆様へご提供できるようそして、より多くのユーザーの皆様が繰り返しご利用いただけるよう営業してまいります。",
     },
 ];
 
@@ -91,7 +91,30 @@ export default function Home({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>{config.appName}</title>
+
+                <title>{config.appName} | 「人×場所×体験」を繋げる
+                    目的に合った場所を検索しよう</title>
+                <meta
+                    name="description"
+                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                <meta
+                    name="keywords"
+                    content="timebook,タイムブック,レンタルスペース, ペット可"
+                />
+                <meta
+                    property="og:title"
+                    content="time book | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう"
+                />
+                <meta
+                    property="og:description"
+                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                {/* <meta
+                    property="og:image"
+                    content="OGP用の紹介画像のパスを指定してください"
+                /> */}
+
             </Head>
             <Header userSession={userSession} />
             <main>
@@ -104,8 +127,8 @@ export default function Home({ userSession }) {
                                 <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     {config.appName}とは
                                 </p>
-                                <p className="w-2/3 mx-auto mt-6 text-xl font-light text-gray-500">
-                                    会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる
+                                <p className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
+                                    ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
                                 </p>
                                 <div className="mt-12">
                                     <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
