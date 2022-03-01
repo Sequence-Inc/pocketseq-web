@@ -82,10 +82,16 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             );
     };
 
+    const getPublicPhoto = (photos) => {
+        const mediaId = photos[0].id;
+        return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/small/${mediaId}.jpeg`;
+    };
+
     return (
         <MainLayout userSession={userSession}>
             <Head>
                 <title>
+
                     {name} | 「人 × 場所 × 体験」を繋げる
                     目的に合った場所を検索しよう
                 </title>
