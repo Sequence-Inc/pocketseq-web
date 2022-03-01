@@ -1,21 +1,22 @@
-import { useState } from "react";
-import {
-    CheckCircleIcon,
-    PlusIcon,
-    OfficeBuildingIcon,
-    ViewListIcon,
-} from "@heroicons/react/solid";
-import HostLayout from "src/layouts/HostLayout";
-import Head from "next/head";
-import { Button, Container, Table } from "@element";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { MY_SPACES } from "src/apollo/queries/space.queries";
-import { useEffect } from "react";
-import { PencilAltIcon } from "@heroicons/react/outline";
+import Head from "next/head";
+import Link from "next/link";
 import router from "next/router";
-
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
+import {
+    PencilAltIcon,
+    OfficeBuildingIcon,
+    PlusIcon,
+} from "@heroicons/react/outline";
+
+import { Button, Container, Table } from "@element";
+import HostLayout from "src/layouts/HostLayout";
+import { MY_SPACES } from "src/apollo/queries/space.queries";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
 interface IColumns {
     Header: string;
@@ -25,11 +26,15 @@ interface IColumns {
     Cell?: any;
 }
 
-const MySpace = () => {
+const MySpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
-    const { data } = useQuery(MY_SPACES, { fetchPolicy: "network-only" });
+    const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const { t } = useTranslation("adminhost");
+
+    const { data, loading, error } = useQuery(MY_SPACES, {
+        fetchPolicy: "network-only",
+    });
 
     const keys = [
         { name: t("space-name"), key: "name" },
@@ -42,7 +47,6 @@ const MySpace = () => {
         if (key === "name") return "min-w-10 text-left";
         if (key === "spaceSize") return "w-32";
     };
-
     const childClassname = (key) => {
         if (key === "maximumCapacity" || key === "spaceSize") {
             return "text-right";
@@ -95,41 +99,43 @@ const MySpace = () => {
         });
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
+        setLoadComplete(true);
     }, []);
 
+    let content;
+    if (loading) {
+        content = <LoadingSpinner loadingText="Loading spaces..." />;
+    }
+    if (error) {
+        content = <div>An error occurred: {error.message}</div>;
+    }
+    if (loadComplete && data) {
+        console.log(columns, data);
+        content = <Table columns={columns} data={data.mySpaces} />;
+    }
+
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Spaces - Host - Timebook</title>
+                <title>Spaces - Host - {config.appName}</title>
             </Head>
             {/* Page header */}
-            <div className="bg-white shadow">
+            <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
-                    <div className="py-6 md:flex md:items-center md:justify-between">
+                    <div className="py-8 md:flex md:items-center md:justify-between">
                         <div className="flex-1 min-w-0">
                             {/* Profile */}
                             <div className="flex items-center">
-                                {/* <div className="hidden w-16 h-16 border rounded-lg shadow-sm sm:flex sm:justify-center sm:items-center">
-                                    <ViewListIcon className="w-10 h-10 text-primary" />
-                                </div> */}
                                 <div>
                                     <div className="flex items-center">
+                                        <OfficeBuildingIcon
+                                            className="flex-shrink-0 mr-1.5 h-6 w-6 text-gray-700"
+                                            aria-hidden="true"
+                                        />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
                                             {t("my-spaces")}
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                                        <dt className="sr-only">
-                                            Total spaces
-                                        </dt>
-                                        <dd className="flex items-center mt-3 text-sm font-medium text-gray-500 capitalize sm:mr-6 sm:mt-0">
-                                            <CheckCircleIcon
-                                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
-                                                aria-hidden="true"
-                                            />
-                                            12 spaces
-                                        </dd>
-                                    </dl>
                                 </div>
                             </div>
                         </div>
@@ -145,13 +151,27 @@ const MySpace = () => {
                     </div>
                 </Container>
             </div>
-            <Container className="py-4 sm:py-6 lg:py-8">
-                {columns && (
-                    <Table columns={columns} data={data?.mySpaces || []} />
-                )}
-            </Container>
+            <Container className="py-4 sm:py-6 lg:py-8">{content}</Container>
         </HostLayout>
     );
 };
 
 export default MySpace;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

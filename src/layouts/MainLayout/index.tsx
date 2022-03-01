@@ -1,13 +1,20 @@
-import { Footer, Header } from '@layout'
+import { Footer, Header } from "@layout";
+import { Session } from "next-auth";
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
+const MainLayout = ({
+    userSession,
+    children,
+}: {
+    userSession: Session;
+    children: React.ReactNode;
+}) => {
     return (
         <>
-            <Header />
+            <Header userSession={userSession} />
             {children}
             <Footer />
         </>
-    )
-}
+    );
+};
 
-export default MainLayout
+export default MainLayout;

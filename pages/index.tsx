@@ -9,36 +9,13 @@ import {
 } from "@heroicons/react/outline";
 
 import { ICategoryItem, IExploreItem } from "@comp";
-
-import { useSession, signIn, signOut } from "next-auth/react";
+import { config } from "src/utils/index";
 
 const Teaser = () => {
-    const { data: session } = useSession();
-    if (session) {
-        console.log("Logged In", session);
-        const name =
-            session.user.name ||
-            `${session.user.lastName} ${session.user.firstName}`;
-        return (
-            <>
-                Signed in as {name} <br />
-                <button onClick={() => signOut()}>Sign out</button>
-            </>
-        );
-    } else {
-        console.log("Not Logged In");
-        return (
-            <>
-                Not signed in <br />
-                <button onClick={() => signIn()}>Sign in</button>
-            </>
-        );
-    }
-
     return (
         <>
             <Head>
-                <title>time book</title>
+                <title>{config.appName}</title>
             </Head>
             <div className="w-full h-screen overflow-hidden bg-primary">
                 <div className="relative py-16">
@@ -126,7 +103,7 @@ const Teaser = () => {
                                         id="join-heading"
                                     >
                                         <img
-                                            src="/timebook-logo.svg"
+                                            src="/logo.svg"
                                             className="w-1/2 mx-auto"
                                         />
                                     </h2>
@@ -161,12 +138,12 @@ const Teaser = () => {
                                             target="_blank"
                                             className="text-white  hover:underline"
                                         >
-                                            time
-                                            bookについてプレスリリースはこちら
+                                            {config.appName}
+                                            についてプレスリリースはこちら
                                         </a>
                                     </div>
                                     <p className="pt-10 text-sm text-green-100">
-                                        &copy; copyright time book 2021.
+                                        &copy; copyright {config.appName} 2022.
                                     </p>
                                 </div>
                             </div>
@@ -244,92 +221,5 @@ export const itemGridData = [
             lat: 35.6666,
             lng: 139.704,
         },
-    },
-];
-
-const categories: ICategoryItem[] = [
-    {
-        title: "イベントスペース",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue1-2f441630d1.jpg",
-    },
-    {
-        title: "貸し会議室",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue2-d1bcd206b2.jpg",
-    },
-    {
-        title: "おうちスペース",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue3-ee70adf998.jpg",
-    },
-    {
-        title: "撮影スタジオ",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue4-e153758527.jpg",
-    },
-    {
-        title: "レンタルスタジオ",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue5-bc39e6a2f9.jpg",
-    },
-    {
-        title: "古民家",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue6-e6918eba9d.jpg",
-    },
-    {
-        title: "屋上・テラス",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue7-10da6595b7.jpg",
-    },
-    {
-        title: "レンタルジム",
-        subTitle: "123件",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_venue8-cd826d045a.jpg",
-    },
-];
-
-const exploreAreas: IExploreItem[] = [
-    {
-        name: "新宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
-    },
-    {
-        name: "渋谷",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
-    },
-    {
-        name: "池袋",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
-    },
-    {
-        name: "原宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
-    },
-];
-
-const features = [
-    {
-        name: "Secure",
-        icon: ShieldCheckIcon,
-        description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
-    },
-    {
-        name: "Save Spaces",
-        icon: BookmarkAltIcon,
-        description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
-    },
-    {
-        name: "Popular",
-        icon: FireIcon,
-        description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
     },
 ];

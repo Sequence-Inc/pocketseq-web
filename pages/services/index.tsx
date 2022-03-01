@@ -5,53 +5,54 @@ import Link from "next/link";
 import { Container } from "@element";
 import {
     ICategoryItem,
-    RegisterCTA,
     HeroSection,
     RegisterCTAGuest,
     RegisterCTAHost,
 } from "@comp";
 import { Header, Footer } from "@layout";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
 const categories: ICategoryItem[] = [
     {
-        title: "Business × time book",
+        title: `Business × ${config.appName}`,
         subTitle: "オフサイトMTGやブレストMTGなどに最適",
         photo: "/services/meeting.jpg",
     },
     {
-        title: "Freelance × time book",
+        title: `Freelance × ${config.appName}`,
         subTitle: "フリーランスの方がスキル提供する場所を拡大",
         photo: "/services/makeup.jpg",
     },
     {
-        title: "Lifestyle × time book",
+        title: `Lifestyle × ${config.appName}`,
         subTitle: "体験してみたかった事を気軽に予約",
         photo: "/services/sauna.jpg",
     },
     {
-        title: "Outdoor × time book",
+        title: `Outdoor × ${config.appName}`,
         subTitle: "家のそばでも旅先でもいつでもオープンスペースを探せます",
         photo: "/services/lifestyle.jpg",
     },
     {
-        title: "Party × time book",
+        title: `Party × ${config.appName}`,
         subTitle: "スタイリッシュ空間で特別なパーティを",
         photo: "/services/music.jpg",
     },
     {
-        title: "Learninng × time book",
+        title: `Learninng × ${config.appName}`,
         subTitle: "身近な習い事を見つける事ができる",
         photo: "/services/party.jpg",
     },
 ];
 
-export default function Services() {
+export default function Services({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>TimeBook | Services</title>
+                <title>{config.appName} | Services</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
@@ -104,3 +105,12 @@ export default function Services() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};

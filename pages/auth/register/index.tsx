@@ -9,6 +9,7 @@ import Link from "next/link";
 import ErrorModal from "src/elements/ErrorModal";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
 
 const Register = () => {
     const {
@@ -189,8 +190,20 @@ const Register = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
-
 export default Register;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (session) {
+        const { callbackUrl } = context.query;
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
+    return {
+        props: {},
+    };
+}

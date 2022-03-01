@@ -5,16 +5,18 @@ import { PageHeader } from "@comp";
 
 import { Header, Footer } from "@layout";
 import Link from "next/link";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
-export default function GuestTerms() {
+export default function GuestTerms({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>time book | ホスト規約</title>
+                <title>{config.appName} | ホスト規約</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
-                <PageHeader>time book ご利用規約</PageHeader>
+                <PageHeader>{config.appName} ご利用規約</PageHeader>
                 <Container className="py-12 space-y-5 md:py-20 md:space-y-5 text-gray-500">
                     <h2 className="font-bold text-lg">第1章 総則</h2>
                     <h2 className="font-bold text-lg">第1条(規約の適用)</h2>
@@ -22,24 +24,24 @@ export default function GuestTerms() {
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
                             本規約は、株式会社シークエンス(以下「当社」という)が管理・運営するインターネットサ
-                            イト「time
-                            book」(第2条で定義する)の利用に関して、利用者(以下「利用者」という)が遵守
+                            イト「{config.appName}
+                            」(第2条で定義する)の利用に関して、利用者(以下「利用者」という)が遵守
                             すべき事項を定めたものである。
                         </li>
                         <li>
-                            利用者は、「time
-                            book」の利用に関し、本規約を遵守するものとする。
+                            利用者は、「{config.appName}
+                            」の利用に関し、本規約を遵守するものとする。
                         </li>
                         <li>
-                            当社は、利用者が「time
-                            book」を利用した場合、当該利用者が本規約に同意したものとみな
+                            当社は、利用者が「{config.appName}
+                            」を利用した場合、当該利用者が本規約に同意したものとみな
                             す。
                         </li>
                     </ol>
                     <h2 className="font-bold text-lg">第2条(定義)</h2>
                     <p>
-                        「time
-                        book」(以下「本サービス」という)とは、レンタルスペース及びこれらに付帯するサービ
+                        「{config.appName}
+                        」(以下「本サービス」という)とは、レンタルスペース及びこれらに付帯するサービ
                         スまたは、体験型アクティビティサービス及びこれらに付帯するサービスの予約を行うインター
                         ネットサイトである。
                     </p>
@@ -48,30 +50,31 @@ export default function GuestTerms() {
                         る者を意味します。
                     </p>
                     <p>
-                        「ホスト」とは、time book
+                        「ホスト」とは、{config.appName}
                         にホスト登録し、本サービスを利用して施設を貸したり、サービスを
                         提供する個人又は法人を意味します。
                     </p>
 
                     <h2 className="font-bold text-lg">
-                        第2章 「time book」の利用
+                        第2章 「{config.appName}」の利用
                     </h2>
                     <h2 className="font-bold text-lg">第3条(利用方法)</h2>
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
-                            利用者は、time book
+                            利用者は、{config.appName}
                             において予約サービスまたは情報サービスを利用するに際し、本規約等
                             の内容を十分に確認のうえ利用するものとする。
                         </li>
                         <li>
-                            利用者は、time book
+                            利用者は、{config.appName}
                             に掲載されているホストが提供するサービス(以下単に「サービス」と
                             いう)を利用するときは、当該ホストが定める規約、約款、ガイドライン、ルール等を十分に確
                             認のうえ利用するものとする。
                         </li>
                         <li>
-                            利用者は、予約サービスを利用するためには、time book
-                            利用規約を承認の上、time book 会
+                            利用者は、予約サービスを利用するためには、
+                            {config.appName}
+                            利用規約を承認の上、{config.appName} 会
                             員として登録しなければならない。
                         </li>
                     </ol>
@@ -149,16 +152,16 @@ export default function GuestTerms() {
                     <h2 className="font-bold text-lg">第8条(禁止事項)</h2>
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
-                            利用者は、「time
-                            book」の利用に際して、次の各号に該当する行為(該当するおそれがあると
+                            利用者は、「{config.appName}
+                            」の利用に際して、次の各号に該当する行為(該当するおそれがあると
                             当社が判断する行為を含む)を行わないものとする。(1)本規約等に違反する行為(2)当社、
                             ホスト、他の利用者、その他第三者に対し、その権利を侵害し、不利益を与え、または不快感を
                             抱かせる行為(3)利用料またはキャンセル料の支払等、ホストまたは当社に対する債務を履行
                             しない行為(4)虚偽または架空の連絡先を登録、故意による不対応等、ホストまたは当社から
-                            の連絡を妨げる行為(5)他者への転売、その他商用目的で「time
-                            book」を利用する行為(6)
-                            当社が承認した以外の方法で「time
-                            book」を利用する行為(7)スパムメール、チェーンレター、
+                            の連絡を妨げる行為(5)他者への転売、その他商用目的で「
+                            {config.appName}」を利用する行為(6)
+                            当社が承認した以外の方法で「{config.appName}
+                            」を利用する行為(7)スパムメール、チェーンレター、
                             ジャンクメール等を送信する行為(8)当社が18歳未満の者(以下「青少年」という)による利
                             用を禁止しているコンテンツについて、青少年である利用者自らがこれを利用し、または青少年
                             に対し、当該コンテンツを通じてホストから提供されるサービスを利用させる行為(9)法令ま
@@ -166,8 +169,8 @@ export default function GuestTerms() {
                         </li>
                         <li>
                             当社は、利用者が前項各号の一の行為に該当すると判断した場合には、事前に通知すること
-                            なく、当該利用者に対し、「time
-                            book」の利用停止、当該利用者の会員資格の取消しを行うことが
+                            なく、当該利用者に対し、「{config.appName}
+                            」の利用停止、当該利用者の会員資格の取消しを行うことが
                             できるものとし、これにより当該利用者に何らかの損害が生じたとしても、当社は一切責任を負
                             わないものとする。
                         </li>
@@ -187,8 +190,8 @@ export default function GuestTerms() {
                         <li>
                             当社は、利用契約に別途規定がある場合を除き、利用契約の成立前における通信回線やコン
                             ピュータ等の障害によるシステムの中断・遅滞・中止・データの焼失、データへの不正アクセス
-                            により生じた損害、および「time
-                            book」のコンテンツの利用に関して利用者に生じた損害につい
+                            により生じた損害、および「{config.appName}
+                            」のコンテンツの利用に関して利用者に生じた損害につい
                             て、一切の責任を負わない。
                         </li>
                         <li>
@@ -196,8 +199,8 @@ export default function GuestTerms() {
                             が当該利用者に到着しなかったことにより生じた損害について、一切の責任を負わない。
                         </li>
                         <li>
-                            利用者は、「time
-                            book」の利用に際し、自ら行った行為について責任を負うものとし、第三者
+                            利用者は、「{config.appName}
+                            」の利用に際し、自ら行った行為について責任を負うものとし、第三者
                             に損害を与えた場合、自己の責任と費用負担で解決するものとする。
                         </li>
                         <li>
@@ -209,21 +212,21 @@ export default function GuestTerms() {
                             ない。
                         </li>
                         <li>
-                            当社は、「time
-                            book」のWEBページ、サーバ、ドメイン等から送られるメールならびに予約
+                            当社は、「{config.appName}
+                            」のWEBページ、サーバ、ドメイン等から送られるメールならびに予約
                             サービスおよび情報サービスのコンテンツ等に、コンピュータウィルス等の有害なものが含まれ
                             ないことを保証しない。
                         </li>
                         <li>
                             当社は、システムの定期保守や緊急保守を行う場合、システムに負荷が集中した場合、利用
                             者のセキュリティを確保する必要が生じた場合、その他必要があると判断した場合には、事前に
-                            通知することなく「time
-                            book」のサービスの全部または一部の提供を中断または停止することが
+                            通知することなく「{config.appName}
+                            」のサービスの全部または一部の提供を中断または停止することが
                             できるものとする。当社は、この場合に利用者に発生した損害について、一切の責任を負わない。
                         </li>
                         <li>
-                            当社は、利用者に対し、当社またはホストが「time
-                            book」に掲示した情報の真偽、正確性、
+                            当社は、利用者に対し、当社またはホストが「
+                            {config.appName}」に掲示した情報の真偽、正確性、
                             信頼性等につき一切保証しないものとし、当該情報に起因して利用者に発生した損害について、
                             一切の責任を負わない。
                         </li>
@@ -234,13 +237,13 @@ export default function GuestTerms() {
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
                             当社は、利用者に対する事前の通知なく本規約等を改定できるものとし、本規約等改定後は、
-                            改定後の本規約等を適用するものとする。なお、利用者が「time
-                            book」を利用した場合、改定後
+                            改定後の本規約等を適用するものとする。なお、利用者が「
+                            {config.appName}」を利用した場合、改定後
                             の本規約等に同意したものとする。
                         </li>
                         <li>
-                            当社は、その判断により利用者に事前に通知・連絡することなく、「time
-                            book」のサービスの
+                            当社は、その判断により利用者に事前に通知・連絡することなく、「
+                            {config.appName}」のサービスの
                             全部または一部を変更・廃止することができるものとする。
                         </li>
                     </ol>
@@ -257,22 +260,27 @@ export default function GuestTerms() {
                     <h2 className="font-bold text-lg">第12条(予約サービス)</h2>
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
-                            予約サービスとは、当社が提携する施設を、timebook
+                            予約サービスとは、当社が提携する施設を、
+                            {config.appName}
                             を通して手配するサービスである。
                         </li>
                         <li>
-                            予約サービスの内容および条件は、本規約等のほか、timebook
+                            予約サービスの内容および条件は、本規約等のほか、
+                            {config.appName}
                             に記載の各施設規約に定める ところによる。
                         </li>
                         <li>
-                            「timebook」に掲示された施設、付随サービス、日程等に関する情報は、施設または手配代行
+                            「{config.appName}
+                            」に掲示された施設、付随サービス、日程等に関する情報は、施設または手配代行
                             者が掲示したものであって、当社は、別途定めがある場合を除き、これらの情報の真偽、正確性、
                             有用性、信頼性等につき一切保証しないものとする。
                         </li>
                         <li>
-                            予約サービスで紹介する「timebook」に掲載された施設の空室情報、利用代金、その他の条
+                            予約サービスで紹介する「{config.appName}
+                            」に掲載された施設の空室情報、利用代金、その他の条
                             件については、同一施設について施設自身、他のサイトが提示している条件と異なる場合があり、
-                            当社は、「timebook」において提示された条件が利用者にとって最も有利な条件であることを保証
+                            当社は、「{config.appName}
+                            」において提示された条件が利用者にとって最も有利な条件であることを保証
                             するものではない。
                         </li>
                         <li>
@@ -284,7 +292,8 @@ export default function GuestTerms() {
                         第13条(付加情報の登録)
                     </h2>
                     <p>
-                        利用者は、「timebook」の利用に際して、利用者の住所、勤務先、電話番号、その他当社所定の情
+                        利用者は、「{config.appName}
+                        」の利用に際して、利用者の住所、勤務先、電話番号、その他当社所定の情
                         報を当社所定の方法により登録するものとする。
                     </p>
                     <h2 className="font-bold text-lg">
@@ -296,7 +305,8 @@ export default function GuestTerms() {
                             約内容に応じた施設の手配を媒介により行うものとする。
                         </li>
                         <li>
-                            利用者は、予約サービスを利用して予約した場合、「timebook」内の各利用者向けの「予約確
+                            利用者は、予約サービスを利用して予約した場合、「
+                            {config.appName}」内の各利用者向けの「予約確
                             認ページ」で、予約が完了していることを必ず確認するものとする。
                         </li>
                         <li>
@@ -734,3 +744,12 @@ export default function GuestTerms() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    return {
+        props: {
+            userSession,
+        },
+    };
+};

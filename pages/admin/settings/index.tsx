@@ -1,18 +1,18 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { Tab } from "@headlessui/react";
 import { CogIcon } from "@heroicons/react/outline";
-import { Button, Container, Table } from "@element";
+import { Container } from "@element";
 import { SpaceTypesList, PrefecturesList } from "@comp";
 
-import { classNames } from "src/utils";
+import { classNames, config } from "src/utils";
+import { getSession } from "next-auth/react";
 
 import useTranslation from "next-translate/useTranslation";
+import requireAuth from "src/utils/authecticatedRoute";
 
-function AdminSettings() {
+function AdminSettings({ userSession }) {
     let [tabs] = useState([
         {
             title: "Space Types",
@@ -27,9 +27,11 @@ function AdminSettings() {
     const { t } = useTranslation("adminhost");
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>{t("settings")} - Timebook</title>
+                <title>
+                    {t("settings")} - {config.appName}
+                </title>
             </Head>
 
             <div className="bg-white shadow">
@@ -102,4 +104,22 @@ function AdminSettings() {
     );
 }
 
-export default withAuth(AdminSettings);
+export default AdminSettings;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["admin"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

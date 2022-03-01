@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
+    ADD_DEFAULT_SPACE_SETTINGS,
     ADD_SPACE,
     ADD_SPACE_ADDRESS,
     GET_AVAILABLE_SPACE_TYPES,
@@ -10,6 +11,7 @@ import {
     MY_SPACES,
     UPDATE_SPACE,
     UPDATE_SPACE_ADDRESS,
+    UPDATE_SPACE_SETTING,
     UPDATE_TYPES_IN_SPACE,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
@@ -79,6 +81,7 @@ const defaultValues = {
 const useAddSpace = () => {
     const {
         register,
+        unregister,
         control,
         formState: { errors },
         setValue,
@@ -136,6 +139,7 @@ const useAddSpace = () => {
     return {
         spaceTypes,
         register,
+        unregister,
         watch,
         control,
         setValue,
@@ -168,11 +172,13 @@ export const useBasicSpace = (fn, initialValue) => {
     const [cache, setCache] = useState({});
     const {
         register,
+        unregister,
         control,
         formState: { errors },
         watch,
         setValue,
         handleSubmit,
+        getValues,
     } = useForm({
         defaultValues: {
             name: undefined,
@@ -187,36 +193,65 @@ export const useBasicSpace = (fn, initialValue) => {
             city: undefined,
             addressLine1: undefined,
             addressLine2: undefined,
+            openingHr: 8.0,
+            closingHr: 18.0,
+            breakFromHr: 13,
+            breakToHr: 14,
+            totalStock: 1,
+            businessDays: [0, 1, 2, 3, 4, 5],
         },
     });
+
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
     const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
+    const [mutateSpaceSettings] = useMutation(ADD_DEFAULT_SPACE_SETTINGS);
     // update api
     const [updateSpace] = useMutation(UPDATE_SPACE);
     const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
+    const [updateSpaceSetting] = useMutation(UPDATE_SPACE_SETTING);
 
     const [loading, setLoading] = useState(false);
 
+    const filterDefaultSpaceSetting = (settings) => {
+        if (!settings) return null;
+        return settings.filter((setting) => setting.isDefault)[0];
+    };
+
     useEffect(() => {
         if (initialValue) {
-            setValue("name", initialValue?.name);
-            setValue("description", initialValue?.description);
-            setValue("maximumCapacity", initialValue?.maximumCapacity);
-            setValue("numberOfSeats", initialValue?.numberOfSeats);
-            setValue("spaceSize", initialValue?.spaceSize);
-            setValue("spaceTypes", initialValue?.spaceTypes[0]?.id);
-            setValue("needApproval", initialValue?.needApproval);
-            setValue("zipCode", initialValue?.address?.postalCode);
-            setValue("prefecture", initialValue?.address?.prefecture?.id);
-            setValue("city", initialValue?.address?.city);
-            setValue("addressLine1", initialValue?.address?.addressLine1);
-            setValue("addressLine2", initialValue?.address?.addressLine2);
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            setValue("maximumCapacity", initialValue.maximumCapacity);
+            setValue("numberOfSeats", initialValue.numberOfSeats);
+            setValue("spaceSize", initialValue.spaceSize);
+            setValue("spaceTypes", initialValue.spaceTypes[0]?.id);
+            setValue("needApproval", initialValue.needApproval);
+            setValue("zipCode", initialValue.address?.postalCode);
+            setValue("prefecture", initialValue.address?.prefecture?.id);
+            setValue("city", initialValue.address?.city);
+            setValue("addressLine1", initialValue.address?.addressLine1);
+            setValue("addressLine2", initialValue.address?.addressLine2);
             setFreeCoords({
-                lat: initialValue?.address?.latitude,
-                lng: initialValue?.address?.longitude,
+                lat: initialValue.address?.latitude,
+                lng: initialValue.address?.longitude,
             });
+
+            if (initialValue.settings?.length > 0) {
+                const defaultSetting = filterDefaultSpaceSetting(
+                    initialValue.settings
+                );
+                if (defaultSetting) {
+                    setValue("openingHr", defaultSetting.openingHr);
+                    setValue("closingHr", defaultSetting.closingHr);
+                    setValue("breakFromHr", defaultSetting.breakFromHr);
+                    setValue("breakToHr", defaultSetting.breakToHr);
+                    setValue("businessDays", defaultSetting.businessDays);
+                    setValue("totalStock", defaultSetting.totalStock);
+                }
+            }
         }
     }, [initialValue]);
 
@@ -239,11 +274,22 @@ export const useBasicSpace = (fn, initialValue) => {
             // latitude: freeCoords?.lat || 0,
             // longitude: freeCoords?.lng || 0
         };
+
+        const spaceSettingModel = {
+            totalStock: formData.totalStock,
+            businessDays: formData.businessDays,
+            openingHr: formData.openingHr,
+            closingHr: formData.closingHr,
+            breakFromHr: formData.breakFromHr,
+            breakToHr: formData.breakToHr,
+        };
+
         if (initialValue) {
-            const updateSpacesData = await updateSpace({
-                variables: { input: { ...basicModel, id: initialValue.id } },
-            });
-            await Promise.all([
+            const defaultSetting = filterDefaultSpaceSetting(
+                initialValue.settings
+            );
+
+            const updateMutations = [
                 updateSpaceAddress({
                     variables: {
                         spaceId: initialValue.id,
@@ -253,8 +299,33 @@ export const useBasicSpace = (fn, initialValue) => {
                         },
                     },
                 }),
-                // mutateSpaceTypes({ variables: { input: { spaceId: initialValue.spaceTypes?.id, spaceTypeIds: [formData.spaceTypes] } } })
-            ]);
+                updateSpace({
+                    variables: {
+                        input: { ...basicModel, id: initialValue.id },
+                    },
+                }),
+            ];
+            if (defaultSetting) {
+                console.log(
+                    "Update spaceID:",
+                    initialValue.id,
+                    "settingID:",
+                    defaultSetting.id,
+                    "with values",
+                    spaceSettingModel
+                );
+                updateMutations.push(
+                    updateSpaceSetting({
+                        variables: {
+                            input: {
+                                ...spaceSettingModel,
+                                id: defaultSetting.id,
+                            },
+                        },
+                    })
+                );
+            }
+            await Promise.all(updateMutations);
             alert("successfully updated!!");
         } else {
             const addSpacesData = await mutate({
@@ -275,6 +346,12 @@ export const useBasicSpace = (fn, initialValue) => {
                         },
                     },
                 }),
+                mutateSpaceSettings({
+                    variables: {
+                        spaceId: addSpacesData.data.addSpace.space.id,
+                        spaceSetting: spaceSettingModel,
+                    },
+                }),
             ]);
             addSpacesData.data.addSpace.space.id &&
                 fn(addSpacesData.data.addSpace.space.id);
@@ -290,6 +367,7 @@ export const useBasicSpace = (fn, initialValue) => {
         freeCoords,
         setFreeCoords,
         register,
+        unregister,
         control,
         errors,
         watch,
@@ -297,6 +375,7 @@ export const useBasicSpace = (fn, initialValue) => {
         onSubmit,
         loading,
         prefectures,
+        getValues,
     };
 };
 

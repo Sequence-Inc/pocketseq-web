@@ -4,24 +4,28 @@ import {
     SpaceUtilities,
     SpaceInfoTitle,
     SpaceInfoBanner,
-    SpaceInfoRecommended,
     SpaceInfoAccess,
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
-    LoadingSpinner,
 } from "@comp";
 import { Button, Container, Tag } from "@element";
 import React from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { useMutation, useQuery } from "@apollo/client";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
-import { FormatPrice, FormatShortAddress, PriceFormatter } from "src/utils";
-import { IPhoto, IRating, ISpace } from "src/types/timebookTypes";
+import {
+    config,
+    FormatShortAddress,
+    PriceFormatter,
+    publicImage,
+} from "src/utils";
+import { IRating } from "src/types/timebookTypes";
 import Head from "next/head";
-import { CREATE_NEW_CHAT } from "src/apollo/queries/chat.queries";
 import { useRouter } from "next/router";
+
+import createApolloClient from "../../src/apollo/apolloClient";
+import { getSession } from "next-auth/react";
 
 const ContentSection = ({
     title,
@@ -41,25 +45,11 @@ const ContentSection = ({
     );
 };
 
-const SpaceDetail = ({ spaceId }) => {
+const SpaceDetail = ({ spaceId, space, userSession }) => {
+    const id = spaceId;
     const router = useRouter();
-    const { data, loading, error } = useQuery(GET_SPACE_BY_ID, {
-        variables: { id: spaceId },
-        fetchPolicy: "network-only"
-    });
 
-    if (error) {
-        console.log("error while loading space");
-        return <h3>Error occurred. Please contact administrator</h3>;
-    }
-
-    if (loading) {
-        return <h3>Loading...</h3>;
-    }
-
-    const space: ISpace = data.spaceById;
     const {
-        id,
         name,
         description,
         maximumCapacity,
@@ -86,13 +76,48 @@ const SpaceDetail = ({ spaceId }) => {
     };
 
     const sendMessage = () => {
-        if (host) router.push(`/messages?name=${host?.name}&recipientIds=${host?.accountId}`);
-    }
+        if (host)
+            router.push(
+                `/messages?name=${host?.name}&recipientIds=${host?.accountId}`
+            );
+    };
 
     return (
-        <MainLayout>
+        <MainLayout userSession={userSession}>
             <Head>
-                <title>{name} - time book</title>
+                <title>
+                    {name} | 「人 × 場所 × 体験」を繋げる
+                    目的に合った場所を検索しよう
+                </title>
+                <meta
+                    name="description"
+                    content={`${config.appName} タイムブックは、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部
+見つかる`}
+                />
+                <meta
+                    name="keywords"
+                    content={`${config.appName}, タイムブック, レンタルスペース, ペット可`}
+                />
+                <meta
+                    property="og:title"
+                    content={`${name} | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
+                />
+                <meta
+                    property="og:description"
+                    content={`${config.appName} タイムブックは、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                />
+                <meta
+                    property="og:image"
+                    content={`${publicImage(photos[0], "small")}`}
+                />
+                <meta
+                    name="twitter:title"
+                    content={`${name} | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
+                />
+                <meta
+                    property="twitter:image"
+                    content={`${publicImage(photos[0], "small")}`}
+                />
             </Head>
             <Container className="mt-16">
                 <div className="relative flex space-x-12">
@@ -102,7 +127,10 @@ const SpaceDetail = ({ spaceId }) => {
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <div className="block md:hidden">
-                            <FloatingPrice pricePlans={spacePricePlans} space={space} />
+                            <FloatingPrice
+                                pricePlans={spacePricePlans}
+                                space={space}
+                            />
                         </div>
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
@@ -110,7 +138,7 @@ const SpaceDetail = ({ spaceId }) => {
                         {/* host profile */}
                         <div>
                             <div className="space-y-6 sm:flex sm:space-y-0">
-                                <div className="flex-1">{console.log(host)}
+                                <div className="flex-1">
                                     <HostProfile
                                         title={host?.name}
                                         description="2015年8月年からメンバー"
@@ -121,7 +149,6 @@ const SpaceDetail = ({ spaceId }) => {
                                     rounded
                                     className="w-auto px-4 h-9"
                                     onClick={sendMessage}
-
                                 >
                                     Send Message
                                 </Button>
@@ -225,5 +252,11 @@ export default SpaceDetail;
 
 export async function getServerSideProps(context) {
     const { id } = context.query;
-    return { props: { spaceId: id } };
+    const client = createApolloClient();
+    const { data } = await client.query({
+        query: GET_SPACE_BY_ID,
+        variables: { id },
+    });
+    const userSession = await getSession(context);
+    return { props: { spaceId: id, space: data.spaceById, userSession } };
 }

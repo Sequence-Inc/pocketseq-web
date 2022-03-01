@@ -19,12 +19,15 @@ import {
     ADD_PAYMENT_METHOD,
     SETUP_INTENT,
 } from "src/apollo/queries/user.queries";
+import requireAuth from "src/utils/authecticatedRoute";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK);
 
-const HostDashboard = () => {
+const AddCard = ({ userSession }) => {
     const {
         data: clientSecret,
         loading: setupIntentLoading,
@@ -40,9 +43,9 @@ const HostDashboard = () => {
     }
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Add card - Timebook</title>
+                <title>Add card - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 w-full">
                 <div className="space-y-6">
@@ -108,4 +111,22 @@ const CardForm = () => {
     );
 };
 
-export default withAuth(HostDashboard);
+export default AddCard;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

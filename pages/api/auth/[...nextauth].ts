@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getSession } from "next-auth/react";
 import axios, { AxiosRequestConfig } from "axios";
 
 export default NextAuth({
@@ -21,73 +20,11 @@ export default NextAuth({
 
                     const request = JSON.stringify({
                         query: `mutation login ($input: LoginInput!) {
-    login (input: $input) {
-        profile {
-            ... on UserProfile {
-                id
-                roles
-                email
-                firstName
-                lastName
-                firstNameKana
-                lastNameKana
-                phoneNumber
-                address {
-                    id
-                    addressLine1
-                    addressLine2
-                    city
-                    longitude
-                    latitude
-                    postalCode
-                    prefecture {
-                        id
-                        name
-                        nameKana
-                        nameRomaji
-                        available
-                    }
-                }
-                profilePhoto {
-                    id
-                    mime
-                    type
-                    thumbnail {
-                        width
-                        height
-                        url
-                    }
-                    small {
-                        width
-                        height
-                        url
-                    }
-                    medium {
-                        width
-                        height
-                        url
-                    }
-                    large {
-                        width
-                        height
-                        url
-                    }
-                }
-            }
-            ... on CompanyProfile {
-                id
-                roles
-                email
-                name
-                nameKana
-                phoneNumber
-                registrationNumber
-            }
-        }
-        accessToken
-        refreshToken
-    }
-}`,
+                                    login (input: $input) {
+                                        accessToken
+                                        refreshToken
+                                    }
+                                }`,
                         variables: {
                             input: {
                                 email,
@@ -131,9 +68,7 @@ export default NextAuth({
     },
     callbacks: {
         async jwt({ token, user, account }) {
-            console.log({ token, user, account });
             if (user && account) {
-                console.log("HAS USER");
                 return {
                     ...token,
                     accessToken: user.accessToken,
@@ -141,16 +76,101 @@ export default NextAuth({
                     user: user.profile,
                 };
             } else {
-                console.log("NO HAS USER");
                 return token;
             }
         },
         async session({ session, token }) {
-            console.log("SESSION CALLBACK", { session, token });
             session.accessToken = token.accessToken;
             session.refreshToken = token.refreshToken;
-            session.user = { ...session.user, ...(token.user as any) };
+
+            const request = JSON.stringify({
+                query: `query myProfile {
+                                myProfile {
+                                    __typename
+                                    ... on UserProfile {
+                                        id
+                                        roles
+                                        email
+                                        firstName
+                                        lastName
+                                        firstNameKana
+                                        lastNameKana
+                                        phoneNumber
+                                        address {
+                                            id
+                                            addressLine1
+                                            addressLine2
+                                            city
+                                            longitude
+                                            latitude
+                                            postalCode
+                                            prefecture {
+                                                id
+                                                name
+                                                nameKana
+                                                nameRomaji
+                                                available
+                                            }
+                                        }
+                                        profilePhoto {
+                                            id
+                                            mime
+                                            type
+                                            thumbnail {
+                                                width
+                                                height
+                                                url
+                                            }
+                                            small {
+                                                width
+                                                height
+                                                url
+                                            }
+                                            medium {
+                                                width
+                                                height
+                                                url
+                                            }
+                                            large {
+                                                width
+                                                height
+                                                url
+                                            }
+                                        }
+                                    }
+                                    ... on CompanyProfile {
+                                        id
+                                        roles
+                                        email
+                                        name
+                                        nameKana
+                                        phoneNumber
+                                        registrationNumber
+                                    }
+                                }
+                        }`,
+            });
+
+            const config: AxiosRequestConfig = {
+                method: "post",
+                url: "https://dev-api.timebook.co.jp/dev/graphql",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token.accessToken}`,
+                },
+                data: request,
+            };
+            const { data } = await axios(config);
+            const userDetail = data.data.myProfile;
+            if (userDetail.__typename === "UserProfile") {
+                userDetail.name = `${userDetail.lastName} ${userDetail.firstName}`;
+                userDetail.nameKana = `${userDetail.lastNameKana} ${userDetail.firstNameKana}`;
+            }
+            session.user = { ...userDetail };
             return session;
         },
+    },
+    pages: {
+        signIn: "/auth/login",
     },
 });

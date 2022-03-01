@@ -93,16 +93,6 @@ export const LOGIN = gql`
                             height
                             url
                         }
-                        # medium {
-                        #     width
-                        #     height
-                        #     url
-                        # }
-                        # large {
-                        #     width
-                        #     height
-                        #     url
-                        # }
                     }
                     address {
                         id
@@ -136,12 +126,10 @@ export const LOGIN = gql`
 `;
 
 export const RESET_PASSWORD = gql`
-    mutation ResetPassword($input: ResetPasswordInput!){
-        resetPassword(input: $input){
+    mutation ResetPassword($input: ResetPasswordInput!) {
+        resetPassword(input: $input) {
             message
             action
         }
     }
 `;
-
-

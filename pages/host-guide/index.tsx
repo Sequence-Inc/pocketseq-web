@@ -13,6 +13,8 @@ import {
 } from "@heroicons/react/outline";
 import { Header, Footer } from "@layout";
 import { CTA, CTAButton } from "src/components/CTA";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
 const steps: any[] = [
     {
@@ -45,13 +47,13 @@ const steps: any[] = [
     },
 ];
 
-export default function HostGuide() {
+export default function HostGuide({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>TimeBook | User Registration Guide</title>
+                <title>{config.appName} | User Registration Guide</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
@@ -119,3 +121,12 @@ export default function HostGuide() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};

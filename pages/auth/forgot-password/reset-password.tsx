@@ -9,6 +9,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthLayout from "src/layouts/AuthLayout";
 import { useMutation } from "@apollo/client";
 import { RESET_PASSWORD } from "src/apollo/queries/auth.queries";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
 const schema = yup.object().shape({
     password: yup.string().min(8).required(),
@@ -57,7 +59,7 @@ const ResetPassword = ({ email, code }) => {
     return (
         <AuthLayout>
             <Head>
-                <title>パスワードをリセットする - time book</title>
+                <title>パスワードをリセットする - {config.appName}</title>
             </Head>
             <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                 <Logo />
@@ -96,7 +98,7 @@ const ResetPassword = ({ email, code }) => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            time bookにもどる
+                            {config.appName}にもどる
                         </a>
                     </Link>
                 </div>
@@ -108,13 +110,23 @@ const ResetPassword = ({ email, code }) => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export default ResetPassword;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    const { callbackUrl, email, code } = context.query;
+    if (session) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
     return {
         props: {
-            email: context.query.email,
-            code: context.query.code,
+            email,
+            code,
         },
     };
-};
-
-export default ResetPassword;
+}

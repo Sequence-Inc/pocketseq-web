@@ -10,8 +10,12 @@ import SpacePhotos from "src/components/Space/SpacePhotos";
 import Preview from "src/components/Space/Preview";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { OfficeBuildingIcon } from "@heroicons/react/outline";
+import Head from "next/head";
 
-const AddNewSpace = () => {
+const AddNewSpace = ({ userSession }) => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
     const [activeStep, setActiveStep] = useState(0);
@@ -27,8 +31,33 @@ const AddNewSpace = () => {
     ];
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
+            <Head>
+                <title>Add space</title>
+            </Head>
             <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
+            <div className="bg-white shadow mb-3 sm:mb-5">
+                <Container>
+                    <div className="py-8 md:flex md:items-center md:justify-between">
+                        <div className="flex-1 min-w-0">
+                            {/* Profile */}
+                            <div className="flex items-center">
+                                <div>
+                                    <div className="flex items-center">
+                                        <OfficeBuildingIcon
+                                            className="flex-shrink-0 mr-1.5 h-6 w-6 text-gray-700"
+                                            aria-hidden="true"
+                                        />
+                                        <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
+                                            Add new space
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Container>
+            </div>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <Stepper
                     steps={steps}
@@ -81,3 +110,21 @@ const AddNewSpace = () => {
 };
 
 export default AddNewSpace;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

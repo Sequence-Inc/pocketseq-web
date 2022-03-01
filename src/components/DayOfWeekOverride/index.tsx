@@ -1,6 +1,14 @@
 // import { useState, useEffect } from "react";
 
-const daysOfWeek: DaysOfWeek[] = ["日", "月", "火", "水", "木", "金", "土"];
+export const daysOfWeek: DaysOfWeek[] = [
+    "日",
+    "月",
+    "火",
+    "水",
+    "木",
+    "金",
+    "土",
+];
 
 const dataCategories = ["workHours", "breakHours", "stock", "prices"];
 
@@ -14,12 +22,12 @@ const pricingCategories: PricingCategories[] = [
     "45分",
 ];
 
-type Hours = {
+export type Hours = {
     startTime: number;
     endTime: number;
 };
 
-type Stock = number;
+export type Stock = number;
 
 type PricingCategories =
     | "1日"
@@ -30,12 +38,12 @@ type PricingCategories =
     | "30分"
     | "45分";
 
-type Price = {
+export type Price = {
     pricingCategory: PricingCategories;
     price: number;
 };
 
-type DaysOfWeek = "日" | "月" | "火" | "水" | "木" | "金" | "土";
+export type DaysOfWeek = "日" | "月" | "火" | "水" | "木" | "金" | "土";
 
 export type Day = {
     day: DaysOfWeek;
@@ -54,7 +62,6 @@ const DaysOfWeekOverride = ({ data }: { data: DaysOfWeekProps }) => {
     data.map((_) => {
         dayViewPropsData[_.day] = _.dailyData;
     });
-    console.log(dayViewPropsData);
     return (
         <>
             <div className="bg-white shadow p-4 rounded-lg">

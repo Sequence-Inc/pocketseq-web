@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { IAddress, ISpaceType, ISpacePricePlan } from "../types/timebookTypes";
+import {
+    IAddress,
+    ISpaceType,
+    ISpacePricePlan,
+    IPhoto,
+} from "../types/timebookTypes";
 import { PriceFormatter } from "./priceFormatter";
 
 export const FormatShortAddress = (address: IAddress): string => {
@@ -103,3 +108,12 @@ export const DateFromTimeStamp = (
     }
     return newDate.toLocaleDateString("ja-JP", options);
 };
+
+export function publicImage(
+    photo: IPhoto,
+    size: "thumbnail" | "small" | "medium" | "large"
+) {
+    const { id } = photo;
+
+    return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/${size}/${id}.jpeg`;
+}

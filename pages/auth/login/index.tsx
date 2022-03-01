@@ -9,8 +9,10 @@ import { AuthLayout } from "@layout";
 import ErrorModal from "src/elements/ErrorModal";
 
 import useTranslation from "next-translate/useTranslation";
+import { getCsrfToken, getSession } from "next-auth/react";
+import { config } from "src/utils";
 
-const Login = () => {
+const Login = ({ csrfToken }) => {
     const {
         register,
         errors,
@@ -27,26 +29,31 @@ const Login = () => {
     return (
         <>
             <Head>
-                <title>{t("login")} - time book</title>
+                <title>
+                    {t("login")} - {config.appName}
+                </title>
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
             <AuthLayout>
                 <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <Logo />
-                    {/* Logo Here */}
                     <h2 className="mt-2 text-base font-normal text-center text-gray-500">
-                        {/* ログイン */}
                         {t("login")}
                     </h2>
                     <form
                         onSubmit={handleSubmit(handleLogin)}
                         className="space-y-4 lg:space-y-6"
                     >
+                        <input
+                            name="csrfToken"
+                            type="hidden"
+                            defaultValue={csrfToken}
+                        />
                         <TextField
-                            {...register("email")}
-                            error={errors.email ? true : false}
-                            errorMessage={errors?.email?.message}
+                            {...register("username")}
+                            error={errors.username ? true : false}
+                            errorMessage={errors?.username?.message}
                             label={t("email")}
                             placeholder="taro@mail.com"
                             id="email"
@@ -107,3 +114,20 @@ const Login = () => {
 };
 
 export default Login;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (session) {
+        const { callbackUrl } = context.query;
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
+    const csrfToken = await getCsrfToken(context);
+    return {
+        props: { csrfToken },
+    };
+}

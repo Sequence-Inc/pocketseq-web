@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import AuthLayout from "src/layouts/AuthLayout";
 import { useMutation } from "@apollo/client";
 import { FORGOT_PASSWORD, LOGIN } from "src/apollo/queries/auth.queries";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
 const ForgotPassword = () => {
     const router = useRouter();
@@ -48,7 +50,7 @@ const ForgotPassword = () => {
     return (
         <AuthLayout>
             <Head>
-                <title>パスワードをリセットする - time book</title>
+                <title>パスワードをリセットする - {config.appName}</title>
             </Head>
             <PinDialog
                 ref={pinRef}
@@ -127,7 +129,7 @@ const ForgotPassword = () => {
                 <div className="py-2 text-md ">
                     <Link href="/">
                         <a className="text-gray-500 hover:text-green-600">
-                            time bookにもどる
+                            {config.appName}にもどる
                         </a>
                     </Link>
                 </div>
@@ -139,8 +141,20 @@ const ForgotPassword = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
-
 export default ForgotPassword;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (session) {
+        const { callbackUrl } = context.query;
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
+    return {
+        props: {},
+    };
+}

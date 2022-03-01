@@ -1,28 +1,55 @@
 {
-    "compilerOptions": {
-        "target": "es2017",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "baseUrl": "./",
-        "paths": {
-            "@style/*": ["src/styles/*"],
-            "@page/*": ["pages/*"],
-            "@comp": ["src/components/index.ts"],
-            "@element": ["src/elements/index.ts"],
-            "@layout": ["src/layouts/index.ts"],
-            "@hooks/*": ["src/hooks/*"]
-        },
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": false,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "preserve"
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@style/*": [
+        "src/styles/*"
+      ],
+      "@page/*": [
+        "pages/*"
+      ],
+      "@comp": [
+        "src/components/index.ts"
+      ],
+      "@element": [
+        "src/elements/index.ts"
+      ],
+      "@layout": [
+        "src/layouts/index.ts"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ]
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    "exclude": ["node_modules"]
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "typeRoots": [
+      "./types"
+    ],
+    "incremental": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

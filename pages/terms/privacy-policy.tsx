@@ -4,21 +4,22 @@ import { Container } from "@element";
 import { PageHeader } from "@comp";
 
 import { Header, Footer } from "@layout";
-import Link from "next/link";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
-export default function PrivaryPolicy() {
+export default function PrivaryPolicy({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>time book | プライバシーポリシー</title>
+                <title>{config.appName} | プライバシーポリシー</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
-                <PageHeader>time book プライバシーポリシー</PageHeader>
+                <PageHeader>{config.appName} プライバシーポリシー</PageHeader>
                 <Container className="py-12 space-y-5 md:py-20 md:space-y-5 text-gray-500">
                     <p>
-                        株式会社シークエンス(以下「当社」)は、本ウェブサイト「time
-                        book」上で提供するサー
+                        株式会社シークエンス(以下「当社」)は、本ウェブサイト「
+                        {config.appName}」上で提供するサー
                         ビス(以下、「本サービス」)におけるプライバシー情報の取扱いについて、以下の通りプラ
                         イバシーポリシー(以下、「本ポリシー」)を定めます。
                     </p>
@@ -201,7 +202,7 @@ export default function PrivaryPolicy() {
                         <br />
                         株式会社シークエンス
                         <br />
-                        time Book 担当者宛
+                        {config.appName} 担当者宛
                         <br />
                         E-mail: info@timebook.jp
                         <br />
@@ -216,3 +217,12 @@ export default function PrivaryPolicy() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    return {
+        props: {
+            userSession,
+        },
+    };
+};

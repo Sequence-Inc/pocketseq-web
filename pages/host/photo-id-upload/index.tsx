@@ -14,8 +14,11 @@ import axios from "axios";
 import router from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
-const PhotoIdUpload = () => {
+const PhotoIdUpload = ({ userSession }) => {
     const [loading, setLoading] = useState(null);
     const [photo, setPhoto] = useState(null);
 
@@ -131,9 +134,9 @@ const PhotoIdUpload = () => {
     }
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Upload photo ID - Timebook</title>
+                <title>Upload photo ID - {config.appName}</title>
             </Head>
 
             <Container className="py-4 space-y-8 sm:py-6 lg:py-8">
@@ -186,4 +189,22 @@ const PhotoIdUpload = () => {
     );
 };
 
-export default withAuth(PhotoIdUpload);
+export default PhotoIdUpload;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

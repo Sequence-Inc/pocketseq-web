@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 import useTranslation from "next-translate/useTranslation";
+import { config } from "src/utils";
 
 export const PhotoIdUploader = () => {
     const { t } = useTranslation("adminhost");
@@ -22,7 +23,8 @@ export const PhotoIdUploader = () => {
                                 本人確認書類の写真をアップロードしてください
                             </h3>
                             <p className="mt-4 text-gray-600">
-                                Timebookでは、お客様がスペースを投稿する前に、お客様の身元を確認させていただきます。
+                                {config.appName}
+                                では、お客様がスペースを投稿する前に、お客様の身元を確認させていただきます。
                                 お客様の写真付き身分証明書は、当社のスタッフによって確認され、タイムリーに承認されます。
                             </p>
                             <p className="mt-4 text-gray-600">

@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { authorizeRole, logout, classNames } from "src/utils/";
 import React, { Fragment } from "react";
 import ClientOnly from "src/components/ClientOnly";
+import { getSession, signOut, useSession } from "next-auth/react";
 
 interface INavLinkItems {
     name: string;
@@ -31,7 +32,7 @@ const navLinkItems: INavLinkItems[] = [
     },
     {
         name: "ログイン",
-        link: "/auth/login",
+        link: "/api/auth/signin",
         authenticate: true,
     },
 ];
@@ -89,25 +90,19 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
     );
 };
 
-const HeaderComp = () => {
+const Header = ({ userSession }) => {
     const router = useRouter();
 
-    const { data, loading, error } = useQuery(GET_SESSION);
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error {error.message}</div>;
-
-    const isLoggedIn = data?.isLoggedIn;
-
+    let isLoggedIn = false;
     let profile;
     let currentUser;
     let profilePhoto;
 
-    if (isLoggedIn) {
-        profile = data?.profile;
-        currentUser =
-            profile.__typename === "UserProfile"
-                ? `${profile?.lastName} ${profile?.firstName}`
-                : `${profile?.name}`;
+    if (userSession) {
+        profile = userSession.user;
+        isLoggedIn = true;
+        console.log(profile);
+        currentUser = profile.name;
         if (profile.profilePhoto) {
             console.log(profile.profilePhoto);
             profilePhoto = profile.profilePhoto.thumbnail?.url;
@@ -149,7 +144,7 @@ const HeaderComp = () => {
                                     <a className="flex items-center flex-shrink-0">
                                         {/* <ClockIcon className="w-8 h-8 text-white" />
                                         <span className="hidden w-auto ml-2 text-lg font-medium text-white h-7 lg:flex lg:items-center">
-                                            Time Book
+                                           {config.appName}
                                         </span> */}
                                         <Logo variant="dark" />
                                     </a>
@@ -217,6 +212,7 @@ const HeaderComp = () => {
                                                         (item) => {
                                                             if (
                                                                 authorizeRole(
+                                                                    profile.roles,
                                                                     item.role
                                                                 )
                                                             ) {
@@ -256,7 +252,7 @@ const HeaderComp = () => {
                                                         className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
                                                         onClick={(event) => {
                                                             event.preventDefault();
-                                                            logout();
+                                                            signOut();
                                                         }}
                                                     >
                                                         サインアウト
@@ -306,13 +302,5 @@ const HeaderComp = () => {
         </Disclosure>
     );
 };
-
-const Header = () => (
-    <>
-        <ClientOnly>
-            <HeaderComp />
-        </ClientOnly>
-    </>
-);
 
 export default Header;

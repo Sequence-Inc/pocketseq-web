@@ -16,10 +16,6 @@ class MyDocument extends Document {
         return (
             <Html lang="jp">
                 <Head>
-                    <meta charSet="utf-8" />
-                    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                    <meta name="description" content="Description" />
-                    <meta name="keywords" content="Keywords" />
                     <link
                         rel="apple-touch-icon"
                         sizes="180x180"

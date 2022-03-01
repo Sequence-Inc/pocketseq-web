@@ -8,13 +8,16 @@ import { GET_PROFILE } from "src/apollo/queries/user.queries";
 import React from "react";
 import withAuth from "src/utils/withAuth";
 import Link from "next/link";
+import requireAuth from "src/utils/authecticatedRoute";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
 const tabs = [
     { name: "Profile", href: "#", current: true },
     { name: "Calendar", href: "#", current: false },
     { name: "Recognition", href: "#", current: false },
 ];
-const HostDashboard = ({ currentSession }) => {
+const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery(GET_PROFILE, {
         fetchPolicy: "network-only",
     });
@@ -50,9 +53,9 @@ const HostDashboard = ({ currentSession }) => {
         "Name (Kana)": nameKana,
     };
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - Timebook</title>
+                <title>Profile - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <>
@@ -162,17 +165,22 @@ const HostDashboard = ({ currentSession }) => {
     );
 };
 
-// export async function getStaticProps(props) {
-//     const { data: localSession, error: localSessionError } =
-//         await client.query();
-//     const { data, error } = await client.query({ query: HOST });
-//     return {
-//         props: null,
-//     };
-// }
+export default HostDashboard;
 
-export default withAuth(HostDashboard);
-
-function classNames(...args: [string]): string {
-    return args.join(" ");
-}
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

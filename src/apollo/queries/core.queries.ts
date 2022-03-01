@@ -196,6 +196,9 @@ export const SPACE_TYPES = `
     spaceTypes {
         id
         title
+        photo {
+            ${PHOTO}
+        }
     }
 `;
 
@@ -218,15 +221,12 @@ export const SPACE = `
     numberOfSeats
     spaceSize
     needApproval
-
     ${SPACE_TYPES}
     address {
         ${ADDRESS}
     }
     ${NEAREST_STATIONS}
-    spacePricePlans {
-        ${SPACE_PRICE_PLAN}
-    }
+    
     photos {
         ${PHOTO}
     }
@@ -235,7 +235,21 @@ export const SPACE = `
         name
         createdAt
     }
+    
 `;
+
+export const SPACE_SETTING = `
+    id
+    totalStock
+    isDefault
+    closed
+    businessDays
+    openingHr
+    closingHr
+    breakFromHr
+    breakToHr
+    fromDate
+    toDate`;
 
 export const PAYMENT_SOURCE = `
     paymentSource{

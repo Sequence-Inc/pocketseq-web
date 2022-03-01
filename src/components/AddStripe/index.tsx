@@ -2,6 +2,7 @@ import { LibraryIcon, PlusIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
 import useTranslation from "next-translate/useTranslation";
+import { config } from "src/utils";
 
 export const AddStripe = ({ account }) => {
     const { url } = account;
@@ -22,7 +23,7 @@ export const AddStripe = ({ account }) => {
                                 決済情報の追加
                             </h3>
                             <p className="mt-4 text-gray-600">
-                                time book では、口座情報の登録が
+                                {config.appName} では、口座情報の登録が
                                 必要となります。こちらの設定が
                                 完了後スペースやサービスの登録
                                 が可能になります。

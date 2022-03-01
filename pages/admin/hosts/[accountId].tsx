@@ -1,21 +1,22 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
 import { UsersIcon } from "@heroicons/react/outline";
-import { Button, Container, Table } from "@element";
+import { Container } from "@element";
 import { NetworkHelper } from "@comp";
 import {
     BasicAccountInfo,
     HostAccountInfo,
 } from "src/components/AccountDetails";
 
-import { classNames } from "src/utils";
+import { classNames, config } from "src/utils";
 import { ACCOUNT_BY_ID } from "src/apollo/queries/admin.queries";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
 
-function AdminDashboard({ accountId }) {
+function AdminDashboard({ userSession, accountId }) {
     const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
         variables: { accountId },
         fetchPolicy: "cache-only",
@@ -49,9 +50,9 @@ function AdminDashboard({ accountId }) {
     ]);
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Host account - Timebook</title>
+                <title>Host account - {config.appName}</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -124,9 +125,24 @@ function AdminDashboard({ accountId }) {
     );
 }
 
-export default withAuth(AdminDashboard);
+export default AdminDashboard;
 
-export async function getServerSideProps(context) {
-    const { accountId } = context.query;
-    return { props: { accountId } };
-}
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["admin"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        const { accountId } = context.query;
+        return {
+            props: {
+                userSession,
+                accountId,
+            },
+        };
+    }
+};
