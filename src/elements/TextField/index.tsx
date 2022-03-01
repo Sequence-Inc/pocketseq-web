@@ -23,22 +23,40 @@ interface TextFieldProps {
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     (props, ref) => {
-        const { label, id, className, error, errorMessage, singleRow, ...rest } = props;
+        const {
+            label,
+            id,
+            className,
+            error,
+            errorMessage,
+            singleRow,
+            ...rest
+        } = props;
 
         return (
             <div
                 className={clsx(
-                    singleRow ? 'sm:space-x-4 flex-none sm:flex items-center' : 'space-y-1',
-                    className ? className : ''
+                    singleRow
+                        ? "sm:space-x-4 flex-none sm:flex items-center"
+                        : "space-y-1",
+                    className ? className : ""
                 )}
             >
                 <label
                     htmlFor={id}
-                    className={clsx("block text-sm font-medium text-gray-700", singleRow ? "sm:text-right w-60" : "")}
+                    className={clsx(
+                        "block text-sm font-bold text-gray-700",
+                        singleRow ? "sm:text-right w-60" : ""
+                    )}
                 >
                     {label}
                 </label>
-                <div className={clsx("relative rounded-md", singleRow ? 'sm:w-96' : '')}>
+                <div
+                    className={clsx(
+                        "relative rounded-md",
+                        singleRow ? "sm:w-96" : ""
+                    )}
+                >
                     <input
                         id={id}
                         ref={ref}
@@ -79,7 +97,7 @@ TextField.defaultProps = {
     className: "",
     error: false,
     errorMessage: "",
-    singleRow: false
+    singleRow: false,
 };
 
 export default TextField;

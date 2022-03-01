@@ -8,6 +8,7 @@ import {
     ViewListIcon,
 } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useEffect } from "react";
@@ -19,9 +20,9 @@ import {
     IRating,
     ISpace,
 } from "src/types/timebookTypes";
-import { FormatPrice, searchSpace } from "src/utils";
+import { config, FormatPrice, searchSpace } from "src/utils";
 
-const Secondary = ({ resetToStartObj }) => {
+const Secondary = ({ resetToStartObj, userSession }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<"list" | "grid">("list");
     const [page, setPage] = useState<number>(1);
@@ -116,9 +117,9 @@ const Secondary = ({ resetToStartObj }) => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout userSession={userSession}>
             <Head>
-                <title>Search | Timebook</title>
+                <title>Search | {config.appName}</title>
             </Head>
             <div className="relative grid grid-cols-1 lg:grid-cols-9">
                 <div className="px-6 py-10 mt-16 lg:col-span-5">
@@ -237,3 +238,12 @@ const Secondary = ({ resetToStartObj }) => {
 };
 
 export default Secondary;
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};

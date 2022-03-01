@@ -11,8 +11,10 @@ import { RadioGroup } from "@headlessui/react";
 import { Controller } from "react-hook-form";
 import CorporateForm from "src/components/CorporateForm";
 import IndividualForm from "src/components/IndividualForm";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
-const Register = () => {
+const Register = ({ userSession }) => {
     const {
         register,
         reset,
@@ -29,9 +31,9 @@ const Register = () => {
     const router = useRouter();
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
-                <title>ホストアカウントのを作成する - time book</title>
+                <title>ホストアカウントのを作成する - {config.appName}</title>
             </Head>
             <ErrorModal ref={errorRef} />
             <PinDialog
@@ -218,12 +220,12 @@ const Register = () => {
                         <div className="py-2 text-md ">
                             <Link href="/">
                                 <a className="text-gray-500 hover:text-green-600">
-                                    time bookにもどる
+                                    {config.appName}にもどる
                                 </a>
                             </Link>
                         </div>
                         <div className="py-2 text-sm text-gray-500">
-                            &copy; Copyright 2021 Sequence Co., Ltd.
+                            &copy; Copyright 2022 Sequence Co., Ltd.
                         </div>
                     </div>
                 </div>
@@ -296,8 +298,20 @@ const Register = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
-
 export default Register;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (session) {
+        const { callbackUrl } = context.query;
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
+    return {
+        props: {},
+    };
+}

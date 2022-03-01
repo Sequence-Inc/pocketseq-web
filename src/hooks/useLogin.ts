@@ -7,6 +7,8 @@ import { useMutation } from "@apollo/client";
 import { LOGIN } from "src/apollo/queries/auth.queries";
 import { storeSession, storeProfile } from "src/utils/auth";
 import { currentSession, isLoggedIn, profile } from "src/apollo/cache";
+import { signIn } from "next-auth/react";
+import { getEnvironmentData } from "worker_threads";
 
 type Error = {
     message: string;
@@ -17,7 +19,7 @@ type Error = {
 
 // form validation schema
 const schema = yup.object().shape({
-    email: yup.string().email("Invalid Email").required("Email is required"),
+    username: yup.string().email("Invalid Email").required("Email is required"),
     password: yup.string().required("Password is required"),
 });
 
@@ -28,9 +30,11 @@ const useLogin = () => {
         watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
+
     const router = useRouter();
     const pinRef = useRef(null);
     const errorRef = useRef(null);
+
     const [login, { loading }] = useMutation(LOGIN, {
         onCompleted: (data) => {
             isLoggedIn(true);
@@ -57,7 +61,10 @@ const useLogin = () => {
     });
 
     const handleLogin = (formData) => {
-        login({ variables: { input: formData } });
+        // login({ variables: { input: formData } });
+        signIn("credentials", {
+            ...formData,
+        });
     };
 
     return {

@@ -10,12 +10,14 @@ import {
     SPACETYPE_BY_ID,
 } from "src/apollo/queries/admin.queries";
 import { NetworkHelper } from "@comp";
-import { classNames } from "src/utils";
+import { classNames, config } from "src/utils";
 import { useState } from "react";
 import { GET_ALL_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import axios from "axios";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
 
-function SpaceTypeAdd() {
+function SpaceTypeAdd({ userSession }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [photo, setPhoto] = useState(null);
@@ -72,9 +74,9 @@ function SpaceTypeAdd() {
     };
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Add Space Type - Timebook</title>
+                <title>Add Space Type - {config.appName}</title>
             </Head>
             <div className="bg-white shadow">
                 <Container>
@@ -152,4 +154,22 @@ function SpaceTypeAdd() {
     );
 }
 
-export default withAuth(SpaceTypeAdd);
+export default SpaceTypeAdd;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["admin"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

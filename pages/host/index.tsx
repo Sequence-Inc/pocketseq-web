@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { Container } from "@element";
 import { HOST } from "src/apollo/queries/host.queries";
 import DashboardCard from "src/components/DashboardCard";
 import { PhotoIdUploader, AddStripe, LoadingSpinner } from "src/components";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
 interface IBalanceInput {
     currency: string;
@@ -34,7 +36,7 @@ interface IHost {
     approved: boolean;
 }
 
-const HostDashboard = ({ currentSession }) => {
+const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery<{ host: IHost }>(HOST, {
         fetchPolicy: "network-only",
     });
@@ -45,9 +47,9 @@ const HostDashboard = ({ currentSession }) => {
 
     if (loading) {
         return (
-            <HostLayout>
+            <HostLayout userSession={userSession}>
                 <Head>
-                    <title>ホスト管理 - time book</title>
+                    <title>ホスト管理 - {config.appName}</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <LoadingSpinner />
@@ -58,9 +60,9 @@ const HostDashboard = ({ currentSession }) => {
 
     if (error) {
         return (
-            <HostLayout>
+            <HostLayout userSession={userSession}>
                 <Head>
-                    <title>ホスト管理 - time book</title>
+                    <title>ホスト管理 - {config.appName}</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
@@ -82,8 +84,6 @@ const HostDashboard = ({ currentSession }) => {
             hasPhotoId = true;
         }
     }
-
-    console.log(hasStripeAccount, hasPhotoId, data);
 
     const dashboardContent = (host) => {
         if (!host) return null;
@@ -120,9 +120,9 @@ const HostDashboard = ({ currentSession }) => {
             content = dashboardContent(data?.host);
         } else {
             content = (
-                <div className="sm:w-1/2 mx-auto">
+                <div className="w-full sm:w-2/3 mx-auto">
                     <div className="my-6 text-gray-700">
-                        Your account is pending approval from Timebook
+                        Your account is pending approval from {config.appName}
                         administration.
                     </div>
                 </div>
@@ -131,20 +131,20 @@ const HostDashboard = ({ currentSession }) => {
     } else {
         if (!hasStripeAccount && !hasPhotoId) {
             content = (
-                <div className="sm:w-1/2 mx-auto space-y-4">
+                <div className="w-full sm:w-2/3 mx-auto space-y-4">
                     <PhotoIdUploader />
                     <AddStripe account={data.host.account} />
                 </div>
             );
         } else if (!hasStripeAccount) {
             content = (
-                <div className="sm:w-1/2 mx-auto">
+                <div className="w-full sm:w-2/3 mx-auto">
                     <AddStripe account={data.host.account} />
                 </div>
             );
         } else {
             content = (
-                <div className="sm:w-1/2 mx-auto">
+                <div className="w-full sm:w-2/3 mx-auto">
                     <PhotoIdUploader />
                 </div>
             );
@@ -152,9 +152,9 @@ const HostDashboard = ({ currentSession }) => {
     }
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>ホスト管理 - time book</title>
+                <title>ホスト管理 - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                 <div className="w-full mx-auto h-full space-y-6">{content}</div>
@@ -163,4 +163,22 @@ const HostDashboard = ({ currentSession }) => {
     );
 };
 
-export default withAuth(HostDashboard);
+export default HostDashboard;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

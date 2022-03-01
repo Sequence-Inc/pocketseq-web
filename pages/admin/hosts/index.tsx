@@ -1,17 +1,16 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
-import { useQuery } from "@apollo/client";
 import { Tab } from "@headlessui/react";
-import { UsersIcon, PlusIcon } from "@heroicons/react/solid";
-import { Button, Container, Table } from "@element";
+import { UsersIcon } from "@heroicons/react/solid";
+import { Container } from "@element";
 import { HostsList } from "@comp";
 
-import { classNames } from "src/utils";
+import { classNames, config } from "src/utils";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
 
-function AdminDashboard() {
+function AdminDashboard({ userSession }) {
     let [tabs] = useState([
         {
             title: "Approved",
@@ -51,9 +50,9 @@ function AdminDashboard() {
     ]);
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Hosts - Timebook</title>
+                <title>Hosts - {config.appName}</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -124,4 +123,22 @@ function AdminDashboard() {
     );
 }
 
-export default withAuth(AdminDashboard);
+export default AdminDashboard;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["admin"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

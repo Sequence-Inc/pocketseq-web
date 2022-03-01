@@ -19,7 +19,8 @@ import algoliasearch from "algoliasearch";
 import { useRouter } from "next/router";
 import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
 import { ILocationMarker, ISpace } from "src/types/timebookTypes";
-import { FormatPrice } from "src/utils";
+import { config, FormatPrice } from "src/utils";
+import { getSession } from "next-auth/react";
 
 const itemGridData = [];
 
@@ -40,7 +41,7 @@ const urlToSearchState = (router) => {
     return parsedQuery;
 };
 
-const Search = () => {
+const Search = ({ userSession }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<"list" | "grid">("list");
     const [page, setPage] = useState<number>(1);
@@ -112,9 +113,9 @@ const Search = () => {
         }
     );
     return (
-        <MainLayout>
+        <MainLayout userSession={userSession}>
             <Head>
-                <title>Search | Timebook</title>
+                <title>Search | {config.appName}</title>
             </Head>
             <InstantSearch
                 searchClient={searchClient}
@@ -241,3 +242,12 @@ const Search = () => {
 };
 
 export default Search;
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};

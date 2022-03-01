@@ -55,7 +55,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                         {label && (
                             <Listbox.Label
                                 className={clsx(
-                                    "block text-sm font-medium text-gray-700",
+                                    "block text-sm font-bold text-gray-700",
                                     singleRow ? "sm:text-right sm:w-60" : ""
                                 )}
                             >

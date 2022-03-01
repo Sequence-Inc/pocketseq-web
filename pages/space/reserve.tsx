@@ -9,9 +9,14 @@ import {
 import { useMutation, useQuery } from "@apollo/client";
 import Link from "next/link";
 import { LoadingSpinner } from "@comp";
-import { render } from "@headlessui/react/dist/utils/render";
-import { DateFromTimeStamp, FormatPrice, PriceFormatter } from "src/utils";
+import {
+    config,
+    DateFromTimeStamp,
+    FormatPrice,
+    PriceFormatter,
+} from "src/utils";
 import { appendErrors } from "react-hook-form";
+import { getSession } from "next-auth/react";
 
 const Reserve = ({
     spaceId,
@@ -22,6 +27,7 @@ const Reserve = ({
     amount,
     spaceName,
     address,
+    userSession,
 }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [reservationComplete, setReservationComplete] = useState(null);
@@ -95,9 +101,9 @@ const Reserve = ({
     const { paymentSource } = paymentMethods;
 
     return (
-        <MainLayout>
+        <MainLayout userSession={userSession}>
             <Head>
-                <title>Reserve - time book</title>
+                <title>Reserve - {config.appName}</title>
             </Head>
             <Container className="mt-16">
                 <div className="relative flex space-x-12">
@@ -246,6 +252,7 @@ export default Reserve;
 export async function getServerSideProps(context) {
     const { spaceId, start, end, hours, price, amount, spaceName, address } =
         context.query;
+    const userSession = await getSession();
     return {
         props: {
             spaceId,
@@ -256,6 +263,7 @@ export async function getServerSideProps(context) {
             amount,
             spaceName,
             address,
+            userSession,
         },
     };
 }

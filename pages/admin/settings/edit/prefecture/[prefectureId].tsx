@@ -12,9 +12,11 @@ import {
     PREFECTURE_BY_ID,
 } from "src/apollo/queries/admin.queries";
 import { NetworkHelper } from "@comp";
-import { classNames } from "src/utils";
+import { classNames, config } from "src/utils";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
 
-function PrefectureUpdate({ prefectureId }) {
+function PrefectureUpdate({ userSession, prefectureId }) {
     // get data for accountID this
     const { data, loading, error } = useQuery(PREFECTURE_BY_ID, {
         variables: { id: prefectureId },
@@ -40,9 +42,9 @@ function PrefectureUpdate({ prefectureId }) {
     };
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Edit Prefecture - Timebook</title>
+                <title>Edit Prefecture - {config.appName}</title>
             </Head>
             <div className="bg-white shadow">
                 <Container>
@@ -107,7 +109,7 @@ function PrefectureUpdate({ prefectureId }) {
                             <dl className="sm:divide-y sm:divide-gray-200">
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        Available on Timebook
+                                        Available on {config.appName}
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         <Switch
@@ -146,7 +148,22 @@ function PrefectureUpdate({ prefectureId }) {
 
 export default withAuth(PrefectureUpdate);
 
-export async function getServerSideProps(context) {
-    const { prefectureId } = context.query;
-    return { props: { prefectureId } };
-}
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["admin"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        const { prefectureId } = context.query;
+        return {
+            props: {
+                userSession,
+                prefectureId,
+            },
+        };
+    }
+};

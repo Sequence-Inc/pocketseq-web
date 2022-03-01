@@ -47,7 +47,7 @@ export const HeroSection = () => {
                 <Image
                     layout="fill"
                     src="/images/hero-02.jpg"
-                    alt="time book"
+                    alt="timeQonnect"
                     role="presentation"
                     className="z-0 object-cover object-center w-full h-full"
                 />

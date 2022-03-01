@@ -12,8 +12,11 @@ import router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
 import clsx from "clsx";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
-const Messages = ({ name, recipientIds, userId }) => {
+const Messages = ({ userSession, name, recipientIds, userId }) => {
     const [newChat, setNewChat] = useState<
         { name: string; recipientIds: string | string[] } | undefined
     >();
@@ -107,9 +110,9 @@ const Messages = ({ name, recipientIds, userId }) => {
     };
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - Timebook</title>
+                <title>Profile - {config.appName}</title>
             </Head>
             {/* <Container className=""> */}
             <main className="flex-1 min-w-0 overflow-hidden border-t border-gray-200 lg:flex">
@@ -366,13 +369,30 @@ const Messages = ({ name, recipientIds, userId }) => {
 
 export default Messages;
 
-export async function getServerSideProps(context) {
-    const userId = context.req.cookies?.session_profile
-        ? JSON.parse(context.req.cookies?.session_profile)?.id
-        : null;
-    const name = Object.keys(context.query).length ? context.query?.name : null;
-    const recipientIds = Object.keys(context.query).length
-        ? context.query?.recipientIds
-        : null;
-    return { props: { name, recipientIds, userId } };
-}
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user", "host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        const name = Object.keys(context.query).length
+            ? context.query?.name
+            : null;
+        const recipientIds = Object.keys(context.query).length
+            ? context.query?.recipientIds
+            : null;
+
+        return {
+            props: {
+                userSession,
+                userId: userSession.user.id,
+                name,
+                recipientIds,
+            },
+        };
+    }
+};

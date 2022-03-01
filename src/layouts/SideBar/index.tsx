@@ -6,8 +6,9 @@ import { navigation } from "./menuItems";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { logout, classNames, authorizeRole } from "src/utils/";
+import { signOut } from "next-auth/react";
 
-const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
+const SideBar = ({ userSession, sidebarOpen, setSidebarOpen }) => {
     const router = useRouter();
 
     const isActiveNav = (href: string): boolean => {
@@ -16,7 +17,7 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     const renderMenuItem = ({ name, href, Icon, roles }, index) => {
-        if (!authorizeRole(roles)) return null;
+        if (!authorizeRole(userSession.user.roles, roles)) return null;
         return (
             <Link key={index} href={href}>
                 <a
@@ -111,7 +112,12 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                     <div className="mt-10">
                                         <div className="mt-2 space-y-1">
-                                            <button className="flex items-center px-2 py-2 text-base font-medium text-green-100 rounded-md hover:bg-gray-700 hover:text-white">
+                                            <button
+                                                onClick={() => {
+                                                    signOut();
+                                                }}
+                                                className="flex items-center px-2 py-2 text-base font-medium text-green-100 rounded-md hover:bg-gray-700 hover:text-white"
+                                            >
                                                 <LogoutIcon className="w-6 h-6 mr-3" />
                                                 <span className="truncate">
                                                     Logout
@@ -148,7 +154,9 @@ const SideBar = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="mt-2 space-y-1">
                                         <button
                                             className="flex items-center w-full px-2 py-2 text-base font-medium text-green-100 rounded-md hover:text-white"
-                                            onClick={logout}
+                                            onClick={() => {
+                                                signOut();
+                                            }}
                                         >
                                             <LogoutIcon className="w-6 h-6 mr-3" />
                                             <span className="truncate">

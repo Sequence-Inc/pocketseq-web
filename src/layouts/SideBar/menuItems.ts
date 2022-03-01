@@ -7,9 +7,8 @@ import {
     UsersIcon,
     MailIcon,
     UserCircleIcon,
-    BadgeCheckIcon
+    BadgeCheckIcon,
 } from "@heroicons/react/outline";
-// import {  } from "@heroicons/react/solid";
 
 export const navigation = [
     {
@@ -31,40 +30,40 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Hosts",
+        name: "ホスト",
         href: "/admin/hosts",
         Icon: UsersIcon,
         roles: ["admin"],
     },
     {
-        name: "施設管理",
-        href: "#",
-        Icon: ViewListIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Settings",
+        name: "システム設定",
         href: "/admin/settings/",
         Icon: CogIcon,
         roles: ["admin"],
     },
     {
-        name: "Profile",
+        name: "プロフィール",
         href: "/user/profile",
         Icon: UserCircleIcon,
         roles: ["user"],
     },
     {
-        name: "Settings",
+        name: "設定",
         href: "/user/settings",
         Icon: CogIcon,
         roles: ["user"],
     },
     {
-        name: "My Reservations",
+        name: "予約",
         href: "/user/reservation-list",
-        Icon: BadgeCheckIcon,
+        Icon: CalendarIcon,
         roles: ["user"],
+    },
+    {
+        name: "予約",
+        href: "/host/reservation-list",
+        Icon: CalendarIcon,
+        roles: ["host"],
     },
     {
         name: "施設管理",
@@ -73,29 +72,17 @@ export const navigation = [
         roles: ["host"],
     },
     {
-        name: "予約の確認",
-        href: "#",
-        Icon: CalendarIcon,
-        roles: ["host"],
-    },
-    {
         name: "メッセージ",
         href: "/messages",
         Icon: MailIcon,
         roles: ["user", "host"],
     },
-    {
-        name: "設定",
-        href: "#",
-        Icon: CogIcon,
-        roles: ["host"],
-    },
-    {
-        name: "Reservations",
-        href: "/host/reservation-list",
-        Icon: BadgeCheckIcon,
-        roles: ["host"],
-    },
+    // {
+    //     name: "設定",
+    //     href: "#",
+    //     Icon: CogIcon,
+    //     roles: ["host"],
+    // },
     {
         name: "トップに戻る",
         href: "/",

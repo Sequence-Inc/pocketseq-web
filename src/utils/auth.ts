@@ -31,7 +31,9 @@ export const getSession = () => {
 
 export const getUserRole = () => {
     const cookies = parseCookies();
-    const parsedCookies = cookies.session_profile ? JSON.parse(cookies.session_profile) : null;
+    const parsedCookies = cookies.session_profile
+        ? JSON.parse(cookies.session_profile)
+        : null;
     return parsedCookies ? parsedCookies.roles : null;
 };
 
@@ -49,11 +51,10 @@ export const isAuthenticated = (): boolean => {
     return !!getSession();
 };
 
-export const authorizeRole = (requiredRole: string[]): boolean => {
-    // check if authenticated
-    if (!isAuthenticated()) return false;
-
-    const userRole = getUserRole();
+export const authorizeRole = (
+    userRole: string[],
+    requiredRole: string[]
+): boolean => {
     if (!userRole) return false;
 
     const sorted_requiredRole = requiredRole.concat().sort();

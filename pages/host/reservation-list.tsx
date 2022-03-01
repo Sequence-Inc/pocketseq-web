@@ -1,18 +1,31 @@
-import { useMutation, useQuery } from '@apollo/client'
-import { Button, Container, Table } from '@element'
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
-import { IColumns } from 'src/elements/Table'
-import HostLayout from 'src/layouts/HostLayout'
-import { format } from 'date-fns'
-import { APPROVE_RESERVATION, RESERVATIONS } from 'src/apollo/queries/host.queries'
+import { useMutation, useQuery } from "@apollo/client";
+import { Button, Container, Table } from "@element";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { IColumns } from "src/elements/Table";
+import HostLayout from "src/layouts/HostLayout";
+import { format } from "date-fns";
+import {
+    APPROVE_RESERVATION,
+    RESERVATIONS,
+} from "src/apollo/queries/host.queries";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { LoadingSpinner } from "@comp";
+import { CalendarIcon } from "@heroicons/react/outline";
+import { config } from "src/utils";
 
 const noOfItems = 10;
 
-const ReservationList = () => {
+const ReservationList = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
+    const [loadComplete, setLoadComplete] = useState<boolean>(false);
+
     const [skip, setSkip] = useState<number>(0);
-    const { data, refetch } = useQuery(RESERVATIONS, { fetchPolicy: "network-only", variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} } });
+    const { data, loading, error, refetch } = useQuery(RESERVATIONS, {
+        fetchPolicy: "network-only",
+        variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} },
+    });
     const [approveReservation] = useMutation(APPROVE_RESERVATION);
 
     const keys = [
@@ -32,13 +45,15 @@ const ReservationList = () => {
 
     const handleApprove = async (reservationId: string) => {
         try {
-            const resp = await approveReservation({ variables: { reservationId } })
-            alert("Approved")
+            const resp = await approveReservation({
+                variables: { reservationId },
+            });
+            alert("Approved");
             refetch();
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
-    }
+    };
 
     useEffect(() => {
         const newData: IColumns[] = keys.map(({ name, key }: any) => ({
@@ -48,11 +63,14 @@ const ReservationList = () => {
             Cell: ({ column, value }) => {
                 if (!value) return "";
                 if (column.id === "space") {
-                    return value.name
-                } else if (column.id === "fromDateTime" || column.id === "toDateTime") {
+                    return value.name;
+                } else if (
+                    column.id === "fromDateTime" ||
+                    column.id === "toDateTime"
+                ) {
                     return format(new Date(value), "yyyy-MM-dd, HH:mm");
                 } else return value;
-            }
+            },
         }));
 
         newData.push({
@@ -82,52 +100,100 @@ const ReservationList = () => {
         });
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
+        setLoadComplete(true);
     }, []);
 
-    const handleNextPrev = (type: 'next' | 'prev') => {
+    const handleNextPrev = (type: "next" | "prev") => {
         const hasNext = data?.reservations?.paginationInfo?.hasNext;
         const hasPrevious = data?.reservations?.paginationInfo?.hasNext;
-        if (type === 'next' && hasNext) {
+        if (type === "next" && hasNext) {
             refetch({
                 paginate: {
                     take: noOfItems,
-                    skip: skip + noOfItems
+                    skip: skip + noOfItems,
                 },
-                filter: {}
+                filter: {},
             });
             setSkip(skip + noOfItems);
-        } else if (type === 'prev' && hasPrevious) {
+        } else if (type === "prev" && hasPrevious) {
             refetch({
                 paginate: {
                     take: noOfItems,
-                    skip: skip - noOfItems
+                    skip: skip - noOfItems,
                 },
-                filter: {}
+                filter: {},
             });
             setSkip(skip - noOfItems);
         }
+    };
+
+    let content;
+    if (loading) {
+        content = <LoadingSpinner loadingText="Loading reservations..." />;
+    }
+    if (error) {
+        content = <div>There was an error.</div>;
+    }
+
+    if (loadComplete) {
+        content = (
+            <Table
+                columns={columns}
+                data={data?.reservations?.data || []}
+                paginate={data?.reservations?.paginationInfo}
+                handlePaginate={handleNextPrev}
+            />
+        );
     }
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - Timebook</title>
+                <title>Profile - {config.appName}</title>
             </Head>
-            <Container className="py-4 sm:py-6 lg:py-8">
-                <h2 className="text-lg font-medium leading-6 text-gray-900">
-                    My Reservation Lists
-                </h2>
-                {columns && (
-                    <Table
-                        columns={columns}
-                        data={data?.reservations?.data || []}
-                        paginate={data?.reservations?.paginationInfo}
-                        handlePaginate={handleNextPrev}
-                    />
-                )}
-            </Container>
+            <div className="bg-white shadow mb-3 sm:mb-5">
+                <Container>
+                    <div className="py-8 md:flex md:items-center md:justify-between">
+                        <div className="flex-1 min-w-0">
+                            {/* Profile */}
+                            <div className="flex items-center">
+                                <div>
+                                    <div className="flex items-center">
+                                        <CalendarIcon
+                                            className="flex-shrink-0 mr-1.5 h-6 w-6 text-gray-700"
+                                            aria-hidden="true"
+                                        />
+                                        <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
+                                            Reservations
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Container>
+            </div>
+            <Container className="py-4 sm:py-6 lg:py-8">{content}</Container>
         </HostLayout>
-    )
-}
+    );
+};
 
-export default ReservationList
+export default ReservationList;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

@@ -4,23 +4,24 @@ import { Container } from "@element";
 import { PageHeader } from "@comp";
 
 import { Header, Footer } from "@layout";
-import Link from "next/link";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
-export default function GuestTerms() {
+export default function GuestTerms({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>time book | ゲスト規約</title>
+                <title>{config.appName} | ゲスト規約</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
-                <PageHeader>time book ご利用規約</PageHeader>
+                <PageHeader>{config.appName} ご利用規約</PageHeader>
                 <Container className="py-12 space-y-5 md:py-20 md:space-y-5 text-gray-500">
                     <h2 className="font-bold text-lg">第1条(規約の適用)</h2>
                     <p>
                         本規約は、株式会社シークエンス(以下「当社」といいます)が管理・運営するインターネ
-                        ットウェブサイト「time
-                        book」を通じて利用者が、レンタルスペース予約または体験型アク
+                        ットウェブサイト「{config.appName}
+                        」を通じて利用者が、レンタルスペース予約または体験型アク
                         ティビティ予約(以下「本サービス」といいます)を利用するにあたり、利用者が行う一切
                         の行為に適用されるものとし、利用者は、本規約に同意のうえ本サービスを利用するものと
                         します。
@@ -40,26 +41,27 @@ export default function GuestTerms() {
                         第2条(本サービスの定義および契約の成立)
                     </h2>
                     <p>
-                        本サービスとは、利用者が自ら time book
+                        本サービスとは、利用者が自ら{config.appName}
                         を通じて、掲載施設またはサービス提供者(次項
                         の定義に従います)が予め登録した施設またはサービス等の予約を行うことを可能にする
                         サービスをいいます。
                     </p>
                     <p>
-                        time book
+                        {config.appName}
                         に掲載されている施設またはサービス等は、自己の責任において施設利用等に係
                         るサービス(以下「ホスト提供サービス」といいます)を提供しており、当社は、ホスト提
                         供サービスの提供に関し何らの関与もしません。
                     </p>
                     <p>
                         利用者が、自らインターネットを通じてホスト提供サービスの利用に係る予約の申込みを
-                        した場合、当該予約の申込みにつき、time book
+                        した場合、当該予約の申込みにつき、{config.appName}
                         のコンピュータシステム上で「予約番号」
                         が発行され、本サービスの画面上に明示された時点をもって、ホストと利用者の間に当該ホ
                         スト提供サービス利用に係る契約(施設またはサービスの利用契約を指します。以下単に
                         「利用契約」といいます)が成立するものとします。ただし、通信事情、コンピュータの不
                         具合など何らかの事情で、「予約番号」が発行されたにもかかわらず利用者のコンピュータ
-                        の画面に表示されなかったとしても、利用者が time book
+                        の画面に表示されなかったとしても、利用者が{" "}
+                        {config.appName}
                         の「予約照会/変更/取消」機能を
                         使用して、予約内容を確認できる状況になれば、利用契約は成立するものとします。
                     </p>
@@ -70,9 +72,9 @@ export default function GuestTerms() {
                         ん。
                     </p>
                     <p>
-                        利用者が、time book
-                        を通じて施設等の利用に係る予約の申込みをした場合、time
-                        book が
+                        利用者が、{config.appName}
+                        を通じて施設等の利用に係る予約の申込みをした場合、
+                        {config.appName} が
                         利用者に「予約番号」を通知した時点をもって、ホストと利用者の間に利用契約が成立する
                         ものとします。
                     </p>
@@ -102,8 +104,8 @@ export default function GuestTerms() {
                         第4条(予約の変更・キャンセルの成立と無連絡キャンセルの禁止)
                     </h2>
                     <p>
-                        利用者は、施設またはサービスの予約をキャンセルする場合、time
-                        book 上の「予約内容照
+                        利用者は、施設またはサービスの予約をキャンセルする場合、
+                        {config.appName}上の「予約内容照
                         会画面」を通じて、予約内容を確認の上、キャンセルの手続きをすることとします。
                     </p>
                     <p>
@@ -116,8 +118,8 @@ export default function GuestTerms() {
                     </p>
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
-                            利用者が自ら time book
-                            を通じて予約のキャンセルを行う場合:time book
+                            利用者が自ら {config.appName}
+                            を通じて予約のキャンセルを行う場合:{config.appName}
                             の「予約状況 照会画面」から予約内容が消去された時点
                         </li>
                         <li>
@@ -136,21 +138,21 @@ export default function GuestTerms() {
                     <p>
                         当社およびホストは、利用者が、事前に何らの連絡もなく掲載提供サービス利用予定日当日
                         に姿を現さず、当該ホストを利用しなかった場合には、無連絡キャンセルとみなし、当該利
-                        用者の、time book
+                        用者の、{config.appName}
                         に係る一切のサービスの利用停止または会員資格の剥奪等必要な措置(法
                         的措置を含みます)を取ることができるものとします。なお、利用者は、当該ホストが定め
                         るキャンセル料を、所定の方法および期日までに支払わなければなりません。
                     </p>
                     <p>
-                        利用者が、成立した予約の変更をする場合、time book
+                        利用者が、成立した予約の変更をする場合、{config.appName}
                         上で変更手続きをすることとします。
                         なお、変更可能日時を超えて予約の内容を変更しようとする場合、自己が予約したホストに
                         対して直接連絡のうえ、速やかに予約内容変更の手続きを行うものとします。
                     </p>
                     <p>
                         但し、当社が別途定める変更可能な項目以外の変更を行う場合には、当該予約を一度取消し
-                        た上で、改めて予約操作を行うものとします。なお、利用者は、time
-                        book 上の空き状況に
+                        た上で、改めて予約操作を行うものとします。なお、利用者は、
+                        {config.appName} 上の空き状況に
                         よっては、取消操作後の再予約ができない場合のあることを予め了承するものとします。
                     </p>
                     <p>
@@ -158,8 +160,8 @@ export default function GuestTerms() {
                     </p>
                     <ol className="list-decimal ml-10 space-y-5">
                         <li>
-                            利用者が自ら time book
-                            を通じて予約の変更を行う場合:time book
+                            利用者が自ら {config.appName}
+                            を通じて予約の変更を行う場合: {config.appName}
                             の「予約状況照会
                             画面」に表示される予約内容が変更された時点
                         </li>
@@ -187,7 +189,7 @@ export default function GuestTerms() {
                         第5条(利用者の遵守事項)
                     </h2>
                     <p>
-                        利用者は、time book
+                        利用者は、{config.appName}
                         を利用することにより得られる情報を、当社およびホストの事前の承
                         諾なく自己の私的利用以外の目的で複製・送信しない他、方法の如何を問わず第三者による
                         利用に供しないものとします。
@@ -325,7 +327,7 @@ export default function GuestTerms() {
                     </p>
                     <h2 className="font-bold text-lg">第 7 条(著作権)</h2>
                     <p>
-                        利用者は、time book
+                        利用者は、{config.appName}
                         を通じて提供されるすべてのコンテンツについて、当社の事前の承諾
                         なく著作権法で定める利用者個人の私的利用の範囲を超える使用をしてはならないものと
                         します。
@@ -335,10 +337,10 @@ export default function GuestTerms() {
                         争を解決するとともに、当社および第三者に一切の損害を与えないものとします。
                     </p>
                     <h2 className="font-bold text-lg">
-                        第 8 条(time book 掲載ホストの加減)
+                        第 8 条({config.appName} 掲載ホストの加減)
                     </h2>
                     <p>
-                        time book
+                        {config.appName}
                         に掲載される施設またはサービスは、当社または掲載ホストの都合により、利用
                         者への事前の通知なく変更(追加および参画の終了を含みます。以下同様)される場合があ
                         り、利用者は予めこれを承諾するものとします。
@@ -411,7 +413,7 @@ export default function GuestTerms() {
                     </p>
                     <p>
                         当社は、ホスト提供サービス等について何等の保証もいたしません。また、ホスト等に関す
-                        る情報は、当該ホストが直接 time book
+                        る情報は、当該ホストが直接 {config.appName}
                         に登録したものであり、当社は、当該情報の正確性、
                         完全性または有用性等についても保証いたしません。万一、ホスト提供サービス等に関連し
                         て何らかのトラブルが利用者とホストの間で生じた場合にも、当該トラブルが当社の責に
@@ -693,3 +695,12 @@ export default function GuestTerms() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    return {
+        props: {
+            userSession,
+        },
+    };
+};

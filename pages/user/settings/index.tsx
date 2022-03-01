@@ -5,19 +5,30 @@ import Head from "next/head";
 import { Button, Container, TextField } from "@element";
 import { useMutation, useQuery } from "@apollo/client";
 
-import { GET_PROFILE_FOR_SETTINGS, UPDATE_USER_PROFILE } from "src/apollo/queries/user.queries";
+import {
+    GET_PROFILE_FOR_SETTINGS,
+    UPDATE_USER_PROFILE,
+} from "src/apollo/queries/user.queries";
 import DashboardCard from "src/components/DashboardCard";
 import withAuth from "src/utils/withAuth";
 import { IPaymentMethod } from "src/types/timebookTypes";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
 
-const HostDashboard = ({ currentSession }) => {
+const UserSettings = ({ userSession }) => {
     const [profile, setProfile] = useState();
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
     const [paymentMethods, setPaymentMethods] = useState<IPaymentMethod[]>([]);
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+    } = useForm();
 
     const { data, loading, error } = useQuery(GET_PROFILE_FOR_SETTINGS, {
         fetchPolicy: "network-only",
@@ -32,11 +43,11 @@ const HostDashboard = ({ currentSession }) => {
             setValue("lastNameKana", data?.myProfile?.lastNameKana);
             setValue("dob", data?.myProfile?.dob);
         }
-    }, [data])
+    }, [data]);
 
     const onSubmit = handleSubmit(async (formData) => {
         try {
-            setProfileLoading(true)
+            setProfileLoading(true);
             const input = { ...formData };
             input.id = data?.myProfile.id;
             const userProfileData = await mutate({ variables: { input } });
@@ -44,11 +55,11 @@ const HostDashboard = ({ currentSession }) => {
                 alert(userProfileData.data?.updateMyProfile.message);
             }
         } catch (err) {
-            console.log(err)
+            console.log(err);
         } finally {
-            setProfileLoading(false)
+            setProfileLoading(false);
         }
-    })
+    });
 
     if (error)
         return (
@@ -68,19 +79,6 @@ const HostDashboard = ({ currentSession }) => {
         myProfile,
         paymentSource,
     }: { myProfile: any; paymentSource: IPaymentMethod[] } = data;
-
-    // useEffect(() => {
-    //     if (myProfile) {
-    //         setValue("firstName", myProfile.firstName);
-    //         setValue("lastName", myProfile.lastName);
-    //         setValue("firstNameKana", myProfile.firstNameKana);
-    //         setValue("lastNameKana", myProfile.lastNameKana);
-    //         setValue("dob", myProfile.dob);
-    //     }
-    // }, [])
-
-    // setProfile(myProfile);
-    // setPaymentMethods(paymentSource);
 
     const removePaymentMethod = (id) => {
         return null;
@@ -123,17 +121,17 @@ const HostDashboard = ({ currentSession }) => {
     };
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Settings - Timebook</title>
+                <title>Settings - {config.appName}</title>
             </Head>
-            <Container className="w-full py-4 sm:py-6 lg:py-8">
-                <div className="space-y-6">{console.log(data)}
-                    <h2 className="text-lg font-medium leading-6 text-gray-900">
-                        Settings
-                    </h2>
+            <Container className="w-full sm:w-2/3 sm:mx-auto py-4 sm:py-6 lg:py-8 space-y-6">
+                <h2 className="text-lg font-medium leading-6 text-gray-900">
+                    Settings
+                </h2>
+                <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
                     <form onSubmit={onSubmit}>
-                        <h3 className="flex justify-between py-2 mb-4 border-b border-gray-300">
+                        <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
                             <span>User Profile</span>
                             <Button
                                 type="submit"
@@ -199,7 +197,7 @@ const HostDashboard = ({ currentSession }) => {
                                     <TextField
                                         label="Email"
                                         value={myProfile?.email}
-                                        onChange={() => { }}
+                                        onChange={() => {}}
                                         disabled
                                         singleRow
                                     />
@@ -217,24 +215,22 @@ const HostDashboard = ({ currentSession }) => {
                             </div>
                         </div>
                     </form>
-                    <div>
-                        <div>
-                            <h3 className="flex justify-between py-2 mb-4 border-b border-gray-300">
-                                <span>Payment methods</span>
-                                <Link href="/user/settings/add-card">
-                                    <Button
-                                        variant="primary"
-                                        type="button"
-                                        className="inline-block w-auto"
-                                    >
-                                        + Add card
-                                    </Button>
-                                </Link>
-                            </h3>
-                            <div className="space-y-3">
-                                {renderPaymentMethods()}
-                            </div>
-                        </div>
+                </div>
+                <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
+                    <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
+                        <span>Payment methods</span>
+                        <Link href="/user/settings/add-card">
+                            <Button
+                                variant="primary"
+                                type="button"
+                                className="inline-block w-auto"
+                            >
+                                + Add card
+                            </Button>
+                        </Link>
+                    </h3>
+                    <div className="space-y-3 px-4 sm:px-6">
+                        {renderPaymentMethods()}
                     </div>
                 </div>
             </Container>
@@ -242,4 +238,22 @@ const HostDashboard = ({ currentSession }) => {
     );
 };
 
-export default withAuth(HostDashboard);
+export default UserSettings;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

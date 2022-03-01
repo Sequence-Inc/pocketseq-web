@@ -1,18 +1,24 @@
-import { useQuery } from '@apollo/client'
-import { Container, Table } from '@element'
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
-import { MY_RESERVATION } from 'src/apollo/queries/user.queries'
-import { IColumns } from 'src/elements/Table'
-import HostLayout from 'src/layouts/HostLayout'
-import { format } from 'date-fns'
+import { useQuery } from "@apollo/client";
+import { Container, Table } from "@element";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { MY_RESERVATION } from "src/apollo/queries/user.queries";
+import { IColumns } from "src/elements/Table";
+import HostLayout from "src/layouts/HostLayout";
+import { format } from "date-fns";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
 const noOfItems = 10;
 
-const ReservationList = () => {
+const ReservationList = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [skip, setSkip] = useState<number>(0);
-    const { data, refetch } = useQuery(MY_RESERVATION, { fetchPolicy: "network-only", variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} } });
+    const { data, refetch } = useQuery(MY_RESERVATION, {
+        fetchPolicy: "network-only",
+        variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} },
+    });
 
     const keys = [
         { name: "Space Name", key: "space" },
@@ -37,44 +43,47 @@ const ReservationList = () => {
             Cell: ({ column, value }) => {
                 if (!value) return "";
                 if (column.id === "space") {
-                    return value.name
-                } else if (column.id === "fromDateTime" || column.id === "toDateTime") {
+                    return value.name;
+                } else if (
+                    column.id === "fromDateTime" ||
+                    column.id === "toDateTime"
+                ) {
                     return format(new Date(value), "yyyy-MM-dd, HH:mm");
                 } else return value;
-            }
+            },
         }));
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
     }, []);
 
-    const handleNextPrev = (type: 'next' | 'prev') => {
+    const handleNextPrev = (type: "next" | "prev") => {
         const hasNext = data?.myReservations?.paginationInfo?.hasNext;
         const hasPrevious = data?.myReservations?.paginationInfo?.hasNext;
-        if (type === 'next' && hasNext) {
+        if (type === "next" && hasNext) {
             refetch({
                 paginate: {
                     take: noOfItems,
-                    skip: skip + noOfItems
+                    skip: skip + noOfItems,
                 },
-                filter: {}
+                filter: {},
             });
             setSkip(skip + noOfItems);
-        } else if (type === 'prev' && hasPrevious) {
+        } else if (type === "prev" && hasPrevious) {
             refetch({
                 paginate: {
                     take: noOfItems,
-                    skip: skip - noOfItems
+                    skip: skip - noOfItems,
                 },
-                filter: {}
+                filter: {},
             });
             setSkip(skip - noOfItems);
         }
-    }
+    };
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - Timebook</title>
+                <title>Profile - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <h2 className="text-lg font-medium leading-6 text-gray-900">
@@ -90,7 +99,25 @@ const ReservationList = () => {
                 )}
             </Container>
         </HostLayout>
-    )
-}
+    );
+};
 
-export default ReservationList
+export default ReservationList;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

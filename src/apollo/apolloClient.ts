@@ -1,13 +1,10 @@
-import { ApolloClient, HttpLink } from "@apollo/client";
+import { ApolloClient, HttpLink, from } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 import { clientTypeDefs, cache } from "./cache";
-import { getSession, logout } from "src/utils/auth";
+import { logout } from "src/utils/auth";
+import { getSession } from "next-auth/react";
 import { onError } from "apollo-link-error";
-// import { fromPromise } from 'apollo-link';
-
-// const getNewToken = async () => {
-//     return await { accessToken: "gg", refreshToken: "gg" }
-// }
 
 const errorLink = onError(
     ({ graphQLErrors, networkError, operation, forward }) => {
@@ -68,30 +65,38 @@ const errorLink = onError(
 //     if (networkError) console.log(`[Network error]: ${networkError}`);
 // });
 
-const token = getSession()?.accessToken
-    ? `Bearer ${getSession()?.accessToken}`
-    : "";
-
-// await before instantiating ApolloClient, else queries might run before the cache is persisted
-if (typeof window !== "undefined") {
-    await persistCache({
-        cache,
-        storage: new LocalStorageWrapper(window.localStorage),
-    });
-}
-
 const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL,
     // uri: "http://localhost:3001/dev/graphql",
-    headers: {
-        Authorization: token,
-    },
 });
 
-const createApolloClient = () => {
+const authLink = (token: string = undefined) => {
+    return setContext(async (_, { headers }: { headers: Headers }) => {
+        let accessToken = "Bearer ";
+        if (token) {
+            accessToken += token;
+        } else {
+            const session = await getSession();
+            if (session.accessToken) {
+                accessToken += session.accessToken;
+            } else {
+                accessToken = "";
+            }
+        }
+        const modifiedHeader = {
+            headers: {
+                ...headers,
+                authorization: accessToken,
+            },
+        };
+        return modifiedHeader;
+    });
+};
+
+const createApolloClient = (token: string = undefined) => {
     return new ApolloClient({
         ssrMode: typeof window === "undefined",
-        link: errorLink.concat(httpLink),
+        link: from([authLink(token), httpLink]),
         cache,
         typeDefs: clientTypeDefs,
         connectToDevTools: true,

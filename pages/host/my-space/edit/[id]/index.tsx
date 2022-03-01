@@ -12,8 +12,10 @@ import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { useRouter } from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
 
-const EditNewSpace = () => {
+const EditNewSpace = ({ userSession }) => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
     const [activeStep, setActiveStep] = useState(0);
@@ -39,7 +41,7 @@ const EditNewSpace = () => {
     ];
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
             <Container className="py-4 sm:py-6 lg:py-8">
                 <Stepper
@@ -91,3 +93,21 @@ const EditNewSpace = () => {
 };
 
 export default EditNewSpace;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

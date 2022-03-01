@@ -7,6 +7,8 @@ import {
     STATION,
     SPACE,
     PAGINATION,
+    SPACE_TYPES,
+    SPACE_SETTING,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -115,15 +117,15 @@ export const MY_SPACES = gql`
             numberOfSeats
             spaceSize
             needApproval
+            photos {
+                ${PHOTO}
+            }
             nearestStations {
                 station {
                     ${STATION}
                 }
                 via
                 time
-            }
-            spacePricePlans {
-                ${SPACE_PRICE_PLAN}
             }
             spaceTypes {
                 id
@@ -136,9 +138,14 @@ export const MY_SPACES = gql`
             address {
                 ${ADDRESS}
             }
+            published
         }
     }
 `;
+
+// spacePricePlans {
+//     ${SPACE_PRICE_PLAN}
+// }
 
 export const GET_STATION_BY_ID = gql`
     query StaionByID($id: IntID!){
@@ -170,12 +177,42 @@ export const UPDATE_SPACE_ADDRESS = gql`
         }
     }
 `;
+export const UPDATE_SPACE_SETTING = gql`
+    mutation UpdateSpaceSetting($input: UpdateSpaceSettingInput!) {
+        updateSpaceSetting(input: $input) {
+            message {
+                message
+                action
+            }
+            setting {
+                ${SPACE_SETTING}
+            }
+        }
+    }
+`;
 
 export const UPDATE_TYPES_IN_SPACE = gql`
     mutation UpdateTypesInSpace($input: UpdateTypesInSpaceInput!) {
         updateTypesInSpace(input: $input) {
             message
             action
+        }
+    }
+`;
+
+export const ADD_DEFAULT_SPACE_SETTINGS = gql`
+    mutation AddDefaultSpaceSetting(
+        $spaceId: ID!
+        $spaceSetting: AddDefaultSpaceSettingInput!
+    ) {
+        addDefaultSpaceSetting(spaceId: $spaceId, spaceSetting: $spaceSetting) {
+            result {
+                message
+                action
+            }
+            setting {
+                ${SPACE_SETTING}
+            }
         }
     }
 `;
@@ -247,6 +284,19 @@ export const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
         spaceById(id: $id) {
             ${SPACE}
+            settings {
+                id
+                totalStock
+                isDefault
+                closed
+                businessDays
+                openingHr
+                closingHr
+                breakFromHr
+                breakToHr
+                fromDate
+                toDate
+            }
         }
     }
 `;

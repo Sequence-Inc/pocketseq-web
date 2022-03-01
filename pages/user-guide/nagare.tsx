@@ -5,6 +5,8 @@ import { Container } from "@element";
 import { HeroSection } from "@comp";
 
 import { Header, Footer } from "@layout";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
 const steps: any[] = [
     {
@@ -19,18 +21,17 @@ const steps: any[] = [
     },
     {
         title: "お支払いについて",
-        subTitle:
-            "スペース予約後にtime bookへお支払いとなります。キャンセル時はキャンセルポリシーが適用され、料金が処理されますので、ご安心してご利用いただけます。",
+        subTitle: `スペース予約後に${config.appName}へお支払いとなります。キャンセル時はキャンセルポリシーが適用され、料金が処理されますので、ご安心してご利用いただけます。`,
     },
 ];
 
-export default function UserNagare() {
+export default function UserNagare({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>TimeBook | 安心への取り組み</title>
+                <title>{config.appName} | 安心への取り組み</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
@@ -77,8 +78,16 @@ export default function UserNagare() {
                     </div>
                 </Container>
             </main>
-
             <Footer />
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    return {
+        props: {
+            userSession,
+        },
+    };
+};

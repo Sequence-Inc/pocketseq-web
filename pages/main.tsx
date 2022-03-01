@@ -5,7 +5,6 @@ import { Container, Tag } from "@element";
 import {
     CategoryItem,
     ItemGrid,
-    ICategoryItem,
     IExploreItem,
     RegisterCTA,
     SingleExploreItem,
@@ -27,6 +26,8 @@ import {
     GET_AVAILABLE_SPACE_TYPES,
     GET_TOP_PICK_SPACES,
 } from "src/apollo/queries/space.queries";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils/index";
 
 const exploreAreas: IExploreItem[] = [
     {
@@ -72,7 +73,7 @@ const features = [
     },
 ];
 
-export default function Home() {
+export default function Home({ userSession }) {
     const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
         fetchPolicy: "network-only",
     });
@@ -90,10 +91,9 @@ export default function Home() {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>
-                    time book | 「人×場所×体験」を繋げる
-                    目的に合った場所を検索しよう
-                </title>
+
+                <title>{config.appName} | 「人×場所×体験」を繋げる
+                    目的に合った場所を検索しよう</title>
                 <meta
                     name="description"
                     content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
@@ -114,8 +114,9 @@ export default function Home() {
                     property="og:image"
                     content="OGP用の紹介画像のパスを指定してください"
                 /> */}
+
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
                 <HeroSection />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
@@ -124,7 +125,7 @@ export default function Home() {
                         <div className="relative">
                             <div className="mx-auto text-center">
                                 <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
-                                    time bookとは
+                                    {config.appName}とは
                                 </p>
                                 <p className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
@@ -251,3 +252,12 @@ export default function Home() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};
