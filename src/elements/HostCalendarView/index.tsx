@@ -24,25 +24,27 @@ const HostCalendarView = ({ plans }) => {
 
     useEffect(() => {
         const overRide = [];
-        plans.map((plan) => {
-            if (plan.overrides.length > 0) {
-                overRide.push(...plan.overrides);
-            }
-        });
-        setOverRides(
-            overRide
-                .filter((_) => _.type === "DATE_TIME")
-                .map((_) => {
-                    return {
-                        ..._,
-                        fromDate: moment(_.fromDate),
-                        toDate: moment(_.toDate),
-                    };
-                })
-        );
-        setDefaultDailyPlan(
-            plans.filter((_) => _.isDefault && _.type === "DAILY")[0]
-        );
+        if (plans) {
+            plans.map((plan) => {
+                if (plan.overrides.length > 0) {
+                    overRide.push(...plan.overrides);
+                }
+            });
+            setOverRides(
+                overRide
+                    .filter((_) => _.type === "DATE_TIME")
+                    .map((_) => {
+                        return {
+                            ..._,
+                            fromDate: moment(_.fromDate),
+                            toDate: moment(_.toDate),
+                        };
+                    })
+            );
+            setDefaultDailyPlan(
+                plans.filter((_) => _.isDefault && _.type === "DAILY")[0]
+            );
+        }
     }, []);
 
     useEffect(() => {
@@ -147,7 +149,7 @@ const HostCalendarView = ({ plans }) => {
 
     return (
         <div>
-            <Alert
+            {/* <Alert
                 message={`You selected start date: ${
                     selectedRangeStart &&
                     selectedRangeStart.format("YYYY-MM-DD")
@@ -157,7 +159,7 @@ const HostCalendarView = ({ plans }) => {
                 message={`You selected end date: ${
                     selectedRangeEnd && selectedRangeEnd.format("YYYY-MM-DD")
                 }`}
-            />
+            /> */}
 
             <button onClick={onClearRangeSelection}>Clear Selection</button>
             <Calendar
