@@ -15,7 +15,7 @@ const HostCalendarView = ({ plans }) => {
     const [selectedRangeStart, setSelectedRangeStart] = useState(undefined);
     const [selectedRangeEnd, setSelectedRangeEnd] = useState(undefined);
 
-    const [defaultDailyPlan, setDefaultDailyPlan] = useState();
+    const [defaultDailyPlan, setDefaultDailyPlan] = useState<any>();
     const [overRides, setOverRides] = useState([]);
 
     useHotkeys("esc", () => {

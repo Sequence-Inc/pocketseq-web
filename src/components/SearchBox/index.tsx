@@ -42,7 +42,13 @@ const areaList = [
     "江戸川区",
 ];
 
-export const SearchBox = ({ onChange, availableSpaceTypes }) => {
+export const SearchBox = ({
+    onChange,
+    availableSpaceTypes,
+}: {
+    onChange: any;
+    availableSpaceTypes?: any;
+}) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
