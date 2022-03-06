@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
+import Head from "next/head";
+import { config } from "src/utils";
 
 const EditNewSpace = ({ userSession }) => {
     const { loading, confirmRef } = useAddSpace();
@@ -33,6 +35,7 @@ const EditNewSpace = ({ userSession }) => {
         fetchPolicy: "network-only",
         skip: !id,
     });
+
     const steps = [
         t("space-basic"),
         t("space-nearest-stations"),
@@ -42,6 +45,9 @@ const EditNewSpace = ({ userSession }) => {
 
     return (
         <HostLayout userSession={userSession}>
+            <Head>
+                <title>Edit space | {config.appName}</title>
+            </Head>
             <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
             <Container className="py-4 sm:py-6 lg:py-8">
                 <Stepper
@@ -82,7 +88,7 @@ const EditNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.spacePricePlans}
+                            initialValue={data?.spaceById?.pricePlans}
                             refetch={refetch}
                         />
                     ) : null}

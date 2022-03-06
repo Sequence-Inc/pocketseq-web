@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
+
+import "antd/dist/antd.css";
 // tailwind css
 import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";

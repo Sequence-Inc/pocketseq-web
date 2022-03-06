@@ -92,7 +92,6 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
 
 const Header = ({ userSession }) => {
     const router = useRouter();
-
     let isLoggedIn = false;
     let profile;
     let currentUser;
@@ -101,7 +100,6 @@ const Header = ({ userSession }) => {
     if (userSession) {
         profile = userSession.user;
         isLoggedIn = true;
-        console.log(profile);
         currentUser = profile.name;
         if (profile.profilePhoto) {
             console.log(profile.profilePhoto);

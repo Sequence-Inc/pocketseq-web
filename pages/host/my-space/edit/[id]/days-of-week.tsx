@@ -413,24 +413,113 @@ export const BusinessHourManager = ({
 };
 
 export const PricingPlanManager = ({ defaultValue, onSave }) => {
-    const [dailyActive, setDailyActive] = useState(true);
-    const [hourlyActive, setHourlyActive] = useState(true);
-    const [fiveMinutesActive, setFiveMinutesActive] = useState(false);
-    const [tenMinutesActive, setTenMinutesActive] = useState(true);
-    const [fifteenMinutesActive, setFifteenMinutesActive] = useState(false);
-    const [thirtyMinutesActive, setThirtyMinutesActive] = useState(true);
-    const [fortyFiveMinutesActive, setFortyFiveMinutesActive] = useState(false);
+    const {
+        dailyAmount,
+        hourlyAmount,
+        fiveMinuteAmount,
+        tenMinuteAmount,
+        fifteenMinuteAmount,
+        thirtyMinuteAmount,
+        fortyFiveMinuteAmount,
+    } = defaultValue;
 
-    const [dailyPrice, setDailyPrice] = useState(8000);
-    const [hourlyPrice, setHourlyPrice] = useState(1000);
-    const [fiveMinutesPrice, setFiveMinutesPrice] = useState(0);
-    const [tenMinutesPrice, setTenMinutesPrice] = useState(200);
-    const [fifteenMinutesPrice, setFifteenMinutesPrice] = useState(0);
-    const [thirtyMinutesPrice, setThirtyMinutesPrice] = useState(600);
-    const [fortyFiveMinutesPrice, setFortyFiveMinutesPrice] = useState(0);
+    const getActiveStatus = (price) => {
+        return price > 0 ? true : false;
+    };
+
+    const [dailyActive, setDailyActive] = useState(
+        getActiveStatus(dailyAmount)
+    );
+
+    const [hourlyActive, setHourlyActive] = useState(
+        getActiveStatus(hourlyAmount)
+    );
+    const [fiveMinutesActive, setFiveMinutesActive] = useState(
+        getActiveStatus(fiveMinuteAmount)
+    );
+    const [tenMinutesActive, setTenMinutesActive] = useState(
+        getActiveStatus(tenMinuteAmount)
+    );
+    const [fifteenMinutesActive, setFifteenMinutesActive] = useState(
+        getActiveStatus(fifteenMinuteAmount)
+    );
+    const [thirtyMinutesActive, setThirtyMinutesActive] = useState(
+        getActiveStatus(thirtyMinuteAmount)
+    );
+    const [fortyFiveMinutesActive, setFortyFiveMinutesActive] = useState(
+        getActiveStatus(fortyFiveMinuteAmount)
+    );
+
+    const [dailyPrice, setDailyPrice] = useState(dailyAmount);
+    const [hourlyPrice, setHourlyPrice] = useState(hourlyAmount);
+    const [fiveMinutesPrice, setFiveMinutesPrice] = useState(fiveMinuteAmount);
+    const [tenMinutesPrice, setTenMinutesPrice] = useState(tenMinuteAmount);
+    const [fifteenMinutesPrice, setFifteenMinutesPrice] =
+        useState(fifteenMinuteAmount);
+    const [thirtyMinutesPrice, setThirtyMinutesPrice] =
+        useState(thirtyMinuteAmount);
+    const [fortyFiveMinutesPrice, setFortyFiveMinutesPrice] = useState(
+        fortyFiveMinuteAmount
+    );
+
+    useEffect(() => {
+        onSave({
+            dailyAmount: dailyActive ? dailyPrice : 0,
+            hourlyAmount: hourlyActive ? hourlyPrice : 0,
+            fiveMinuteAmount: fiveMinutesActive ? fiveMinutesPrice : 0,
+            tenMinuteAmount: tenMinutesActive ? tenMinutesPrice : 0,
+            fifteenMinuteAmount: fifteenMinutesActive ? fifteenMinutesPrice : 0,
+            thirtyMinuteAmount: thirtyMinutesActive ? thirtyMinutesPrice : 0,
+            fortyFiveMinuteAmount: fortyFiveMinutesActive
+                ? fortyFiveMinutesPrice
+                : 0,
+        });
+    }, [
+        dailyPrice,
+        hourlyPrice,
+        fiveMinutesPrice,
+        tenMinutesPrice,
+        fifteenMinutesPrice,
+        thirtyMinutesPrice,
+        fortyFiveMinutesPrice,
+        dailyActive,
+        hourlyActive,
+        fiveMinutesActive,
+        tenMinutesActive,
+        fifteenMinutesActive,
+        thirtyMinutesActive,
+        fortyFiveMinutesActive,
+    ]);
+
+    useDeepCompareEffect(() => {
+        const {
+            dailyAmount,
+            hourlyAmount,
+            fiveMinuteAmount,
+            tenMinuteAmount,
+            fifteenMinuteAmount,
+            thirtyMinuteAmount,
+            fortyFiveMinuteAmount,
+        } = defaultValue;
+        setDailyActive(getActiveStatus(dailyAmount));
+        setHourlyActive(getActiveStatus(hourlyAmount));
+        setFiveMinutesActive(getActiveStatus(fiveMinuteAmount));
+        setTenMinutesActive(getActiveStatus(tenMinuteAmount));
+        setFifteenMinutesActive(getActiveStatus(fifteenMinuteAmount));
+        setThirtyMinutesActive(getActiveStatus(thirtyMinuteAmount));
+        setFortyFiveMinutesActive(getActiveStatus(fortyFiveMinuteAmount));
+
+        setDailyPrice(dailyAmount);
+        setHourlyPrice(hourlyAmount);
+        setFiveMinutesPrice(fiveMinuteAmount);
+        setTenMinutesPrice(tenMinuteAmount);
+        setFifteenMinutesPrice(fifteenMinuteAmount);
+        setThirtyMinutesPrice(thirtyMinuteAmount);
+        setFortyFiveMinutesPrice(fortyFiveMinuteAmount);
+    }, [defaultValue]);
 
     return (
-        <FormCard title="料金プラン設定">
+        <FormCard title="料金設定">
             <div className="flex flex-col">
                 <div className="divide-y divide-gray-100 border border-gray-100 rounded-lg shadow">
                     <div className="flex items-center space-x-2 py-3 px-5 hover:bg-gray-50">
@@ -442,7 +531,6 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             }}
                             id="dailyActive"
                         />
-
                         <label
                             htmlFor="dailyActive"
                             className="inline-block w-20 text-gray-600"

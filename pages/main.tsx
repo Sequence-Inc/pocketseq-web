@@ -28,6 +28,7 @@ import {
 } from "src/apollo/queries/space.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils/index";
+import createApolloClient from "src/apollo/apolloClient";
 
 const exploreAreas: IExploreItem[] = [
     {
@@ -56,8 +57,7 @@ const features = [
     {
         name: "Secure",
         icon: ShieldCheckIcon,
-        description:
-            "time bookはゲスト・ホストを含めすべてのユーザー様の個人情報保護の重要性を認識したうえで個人情報保護法を遵守いたします。",
+        description: `${config.appName}はゲスト・ホストを含めすべてのユーザー様の個人情報保護の重要性を認識したうえで個人情報保護法を遵守いたします。`,
     },
     {
         name: "Save Spaces",
@@ -73,7 +73,7 @@ const features = [
     },
 ];
 
-export default function Home({ userSession }) {
+export default function Home({ userSession, availableSpaceTypes }) {
     const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
         fetchPolicy: "network-only",
     });
@@ -91,9 +91,10 @@ export default function Home({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-
-                <title>{config.appName} | 「人×場所×体験」を繋げる
-                    目的に合った場所を検索しよう</title>
+                <title>
+                    {config.appName} | 「人×場所×体験」を繋げる
+                    目的に合った場所を検索しよう
+                </title>
                 <meta
                     name="description"
                     content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
@@ -114,11 +115,10 @@ export default function Home({ userSession }) {
                     property="og:image"
                     content="OGP用の紹介画像のパスを指定してください"
                 /> */}
-
             </Head>
             <Header userSession={userSession} />
             <main>
-                <HeroSection />
+                <HeroSection availableSpaceTypes={availableSpaceTypes} />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     {/* Blob */}
                     <div>
@@ -254,10 +254,15 @@ export default function Home({ userSession }) {
 }
 
 export const getServerSideProps = async (context) => {
+    const client = createApolloClient();
+    const { data } = await client.query({
+        query: GET_AVAILABLE_SPACE_TYPES,
+    });
     const session = await getSession(context);
     return {
         props: {
             userSession: session,
+            availableSpaceTypes: data.availableSpaceTypes,
         },
     };
 };

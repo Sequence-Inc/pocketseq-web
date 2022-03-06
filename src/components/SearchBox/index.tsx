@@ -42,28 +42,12 @@ const areaList = [
     "江戸川区",
 ];
 
-export const SearchBox = ({ onChange }) => {
+export const SearchBox = ({ onChange, availableSpaceTypes }) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
-    // console.log(items);
 
-    // const [loading, setLoading] = useState<boolean>(true);
     const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
-
-    const {
-        data,
-        loading: spaceTypesLoading,
-        error,
-    } = useQuery(GET_AVAILABLE_SPACE_TYPES);
-
-    if (error) {
-        return <h3>Error occurred while fetching space types</h3>;
-    }
-
-    if (spaceTypesLoading) {
-        return <h3>Loading...</h3>;
-    }
 
     return (
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
@@ -165,7 +149,7 @@ export const SearchBox = ({ onChange }) => {
                             </button>
                         </div> */}
                         <ul className="mt-2">
-                            {data.availableSpaceTypes.map(
+                            {availableSpaceTypes.map(
                                 (item: any, index: number) => (
                                     <li
                                         key={index.toString()}
