@@ -68,6 +68,7 @@ const PricingPlan = ({
             });
             setDefaultPricePlans(defaultPlans);
             setPricePlans(plans);
+        } else {
         }
     }, [initialValue]);
 
@@ -127,11 +128,12 @@ const PricingPlan = ({
     };
 
     function handleNext(): void {
+        console.log(hasNext);
         if (hasNext) setActiveStep(activeStep + 1);
     }
 
     const handlePricingPlan = async () => {
-        if (pricePlans.length > 0) handleNext();
+        handleNext();
     };
 
     const listPlans = (plans, type) => {
