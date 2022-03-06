@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
+    ADD_DEFAULT_SPACE_PRICE,
     ADD_DEFAULT_SPACE_SETTINGS,
     ADD_SPACE,
     ADD_SPACE_ADDRESS,
@@ -9,6 +10,7 @@ import {
     GET_LINES_BY_PREFECTURE,
     GET_STATIONS_BY_LINE,
     MY_SPACES,
+    UPDATE_DEFAULT_SPACE_PRICE,
     UPDATE_SPACE,
     UPDATE_SPACE_ADDRESS,
     UPDATE_SPACE_SETTING,
@@ -199,6 +201,15 @@ export const useBasicSpace = (fn, initialValue) => {
             breakToHr: 14,
             totalStock: 1,
             businessDays: [0, 1, 2, 3, 4, 5],
+            pricePlan: {
+                dailyAmount: 0,
+                hourlyAmount: 0,
+                fiveMinuteAmount: 0,
+                tenMinuteAmount: 0,
+                fifteenMinuteAmount: 0,
+                thirtyMinuteAmount: 0,
+                fortyFiveMinuteAmount: 0,
+            },
         },
     });
 
@@ -208,16 +219,51 @@ export const useBasicSpace = (fn, initialValue) => {
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
     const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
     const [mutateSpaceSettings] = useMutation(ADD_DEFAULT_SPACE_SETTINGS);
+    const [mutateSpaceDefaultPrice] = useMutation(ADD_DEFAULT_SPACE_PRICE);
     // update api
     const [updateSpace] = useMutation(UPDATE_SPACE);
     const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
     const [updateSpaceSetting] = useMutation(UPDATE_SPACE_SETTING);
+    const [updateSpaceDefaultPrice] = useMutation(UPDATE_DEFAULT_SPACE_PRICE);
 
     const [loading, setLoading] = useState(false);
 
     const filterDefaultSpaceSetting = (settings) => {
         if (!settings) return null;
         return settings.filter((setting) => setting.isDefault)[0];
+    };
+    const filterDefaultPricePlans = (plans) => {
+        let defaultPlan = {
+            dailyAmount: 0,
+            hourlyAmount: 0,
+            fiveMinuteAmount: 0,
+            tenMinuteAmount: 0,
+            fifteenMinuteAmount: 0,
+            thirtyMinuteAmount: 0,
+            fortyFiveMinuteAmount: 0,
+        };
+        plans.map((plan) => {
+            if (plan.isDefault === true) {
+                if (plan.type === "DAILY") {
+                    defaultPlan.dailyAmount = plan.amount;
+                } else if (plan.type === "HOURLY") {
+                    defaultPlan.hourlyAmount = plan.amount;
+                } else if (plan.type === "MINUTES") {
+                    if (plan.duration === 5) {
+                        defaultPlan.fiveMinuteAmount = plan.amount;
+                    } else if (plan.duration === 10) {
+                        defaultPlan.tenMinuteAmount = plan.amount;
+                    } else if (plan.duration === 15) {
+                        defaultPlan.fifteenMinuteAmount = plan.amount;
+                    } else if (plan.duration === 30) {
+                        defaultPlan.thirtyMinuteAmount = plan.amount;
+                    } else if (plan.duration === 45) {
+                        defaultPlan.fortyFiveMinuteAmount = plan.amount;
+                    }
+                }
+            }
+        });
+        return defaultPlan;
     };
 
     useEffect(() => {
@@ -252,6 +298,12 @@ export const useBasicSpace = (fn, initialValue) => {
                     setValue("totalStock", defaultSetting.totalStock);
                 }
             }
+            if (initialValue.pricePlans?.length > 0) {
+                setValue(
+                    "pricePlan",
+                    filterDefaultPricePlans(initialValue.pricePlans)
+                );
+            }
         }
     }, [initialValue]);
 
@@ -271,8 +323,6 @@ export const useBasicSpace = (fn, initialValue) => {
             city: formData.city,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            // latitude: freeCoords?.lat || 0,
-            // longitude: freeCoords?.lng || 0
         };
 
         const spaceSettingModel = {
@@ -284,11 +334,17 @@ export const useBasicSpace = (fn, initialValue) => {
             breakToHr: formData.breakToHr,
         };
 
+        // check if need to update
         if (initialValue) {
+            // update
             const defaultSetting = filterDefaultSpaceSetting(
                 initialValue.settings
             );
-
+            const spaceSetting = {
+                ...spaceSettingModel,
+                id: defaultSetting.id,
+            };
+            console.log(spaceSetting);
             const updateMutations = [
                 updateSpaceAddress({
                     variables: {
@@ -304,30 +360,34 @@ export const useBasicSpace = (fn, initialValue) => {
                         input: { ...basicModel, id: initialValue.id },
                     },
                 }),
-            ];
-            if (defaultSetting) {
-                console.log(
-                    "Update spaceID:",
-                    initialValue.id,
-                    "settingID:",
-                    defaultSetting.id,
-                    "with values",
-                    spaceSettingModel
-                );
-                updateMutations.push(
-                    updateSpaceSetting({
-                        variables: {
-                            input: {
-                                ...spaceSettingModel,
-                                id: defaultSetting.id,
-                            },
+                mutateSpaceTypes({
+                    variables: {
+                        input: {
+                            spaceId: initialValue.id,
+                            spaceTypeIds: [formData.spaceTypes],
                         },
-                    })
-                );
-            }
+                    },
+                }),
+                updateSpaceDefaultPrice({
+                    variables: {
+                        spaceId: initialValue.id,
+                        input: formData.pricePlan,
+                    },
+                }),
+                updateSpaceSetting({
+                    variables: {
+                        input: {
+                            ...spaceSettingModel,
+                            id: defaultSetting.id,
+                        },
+                    },
+                }),
+            ];
+
             await Promise.all(updateMutations);
             alert("successfully updated!!");
         } else {
+            // add new!
             const addSpacesData = await mutate({
                 variables: { input: basicModel },
             });
@@ -350,6 +410,12 @@ export const useBasicSpace = (fn, initialValue) => {
                     variables: {
                         spaceId: addSpacesData.data.addSpace.space.id,
                         spaceSetting: spaceSettingModel,
+                    },
+                }),
+                mutateSpaceDefaultPrice({
+                    variables: {
+                        spaceId: addSpacesData.data.addSpace.space.id,
+                        input: formData.pricePlan,
                     },
                 }),
             ]);

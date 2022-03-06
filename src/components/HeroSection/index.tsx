@@ -20,7 +20,11 @@ const createURL = (state) => {
 const searchStateToUrl = (location, searchState) =>
     searchState ? `/search${createURL(searchState)}` : "";
 
-export const HeroSection = () => {
+export const HeroSection = ({
+    availableSpaceTypes,
+}: {
+    availableSpaceTypes?: any;
+}) => {
     const router = useRouter();
     const setStateId = React.useRef(null);
 
@@ -64,6 +68,7 @@ export const HeroSection = () => {
                             onChange={() => {
                                 return null;
                             }}
+                            availableSpaceTypes={availableSpaceTypes}
                         />
 
                         <p className="mt-10 text-center text-white text-md sm:text-xl">

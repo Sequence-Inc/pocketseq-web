@@ -13,6 +13,7 @@ import {
     BusinessHourManager,
     StockManager,
 } from "@page/host/my-space/edit/[id]/days-of-week";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 interface IBasicSpace {
     activeStep: number;
@@ -109,9 +110,7 @@ const Basic = ({
                 </p>
             </div>
             {spaceLoading ? (
-                <div className="flex items-center justify-center h-content">
-                    <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
-                </div>
+                <LoadingSpinner />
             ) : (
                 <form onSubmit={onSubmit}>
                     <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
@@ -337,7 +336,7 @@ const Basic = ({
                             Map
                         </label>
                         <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
-                            <GoogleMap mark={freeCoords} zoom={18} />
+                            <GoogleMap mark={freeCoords} zoom={16} />
                         </div>
                     </div>
 
@@ -389,8 +388,8 @@ const Basic = ({
                                 }}
                             />
                             <PricingPlanManager
-                                defaultValue={null}
-                                onSave={(value) => console.log(value)}
+                                defaultValue={getValues("pricePlan")}
+                                onSave={(value) => setValue("pricePlan", value)}
                             />
                         </div>
                     </div>

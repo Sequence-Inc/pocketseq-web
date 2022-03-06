@@ -180,12 +180,34 @@ export const UPDATE_SPACE_ADDRESS = gql`
 export const UPDATE_SPACE_SETTING = gql`
     mutation UpdateSpaceSetting($input: UpdateSpaceSettingInput!) {
         updateSpaceSetting(input: $input) {
-            message {
+            result {
                 message
                 action
             }
-            setting {
-                ${SPACE_SETTING}
+        }
+    }
+`;
+
+export const ADD_DEFAULT_SPACE_PRICE = gql`
+    mutation AddDefaultPrice($spaceId: ID!, $input: AddDefaultPriceInput!) {
+        addDefaultPrice(spaceId: $spaceId, input: $input) {
+            result {
+                message
+                action
+            }
+        }
+    }
+`;
+
+export const UPDATE_DEFAULT_SPACE_PRICE = gql`
+    mutation UpdateDefaultPrice(
+        $spaceId: ID!
+        $input: UpdateDefaultPriceInput!
+    ) {
+        updateDefaultPrice(spaceId: $spaceId, input: $input) {
+            result {
+                message
+                action
             }
         }
     }
@@ -297,6 +319,27 @@ export const GET_SPACE_BY_ID = gql`
                 fromDate
                 toDate
             }
+            pricePlans {
+                id
+                title
+                isDefault
+                type
+                duration
+                amount
+                maintenanceFee
+                lastMinuteDiscount
+                cooldownTime
+                fromDate
+                toDate
+                overrides {
+                    id
+                    type
+                    amount
+                    daysOfWeek
+                    fromDate
+                    toDate
+                }
+            }
         }
     }
 `;
@@ -311,3 +354,7 @@ export const GET_TOP_PICK_SPACES = gql`
         }
     }
 `;
+
+// export const DELETE_PRICE_PLAN = gql`
+//     mutation deletePricePlan()
+// `;

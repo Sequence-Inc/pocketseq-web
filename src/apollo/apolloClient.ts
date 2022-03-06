@@ -77,12 +77,13 @@ const authLink = (token: string = undefined) => {
             accessToken += token;
         } else {
             const session = await getSession();
-            if (session.accessToken) {
+            if (session && session.accessToken) {
                 accessToken += session.accessToken;
             } else {
                 accessToken = "";
             }
         }
+
         const modifiedHeader = {
             headers: {
                 ...headers,

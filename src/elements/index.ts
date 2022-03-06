@@ -19,3 +19,5 @@ export { default as Logo } from "./Logo";
 export { default as Table } from "./Table";
 export { default as Stepper } from "./Stepper";
 export { default as PhotoUploadField } from "./PhotoUploadField";
+export { default as DatePickerField } from "./DatePickerField";
+export { default as HostCalendarView } from "./HostCalendarView";
