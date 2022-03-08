@@ -5,11 +5,12 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import createApolloClient from "src/apollo/apolloClient";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
+import HostDayOfWeekView from "src/elements/HostDayOfWeekView";
 import HostLayout from "src/layouts/HostLayout";
 import { config } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
-const DailyOverride = ({ userSession, space }) => {
+const DayOverride = ({ userSession, space }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
@@ -19,10 +20,10 @@ const DailyOverride = ({ userSession, space }) => {
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
-                            Override daily
+                            Override day
                         </h2>
                         <div>
-                            <HostCalendarView
+                            <HostDayOfWeekView
                                 plans={space.pricePlans}
                                 settings={space.settings}
                                 spaceId={space.id}
@@ -35,7 +36,7 @@ const DailyOverride = ({ userSession, space }) => {
     );
 };
 
-export default DailyOverride;
+export default DayOverride;
 
 export const getServerSideProps = async (context) => {
     const userSession = await getSession(context);
@@ -53,10 +54,7 @@ export const getServerSideProps = async (context) => {
             variables: {
                 id: context.query.id,
             },
-            fetchPolicy: "network-only",
         });
-
-        console.log(space.data.spaceById.pricePlans);
         return {
             props: {
                 userSession,

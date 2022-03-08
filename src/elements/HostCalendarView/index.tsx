@@ -22,6 +22,8 @@ import {
 } from "src/apollo/queries/space.queries";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import { TrashIcon } from "@heroicons/react/outline";
+import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
+
 const { RangePicker } = DatePicker;
 
 const HostCalendarView = ({ plans, settings, spaceId }) => {
@@ -879,7 +881,6 @@ export const PriceOverrideForm = ({
 
     const handleChangeBasePlan = (planId) => {
         const plan = pricePlans.filter((_) => _.id === planId)[0];
-        console.log("set base plan to", plan);
         setBasePlan(plan);
     };
 
@@ -986,6 +987,14 @@ export const OverrideItem = ({ override }) => {
         fromToText = <>{from} から</>;
     } else if (to) {
         fromToText = <>{to} まで</>;
+    } else if (daysOfWeek) {
+        fromToText = daysOfWeek.map((day) => {
+            return (
+                <span key={day} className="inline-block px-1">
+                    {DAYS[day]}
+                </span>
+            );
+        });
     }
 
     const removeOverride = async (id) => {

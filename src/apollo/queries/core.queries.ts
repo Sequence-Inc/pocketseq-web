@@ -232,6 +232,7 @@ export const SPACE = `
     numberOfSeats
     spaceSize
     needApproval
+    published
     ${SPACE_TYPES}
     address {
         ${ADDRESS}

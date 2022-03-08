@@ -1,5 +1,7 @@
 // import { useState, useEffect } from "react";
 
+import { PriceFormatter } from "src/utils";
+
 export const daysOfWeek: DaysOfWeek[] = [
     "日",
     "月",
@@ -59,25 +61,25 @@ export type DaysOfWeekProps = Day[];
 
 const DaysOfWeekOverride = ({ data }: { data: DaysOfWeekProps }) => {
     const dayViewPropsData = {};
+
     data.map((_) => {
         dayViewPropsData[_.day] = _.dailyData;
     });
+
     return (
         <>
-            <div className="bg-white shadow p-4 rounded-lg">
-                <div className="flex flex-col items-center space-y-2">
-                    {daysOfWeek.map((day, index) => {
-                        return (
-                            <DayView
-                                key={index}
-                                data={{
-                                    day,
-                                    dailyData: dayViewPropsData[day],
-                                }}
-                            />
-                        );
-                    })}
-                </div>
+            <div className="flex flex-col items-center space-y-2">
+                {daysOfWeek.map((day, index) => {
+                    return (
+                        <DayView
+                            key={index}
+                            data={{
+                                day,
+                                dailyData: dayViewPropsData[day],
+                            }}
+                        />
+                    );
+                })}
             </div>
         </>
     );
@@ -111,7 +113,7 @@ const DayView = ({ data }: { data: Day }) => {
                                 if (!price) {
                                     price = "-";
                                 } else {
-                                    price = `￥${price}`;
+                                    price = `${PriceFormatter(price)}`;
                                 }
                                 return (
                                     <li key={`price-${index}`}>
@@ -135,10 +137,16 @@ const DayView = ({ data }: { data: Day }) => {
                                 </span>
                             </li>
                         );
+                    } else if (category === "stock") {
+                        return (
+                            <li key={`category-${index}`}>
+                                在庫: {categoryData}
+                            </li>
+                        );
                     } else {
                         return (
                             <li key={`category-${index}`}>
-                                {category}: ￥{categoryData}
+                                {category}: {categoryData}
                             </li>
                         );
                     }

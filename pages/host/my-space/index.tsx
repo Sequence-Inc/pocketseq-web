@@ -61,21 +61,35 @@ const MySpace = ({ userSession }) => {
             accessor: key,
             className: columnClassName(key),
             childClassName: childClassname(key),
-            Cell: ({ column, value }) => {
+            Cell: ({ column, row, value }) => {
                 if (column.id === "spaceTypes") {
                     return (
                         <div className="flex justify-center">
                             {value.map((res: any) => (
                                 <span
                                     key={res.title}
-                                    className="inline-flex items-center px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full"
+                                    className="inline-flex items-center px-3 py-1 text-xs text-primary bg-green-100 rounded-full"
                                 >
                                     {res.title}
                                 </span>
                             ))}
                         </div>
                     );
-                } else return value;
+                }
+                if (column.id === "name") {
+                    return (
+                        <div className="text-left">
+                            <Link
+                                href={`/host/my-space/edit/${row.original.id}/view`}
+                            >
+                                <a className="text-gray-600 hover:text-gray-700">
+                                    {value}
+                                </a>
+                            </Link>
+                        </div>
+                    );
+                }
+                return value;
             },
         }));
 
@@ -84,16 +98,30 @@ const MySpace = ({ userSession }) => {
             accessor: "action",
             Cell: ({ row }: { row: any }) => {
                 return (
-                    <button
-                        className="flex mx-auto focus:outline-none"
-                        onClick={() => {
-                            router.push(
-                                `/host/my-space/edit/${row.original.id}`
-                            );
-                        }}
-                    >
-                        <PencilAltIcon className="w-5 h-5 text-gray-400" />
-                    </button>
+                    <div className="flex items-center justify-center space-x-2">
+                        <button
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            onClick={() => {
+                                router.push(
+                                    `/host/my-space/edit/${row.original.id}/view`
+                                );
+                            }}
+                        >
+                            <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
+                            View
+                        </button>
+                        <button
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            onClick={() => {
+                                router.push(
+                                    `/host/my-space/edit/${row.original.id}`
+                                );
+                            }}
+                        >
+                            <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
+                            Edit
+                        </button>
+                    </div>
                 );
             },
         });
@@ -151,7 +179,9 @@ const MySpace = ({ userSession }) => {
                     </div>
                 </Container>
             </div>
-            <Container className="py-4 sm:py-6 lg:py-8">{content}</Container>
+            <Container className="py-4 sm:py-6 lg:py-8 text-gray-700">
+                {content}
+            </Container>
         </HostLayout>
     );
 };

@@ -20,7 +20,7 @@ import DaysOfWeekOverride, {
 } from "src/components/DayOfWeekOverride";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
 
-const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
+const HostDayView = ({ plans, settings, spaceId }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [selectedDates, setSelectedDates] = useState([]);
 
@@ -421,4 +421,4 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
     );
 };
 
-export default HostDayOfWeekView;
+export default HostDayView;

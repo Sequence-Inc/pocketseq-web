@@ -20,7 +20,7 @@ const DayOfWeekOverride = ({ userSession, space }) => {
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
-                            Override
+                            Override day of week
                         </h2>
                         <div>
                             <HostDayOfWeekView
