@@ -89,7 +89,7 @@ export const ADD_SPACE = gql`
     mutation AddSpace($input: AddSpaceInput!) {
         addSpace(input: $input) {
             space {
-                id
+                ${SPACE}
             }
             result {
                 message
@@ -277,25 +277,25 @@ export const GET_UPLOAD_TOKEN = gql`
 `;
 
 export const ADD_PRICING_PLAN = gql`
-    mutation AddSpacePricePlans(
+    mutation AddPricePlan(
         $spaceId: ID!
-        $pricePlans: [AddSpacePricePlanInput]!
+        $pricePlan: AddPricePlanInput!
     ) {
-        addSpacePricePlans(spaceId: $spaceId, pricePlans: $pricePlans) {
+        addPricePlan(spaceId: $spaceId, pricePlan: $pricePlan) {
             result {
                 message
                 action
             }
-            spacePricePlans {
-                id
+            pricePlan {
+                ${SPACE_PRICE_PLAN}
             }
         }
     }
 `;
 
 export const REMOVE_PRICING_PLAN = gql`
-    mutation RemoveSpacePricePlan($input: RemoveSpacePricePlanInput!) {
-        removeSpacePricePlan(input: $input) {
+    mutation RemoveSpacePricePlan($id: ID!) {
+        removeSpacePricePlan(id: $id) {
             message
             action
         }
@@ -319,27 +319,6 @@ export const GET_SPACE_BY_ID = gql`
                 fromDate
                 toDate
             }
-            pricePlans {
-                id
-                title
-                isDefault
-                type
-                duration
-                amount
-                maintenanceFee
-                lastMinuteDiscount
-                cooldownTime
-                fromDate
-                toDate
-                overrides {
-                    id
-                    type
-                    amount
-                    daysOfWeek
-                    fromDate
-                    toDate
-                }
-            }
         }
     }
 `;
@@ -355,6 +334,60 @@ export const GET_TOP_PICK_SPACES = gql`
     }
 `;
 
-// export const DELETE_PRICE_PLAN = gql`
-//     mutation deletePricePlan()
-// `;
+export const ADD_SETTING_OVERRIDE = gql`
+    mutation OverrideSpaceSetting(
+        $spaceId: ID!
+        $spaceSetting: OverrideSpaceSettingInput!
+    ) {
+        overrideSpaceSetting(spaceId: $spaceId, spaceSetting: $spaceSetting) {
+            result {
+                message
+                action
+            }
+            setting {
+                id
+                totalStock
+                isDefault
+                closed
+                businessDays
+                openingHr
+                closingHr
+                breakFromHr
+                breakToHr
+                fromDate
+                toDate
+            }
+        }
+    }
+`;
+
+export const ADD_PRICE_OVERRIDE = gql`
+    mutation OverrideSpacePriceOverride(
+        $pricePlanId: ID!
+        $input: PricePlanOverrideInput!
+    ) {
+        addPricePlanOverride(pricePlanId: $pricePlanId, input: $input) {
+            result {
+                message
+                action
+            }
+            pricePlanOverride {
+                id
+                type
+                amount
+                daysOfWeek
+                fromDate
+                toDate
+            }
+        }
+    }
+`;
+
+export const REMOVE_PRICE_OVERRIDE = gql`
+    mutation RemoveSpacePriceOverride($id: ID!) {
+        removePricePlanOverride(id: $id) {
+            message
+            action
+        }
+    }
+`;

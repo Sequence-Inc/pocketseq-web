@@ -117,3 +117,14 @@ export function publicImage(
 
     return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/${size}/${id}.jpeg`;
 }
+
+export const getTimeFromFloat = (time) => {
+    return {
+        hour: parseInt(time.toString()),
+        minute: ((time % 1) * 60).toString(),
+    };
+};
+
+export const getMinuteInFloat = (minute) => {
+    return ((parseInt(minute) / 60) * 100) / 100;
+};

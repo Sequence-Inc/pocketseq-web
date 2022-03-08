@@ -1,12 +1,6 @@
 import React, { useEffect, useState, Fragment, useRef } from "react";
 import { useMutation } from "@apollo/client";
-import {
-    Button,
-    DatePickerField,
-    HostCalendarView,
-    Select,
-    TextField,
-} from "@element";
+import { Button, HostCalendarView, Select, TextField } from "@element";
 import { ExclamationIcon, PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { DatePicker } from "antd";
@@ -20,6 +14,7 @@ import {
 import { IOtherSpacesProps } from "./NearestStationStep";
 import moment, { Moment } from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { PriceFormatter } from "src/utils";
 
 const planTypes = [
     { title: "DAILY", label: "日" },
@@ -27,7 +22,7 @@ const planTypes = [
     { title: "MINUTES", label: "分" },
 ];
 
-const durationSuffix = (type) => {
+export const durationSuffix = (type) => {
     return planTypes.filter((plan) => plan.title === type)[0].label;
 };
 
@@ -48,27 +43,32 @@ const PricingPlan = ({
     const [openForm, setOpenForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activePlan, setActivePlan] = useState(-1);
-    const [mutate] = useMutation(ADD_PRICING_PLAN);
-    const [mutateRemovePrice] = useMutation(REMOVE_PRICING_PLAN);
+    const [addPricePlan, { error: addPricePlanError }] =
+        useMutation(ADD_PRICING_PLAN);
+    const [mutateRemovePrice, { error: removePricePlanError }] =
+        useMutation(REMOVE_PRICING_PLAN);
     const router = useRouter();
     const { id } = router.query;
 
     const { t } = useTranslation("adminhost");
 
+    const setSeparatePlans = (mergedPlans) => {
+        const defaultPlans = [];
+        const plans = [];
+        mergedPlans.map((plan) => {
+            if (plan.isDefault) {
+                defaultPlans.push(plan);
+            } else {
+                plans.push(plan);
+            }
+        });
+        setDefaultPricePlans(defaultPlans);
+        setPricePlans(plans);
+    };
+
     useEffect(() => {
         if (initialValue) {
-            const defaultPlans = [];
-            const plans = [];
-            initialValue.map((plan) => {
-                if (plan.isDefault) {
-                    defaultPlans.push(plan);
-                } else {
-                    plans.push(plan);
-                }
-            });
-            setDefaultPricePlans(defaultPlans);
-            setPricePlans(plans);
-        } else {
+            setSeparatePlans(initialValue);
         }
     }, [initialValue]);
 
@@ -81,40 +81,39 @@ const PricingPlan = ({
     };
 
     const addPlan = async (plan) => {
-        const { data } = await mutate({
+        const { data, errors } = await addPricePlan({
             variables: {
                 spaceId: initialValue ? id : spaceId,
-                pricePlans: [plan],
+                pricePlan: plan,
             },
         });
-        if (data) {
-            const newPlan = {
-                ...plan,
-                id: data.addSpacePricePlans.id,
-            };
-            setPricePlans([...pricePlans, newPlan]);
+        if (errors) {
+            console.log("has error", errors);
+        } else {
+            const newPlan = data.addPricePlan;
+            setSeparatePlans([...pricePlans, newPlan]);
             initialValue && refetch();
             setOpenForm(false);
         }
     };
-    const removePlan = async (index, priceId) => {
+
+    const removePlan = async (planId) => {
         setLoading(true);
-        setActivePlan(index);
         try {
             const { data } = await mutateRemovePrice({
                 variables: {
-                    input: {
-                        id: priceId,
-                        spaceId: initialValue ? id : spaceId,
-                    },
+                    id: planId,
                 },
             });
             if (data) {
-                const newPlans = pricePlans.filter((_, idx) => idx !== index);
-                setPricePlans(newPlans);
+                const newDefaultPlans = defaultPricePlans.filter(
+                    (_) => _.id !== planId
+                );
+                const newPlans = pricePlans.filter((_) => _.id !== planId);
+                setSeparatePlans([...newDefaultPlans, ...newPlans]);
             }
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -128,7 +127,6 @@ const PricingPlan = ({
     };
 
     function handleNext(): void {
-        console.log(hasNext);
         if (hasNext) setActiveStep(activeStep + 1);
     }
 
@@ -149,7 +147,7 @@ const PricingPlan = ({
                     <PricePlanItem
                         pricePlan={plan}
                         index={plan.id}
-                        removePlan={(value) => console.log(value)}
+                        removePlan={(value) => removePlan(value)}
                     />
                 </div>
             );
@@ -232,6 +230,7 @@ const PricingPlan = ({
                         <PricePlanForm
                             addPlan={addPlan}
                             closeForm={closeForm}
+                            addError={addPricePlanError}
                         />
                     </div>
                 </div>
@@ -247,12 +246,6 @@ const PricingPlan = ({
                     Additional price plans
                 </h2>
                 {renderPricePlans()}
-            </div>
-            <div className="w-full p-6 space-y-3">
-                <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
-                    Override
-                </h2>
-                <HostCalendarView plans={initialValue} />
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 {initialValue ? null : (
@@ -299,8 +292,11 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
 
     const cancelButtonRef = useRef(null);
 
-    const deletePlan = () => {
+    const deletePlan = async () => {
         setIsLoading(true);
+        await removePlan(id);
+        setIsLoading(false);
+        setOpen(false);
     };
 
     return (
@@ -401,7 +397,9 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                         {duration}
                         {durationSuffix(type)}
                     </div>
-                    <div className="w-20 text-right">￥{amount}</div>
+                    <div className="w-20 text-right">
+                        {PriceFormatter(amount)}
+                    </div>
                 </Popover.Button>
                 <Popover.Panel className="absolute top-11.5 left-0 right-0 py-4 px-3 rounded-md shadow z-20 bg-white text-gray-700 space-y-4">
                     <div className="text-gray-500 space-y-2">
@@ -427,7 +425,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                             <div className="w-28 font-bold text-right">
                                 料金
                             </div>
-                            <div>{`${amount}円`}</div>
+                            <div>{PriceFormatter(amount)}</div>
                         </div>
                         <div className="w-full flex items-center space-x-4">
                             <div className="w-28 font-bold text-right">
@@ -453,7 +451,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                             <div className="w-28 font-bold text-right">
                                 直前割引
                             </div>
-                            <div>{lastMinuteDiscount}円</div>
+                            <div>{PriceFormatter(lastMinuteDiscount)}</div>
                         </div>
                         <div className="w-full flex items-center space-x-4">
                             <div className="w-28 font-bold text-right">
@@ -465,7 +463,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                             <div className="w-28 font-bold text-right">
                                 手数料
                             </div>
-                            <div>{maintenanceFee}円</div>
+                            <div>{PriceFormatter(maintenanceFee)}</div>
                         </div>
                     </div>
                     <div className="flex justify-center w-full text-center border-t pt-3">
@@ -482,7 +480,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
     );
 };
 
-const PricePlanForm = ({ addPlan, closeForm }) => {
+const PricePlanForm = ({ addPlan, closeForm, addError }) => {
     const [title, setTitle] = useState("");
     const [type, setType] = useState("DAILY");
     const [amount, setAmount] = useState<string>();
@@ -494,7 +492,7 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
     const [maintenanceFee, setMaintenanceFee] = useState<string>();
     const [fromDateActive, setFormDateActive] = useState<boolean>(false);
     const [toDateActive, setToDateActive] = useState<boolean>(false);
-    const [fromDate, setFromDate] = useState<Moment>(moment());
+    const [fromDate, setFromDate] = useState<Moment>(moment().add(1, "d"));
     const [toDate, setToDate] = useState<Moment>(moment().add(6, "M"));
     const [loading, setLoading] = useState(false);
 
@@ -507,16 +505,26 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             setLoading(false);
             return;
         }
-        await addPlan({
-            title,
-            type,
-            amount: parseFloat(amount),
-            lastMinuteDiscount: parseFloat(lastMinuteDiscount),
-            duration: duration,
-            cooldownTime: parseInt(cooldownTime),
-            maintenanceFee: parseFloat(maintenanceFee),
-        });
-        setLoading(false);
+        try {
+            await addPlan({
+                title,
+                type,
+                amount: parseFloat(amount),
+                duration,
+                lastMinuteDiscount: parseFloat(lastMinuteDiscount),
+                cooldownTime: parseInt(cooldownTime),
+                maintenanceFee: parseFloat(maintenanceFee),
+                fromDate: fromDateActive
+                    ? fromDate.format("YYYY-MM-DD").toString()
+                    : null,
+                toDate: toDateActive
+                    ? toDate.format("YYYY-MM-DD").toString()
+                    : null,
+            });
+        } catch (error) {
+            alert(`Error! ${error.message}`);
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -534,6 +542,7 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
 
     return (
         <div className="space-y-4">
+            {addError && <div>Add error</div>}
             <div>
                 <TextField
                     label={t("price-plan-name")}

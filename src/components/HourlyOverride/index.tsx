@@ -44,10 +44,6 @@ const HourlyOverride = ({ day, data }: { day: Day; data: HoursProps }) => {
         });
     }
 
-    // for (let i = day.workHours.startTime; i <= day.workHours.endTime; i++) {
-    //     hours.push(i);
-    // }
-
     return (
         <>
             <div className="bg-white shadow p-4 rounded-lg">
