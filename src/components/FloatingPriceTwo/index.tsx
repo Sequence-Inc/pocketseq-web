@@ -41,7 +41,7 @@ export const FloatingPriceTwo = ({
 
     useEffect(() => {
         if (start !== null && end !== null) {
-            setHours(hoursDifference());
+            // setHours(hoursDifference());
             setSubtotal(priceCalculation());
         }
     }, [start, end]);
@@ -75,13 +75,13 @@ export const FloatingPriceTwo = ({
 
     const price = FormatPrice("HOURLY", pricePlans, true, true);
 
-    const hoursDifference = () => {
-        if (start === null || end === null || start > end) {
-            return -1;
-        }
-        const diffTime = Math.abs(end - start);
-        return Math.ceil(diffTime / (1000 * 60 * 60));
-    };
+    // const hoursDifference = () => {
+    //     if (start === null || end === null || start > end) {
+    //         return -1;
+    //     }
+    //     const diffTime = Math.abs(end - start);
+    //     return Math.ceil(diffTime / (1000 * 60 * 60));
+    // };
 
     const priceCalculation = () => {
         // Todo: Calculate based on price plans
