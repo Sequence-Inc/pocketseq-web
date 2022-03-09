@@ -1,5 +1,4 @@
 import {
-    FloatingPrice,
     HostProfile,
     SpaceUtilities,
     SpaceInfoTitle,
@@ -26,6 +25,7 @@ import { useRouter } from "next/router";
 
 import createApolloClient from "../../src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
+import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 
 const ContentSection = ({
     title,
@@ -55,7 +55,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         maximumCapacity,
         spaceSize,
         spaceTypes,
-        spacePricePlans,
+        pricePlans,
         nearestStations,
         address,
         photos,
@@ -82,16 +82,10 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             );
     };
 
-    const getPublicPhoto = (photos) => {
-        const mediaId = photos[0].id;
-        return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/small/${mediaId}.jpeg`;
-    };
-
     return (
         <MainLayout userSession={userSession}>
             <Head>
                 <title>
-
                     {name} | 「人 × 場所 × 体験」を繋げる
                     目的に合った場所を検索しよう
                 </title>
@@ -114,7 +108,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 />
                 <meta
                     property="og:image"
-                    content={`${publicImage(photos[0], "small")}`}
+                    content={`${publicImage(photos[0], "large")}`}
                 />
                 <meta
                     name="twitter:title"
@@ -122,7 +116,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 />
                 <meta
                     property="twitter:image"
-                    content={`${publicImage(photos[0], "small")}`}
+                    content={`${publicImage(photos[0], "large")}`}
                 />
             </Head>
             <Container className="mt-16">
@@ -133,8 +127,8 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
                         <div className="block md:hidden">
-                            <FloatingPrice
-                                pricePlans={spacePricePlans}
+                            <FloatingPriceTwo
+                                pricePlans={pricePlans}
                                 space={space}
                             />
                         </div>
@@ -212,7 +206,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             <h2 className="mb-4 text-lg font-bold text-gray-700">
                                 料金プラン
                             </h2>
-                            {spacePricePlans.map((plan, index) => (
+                            {pricePlans.map((plan, index) => (
                                 <div
                                     key={index}
                                     className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
@@ -240,8 +234,8 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <SpaceInfoReviews />
                     </div>
                     <div className="hidden md:block">
-                        <FloatingPrice
-                            pricePlans={spacePricePlans}
+                        <FloatingPriceTwo
+                            pricePlans={pricePlans}
                             space={space}
                         />
                     </div>

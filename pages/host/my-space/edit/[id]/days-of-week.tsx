@@ -12,6 +12,7 @@ import DaysOfWeekOverride, {
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { getMinuteInFloat, getTimeFromFloat } from "src/utils";
 
 const testData: DaysOfWeekProps = [
     {
@@ -211,17 +212,6 @@ export const BusinessHourManager = ({
     onSave: any;
 }) => {
     const { openingHr, closingHr, breakFromHr, breakToHr } = defaultValue;
-
-    const getTimeFromFloat = (time) => {
-        return {
-            hour: parseInt(time.toString()),
-            minute: ((time % 1) * 60).toString(),
-        };
-    };
-
-    const getMinuteInFloat = (minute) => {
-        return ((parseInt(minute) / 60) * 100) / 100;
-    };
 
     const isBreakAvailable = breakFromHr && breakToHr ? true : false;
     const openingTime = getTimeFromFloat(openingHr);
@@ -772,19 +762,18 @@ export const StockManager = ({ defaultValue, onSave }) => {
 
 export const HolidayManager = ({ defaultValue, onSave }) => {
     const [holiday, setHoliday] = useState(defaultValue || false);
+    useEffect(() => {
+        onSave(holiday);
+    }, [holiday]);
     return (
         <FormCard title="休業設定">
-            <FormItem title="休業設定">
-                <div className="flex items-center space-x-2">
-                    <input
-                        type="checkbox"
-                        checked={holiday ? true : false}
-                        onChange={() => {
-                            setHoliday(!holiday);
-                        }}
-                    />
-                </div>
-            </FormItem>
+            <input
+                type="checkbox"
+                checked={holiday ? true : false}
+                onChange={() => {
+                    setHoliday(!holiday);
+                }}
+            />
         </FormCard>
     );
 };

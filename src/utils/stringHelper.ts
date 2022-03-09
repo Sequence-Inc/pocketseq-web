@@ -6,6 +6,7 @@ import {
     IPhoto,
 } from "../types/timebookTypes";
 import { PriceFormatter } from "./priceFormatter";
+import { Moment } from "moment";
 
 export const FormatShortAddress = (address: IAddress): string => {
     if (!address) {
@@ -60,9 +61,8 @@ const FormatPriceString = (
     return null;
 };
 
-export const GetTimeStamp = (date: Date): number => {
-    const dateObject = new Date(date);
-    return Math.floor(dateObject.getTime() / 1000);
+export const GetTimeStamp = (date: Moment): number => {
+    return date.startOf("day").unix();
 };
 
 export const DateFromTimeStamp = (
@@ -117,3 +117,14 @@ export function publicImage(
 
     return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/${size}/${id}.jpeg`;
 }
+
+export const getTimeFromFloat = (time) => {
+    return {
+        hour: parseInt(time.toString()),
+        minute: ((time % 1) * 60).toString(),
+    };
+};
+
+export const getMinuteInFloat = (minute) => {
+    return ((parseInt(minute) / 60) * 100) / 100;
+};

@@ -36,7 +36,7 @@ export default NextAuth({
                     // login config
                     const config: AxiosRequestConfig = {
                         method: "post",
-                        url: "https://dev-api.timebook.co.jp/dev/graphql",
+                        url: process.env.NEXT_PUBLIC_API_URL,
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -153,7 +153,7 @@ export default NextAuth({
 
             const config: AxiosRequestConfig = {
                 method: "post",
-                url: "https://dev-api.timebook.co.jp/dev/graphql",
+                url: process.env.NEXT_PUBLIC_API_URL,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token.accessToken}`,

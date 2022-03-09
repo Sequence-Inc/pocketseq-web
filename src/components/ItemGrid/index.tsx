@@ -33,7 +33,7 @@ export const ItemGrid = ({
         maximumCapacity,
         spaceSize,
         spaceTypes,
-        spacePricePlans,
+        pricePlans,
         address,
         photos,
     } = data;
@@ -94,9 +94,7 @@ export const ItemGrid = ({
                     </a>
                 </Link>
                 {/* price section */}
-                <Price
-                    amount={FormatPrice("HOURLY", spacePricePlans, true, true)}
-                />
+                <Price amount={FormatPrice("HOURLY", pricePlans, true, true)} />
 
                 {/* metadata section */}
                 <div className="flex justify-start space-x-4">

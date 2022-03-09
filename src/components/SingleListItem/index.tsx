@@ -26,7 +26,7 @@ export const SingleListItem = ({
         maximumCapacity,
         spaceSize,
         spaceTypes,
-        spacePricePlans,
+        pricePlans,
         address,
         photos,
     } = data;
@@ -60,12 +60,7 @@ export const SingleListItem = ({
                 {/* price section */}
                 <div className="flex items-end space-x-4">
                     <Price
-                        amount={FormatPrice(
-                            "HOURLY",
-                            spacePricePlans,
-                            true,
-                            true
-                        )}
+                        amount={FormatPrice("HOURLY", pricePlans, true, true)}
                     />
                     <Tag
                         Icon={StarIcon}

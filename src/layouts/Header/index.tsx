@@ -38,11 +38,11 @@ const navLinkItems: INavLinkItems[] = [
 ];
 
 const userNavigation = [
-    { name: "Admin Dashboard", href: "/admin", role: ["admin"] },
-    { name: "Host Dashboard", href: "/host", role: ["host"] },
-    { name: "Profile", href: "/user/profile", role: ["user", "host"] },
+    { name: "ダッシュボード", href: "/admin", role: ["admin"] },
+    { name: "ダッシュボード", href: "/host", role: ["host"] },
+    { name: "プロフィール", href: "/user/profile", role: ["user", "host"] },
     {
-        name: "Settings",
+        name: "設定",
         href: "/user/settings",
         role: ["user", "host", "admin"],
     },

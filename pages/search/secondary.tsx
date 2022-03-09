@@ -101,7 +101,7 @@ const Secondary = ({ resetToStartObj, userSession }) => {
                     lng: space.address.longitude,
                 },
                 name: space.name,
-                price: FormatPrice("HOURLY", space.spacePricePlans, true, true),
+                price: FormatPrice("HOURLY", space.pricePlans, true, true),
                 photo: space.photos[0],
                 rating: {
                     reviews: 1,

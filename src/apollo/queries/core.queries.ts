@@ -168,12 +168,23 @@ export const SPACE_TYPE = `
 export const SPACE_PRICE_PLAN = `
     id
     title
+    isDefault
     type
-    amount
     duration
+    amount
     maintenanceFee
     lastMinuteDiscount
     cooldownTime
+    fromDate
+    toDate
+    overrides {
+        id
+        type
+        amount
+        daysOfWeek
+        fromDate
+        toDate
+    }
 `;
 
 export const STATION = `
@@ -221,6 +232,7 @@ export const SPACE = `
     numberOfSeats
     spaceSize
     needApproval
+    published
     ${SPACE_TYPES}
     address {
         ${ADDRESS}
@@ -235,7 +247,9 @@ export const SPACE = `
         name
         createdAt
     }
-    
+    pricePlans {
+        ${SPACE_PRICE_PLAN}
+    }    
 `;
 
 export const SPACE_SETTING = `

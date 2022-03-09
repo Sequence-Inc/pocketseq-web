@@ -52,7 +52,7 @@ const GoogleMap = ({
     activeIndex,
     setActiveIndex,
     zoom,
-    setFreeCoords
+    setFreeCoords,
 }: GoogleMapProps) => {
     const [alive, setAlive] = useState<boolean>(false);
     const JAPAN_CENTER_COORDS = {
@@ -66,26 +66,21 @@ const GoogleMap = ({
         );
     }
 
-    const _onChildMouseEnter = (key, childProps) => { };
+    const _onChildMouseEnter = (key, childProps) => {};
 
-    const _onChildMouseLeave = () => { };
+    const _onChildMouseLeave = () => {};
 
     const changeMarks = (markEvent: any) => {
         const { lat, lng } = markEvent;
         setFreeCoords({ lat, lng });
-    }
+    };
 
-    useEffect(() => {
-        // get users current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                console.log({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                });
-            });
-        }
-    }, []);
+    // useEffect(() => {
+    //     // get users current location
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(function (position) {});
+    //     }
+    // }, []);
 
     return (
         <>
@@ -134,8 +129,7 @@ const GoogleMap = ({
                     defaultCenter={mark || JAPAN_CENTER_COORDS}
                     zoom={zoom}
                 >
-                    {mark &&
-                        <SingleMarker lat={mark.lat} lng={mark.lng} />}
+                    {mark && <SingleMarker lat={mark.lat} lng={mark.lng} />}
                 </GoogleMapReact>
             ) : null}
         </>
