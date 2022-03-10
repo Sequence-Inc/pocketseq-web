@@ -3,21 +3,23 @@ import { Button, Price } from "@element";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
 import { ISpace, ISpacePricePlan } from "src/types/timebookTypes";
-import { FormatPrice, GetTimeStamp, PriceFormatter } from "src/utils";
 
 import { DatePicker } from "antd";
-import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
-import { useLazyQuery, useQuery } from "@apollo/client";
 import Link from "next/link";
 import moment, { Moment } from "moment";
 import { durationSuffix } from "../Space/PricingPlan";
-import { runMain } from "module";
+import { PriceFormatter } from "src/utils/priceFormatter";
+import { FormatPrice, toBase64 } from "src/utils/stringHelper";
+import { useLazyQuery } from "@apollo/client";
+import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
 
 const options = {
     DAILY: Array.from({ length: 30 }).map((_, index) => index + 1),
     HOURLY: Array.from({ length: 24 }).map((_, index) => index + 1),
     MINUTES: [5, 10, 15, 30, 45],
 };
+
+type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
 export const FloatingPriceTwo = ({
     pricePlans,
@@ -26,25 +28,17 @@ export const FloatingPriceTwo = ({
     pricePlans: ISpacePricePlan[];
     space: ISpace;
 }) => {
-    const [start, setStart] = useState<Moment>(null);
-    const [end, setEnd] = useState(null);
+    const [start, setStart] = useState<Moment>();
 
     const [duration, setDuration] = useState(options["DAILY"][0]);
-    const [durationType, setDurationType] = useState("DAILY");
+    const [durationType, setDurationType] = useState<DurationType>("DAILY");
     const [durationOptions, setDurationOptions] = useState(options["DAILY"]);
 
     const [checkInTime, setCheckInTime] = useState<Moment>();
     const [showCheckInTime, setShowCheckInTime] = useState(false);
 
-    const [subtotal, setSubtotal] = useState(null);
-    const [hours, setHours] = useState(null);
-
-    useEffect(() => {
-        if (start !== null && end !== null) {
-            // setHours(hoursDifference());
-            setSubtotal(priceCalculation());
-        }
-    }, [start, end]);
+    const [startDateTime, setStartDateTime] = useState<Moment>();
+    const [endDateTime, setEndDateTime] = useState<Moment>();
 
     useEffect(() => {
         if (durationType === "HOURLY" || durationType === "MINUTES") {
@@ -73,15 +67,47 @@ export const FloatingPriceTwo = ({
         }
     }, [durationType]);
 
-    const price = FormatPrice("HOURLY", pricePlans, true, true);
+    useEffect(() => {
+        if (start) {
+            setStartDateTime(
+                getStartDateTime(start, durationType, checkInTime)
+            );
+        }
+    }, [start, durationType, checkInTime]);
 
-    // const hoursDifference = () => {
-    //     if (start === null || end === null || start > end) {
-    //         return -1;
-    //     }
-    //     const diffTime = Math.abs(end - start);
-    //     return Math.ceil(diffTime / (1000 * 60 * 60));
-    // };
+    useEffect(() => {
+        if (startDateTime) {
+            const endDateTime = getEndDateTime(
+                startDateTime,
+                duration,
+                durationType
+            );
+            setEndDateTime(endDateTime);
+            fetchPricePlans(startDateTime, endDateTime, duration, durationType);
+        }
+    }, [startDateTime, duration, durationType]);
+
+    const fetchPricePlans = async (start, end, duration, type) => {
+        try {
+            const plans = await getApplicablePricePlans({
+                variables: {
+                    input: {
+                        fromDateTime: start.unix() * 1000,
+                        duration,
+                        durationType,
+                        spaceId: space.id,
+                    },
+                },
+            });
+            console.log(plans);
+        } catch (error) {
+            alert(`Error! ${error}`);
+        }
+    };
+
+    const [getApplicablePricePlans] = useLazyQuery(GET_PRICE_PLANS);
+
+    const price = FormatPrice("HOURLY", pricePlans, true, true);
 
     const priceCalculation = () => {
         // Todo: Calculate based on price plans
@@ -145,20 +171,20 @@ export const FloatingPriceTwo = ({
                 <div className="text-gray-600 pt-4">
                     <div className="mt-1 text-base">
                         <span className="inline-block w-40 font-bold">
-                            チェックイン日:
+                            チェックイン:
                         </span>
                         {durationType === "DAILY"
-                            ? getStartDateTime().format("YYYY-MM-DD")
-                            : getStartDateTime().format("YYYY-MM-DD HH:00")}
+                            ? startDateTime?.format("YYYY-MM-DD")
+                            : startDateTime?.format("YYYY-MM-DD HH:00")}
                     </div>
 
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
-                            チェックアウト日:
+                            チェックアウト:
                         </span>
                         {durationType === "DAILY"
-                            ? getEndDateTime().format("YYYY-MM-DD")
-                            : getEndDateTime().format("YYYY-MM-DD HH:00")}
+                            ? endDateTime?.format("YYYY-MM-DD")
+                            : endDateTime?.format("YYYY-MM-DD HH:00")}
                     </div>
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
@@ -219,58 +245,15 @@ export const FloatingPriceTwo = ({
         return content;
     };
 
-    const getStartDateTime = () => {
-        const startDay = moment(start).format("YYYY-MM-DD");
-        if (durationType !== "DAILY") {
-            const startTime = moment(checkInTime).format("HH:00");
-            return moment(
-                startDay + " " + startTime,
-                "YYYY-MM-DD HH:00"
-            ).startOf("hour");
-        } else {
-            return moment(startDay, "YYYY-MM-DD").startOf("day");
-        }
-    };
-
-    const getEndDateTime = () => {
-        const startDateTime = getStartDateTime();
-        if (durationType === "DAILY") {
-            return startDateTime.add(duration, "d");
-        } else if (durationType === "HOURLY") {
-            return startDateTime.add(duration, "hour");
-        } else if (durationType === "MINUTES") {
-            return startDateTime.add(duration, "m");
-        }
-    };
-
-    const timeDifference = () => {
-        const startDateTime = getStartDateTime();
-        const endDateTime = getEndDateTime();
-        const difference = moment.duration(
-            endDateTime.diff(startDateTime),
-            "milliseconds"
-        );
-        if (durationType === "DAILY") {
-            return difference.asDays();
-        } else if (durationType === "HOURLY") {
-            return difference.asHours();
-        } else if (durationType === "MINUTES") {
-            return difference.asMinutes();
-        }
-        return difference;
-    };
-
-    const fixDateFormat = (date: Moment) => {
-        return moment(date, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:00");
-    };
-
-    const params = `?spaceId=${
-        space?.id
-    }&start=${getStartDateTime().unix()}&end=${getEndDateTime().unix()}&duration=${timeDifference()}&durationType=${durationType}&price=${price}&amount=${priceCalculation()}&spaceName=${
-        space.name
-    }&address=${space.address.prefecture.name}${space.address.city}${
-        space.address.addressLine1
-    }${space.address.addressLine2}`;
+    const params = toBase64(
+        JSON.stringify({
+            start: startDateTime,
+            end: endDateTime,
+            duration,
+            type: durationType,
+        })
+    );
+    const url = `?data=${params}`;
 
     const disabledDate = (current) => {
         // Can not select days before today and today
@@ -330,26 +313,14 @@ export const FloatingPriceTwo = ({
                             className="text-sm border-0 outline-none"
                             value={durationType}
                             onChange={(event) =>
-                                setDurationType(event.target.value)
+                                setDurationType(
+                                    event.target.value as DurationType
+                                )
                             }
                         >
                             <option value="DAILY">日</option>
-                            <option
-                                selected={
-                                    durationType === "HOURLY" ? true : false
-                                }
-                                value="HOURLY"
-                            >
-                                時間
-                            </option>
-                            <option
-                                selected={
-                                    durationType === "MINUTES" ? true : false
-                                }
-                                value="MINUTES"
-                            >
-                                分
-                            </option>
+                            <option value="HOURLY">時間</option>
+                            <option value="MINUTES">分</option>
                         </select>
                     </div>
                 </div>
@@ -374,9 +345,11 @@ export const FloatingPriceTwo = ({
                 )}
                 {okayToBook() && initialPricingDetail(priceCalculation())}
                 {/* button row */}
-                <Button variant="primary" disabled={!okayToBook()}>
-                    予約可能状況を確認する
-                </Button>
+                <Link href={`/space/${space.id}/reserve${url}`}>
+                    <Button variant="primary" disabled={!okayToBook()}>
+                        予約可能状況を確認する
+                    </Button>
+                </Link>
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
                     <p className="text-gray-600">48時間キャンセル無料</p>
@@ -395,4 +368,55 @@ export const FloatingPriceTwo = ({
             </div>
         </div>
     );
+};
+
+export const getStartDateTime = (
+    start: Moment,
+    durationType: DurationType,
+    checkInTime: Moment
+) => {
+    const startDay = moment(start).format("YYYY-MM-DD");
+
+    if (durationType !== "DAILY") {
+        const startTime = moment(checkInTime).format("HH:00");
+        return moment(startDay + " " + startTime, "YYYY-MM-DD HH:00").startOf(
+            "hour"
+        );
+    } else {
+        return moment(startDay, "YYYY-MM-DD").startOf("day");
+    }
+};
+
+export const getEndDateTime = (
+    startDateTime: Moment,
+    duration,
+    durationType
+) => {
+    const startDT = moment(startDateTime);
+    if (durationType === "DAILY") {
+        return startDT.add(duration, "d");
+    } else if (durationType === "HOURLY") {
+        return startDT.add(duration, "hour");
+    } else if (durationType === "MINUTES") {
+        return startDT.add(duration, "m");
+    }
+};
+
+export const timeDifference = (startDateTime, endDateTime, durationType) => {
+    const difference = moment.duration(
+        endDateTime.diff(startDateTime),
+        "milliseconds"
+    );
+    if (durationType === "DAILY") {
+        return difference.asDays();
+    } else if (durationType === "HOURLY") {
+        return difference.asHours();
+    } else if (durationType === "MINUTES") {
+        return difference.asMinutes();
+    }
+    return difference;
+};
+
+const fixDateFormat = (date: Moment) => {
+    return moment(date, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:00");
 };

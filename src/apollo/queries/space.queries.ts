@@ -400,3 +400,33 @@ export const PUBLISH_SPACE = gql`
         }
     }
 `;
+
+export const UNPUBLISH_SPACE = gql`
+    mutation PublishSpace($id: ID!) {
+        publishSpace(id: $id) {
+            message
+            action
+        }
+    }
+`;
+
+export const GET_PRICE_PLANS = gql`
+    query getApplicablePricePlans($input: GetApplicablePricePlansInput) {
+        getApplicablePricePlans(input: $input) {
+            total
+            duration
+            durationType
+            applicablePricePlans {
+                title
+                duration
+                type
+                isDefault
+                isOverride
+                fromDate
+                toDate
+                amount
+                appliedTimes
+            }
+        }
+    }
+`;

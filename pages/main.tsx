@@ -97,19 +97,19 @@ export default function Home({ userSession, availableSpaceTypes }) {
                 </title>
                 <meta
                     name="description"
-                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                    content="timeQonnect タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
                 />
                 <meta
                     name="keywords"
-                    content="timebook,タイムブック,レンタルスペース, ペット可"
+                    content="timeQonnect,タイムブック,レンタルスペース, ペット可"
                 />
                 <meta
                     property="og:title"
-                    content="time book | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう"
+                    content="timeQonnect | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう"
                 />
                 <meta
                     property="og:description"
-                    content="time book タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                    content="timeQonnect タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
                 />
                 {/* <meta
                     property="og:image"
