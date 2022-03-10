@@ -117,7 +117,7 @@ const Teaser = () => {
                                     </div>
                                     <div>
                                         <Link href="/auth/host-register">
-                                            <a className="block w-full px-5 py-3 text-base font-medium text-center bg-white border border-transparent rounded-md shadow-md text-primary hover:bg-gray-50 sm:inline-block sm:w-auto">
+                                            <a className="block w-full px-5 py-3 text-base font-medium text-center bg-white border border-transparent rounded-md shadow-md text-primary hover:text-primaryHover hover:bg-gray-50 sm:inline-block sm:w-auto">
                                                 施設を掲載する
                                             </a>
                                         </Link>
@@ -126,7 +126,7 @@ const Teaser = () => {
                                         <p className="text-white">
                                             アカウントをお持ちの方
                                             <Link href="/auth/login">
-                                                <a className="text-base font-medium text-center text-white border border-transparent rounded-md bg-primary hover:underline sm:inline-block sm:w-auto">
+                                                <a className="text-base font-medium text-center text-white hover:text-green-50 border border-transparent rounded-md bg-primary hover:underline sm:inline-block sm:w-auto">
                                                     ログインする
                                                 </a>
                                             </Link>
@@ -136,7 +136,7 @@ const Teaser = () => {
                                         <a
                                             href="https://prtimes.jp/main/html/rd/p/000000002.000089436.html"
                                             target="_blank"
-                                            className="text-white  hover:underline"
+                                            className="text-white hover:text-green-50 hover:underline"
                                         >
                                             {config.appName}
                                             についてプレスリリースはこちら

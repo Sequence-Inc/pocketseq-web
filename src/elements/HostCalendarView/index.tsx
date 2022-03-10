@@ -730,7 +730,7 @@ export const SettingsOverrideForm = ({
 };
 
 export const PriceOverride = ({ plan, filter }) => {
-    const { id, title, amount, overrides } = plan;
+    const { id, title, amount, overrides, duration, type } = plan;
 
     const filteredOverrides = overrides.filter((_) => _.type === filter);
     const hasOverrides = filteredOverrides.length > 0;
@@ -738,14 +738,17 @@ export const PriceOverride = ({ plan, filter }) => {
     if (!hasOverrides) {
         return (
             <div className="border border-gray-200 shadow-sm rounded opacity-50">
-                <div className={`px-3 py-2 w-full text-left"`}>
-                    <div className="flex items-center justify-between">
+                <div
+                    className={`px-3 py-2 w-full text-left flex items-center justify-between"`}
+                >
+                    <div className="flex-grow">
                         <div>{title}</div>
-                        <div className="font-bold">
-                            {PriceFormatter(amount)}
+                        <div className="text-gray-400">
+                            {duration}
+                            {durationSuffix(type)}
                         </div>
                     </div>
-                    <div className="text-gray-400">{id}</div>
+                    <div className="font-bold">{PriceFormatter(amount)}</div>
                 </div>
             </div>
         );
@@ -755,15 +758,16 @@ export const PriceOverride = ({ plan, filter }) => {
         <div className="border border-gray-200 shadow-sm rounded">
             <Disclosure>
                 <Disclosure.Button
-                    className={`px-3 py-2 w-full  text-left hover:bg-gray-50`}
+                    className={`flex items-center justify-between px-3 py-2 w-full text-left hover:bg-gray-50`}
                 >
-                    <div className="flex items-center justify-between">
+                    <div className="flex-grow">
                         <div>{title}</div>
-                        <div className="font-bold">
-                            {PriceFormatter(amount)}
+                        <div className="text-gray-400">
+                            {duration}
+                            {durationSuffix(type)}
                         </div>
                     </div>
-                    <div className="text-gray-400">{id}</div>
+                    <div className="font-bold">{PriceFormatter(amount)}</div>
                 </Disclosure.Button>
 
                 <Disclosure.Panel className="border-t border-gray-200 text-gray-600">

@@ -37,18 +37,24 @@ const DayOverride = ({ userSession, currentSpace }) => {
     const [loading, setLoading] = useState(false);
 
     const [publishSpace] = useMutation(PUBLISH_SPACE);
+    // const [unpublishSpace] = useMutation(PUBLISH_SPACE);
 
-    const handlePublish = async () => {
+    const handlePublishUnpublish = async () => {
         setLoading(true);
         try {
-            const { data } = await publishSpace({
-                variables: {
-                    id,
-                },
-            });
-            alert(data.publishSpace.message);
+            if (isPublished) {
+                confirm(`Are you sure you want to unpublish space "${name}"`);
+                setIsPublished(false);
+            } else {
+                const { data } = await publishSpace({
+                    variables: {
+                        id,
+                    },
+                });
+                alert(data.publishSpace.message);
+                setIsPublished(true);
+            }
         } catch (error) {
-            console.log(error.message);
             alert(error.message);
         } finally {
             setLoading(false);
@@ -77,13 +83,13 @@ const DayOverride = ({ userSession, currentSpace }) => {
                                 </Link>
                                 <button
                                     disabled={loading}
-                                    onClick={() => handlePublish()}
+                                    onClick={() => handlePublishUnpublish()}
                                     className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
                                         loading &&
                                         "opacity-30 hover:cursor-not-allowed"
                                     }`}
                                 >
-                                    {published
+                                    {isPublished
                                         ? "Unpublish space"
                                         : "Publish space"}
                                 </button>
@@ -204,6 +210,13 @@ const DayOverride = ({ userSession, currentSpace }) => {
                                                     </div>
                                                 </li>
                                             ))}
+                                            <li className="px-3 py-3 text-sm font-bold text-center">
+                                                <Link
+                                                    href={`/host/my-space/edit/${id}/override/daily`}
+                                                >
+                                                    Go to Dynamic Pricing
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </dd>
                                 </div>

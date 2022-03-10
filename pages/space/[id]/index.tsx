@@ -23,7 +23,7 @@ import { IRating } from "src/types/timebookTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import createApolloClient from "../../src/apollo/apolloClient";
+import createApolloClient from "src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 
@@ -241,9 +241,6 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     </div>
                 </div>
             </Container>
-
-            {/* recommended section */}
-            {/* <SpaceInfoRecommended /> */}
         </MainLayout>
     );
 };
