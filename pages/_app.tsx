@@ -19,7 +19,7 @@ function TimeBook({
     const router = useRouter();
 
     const handleRouteChange = (url) => {
-        window.gtag("config", "G-5WKZPFK2LT", {
+        window.gtag("config", "G-N4K1XG484F", {
             page_path: url,
         });
     };

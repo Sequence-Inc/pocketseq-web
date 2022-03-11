@@ -186,7 +186,7 @@ export const SearchBox = ({
                             numberOfLines={1}
                         >
                             <span className="text-gray-400">
-                                {date || "目的日時"}
+                                {date || "ご利用日"}
                             </span>
                         </Tag>
                     }

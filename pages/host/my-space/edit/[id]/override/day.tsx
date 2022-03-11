@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import createApolloClient from "src/apollo/apolloClient";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
-import HostDayOfWeekView from "src/elements/HostDayOfWeekView";
+import HostDayView from "src/elements/HostDayView";
 import HostLayout from "src/layouts/HostLayout";
 import { config } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
@@ -51,10 +51,10 @@ const DayOverride = ({ userSession, space }) => {
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8 pt-4">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-4">
-                            Override daily
+                            Override hourly
                         </h2>
                         <div>
-                            <HostDayOfWeekView
+                            <HostDayView
                                 plans={space.pricePlans}
                                 settings={space.settings}
                                 spaceId={space.id}

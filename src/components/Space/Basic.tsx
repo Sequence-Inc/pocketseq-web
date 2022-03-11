@@ -228,7 +228,9 @@ const Basic = ({
                                             htmlFor="needApproval"
                                             className="ml-3 text-sm font-medium text-gray-600 align-baseline cursor-pointer"
                                         >
-                                            enable need host approval
+                                            リクエスト予約
+                                            <br />
+                                            ※施設側の確認が必要な場合
                                         </label>
                                     </div>
                                 )}
