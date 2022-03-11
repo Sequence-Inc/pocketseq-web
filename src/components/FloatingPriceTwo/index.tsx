@@ -40,10 +40,13 @@ export const FloatingPriceTwo = ({
     const [startDateTime, setStartDateTime] = useState<Moment>();
     const [endDateTime, setEndDateTime] = useState<Moment>();
 
-    const [applicablePricePlans, setApplicablePricePlans] = useState();
-    const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(false);
+    const [applicablePricePlans, setApplicablePricePlans] = useState<any>();
+    // const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(false);
 
-    const [getApplicablePricePlans] = useLazyQuery(GET_PRICE_PLANS);
+    const [
+        getApplicablePricePlans,
+        { loading: isLoadingPrices, data: applicablePP },
+    ] = useLazyQuery(GET_PRICE_PLANS);
 
     useEffect(() => {
         if (durationType === "HOURLY" || durationType === "MINUTES") {
@@ -92,15 +95,8 @@ export const FloatingPriceTwo = ({
                 durationType === "DAILY"
                     ? startDateTime.startOf("day")
                     : startDateTime.startOf("hour");
-            fetchPricePlans(start, endDateTime, duration, durationType);
-        }
-    }, [startDateTime, duration, durationType]);
-
-    const fetchPricePlans = async (start, end, duration, type) => {
-        if (type === "DAILY" || (type !== "DAILY" && end)) {
-            setIsLoadingPrices(true);
-            try {
-                const applicablePP: any = await getApplicablePricePlans({
+            if (durationType === "DAILY") {
+                getApplicablePricePlans({
                     variables: {
                         input: {
                             fromDateTime: start.unix() * 1000,
@@ -110,16 +106,24 @@ export const FloatingPriceTwo = ({
                         },
                     },
                 });
-                setApplicablePricePlans(
-                    applicablePP?.data?.plans.getApplicablePricePlans
-                );
-            } catch (error) {
-                alert(`Error! ${error}`);
-            } finally {
-                setIsLoadingPrices(false);
+            } else if (endDateTime) {
+                getApplicablePricePlans({
+                    variables: {
+                        input: {
+                            fromDateTime: start.unix() * 1000,
+                            duration,
+                            durationType,
+                            spaceId: space.id,
+                        },
+                    },
+                });
             }
         }
-    };
+    }, [startDateTime, duration, durationType]);
+
+    useEffect(() => {
+        setApplicablePricePlans(applicablePP);
+    }, [applicablePP]);
 
     const price = FormatPrice("HOURLY", pricePlans, true, true);
 
@@ -133,17 +137,11 @@ export const FloatingPriceTwo = ({
             return content;
         }
         if (applicablePricePlans) {
-            const {
-                total,
-                duration,
-                durationType,
-                applicablePricePlans: plans,
-            } = applicablePricePlans || {
-                total: 0,
-                duration: 0,
-                durationType: "DAILY",
-                applicablePricePlans: [],
-            };
+            const total = applicablePricePlans?.total;
+            const duration = applicablePricePlans?.duration;
+            const durationType = applicablePricePlans?.durationType;
+            const plans = applicablePricePlans?.applicablePricePlans;
+
             const taxableAmount = total / 1.1;
 
             const pricePlans = plans as any[];
