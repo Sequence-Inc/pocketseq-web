@@ -138,7 +138,12 @@ export const FloatingPriceTwo = ({
                 duration,
                 durationType,
                 applicablePricePlans: plans,
-            } = applicablePricePlans;
+            } = applicablePricePlans || {
+                total: 0,
+                duration: 0,
+                durationType: "DAILY",
+                applicablePricePlans: [],
+            };
             const taxableAmount = total / 1.1;
 
             const pricePlans = plans as any[];
