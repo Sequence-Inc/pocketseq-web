@@ -100,7 +100,7 @@ export const FloatingPriceTwo = ({
         if (type === "DAILY" || (type !== "DAILY" && end)) {
             setIsLoadingPrices(true);
             try {
-                const { data: plans } = await getApplicablePricePlans({
+                const applicablePP: any = await getApplicablePricePlans({
                     variables: {
                         input: {
                             fromDateTime: start.unix() * 1000,
@@ -110,7 +110,9 @@ export const FloatingPriceTwo = ({
                         },
                     },
                 });
-                setApplicablePricePlans(plans.getApplicablePricePlans);
+                setApplicablePricePlans(
+                    applicablePP?.data?.plans.getApplicablePricePlans
+                );
             } catch (error) {
                 alert(`Error! ${error}`);
             } finally {
@@ -136,7 +138,12 @@ export const FloatingPriceTwo = ({
                 duration,
                 durationType,
                 applicablePricePlans: plans,
-            } = applicablePricePlans;
+            } = applicablePricePlans || {
+                total: 0,
+                duration: 0,
+                durationType: "DAILY",
+                applicablePricePlans: [],
+            };
             const taxableAmount = total / 1.1;
 
             const pricePlans = plans as any[];
