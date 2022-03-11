@@ -525,7 +525,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="dailyActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            1日対
+                            1日
                         </label>
                         <input
                             type="number"
@@ -536,7 +536,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             disabled={!dailyActive}
                             className={`${
                                 dailyActive ? "opacity-100" : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -553,7 +553,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="hourlyActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            1時間対
+                            1時間
                         </label>
                         <input
                             type="number"
@@ -564,7 +564,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             disabled={!hourlyActive}
                             className={`${
                                 hourlyActive ? "opacity-100" : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -581,7 +581,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="fiveMinutesActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            5分対
+                            5分
                         </label>
                         <input
                             type="number"
@@ -594,7 +594,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             disabled={!fiveMinutesActive}
                             className={`${
                                 fiveMinutesActive ? "opacity-100" : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -612,7 +612,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="tenMinutesActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            10分対
+                            10分
                         </label>
                         <input
                             type="number"
@@ -625,7 +625,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             disabled={!tenMinutesActive}
                             className={`${
                                 tenMinutesActive ? "opacity-100" : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -643,7 +643,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="fifteenMinutesActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            15分対
+                            15分
                         </label>
                         <input
                             type="number"
@@ -658,7 +658,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                                 fifteenMinutesActive
                                     ? "opacity-100"
                                     : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -676,7 +676,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="thirtyMinutesActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            30分対
+                            30分
                         </label>
                         <input
                             type="number"
@@ -691,7 +691,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                                 thirtyMinutesActive
                                     ? "opacity-100"
                                     : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>
@@ -711,7 +711,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             htmlFor="fortyFiveMinutesActive"
                             className="inline-block w-20 text-gray-600"
                         >
-                            45分対
+                            45分
                         </label>
                         <input
                             type="number"
@@ -726,7 +726,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                                 fortyFiveMinutesActive
                                     ? "opacity-100"
                                     : "opacity-30"
-                            } w-20 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
+                            } w-28 appearance-none block px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary`}
                         />
                         <span className="text-gray-500">円</span>
                     </div>

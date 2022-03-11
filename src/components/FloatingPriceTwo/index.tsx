@@ -40,6 +40,11 @@ export const FloatingPriceTwo = ({
     const [startDateTime, setStartDateTime] = useState<Moment>();
     const [endDateTime, setEndDateTime] = useState<Moment>();
 
+    const [applicablePricePlans, setApplicablePricePlans] = useState();
+    const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(false);
+
+    const [getApplicablePricePlans] = useLazyQuery(GET_PRICE_PLANS);
+
     useEffect(() => {
         if (durationType === "HOURLY" || durationType === "MINUTES") {
             setShowCheckInTime(true);
@@ -83,90 +88,59 @@ export const FloatingPriceTwo = ({
                 durationType
             );
             setEndDateTime(endDateTime);
-            fetchPricePlans(startDateTime, endDateTime, duration, durationType);
+            const start =
+                durationType === "DAILY"
+                    ? startDateTime.startOf("day")
+                    : startDateTime.startOf("hour");
+            fetchPricePlans(start, endDateTime, duration, durationType);
         }
     }, [startDateTime, duration, durationType]);
 
     const fetchPricePlans = async (start, end, duration, type) => {
-        try {
-            const plans = await getApplicablePricePlans({
-                variables: {
-                    input: {
-                        fromDateTime: start.unix() * 1000,
-                        duration,
-                        durationType,
-                        spaceId: space.id,
+        if (type === "DAILY" || (type !== "DAILY" && end)) {
+            setIsLoadingPrices(true);
+            try {
+                const { data: plans } = await getApplicablePricePlans({
+                    variables: {
+                        input: {
+                            fromDateTime: start.unix() * 1000,
+                            duration,
+                            durationType,
+                            spaceId: space.id,
+                        },
                     },
-                },
-            });
-            console.log(plans);
-        } catch (error) {
-            alert(`Error! ${error}`);
+                });
+                setApplicablePricePlans(plans.getApplicablePricePlans);
+            } catch (error) {
+                alert(`Error! ${error}`);
+            } finally {
+                setIsLoadingPrices(false);
+            }
         }
     };
-
-    const [getApplicablePricePlans] = useLazyQuery(GET_PRICE_PLANS);
 
     const price = FormatPrice("HOURLY", pricePlans, true, true);
 
-    const priceCalculation = () => {
-        // Todo: Calculate based on price plans
-        const usablePricePlans = pricePlans.filter(
-            (_) => _.type === durationType
-        );
-        let remainingDuration = duration;
-        let accumulatedPrice = [];
-        while (remainingDuration > 0) {
-            usablePricePlans.map((price) => {
-                const { id, duration, title, amount, type } = price;
-                while (remainingDuration >= duration) {
-                    if (remainingDuration >= duration) {
-                        accumulatedPrice.push({
-                            id,
-                            title,
-                            duration,
-                            amount,
-                            type,
-                        });
-                        remainingDuration -= duration;
-                    }
-                }
-            });
-        }
-        return accumulatedPrice;
-    };
-
-    const sumOfPrices = (plans) => {
-        let sum = 0;
-        Object.keys(plans).map((key) => {
-            const {
-                times,
-                detail: { amount },
-            } = plans[key];
-            sum += amount * times;
-        });
-        return sum;
-    };
-
-    const initialPricingDetail = (accumulatedPrice) => {
+    const initialPricingDetail = () => {
         let content = <div>Not enough infomation!</div>;
 
-        if (accumulatedPrice.length > 0) {
-            let pricePlans = {};
-            accumulatedPrice.map((plan) => {
-                if (pricePlans[plan.id]) {
-                    const updatedPlan = {
-                        ...pricePlans[plan.id],
-                        times: pricePlans[plan.id].times + 1,
-                    };
-                    pricePlans[plan.id] = updatedPlan;
-                } else {
-                    pricePlans[plan.id] = { times: 1, detail: plan };
-                }
-            });
+        if (isLoadingPrices) {
+            content = (
+                <div className="text-center text-gray-500 py-4">Loading...</div>
+            );
+            return content;
+        }
+        if (applicablePricePlans) {
+            const {
+                total,
+                duration,
+                durationType,
+                applicablePricePlans: plans,
+            } = applicablePricePlans;
+            const taxableAmount = total / 1.1;
 
-            const totalAmount = sumOfPrices(pricePlans);
-            const taxableAmount = totalAmount / 1.1;
+            const pricePlans = plans as any[];
+
             content = (
                 <div className="text-gray-600 pt-4">
                     <div className="mt-1 text-base">
@@ -174,8 +148,10 @@ export const FloatingPriceTwo = ({
                             チェックイン:
                         </span>
                         {durationType === "DAILY"
-                            ? startDateTime?.format("YYYY-MM-DD")
-                            : startDateTime?.format("YYYY-MM-DD HH:00")}
+                            ? startDateTime?.startOf("day").format("YYYY-MM-DD")
+                            : startDateTime
+                                  ?.startOf("hour")
+                                  .format("YYYY-MM-DD HH:00")}
                     </div>
 
                     <div className="mt-2 text-base">
@@ -183,8 +159,10 @@ export const FloatingPriceTwo = ({
                             チェックアウト:
                         </span>
                         {durationType === "DAILY"
-                            ? endDateTime?.format("YYYY-MM-DD")
-                            : endDateTime?.format("YYYY-MM-DD HH:00")}
+                            ? endDateTime?.startOf("day").format("YYYY-MM-DD")
+                            : endDateTime
+                                  ?.startOf("hour")
+                                  .format("YYYY-MM-DD HH:00")}
                     </div>
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
@@ -195,24 +173,40 @@ export const FloatingPriceTwo = ({
                     </div>
                     <div className="font-bold mt-4">プライスプラン</div>
                     <div className="space-y-2 mt-2">
-                        {Object.keys(pricePlans).map((key) => {
-                            const { times, detail } = pricePlans[key];
-                            const { id, title, duration, amount, type } =
-                                detail;
+                        {pricePlans.map((plan, index) => {
+                            const {
+                                title,
+                                amount,
+                                appliedTimes,
+                                duration,
+                                type,
+                                isOverride,
+                            } = plan;
+
                             return (
                                 <div
-                                    key={id}
+                                    key={index}
                                     className="flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg shadow-sm "
                                 >
                                     <div className="flex-grow">
-                                        <div className="font-bold">{title}</div>
+                                        <div className="font-bold">
+                                            {title}
+                                            {isOverride && (
+                                                <span className="text-xs italic text-gray-400 font-normal">
+                                                    (Override price)
+                                                </span>
+                                            )}
+                                        </div>
                                         <div>
-                                            {PriceFormatter(amount)}/{duration}
+                                            <span className="text-bold">
+                                                {PriceFormatter(amount)}
+                                            </span>
+                                            /{duration}
                                             {durationSuffix(type)}
                                         </div>
                                     </div>
                                     <div className="text-lg font-bold">
-                                        {times}回
+                                        {appliedTimes}回
                                     </div>
                                 </div>
                             );
@@ -229,13 +223,13 @@ export const FloatingPriceTwo = ({
                         <div className="text-right">
                             <span className="inline-block w-12">税金:</span>
                             <span className="inline-block font-bold w-20">
-                                {PriceFormatter(totalAmount - taxableAmount)}
+                                {PriceFormatter(total - taxableAmount)}
                             </span>
                         </div>
                         <div className="text-right">
                             <span className="inline-block w-12">会計:</span>
                             <span className="inline-block font-bold w-20">
-                                {PriceFormatter(totalAmount)}
+                                {PriceFormatter(total)}
                             </span>
                         </div>
                     </div>
@@ -343,7 +337,7 @@ export const FloatingPriceTwo = ({
                         </div>
                     </div>
                 )}
-                {okayToBook() && initialPricingDetail(priceCalculation())}
+                {okayToBook() && initialPricingDetail()}
                 {/* button row */}
                 <Link href={`/space/${space.id}/reserve${url}`}>
                     <Button variant="primary" disabled={!okayToBook()}>

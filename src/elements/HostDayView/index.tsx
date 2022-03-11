@@ -15,10 +15,156 @@ import {
     SettingsOverride,
     SettingsOverrideForm,
 } from "../HostCalendarView";
-import DaysOfWeekOverride, {
-    DaysOfWeekProps,
-} from "src/components/DayOfWeekOverride";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
+import HourlyOverride, { HoursProps, Day } from "src/components/HourlyOverride";
+
+const testData: HoursProps = [
+    {
+        hour: 9,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 10,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 11,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 12,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 13,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 14,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 15,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 16,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 17,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+    {
+        hour: 18,
+        dailyData: {
+            stock: 5,
+            prices: [
+                { pricingCategory: "1時間", price: 1000 },
+                { pricingCategory: "5分", price: 120 },
+                { pricingCategory: "10分", price: 230 },
+                { pricingCategory: "15分", price: 300 },
+                { pricingCategory: "30分", price: 550 },
+                { pricingCategory: "45分", price: 800 },
+            ],
+        },
+    },
+];
+
+const testDay: Day = {
+    workHours: { startTime: 9, endTime: 18 },
+    breakHours: { startTime: 13, endTime: 14 },
+};
 
 const HostDayView = ({ plans, settings, spaceId }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -323,7 +469,7 @@ const HostDayView = ({ plans, settings, spaceId }) => {
     return (
         <div className="select-none space-y-4">
             <div>
-                <DaysOfWeekOverride data={overrideData() as DaysOfWeekProps} />
+                <HourlyOverride day={testDay} data={testData} />
             </div>
             <div className="border-t border-b border-gray-100 py-4">
                 <button

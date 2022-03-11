@@ -17,11 +17,14 @@ import {
 } from "src/utils";
 import { getSession, signIn } from "next-auth/react";
 import createApolloClient from "src/apollo/apolloClient";
-import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
+import {
+    GET_PRICE_PLANS,
+    GET_SPACE_BY_ID,
+} from "src/apollo/queries/space.queries";
 import moment from "moment";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 
-const Reserve = ({ space, start, end, duration, type, userSession }) => {
+const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [reservationComplete, setReservationComplete] = useState(null);
 
@@ -29,7 +32,7 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
     const endDateTime = moment(end);
 
     const dateDisplayFormat =
-        type === "DAILY" ? "YYYY-MM-DD" : "YYYY-MM-DD HH:MM";
+        type === "DAILY" ? "YYYY-MM-DD" : "YYYY-MM-DD HH:00";
 
     const [
         fetchPaymentMethods,
@@ -85,8 +88,12 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
             const { data } = await reserveSpace({
                 variables: {
                     input: {
-                        fromDateTime: startDateTime.unix(),
-                        toDateTime: endDateTime.unix(),
+                        fromDateTime:
+                            type === "DAILY"
+                                ? startDateTime.startOf("day").unix() * 1000
+                                : startDateTime.startOf("hour").unix() * 1000,
+                        duration,
+                        durationType: type,
                         spaceId,
                         paymentSourceId: selectedPaymentMethod,
                     },
@@ -112,9 +119,7 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
 
     const addressText = `〒${address.postalCode}${address.prefecture.name}${address.addressLine1}${address.addressLine2}`;
 
-    const hours = "hrs";
-    const price = "price";
-    const amount = "amount";
+    const taxableAmount = total / 1.1;
 
     return (
         <MainLayout userSession={userSession}>
@@ -147,7 +152,7 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
                                 </h2>
                                 <div className="space-y-2">
                                     <p className="flex justify-between">
-                                        <span>Check In:</span>
+                                        <span>チェックイン:</span>
                                         <span className="font-bold">
                                             {startDateTime.format(
                                                 dateDisplayFormat
@@ -155,7 +160,7 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span>Check Out:</span>
+                                        <span>チェックアウト:</span>
                                         <span className="font-bold">
                                             {endDateTime.format(
                                                 dateDisplayFormat
@@ -163,25 +168,33 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span>Duration:</span>
+                                        <span>期間:</span>
                                         <span className="font-bold">
-                                            {" "}
                                             {duration}
                                             {durationSuffix(type)}
                                         </span>
                                     </p>
+                                </div>
+                                <div className="h-0 border-t border-gray-200"></div>
+                                <div className="space-y-2">
                                     <p className="flex justify-between">
-                                        <span>Price:</span>
+                                        <span>小計:</span>
                                         <span className="font-bold">
-                                            {" "}
-                                            {price}
+                                            {PriceFormatter(taxableAmount)}
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span>Total:</span>
+                                        <span>税金:</span>
                                         <span className="font-bold">
-                                            {" "}
-                                            {amount}
+                                            {PriceFormatter(
+                                                total - taxableAmount
+                                            )}
+                                        </span>
+                                    </p>
+                                    <p className="flex justify-between">
+                                        <span>会計:</span>
+                                        <span className="font-bold">
+                                            {PriceFormatter(total)}
                                         </span>
                                     </p>
                                 </div>
@@ -250,7 +263,7 @@ const Reserve = ({ space, start, end, duration, type, userSession }) => {
                                                     selectedPaymentMethod
                                                 }
                                             />
-                                            <div>
+                                            <div className="mt-4">
                                                 <Button
                                                     type="button"
                                                     variant={
@@ -311,11 +324,29 @@ export async function getServerSideProps(context) {
     const decodedData = JSON.parse(fromBase64(data));
     const { start, end, duration, type } = decodedData;
 
+    const startDateTime = moment(start);
+    const fromDateTime =
+        type === "DAILY"
+            ? startDateTime.startOf("day").unix() * 1000
+            : startDateTime.startOf("hour").unix() * 1000;
+
     const client = createApolloClient();
     const spaceData = await client.query({
         query: GET_SPACE_BY_ID,
         variables: { id },
     });
+    const reservationData = await client.query({
+        query: GET_PRICE_PLANS,
+        variables: {
+            input: {
+                fromDateTime,
+                duration,
+                durationType: type,
+                spaceId: id,
+            },
+        },
+    });
+    const { total } = reservationData.data.getApplicablePricePlans;
     const userSession = await getSession(context);
     return {
         props: {
@@ -324,6 +355,7 @@ export async function getServerSideProps(context) {
             end,
             duration,
             type,
+            total,
             userSession,
         },
     };
