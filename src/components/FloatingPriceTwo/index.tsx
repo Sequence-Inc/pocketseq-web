@@ -100,7 +100,7 @@ export const FloatingPriceTwo = ({
         if (type === "DAILY" || (type !== "DAILY" && end)) {
             setIsLoadingPrices(true);
             try {
-                const applicablePP = await getApplicablePricePlans({
+                const applicablePP: any = await getApplicablePricePlans({
                     variables: {
                         input: {
                             fromDateTime: start.unix() * 1000,
