@@ -41,7 +41,6 @@ export const FloatingPriceTwo = ({
     const [endDateTime, setEndDateTime] = useState<Moment>();
 
     const [applicablePricePlans, setApplicablePricePlans] = useState<any>();
-    // const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(false);
 
     const [
         getApplicablePricePlans,
@@ -122,7 +121,7 @@ export const FloatingPriceTwo = ({
     }, [startDateTime, duration, durationType]);
 
     useEffect(() => {
-        setApplicablePricePlans(applicablePP);
+        setApplicablePricePlans(applicablePP?.getApplicablePricePlans);
     }, [applicablePP]);
 
     const price = FormatPrice("HOURLY", pricePlans, true, true);
