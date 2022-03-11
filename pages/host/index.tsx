@@ -121,7 +121,7 @@ const HostDashboard = ({ userSession }) => {
         } else {
             content = (
                 <div className="w-full sm:w-2/3 mx-auto">
-                    <div className="my-6 text-gray-700 text-left">
+                    <div className="my-6 text-gray-700 text-left space-y-3">
                         <h3 className="font-bold text-lg">
                             ご登録ありがとうございます。
                         </h3>
@@ -132,7 +132,8 @@ const HostDashboard = ({ userSession }) => {
                             <br />
                             3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
                             <br />
-                            <br />
+                        </p>
+                        <p>
                             お問い合わせ：
                             <a href="mailto:info@timeqonnect.jp">
                                 info@timeqonnect.jp
