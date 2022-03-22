@@ -8,7 +8,8 @@ import HostLayout from "src/layouts/HostLayout";
 import { format } from "date-fns";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
-import { config } from "src/utils";
+import { config, reservationStatusJapanify } from "src/utils";
+import Link from "next/link";
 
 const noOfItems = 10;
 
@@ -40,15 +41,27 @@ const ReservationList = ({ userSession }) => {
             Header: name.toUpperCase(),
             accessor: key,
             childClassName: childClassname(key),
-            Cell: ({ column, value }) => {
+            Cell: ({ column, value, row }) => {
                 if (!value) return "";
                 if (column.id === "space") {
-                    return value.name;
+                    return (
+                        <Link href={`/user/reservation/${row.original.id}`}>
+                            <a className="font-bold hover:text-gray-700">
+                                {value.name}
+                            </a>
+                        </Link>
+                    );
                 } else if (
                     column.id === "fromDateTime" ||
                     column.id === "toDateTime"
                 ) {
                     return format(new Date(value), "yyyy-MM-dd, HH:mm");
+                } else if (column.id === "status") {
+                    return (
+                        <div className="text-center">
+                            {reservationStatusJapanify(value)}
+                        </div>
+                    );
                 } else return value;
             },
         }));
@@ -83,11 +96,11 @@ const ReservationList = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - {config.appName}</title>
+                <title>ご予約リスト - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <h2 className="text-lg font-medium leading-6 text-gray-900">
-                    My Reservation Lists
+                    ご予約リスト
                 </h2>
                 {columns && (
                     <Table

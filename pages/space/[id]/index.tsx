@@ -26,6 +26,7 @@ import { useRouter } from "next/router";
 import createApolloClient from "src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
+import { durationSuffix } from "src/components/Space/PricingPlan";
 
 const ContentSection = ({
     title,
@@ -80,6 +81,42 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             router.push(
                 `/messages?name=${host?.name}&recipientIds=${host?.accountId}`
             );
+    };
+
+    const pricePlansDaily = [];
+    const pricePlansHourly = [];
+    const pricePlansMinutes = [];
+
+    pricePlans.map((plan) => {
+        if (plan.type === "DAILY") {
+            pricePlansDaily.push(plan);
+        } else if (plan.type === "HOURLY") {
+            pricePlansHourly.push(plan);
+        } else if (plan.type === "MINUTES") {
+            pricePlansMinutes.push(plan);
+        }
+    });
+
+    pricePlansDaily.sort((a, b) => a.duration - b.duration);
+    pricePlansHourly.sort((a, b) => a.duration - b.duration);
+    pricePlansMinutes.sort((a, b) => a.duration - b.duration);
+
+    const renderPricePlanItem = (plan, index) => {
+        return (
+            <div
+                key={`${plan.type}-${index}`}
+                className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
+            >
+                <h3>{plan.title}</h3>
+                <p>
+                    {PriceFormatter(plan.amount)}
+                    <span className="text-base text-gray-700">
+                        /{plan.duration}
+                        {durationSuffix(plan.type)}
+                    </span>
+                </p>
+            </div>
+        );
     };
 
     return (
@@ -206,26 +243,15 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             <h2 className="mb-4 text-lg font-bold text-gray-700">
                                 料金プラン
                             </h2>
-                            {pricePlans.map((plan, index) => (
-                                <div
-                                    key={index}
-                                    className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
-                                >
-                                    <h3>{plan.title}</h3>
-                                    <p>
-                                        {PriceFormatter(plan.amount)}
-                                        <span className="text-base text-gray-700">
-                                            /
-                                            {plan.duration > 1
-                                                ? plan.duration
-                                                : ""}
-                                            {plan.type === "HOURLY"
-                                                ? "時間"
-                                                : "日"}
-                                        </span>
-                                    </p>
-                                </div>
-                            ))}
+                            {pricePlansDaily.map((plan, index) =>
+                                renderPricePlanItem(plan, index)
+                            )}
+                            {pricePlansHourly.map((plan, index) =>
+                                renderPricePlanItem(plan, index)
+                            )}
+                            {pricePlansMinutes.map((plan, index) =>
+                                renderPricePlanItem(plan, index)
+                            )}
                         </div>
                         {/* divider */}
                         <div className="w-full my-6 border-t border-gray-300" />

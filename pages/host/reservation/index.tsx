@@ -13,7 +13,8 @@ import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import { LoadingSpinner } from "@comp";
 import { CalendarIcon } from "@heroicons/react/outline";
-import { config } from "src/utils";
+import { config, reservationStatusJapanify } from "src/utils";
+import Link from "next/link";
 
 const noOfItems = 10;
 
@@ -26,6 +27,7 @@ const ReservationList = ({ userSession }) => {
         fetchPolicy: "network-only",
         variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} },
     });
+
     const [approveReservation] = useMutation(APPROVE_RESERVATION);
 
     const keys = [
@@ -60,15 +62,27 @@ const ReservationList = ({ userSession }) => {
             Header: name.toUpperCase(),
             accessor: key,
             childClassName: childClassname(key),
-            Cell: ({ column, value }) => {
+            Cell: ({ column, value, row }) => {
                 if (!value) return "";
                 if (column.id === "space") {
-                    return value.name;
+                    return (
+                        <Link href={`/host/reservation/${row.original.id}`}>
+                            <a className="font-bold hover:text-gray-700">
+                                {value.name}
+                            </a>
+                        </Link>
+                    );
                 } else if (
                     column.id === "fromDateTime" ||
                     column.id === "toDateTime"
                 ) {
                     return format(new Date(value), "yyyy-MM-dd, HH:mm");
+                } else if (column.id === "status") {
+                    return (
+                        <div className="text-center">
+                            {reservationStatusJapanify(value)}
+                        </div>
+                    );
                 } else return value;
             },
         }));
@@ -79,12 +93,13 @@ const ReservationList = ({ userSession }) => {
             Cell: ({ row }: { row: any }) => {
                 if (row.original.approved) {
                     return (
-                        <button
+                        <Button
+                            type="button"
                             className="flex mx-auto focus:outline-none disabled:cursor-not-allowed"
                             disabled
                         >
-                            Approved
-                        </button>
+                            承認済み
+                        </Button>
                     );
                 }
                 return (
@@ -93,7 +108,7 @@ const ReservationList = ({ userSession }) => {
                         className="flex mx-auto focus:outline-none"
                         onClick={() => handleApprove(row.original.id)}
                     >
-                        Approve
+                        承認する
                     </Button>
                 );
             },
@@ -149,7 +164,7 @@ const ReservationList = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - {config.appName}</title>
+                <title>ご予約リスト - {config.appName}</title>
             </Head>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
@@ -164,7 +179,7 @@ const ReservationList = ({ userSession }) => {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Reservations
+                                            予約
                                         </h1>
                                     </div>
                                 </div>

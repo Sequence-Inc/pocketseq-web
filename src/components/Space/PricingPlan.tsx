@@ -162,15 +162,15 @@ const PricingPlan = ({
         return (
             <div className="flex w-full space-x-6">
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">DAILY</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">日</h3>
                     {renderPlanItemsFromCategory(daily)}
                 </div>
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">HOURLY</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">時間</h3>
                     {renderPlanItemsFromCategory(hourly)}
                 </div>
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">MINUTES</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">分</h3>
                     {renderPlanItemsFromCategory(minutes)}
                 </div>
             </div>
@@ -185,15 +185,15 @@ const PricingPlan = ({
         return (
             <div className="flex w-full space-x-6">
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">DAILY</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">日</h3>
                     {renderPlanItemsFromCategory(daily)}
                 </div>
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">HOURLY</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">時間</h3>
                     {renderPlanItemsFromCategory(hourly)}
                 </div>
                 <div className="w-full space-y-3">
-                    <h3 className="text-sm text-gray-500 font-bold">MINUTES</h3>
+                    <h3 className="text-sm text-gray-500 font-bold">分</h3>
                     {renderPlanItemsFromCategory(minutes)}
                 </div>
             </div>
@@ -237,13 +237,13 @@ const PricingPlan = ({
             )}
             <div className="w-full p-6 space-y-3">
                 <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
-                    Default price plans
+                    基本料金プラン
                 </h2>
                 {renderDefaultPricePlans()}
             </div>
             <div className="w-full p-6 space-y-3">
                 <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
-                    Additional price plans
+                    特別プラン
                 </h2>
                 {renderPricePlans()}
             </div>

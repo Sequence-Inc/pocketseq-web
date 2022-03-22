@@ -130,13 +130,12 @@ const Register = ({ userSession }) => {
                                     htmlFor="terms"
                                     className="ml-3 text-sm text-gray-500 align-baseline"
                                 >
-                                    I agree to{" "}
                                     <a
                                         href="#"
                                         className="inline-block text-gray-500 hover:text-primary"
                                         target="_blank"
                                     >
-                                        terms and conditions
+                                        利用規約に同意いたします
                                     </a>
                                 </label>
                             </div>

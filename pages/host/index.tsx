@@ -59,6 +59,40 @@ const HostDashboard = ({ userSession }) => {
     }
 
     if (error) {
+        if (error.message === "Your account is pending approval.") {
+            return (
+                <HostLayout userSession={userSession}>
+                    <Head>
+                        <title>ホスト管理 - {config.appName}</title>
+                    </Head>
+                    <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
+                        <div className="w-full sm:w-1/2 mx-auto h-full">
+                            <div className="mt-20 space-y-4 text-gray-600">
+                                <h3 className="font-bold text-lg">
+                                    ご登録ありがとうございます。
+                                </h3>
+                                <p>
+                                    アカウントの申請を承りました。
+                                    <br />
+                                    内容を確認致しまして、3営業日以内にご登録のアドレスへご連絡させていただきます。
+                                    <br />
+                                    3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
+                                </p>
+                                <p>
+                                    お問い合わせ：
+                                    <a
+                                        href="mailto:info@timeqonnect.jp"
+                                        className="text-gray-600 hover:text-gray-700 hover:underline"
+                                    >
+                                        info@timeqonnect.jp
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </Container>
+                </HostLayout>
+            );
+        }
         return (
             <HostLayout userSession={userSession}>
                 <Head>

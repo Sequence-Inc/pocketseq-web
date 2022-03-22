@@ -55,13 +55,13 @@ export const navigation = [
     },
     {
         name: "予約",
-        href: "/user/reservation-list",
+        href: "/user/reservation",
         Icon: CalendarIcon,
         roles: ["user"],
     },
     {
         name: "予約",
-        href: "/host/reservation-list",
+        href: "/host/reservation",
         Icon: CalendarIcon,
         roles: ["host"],
     },
