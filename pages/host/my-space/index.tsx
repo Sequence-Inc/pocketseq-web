@@ -108,7 +108,7 @@ const MySpace = ({ userSession }) => {
                             }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
-                            View
+                            確認
                         </button>
                         <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
@@ -119,7 +119,7 @@ const MySpace = ({ userSession }) => {
                             }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
-                            Edit
+                            編集
                         </button>
                     </div>
                 );

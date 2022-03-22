@@ -9,6 +9,8 @@ import {
     PAGINATION,
     SPACE_TYPES,
     SPACE_SETTING,
+    USER_ACCOUNT,
+    COMPANY_ACCOUNT,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -427,6 +429,51 @@ export const GET_PRICE_PLANS = gql`
                 amount
                 appliedTimes
             }
+        }
+    }
+`;
+
+export const GET_RESERVATION_BY_ID = gql`
+    query reservationById($id: ID!){
+        reservationById(id: $id){
+            id
+            reservationId
+            fromDateTime
+            toDateTime
+            status
+            updatedAt
+            createdAt
+            approved
+            approvedOn
+            reservee {
+                ${USER_ACCOUNT}
+                ${COMPANY_ACCOUNT}
+            }
+            space {
+                ${SPACE}
+            }
+            transaction {
+                id
+                amount
+                currency
+                status
+                paymentMethodInfo {
+                    brand
+                    last4
+                    country
+                    expYear
+                    expMonth
+                }
+            }
+        }
+    }
+`;
+
+export const CANCEL_RESERVATION = gql`
+    mutation cancelReservation($reservationId: ID!) {
+        cancelReservation(reservationId: $reservationId) {
+            message
+            action
         }
     }
 `;

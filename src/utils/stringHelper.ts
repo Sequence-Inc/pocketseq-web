@@ -136,3 +136,18 @@ export const toBase64 = (data: string): string => {
 export const fromBase64 = (data: string): string => {
     return Buffer.from(data, "base64").toString();
 };
+
+export const reservationStatusJapanify = (key: string): string => {
+    const map = {
+        RESERVED: "予約済み",
+        CANCELED: "キャンセル",
+        HOLD: "ホールド",
+        PENDING: "ペンディング",
+        FAILED: "FAILED",
+        DISAPPROVED: "DISAPPROVED",
+    };
+    if (map[key]) {
+        return map[key];
+    }
+    return key;
+};
