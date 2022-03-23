@@ -67,9 +67,7 @@ const ReservationList = ({ userSession }) => {
                 if (column.id === "space") {
                     return (
                         <Link href={`/host/reservation/${row.original.id}`}>
-                            <a className="font-bold hover:text-gray-700">
-                                {value.name}
-                            </a>
+                            <a className="hover:text-gray-700">{value.name}</a>
                         </Link>
                     );
                 } else if (
