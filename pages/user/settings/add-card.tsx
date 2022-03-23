@@ -34,12 +34,12 @@ const AddCard = ({ userSession }) => {
         error,
     } = useQuery(SETUP_INTENT, { fetchPolicy: "network-only" });
 
-    if (error) {
-        return <h3>An error occrred: {error.message} </h3>;
-    }
-
     if (setupIntentLoading) {
         return <LoadingSpinner />;
+    }
+
+    if (error) {
+        return <h3>An error occrred: {error.message} </h3>;
     }
 
     return (

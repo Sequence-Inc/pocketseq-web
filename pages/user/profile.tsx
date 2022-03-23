@@ -11,6 +11,7 @@ import Link from "next/link";
 import requireAuth from "src/utils/authecticatedRoute";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const tabs = [
     { name: "Profile", href: "#", current: true },
@@ -22,12 +23,7 @@ const HostDashboard = ({ userSession }) => {
         fetchPolicy: "network-only",
     });
 
-    if (loading)
-        return (
-            <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
-            </div>
-        );
+    if (loading) return <LoadingSpinner />;
 
     if (error)
         return (
