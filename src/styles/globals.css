@@ -17,6 +17,20 @@
     .h-content {
         height: calc(100vh - 8rem);
     }
+
+    /*
+        https://github.com/tailwindlabs/tailwindcss/discussions/2394
+        https://github.com/tailwindlabs/tailwindcss/pull/5732
+    */
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
 }
 
 .ant-picker-calendar-full

@@ -32,7 +32,7 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
     const endDateTime = moment(end);
 
     const dateDisplayFormat =
-        type === "DAILY" ? "YYYY-MM-DD" : "YYYY-MM-DD HH:00";
+        type === "DAILY" ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm";
 
     const [
         fetchPaymentMethods,
@@ -91,7 +91,7 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                         fromDateTime:
                             type === "DAILY"
                                 ? startDateTime.startOf("day").unix() * 1000
-                                : startDateTime.startOf("hour").unix() * 1000,
+                                : startDateTime.unix() * 1000,
                         duration,
                         durationType: type,
                         spaceId,
