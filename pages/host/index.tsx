@@ -32,7 +32,7 @@ interface IHost {
     name: string;
     stripeAccountId: string;
     photoId: any;
-    account: IAccount;
+    stripeAccount: IAccount;
     approved: boolean;
 }
 
@@ -111,7 +111,7 @@ const HostDashboard = ({ userSession }) => {
         );
     }
     if (data) {
-        if (data?.host?.account?.balance) {
+        if (data?.host?.stripeAccount?.balance) {
             hasStripeAccount = true;
         }
         if (data?.host?.photoId?.large?.url) {
@@ -182,13 +182,13 @@ const HostDashboard = ({ userSession }) => {
             content = (
                 <div className="w-full sm:w-2/3 mx-auto space-y-4">
                     <PhotoIdUploader />
-                    <AddStripe account={data.host.account} />
+                    <AddStripe account={data.host.stripeAccount} />
                 </div>
             );
         } else if (!hasStripeAccount) {
             content = (
                 <div className="w-full sm:w-2/3 mx-auto">
-                    <AddStripe account={data.host.account} />
+                    <AddStripe account={data.host.stripeAccount} />
                 </div>
             );
         } else {

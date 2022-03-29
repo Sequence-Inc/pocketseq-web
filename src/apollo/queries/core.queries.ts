@@ -80,7 +80,7 @@ export const HOST = `
         ${PHOTO}
     }
     stripeAccountId
-    account {
+    stripeAccount {
         ${STRIPE_ACCOUNT}
     }
     createdAt

@@ -1,12 +1,17 @@
-import React from "react";
+import React, { Fragment, useRef, useState } from "react";
 import HostLayout from "src/layouts/HostLayout";
-import { Container } from "@element";
+import { Button, Container } from "@element";
 
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
-import { CalendarIcon, CreditCardIcon } from "@heroicons/react/outline";
+import {
+    CalendarIcon,
+    CreditCardIcon,
+    AnnotationIcon,
+} from "@heroicons/react/outline";
 import Head from "next/head";
 import {
+    ADD_REVIEW,
     CANCEL_RESERVATION,
     GET_RESERVATION_BY_ID,
 } from "src/apollo/queries/space.queries";
@@ -14,8 +19,16 @@ import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
+import { Dialog, Transition } from "@headlessui/react";
 
-const AddNewSpace = ({ userSession, id }) => {
+const ReservationById = ({ userSession, id }) => {
+    const [open, setOpen] = useState(false);
+
+    const [ratings, setRatings] = useState(1);
+    const [commentText, setCommentText] = useState("");
+
+    const cancelButtonRef = useRef(null);
+
     const {
         data,
         loading: reservationLoading,
@@ -28,6 +41,7 @@ const AddNewSpace = ({ userSession, id }) => {
     });
 
     const [cancelReservation] = useMutation(CANCEL_RESERVATION);
+    const [addReview, { loading: addReviewLoading }] = useMutation(ADD_REVIEW);
 
     if (reservationLoading) {
         return <LoadingSpinner />;
@@ -51,6 +65,10 @@ const AddNewSpace = ({ userSession, id }) => {
         transaction,
     } = reservationById;
 
+    const reservationEndDate = moment(toDateTime);
+    const displayReviewForm =
+        reservationEndDate.isBefore(moment()) && status === "RESERVED";
+
     const handleCancel = async () => {
         const choice = confirm(
             "Are you sure you want to cancel this reservation? Cancellation fee may apply!"
@@ -58,13 +76,31 @@ const AddNewSpace = ({ userSession, id }) => {
         if (choice) {
             try {
                 const { data } = await cancelReservation({
-                    variables: { reservationId: id },
+                    variables: { input: { reservationId: id } },
                 });
                 alert(`${data.cancelReservation.message}`);
             } catch (error) {
                 alert(`Error! ${error.message}`);
             }
             refetch();
+        }
+    };
+
+    const handleAddReview = async () => {
+        try {
+            const { data } = await addReview({
+                variables: {
+                    input: {
+                        spaceId: space.id,
+                        rating: ratings,
+                        comment: commentText,
+                    },
+                },
+            });
+            setOpen(false);
+            alert("Successfully added review.");
+        } catch (error) {
+            alert(`Error: ${error.message}`);
         }
     };
 
@@ -95,6 +131,29 @@ const AddNewSpace = ({ userSession, id }) => {
                     </div>
                 </Container>
             </div>
+            <Container className="py-4 sm:py-6 lg:py-8">
+                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div className="flex items-center justify-between px-4 py-5 sm:px-6">
+                        <div>
+                            <h3 className="text-lg leading-6 font-bold text-gray-700">
+                                Add review
+                            </h3>
+                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                                Tell us about your experience
+                            </p>
+                        </div>
+                        <div>
+                            <Button
+                                type="button"
+                                variant="primary"
+                                onClick={() => setOpen(true)}
+                            >
+                                Add review
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Container>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
@@ -271,11 +330,145 @@ const AddNewSpace = ({ userSession, id }) => {
                     </div>
                 </div>
             </Container>
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog
+                    as="div"
+                    className="fixed z-10 inset-0 overflow-y-auto"
+                    initialFocus={cancelButtonRef}
+                    onClose={setOpen}
+                >
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        </Transition.Child>
+
+                        {/* This element is to trick the browser into centering the modal contents. */}
+                        <span
+                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                            aria-hidden="true"
+                        >
+                            &#8203;
+                        </span>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        >
+                            <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        <AnnotationIcon
+                                            className="h-6 w-6 text-green-600"
+                                            aria-hidden="true"
+                                        />
+                                    </div>
+                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left divide-y">
+                                        <div>
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg leading-6 font-medium text-gray-900"
+                                            >
+                                                Add review
+                                            </Dialog.Title>
+                                            <p className="mt-3 text-sm text-gray-500">
+                                                Tell us about your experience
+                                                with {space.name}
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 pt-4 mb-4 space-y-3">
+                                            <div className="text-sm text-gray-500">
+                                                <span className="inline-block w-20 font-bold">
+                                                    Rating
+                                                </span>
+                                                <span>
+                                                    <select
+                                                        value={ratings}
+                                                        onChange={(event) => {
+                                                            setRatings(
+                                                                parseInt(
+                                                                    event.target
+                                                                        .value
+                                                                )
+                                                            );
+                                                        }}
+                                                        className="w-20 py-1 px-2 border-gray-200 rounded"
+                                                    >
+                                                        <option value="1">
+                                                            1
+                                                        </option>
+                                                        <option value="2">
+                                                            2
+                                                        </option>
+                                                        <option value="3">
+                                                            3
+                                                        </option>
+                                                        <option value="4">
+                                                            4
+                                                        </option>
+                                                        <option value="5">
+                                                            5
+                                                        </option>
+                                                    </select>
+                                                </span>
+                                            </div>
+                                            <div className="flex text-sm text-gray-500">
+                                                <span className="inline-block w-20 font-bold">
+                                                    Comment
+                                                </span>
+                                                <textarea
+                                                    className="py-1 px-2 w-64 border-gray-200 rounded"
+                                                    value={commentText}
+                                                    onChange={(event) => {
+                                                        setCommentText(
+                                                            event.target.value
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                    <button
+                                        type="button"
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onClick={() => {
+                                            handleAddReview();
+                                        }}
+                                    >
+                                        Add review
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                        onClick={() => setOpen(false)}
+                                        ref={cancelButtonRef}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </HostLayout>
     );
 };
 
-export default AddNewSpace;
+export default ReservationById;
 
 export const getServerSideProps = async (context) => {
     const userSession = await getSession(context);

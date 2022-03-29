@@ -1,35 +1,86 @@
-import React, { useState } from "react";
-import HostLayout from "src/layouts/HostLayout";
-import useAddSpace from "@hooks/useAddSpace";
-import { Container } from "@element";
-
-import useTranslation from "next-translate/useTranslation";
-import { getSession } from "next-auth/react";
-import requireAuth from "src/utils/authecticatedRoute";
-import { CalendarIcon, CreditCardIcon } from "@heroicons/react/outline";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import Head from "next/head";
-import { GET_RESERVATION_BY_ID } from "src/apollo/queries/space.queries";
-import { useQuery } from "@apollo/client";
+import { getSession } from "next-auth/react";
 import moment from "moment";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+    CalendarIcon,
+    CreditCardIcon,
+    ExclamationIcon,
+} from "@heroicons/react/outline";
+import { Dialog, Transition } from "@headlessui/react";
+
+import HostLayout from "src/layouts/HostLayout";
+import { Button, Container } from "@element";
+import requireAuth from "src/utils/authecticatedRoute";
+import { GET_RESERVATION_BY_ID } from "src/apollo/queries/space.queries";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
+import {
+    APPROVE_RESERVATION,
+    CANCEL_RESERVATION_HOST,
+} from "src/apollo/queries/host.queries";
 
-const AddNewSpace = ({ userSession, id }) => {
+const ReservationById = ({ userSession, id }) => {
+    const [open, setOpen] = useState(false);
+
+    const [cancelChargePercent, setCancelChargePercent] = useState(0);
+    const [cancelChargeAmount, setCancelChargeAmount] = useState(0);
+    const [cancelRemarks, setCancelRemarks] = useState("");
+
+    const cancelButtonRef = useRef(null);
+
     const {
         data,
         loading: reservationLoading,
         error,
+        refetch,
     } = useQuery(GET_RESERVATION_BY_ID, {
         variables: {
             id,
         },
     });
 
+    const [approveReservation] = useMutation(APPROVE_RESERVATION);
+    const [
+        cancelReservation,
+        { loading: cancelReservationLoading, error: cancelReservationError },
+    ] = useMutation(CANCEL_RESERVATION_HOST);
+
+    const handleApprove = async (reservationId: string) => {
+        try {
+            await approveReservation({
+                variables: { reservationId },
+            });
+            alert("Approved");
+            refetch();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const handleReservationCancel = async (
+        reservationId,
+        cancelCharge,
+        remarks
+    ) => {
+        try {
+            const { data } = await cancelReservation({
+                variables: { input: { reservationId, cancelCharge, remarks } },
+            });
+            setOpen(false);
+            alert(data.cancelReservation.message);
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
+    };
+
     if (reservationLoading) {
         return <LoadingSpinner />;
     }
     if (error) {
-        return <h3>Error</h3>;
+        console.log(error);
+        return <h3>Error: {error.message}</h3>;
     }
 
     const { reservationById } = data;
@@ -76,15 +127,44 @@ const AddNewSpace = ({ userSession, id }) => {
             </div>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div className="px-4 py-5 sm:px-6">
-                        <h3 className="text-lg leading-6 font-bold text-gray-700">
-                            {space.name}
-                        </h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                            {moment(fromDateTime).format("YYYY/MM/DD HH:mm")}
-                            から
-                            {moment(toDateTime).format("YYYY/MM/DD HH:mm")}まで
-                        </p>
+                    <div className="flex items-center justify-between px-4 py-5 sm:px-6">
+                        <div className="">
+                            <h3 className="text-lg leading-6 font-bold text-gray-700">
+                                {space.name}
+                            </h3>
+                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                                {moment(fromDateTime).format(
+                                    "YYYY/MM/DD HH:mm"
+                                )}
+                                から
+                                {moment(toDateTime).format("YYYY/MM/DD HH:mm")}
+                                まで
+                            </p>
+                        </div>
+                        {status !== "CANCELED" && (
+                            <div className="flex w-60 space-x-4 items-center">
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setOpen(true);
+                                    }}
+                                >
+                                    キャンセル
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    variant={approved ? "disabled" : "primary"}
+                                    disabled={approved}
+                                    onClick={() => {
+                                        handleApprove(id);
+                                    }}
+                                >
+                                    {approved ? "承認済み" : "承認する"}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                         <dl className="sm:divide-y sm:divide-gray-200">
@@ -232,11 +312,199 @@ const AddNewSpace = ({ userSession, id }) => {
                     </div>
                 </div>
             </Container>
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog
+                    as="div"
+                    className="fixed z-10 inset-0 overflow-y-auto"
+                    initialFocus={cancelButtonRef}
+                    onClose={setOpen}
+                >
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        </Transition.Child>
+
+                        {/* This element is to trick the browser into centering the modal contents. */}
+                        <span
+                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                            aria-hidden="true"
+                        >
+                            &#8203;
+                        </span>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        >
+                            <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        <ExclamationIcon
+                                            className="h-6 w-6 text-red-600"
+                                            aria-hidden="true"
+                                        />
+                                    </div>
+                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left divide-y">
+                                        <div>
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg leading-6 font-medium text-gray-900"
+                                            >
+                                                予約をキャンセルする
+                                            </Dialog.Title>
+                                            <p className="mt-3 text-sm text-gray-500">
+                                                この予約をキャンセルしてもよろしいですか？
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 pt-4 mb-4 space-y-3">
+                                            <div className="text-sm text-gray-500">
+                                                <span className="inline-block w-40 font-bold">
+                                                    予約番号
+                                                </span>
+                                                <span>{reservationId}</span>
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                <span className="inline-block w-40 font-bold">
+                                                    本料金
+                                                </span>
+                                                <span>
+                                                    {PriceFormatter(
+                                                        transaction.amount
+                                                    )}
+                                                    <span className="text-xs">
+                                                        (税込)
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                <span className="inline-block w-40 font-bold">
+                                                    キャンセル料金％
+                                                </span>
+                                                <span>
+                                                    <input
+                                                        disabled={
+                                                            cancelReservationLoading
+                                                        }
+                                                        type="number"
+                                                        min={0}
+                                                        max={100}
+                                                        className="px-2 py-1 border-gray-200 rounded mr-2"
+                                                        value={
+                                                            cancelChargePercent
+                                                        }
+                                                        onChange={(event) => {
+                                                            const value =
+                                                                parseFloat(
+                                                                    event.target
+                                                                        .value
+                                                                );
+                                                            if (value < 0) {
+                                                                alert(
+                                                                    "Cancel charge can not be less than 0%."
+                                                                );
+                                                            } else if (
+                                                                value > 100
+                                                            ) {
+                                                                alert(
+                                                                    "Cancel charge can not be more than 100%"
+                                                                );
+                                                            } else {
+                                                                setCancelChargePercent(
+                                                                    value
+                                                                );
+                                                            }
+                                                        }}
+                                                    />
+                                                    %
+                                                </span>
+                                            </div>
+                                            <div className="flex text-sm text-gray-500">
+                                                <span className="inline-block w-40 font-bold">
+                                                    キャンセル理由
+                                                </span>
+                                                <span>
+                                                    <textarea
+                                                        disabled={
+                                                            cancelReservationLoading
+                                                        }
+                                                        className="px-2 py-1 border-gray-200 rounded mr-2"
+                                                        value={cancelRemarks}
+                                                        onChange={(event) => {
+                                                            setCancelRemarks(
+                                                                event.target
+                                                                    .value
+                                                            );
+                                                        }}
+                                                    />
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="mt-4 pt-4 mb-4 space-y-3">
+                                            <div className="text-sm text-gray-500">
+                                                <span className="inline-block w-40 font-bold">
+                                                    キャンセル料金
+                                                </span>
+                                                <span className="font-bold">
+                                                    {PriceFormatter(
+                                                        transaction.amount *
+                                                            (cancelChargePercent /
+                                                                100)
+                                                    )}
+                                                    <span className="text-xs font-normal">
+                                                        (税込)
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                    <button
+                                        type="button"
+                                        disabled={cancelReservationLoading}
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onClick={() => {
+                                            handleReservationCancel(
+                                                id,
+                                                cancelChargePercent,
+                                                cancelRemarks
+                                            );
+                                        }}
+                                    >
+                                        Cancel seservation
+                                    </button>
+                                    <button
+                                        type="button"
+                                        disabled={cancelReservationLoading}
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                        onClick={() => setOpen(false)}
+                                        ref={cancelButtonRef}
+                                    >
+                                        Do not cancel resrvation
+                                    </button>
+                                </div>
+                            </div>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </HostLayout>
     );
 };
 
-export default AddNewSpace;
+export default ReservationById;
 
 export const getServerSideProps = async (context) => {
     const userSession = await getSession(context);

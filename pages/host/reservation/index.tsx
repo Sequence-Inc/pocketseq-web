@@ -89,7 +89,10 @@ const ReservationList = ({ userSession }) => {
             Header: "ACTION",
             accessor: "action",
             Cell: ({ row }: { row: any }) => {
-                if (row.original.approved) {
+                if (
+                    row.original.approved ||
+                    row.original.status === "CANCELED"
+                ) {
                     return (
                         <Button
                             type="button"
