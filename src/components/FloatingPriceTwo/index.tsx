@@ -29,12 +29,13 @@ export const FloatingPriceTwo = ({
     space: ISpace;
 }) => {
     const [start, setStart] = useState<Moment>();
+    const [hour, setHour] = useState(8);
+    const [minute, setMinute] = useState(0);
 
     const [duration, setDuration] = useState(options["DAILY"][0]);
     const [durationType, setDurationType] = useState<DurationType>("DAILY");
     const [durationOptions, setDurationOptions] = useState(options["DAILY"]);
 
-    const [checkInTime, setCheckInTime] = useState<Moment>();
     const [showCheckInTime, setShowCheckInTime] = useState(false);
 
     const [startDateTime, setStartDateTime] = useState<Moment>();
@@ -77,10 +78,10 @@ export const FloatingPriceTwo = ({
     useEffect(() => {
         if (start) {
             setStartDateTime(
-                getStartDateTime(start, durationType, checkInTime)
+                getStartDateTime(start, durationType, hour, minute)
             );
         }
-    }, [start, durationType, checkInTime]);
+    }, [start, duration, durationType, hour, minute]);
 
     useEffect(() => {
         if (startDateTime) {
@@ -91,9 +92,7 @@ export const FloatingPriceTwo = ({
             );
             setEndDateTime(endDateTime);
             const start =
-                durationType === "DAILY"
-                    ? startDateTime.startOf("day")
-                    : startDateTime.startOf("hour");
+                durationType === "DAILY" ? startDateTime : startDateTime;
             if (durationType === "DAILY") {
                 getApplicablePricePlans({
                     variables: {
@@ -153,9 +152,7 @@ export const FloatingPriceTwo = ({
                         </span>
                         {durationType === "DAILY"
                             ? startDateTime?.startOf("day").format("YYYY-MM-DD")
-                            : startDateTime
-                                  ?.startOf("hour")
-                                  .format("YYYY-MM-DD HH:00")}
+                            : startDateTime?.format("YYYY-MM-DD HH:mm")}
                     </div>
 
                     <div className="mt-2 text-base">
@@ -163,10 +160,8 @@ export const FloatingPriceTwo = ({
                             チェックアウト:
                         </span>
                         {durationType === "DAILY"
-                            ? endDateTime?.startOf("day").format("YYYY-MM-DD")
-                            : endDateTime
-                                  ?.startOf("hour")
-                                  .format("YYYY-MM-DD HH:00")}
+                            ? endDateTime?.format("YYYY-MM-DD")
+                            : endDateTime?.format("YYYY-MM-DD HH:mm")}
                     </div>
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
@@ -260,19 +255,20 @@ export const FloatingPriceTwo = ({
 
     const okayToBook = () => {
         if (durationType !== "DAILY") {
-            return (checkInTime && start) || false;
+            return (startDateTime && start) || false;
         } else {
             return start || false;
         }
     };
 
     return (
-        <div className="w-full md:sticky lg:w-96 md:top-20">
+        <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky lg:w-96 md:top-20">
             <div className="relative p-5 space-y-4 border border-gray-200 rounded-lg">
                 {/* price row */}
                 <div className="flex justify-between">
                     <Price amount={price} />
                     {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
+                    {startDateTime?.format("YYYY-MM-DD HH:mm")}
                 </div>
                 {/* date and time row */}
                 <div className="">
@@ -328,16 +324,55 @@ export const FloatingPriceTwo = ({
                             チェックイン時間
                         </p>
                         <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                            <DatePicker
-                                format="HH:00"
-                                onChange={(date) =>
-                                    setCheckInTime(date.startOf("hour"))
+                            <select
+                                value={hour}
+                                onChange={(event) =>
+                                    setHour(parseInt(event.target.value))
                                 }
-                                value={checkInTime}
-                                bordered={false}
-                                picker="time"
-                                className="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
-                            />
+                                className="border-0 py-1"
+                            >
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                            </select>
+                            時
+                            <select
+                                value={minute}
+                                onChange={(event) =>
+                                    setMinute(parseInt(event.target.value))
+                                }
+                                className="border-0 py-1"
+                            >
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            分
                         </div>
                     </div>
                 )}
@@ -371,15 +406,16 @@ export const FloatingPriceTwo = ({
 export const getStartDateTime = (
     start: Moment,
     durationType: DurationType,
-    checkInTime: Moment
+    hour: number,
+    minute: number
 ) => {
     const startDay = moment(start).format("YYYY-MM-DD");
 
     if (durationType !== "DAILY") {
-        const startTime = moment(checkInTime).format("HH:00");
-        return moment(startDay + " " + startTime, "YYYY-MM-DD HH:00").startOf(
-            "hour"
-        );
+        return moment(startDay)
+            .startOf("day")
+            .add(hour, "hours")
+            .add(minute, "minutes");
     } else {
         return moment(startDay, "YYYY-MM-DD").startOf("day");
     }
