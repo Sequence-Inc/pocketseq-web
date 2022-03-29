@@ -470,10 +470,23 @@ export const GET_RESERVATION_BY_ID = gql`
 `;
 
 export const CANCEL_RESERVATION = gql`
-    mutation cancelReservation($reservationId: ID!) {
-        cancelReservation(reservationId: $reservationId) {
+    mutation cancelReservation($input: CancelReservationInput!) {
+        cancelReservation(input: $input) {
             message
             action
+        }
+    }
+`;
+export const ADD_REVIEW = gql`
+    mutation addReview($input: GiveRatingInput!) {
+        giveRating(input: $input) {
+            id
+            rating
+            comment
+            spaceId
+            byAccountId
+            createdAt
+            updatedAt
         }
     }
 `;
