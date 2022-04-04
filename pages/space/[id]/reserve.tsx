@@ -147,7 +147,9 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                                     </p>
                                 </div>
                                 <div className="h-0 border-t border-gray-200"></div>
-                                <h2 className="font-bold">ご予約詳細</h2>
+                                <h2 className="font-bold">
+                                    Reservation Details
+                                </h2>
                                 <div className="space-y-2">
                                     <p className="flex justify-between">
                                         <span>チェックイン:</span>
@@ -211,18 +213,17 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                             {reservationComplete ? (
                                 <div className="space-y-3">
                                     <h3 className="font-bold text-lg text-green-800">
-                                        ご手配完了
+                                        Reservation complete
                                     </h3>
                                     <div className="space-y-1">
                                         <p>
-                                            ご予約会場:{" "}
                                             {
                                                 reservationComplete.reserveSpace
                                                     .description
                                             }
                                         </p>
                                         <p>
-                                            ご予約ID:{" "}
+                                            Reservation ID:{" "}
                                             {
                                                 reservationComplete.reserveSpace
                                                     .transactionId
@@ -233,14 +234,14 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                                         <div>
                                             <Link href="/user/profile">
                                                 <Button variant="primary">
-                                                    プロフィールへ
+                                                    Go to profile
                                                 </Button>
                                             </Link>
                                         </div>
                                         <div>
                                             <Link href="/">
                                                 <Button variant="secondary">
-                                                    ホーム画面に戻る
+                                                    Go back to home
                                                 </Button>
                                             </Link>
                                         </div>
@@ -278,7 +279,7 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                                                     }
                                                     onClick={handleReservation}
                                                 >
-                                                    お支払確認とご予約
+                                                    Pay and Reserve
                                                 </Button>
                                             </div>
                                         </div>
@@ -369,7 +370,7 @@ const PaymentMethods = ({
     return (
         <div>
             <div className=" flex justify-between items-center">
-                <h2 className="font-bold">お支払方法の選択</h2>
+                <h2 className="font-bold">Select a payment method</h2>
                 <Link href="/user/settings/add-card">
                     <a target="_blank">
                         <Button
@@ -377,7 +378,7 @@ const PaymentMethods = ({
                             variant="white"
                             className="inline-block"
                         >
-                            カード追加
+                            Add card
                         </Button>
                     </a>
                 </Link>
