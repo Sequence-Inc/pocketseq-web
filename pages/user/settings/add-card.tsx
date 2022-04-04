@@ -45,12 +45,12 @@ const AddCard = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Add card - {config.appName}</title>
+                <title>カードのご追加 - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 w-full">
                 <div className="space-y-6">
                     <h2 className="text-lg font-medium leading-6 text-gray-700">
-                        Add card
+                        カードのご追加
                     </h2>
                     <div className="space-y-6">
                         {setupIntentLoading && (
@@ -98,12 +98,12 @@ const CardForm = () => {
                     onReady={() => setLoading(false)}
                 />
                 <Button type="submit" variant="primary" disabled={loading}>
-                    Submit
+                    登録
                 </Button>
 
                 <div>
                     <Link href="/user/settings">
-                        <Button variant="secondary">Go back</Button>
+                        <Button variant="secondary">戻る</Button>
                     </Link>
                 </div>
             </div>

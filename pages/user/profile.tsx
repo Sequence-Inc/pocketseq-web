@@ -14,7 +14,7 @@ import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const tabs = [
-    { name: "Profile", href: "#", current: true },
+    { name: "プロフィール", href: "#", current: true },
     { name: "Calendar", href: "#", current: false },
     { name: "Recognition", href: "#", current: false },
 ];
@@ -43,15 +43,15 @@ const HostDashboard = ({ userSession }) => {
     const nameKana = `${profile.lastNameKana} ${profile.firstNameKana}`;
 
     const fields = {
-        Phone: "(555) 123-4567",
+        電話番号: "(555) 123-4567",
         Email: profile.email,
-        Name: name,
-        "Name (Kana)": nameKana,
+        姓名: name,
+        "姓名（カナ）": nameKana,
     };
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - {config.appName}</title>
+                <title>プロフィール - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <>
@@ -83,7 +83,9 @@ const HostDashboard = ({ userSession }) => {
                                                         className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                                                         aria-hidden="true"
                                                     />
-                                                    <span>Edit profile</span>
+                                                    <span>
+                                                        プロフィール修正
+                                                    </span>
                                                 </a>
                                             </Link>
                                         </div>
