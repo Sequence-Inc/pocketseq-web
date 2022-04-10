@@ -10,7 +10,23 @@ import HostLayout from "src/layouts/HostLayout";
 import { config } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
-const DailyOverride = ({ userSession, space }) => {
+const DailyOverride = ({ userSession, spaceId }) => {
+    const { data, loading, error } = useQuery(GET_SPACE_BY_ID, {
+        variables: {
+            id: spaceId,
+        },
+        nextFetchPolicy: "network-only",
+    });
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+    if (error) {
+        return "Error: " + error.message;
+    }
+
+    const space = data?.spaceById;
+
     return (
         <HostLayout userSession={userSession}>
             <Head>
@@ -78,20 +94,18 @@ export const getServerSideProps = async (context) => {
     if (validation !== true) {
         return validation;
     } else {
-        const client = createApolloClient();
-        const space = await client.query({
-            query: GET_SPACE_BY_ID,
-            variables: {
-                id: context.query.id,
-            },
-            fetchPolicy: "network-only",
-        });
-
-        console.log(space.data.spaceById.pricePlans);
+        // const client = createApolloClient();
+        // const space = await client.query({
+        //     query: GET_SPACE_BY_ID,
+        //     variables: {
+        //         id: context.query.id,
+        //     },
+        //     fetchPolicy: "network-only",
+        // });
         return {
             props: {
                 userSession,
-                space: space.data?.spaceById,
+                spaceId: context.query.id,
             },
         };
     }

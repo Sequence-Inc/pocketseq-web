@@ -83,6 +83,17 @@ export const HOST = `
     stripeAccount {
         ${STRIPE_ACCOUNT}
     }
+    license {
+        id
+        type
+        approved
+        remarks
+        photos {
+            ${PHOTO}
+        }
+        createdAt
+        updatedAt
+    }
     createdAt
     updatedAt
 

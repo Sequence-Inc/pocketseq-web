@@ -172,6 +172,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 }
             }
         });
+
         overRides.map((_) => {
             if (value.isBetween(_.fromDate, _.toDate)) {
                 price = _.amount;
@@ -179,12 +180,16 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
             }
         });
 
+        let isClosed = false;
         let openingTime = null;
         let closingTime = null;
         let breakFromHr = null;
         let breakToHr = null;
 
         if (setting) {
+            if (setting.closed) {
+                isClosed = true;
+            }
             openingTime = getTimeFromFloat(setting.openingHr);
             closingTime = getTimeFromFloat(setting.closingHr);
             if (setting.breakFromHr) {
@@ -213,41 +218,52 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
             }
         }
 
-        const data = (
-            <div>
-                <div>
-                    {openingTime.hour}:
-                    {openingTime.minute < 10
-                        ? `0${openingTime.minute}`
-                        : openingTime.minute}
-                    時 〜{closingTime.hour}:
-                    {closingTime.minute < 10
-                        ? `0${closingTime.minute}`
-                        : closingTime.minute}
-                    時
-                </div>
-                {breakFromHr && breakToHr && (
-                    <div
-                        className="text-xs text-gray-400"
-                        style={selectedStyleText}
-                    >
-                        ({breakFromHr.hour}:
-                        {breakFromHr.minute < 10
-                            ? `0${breakFromHr.minute}`
-                            : breakFromHr.minute}
-                        時 〜{breakToHr.hour}:
-                        {breakToHr.minute < 10
-                            ? `0${breakToHr.minute}`
-                            : breakToHr.minute}
-                        時)
+        let data;
+        if (isClosed) {
+            data = (
+                <div className="h-full flex items-center justify-center">
+                    <div className="   font-bold" style={selectedStyleText}>
+                        休業
                     </div>
-                )}
-                <div>在庫: {setting?.totalStock}</div>
-                <div className="font-bold">
-                    {price && `${PriceFormatter(price)}/日`}
                 </div>
-            </div>
-        );
+            );
+        } else {
+            data = (
+                <div>
+                    <div>
+                        {openingTime.hour}:
+                        {openingTime.minute < 10
+                            ? `0${openingTime.minute}`
+                            : openingTime.minute}
+                        時 〜{closingTime.hour}:
+                        {closingTime.minute < 10
+                            ? `0${closingTime.minute}`
+                            : closingTime.minute}
+                        時
+                    </div>
+                    {breakFromHr && breakToHr && (
+                        <div
+                            className="text-xs text-gray-400"
+                            style={selectedStyleText}
+                        >
+                            ({breakFromHr.hour}:
+                            {breakFromHr.minute < 10
+                                ? `0${breakFromHr.minute}`
+                                : breakFromHr.minute}
+                            時 〜{breakToHr.hour}:
+                            {breakToHr.minute < 10
+                                ? `0${breakToHr.minute}`
+                                : breakToHr.minute}
+                            時)
+                        </div>
+                    )}
+                    <div>在庫: {setting?.totalStock}</div>
+                    <div className="font-bold">
+                        {price && `${PriceFormatter(price)}/日`}
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div className={cellClass} style={selectedStyle}>
@@ -299,7 +315,6 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
 
     const addPriceOverride = async ({ pricePlanId, input }) => {
         try {
-            console.log("add new price override", pricePlanId, input);
             const { data } = await priceOverrideMutation({
                 variables: {
                     pricePlanId,

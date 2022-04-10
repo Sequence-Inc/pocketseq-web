@@ -9,6 +9,7 @@ import { NetworkHelper } from "@comp";
 import {
     BasicAccountInfo,
     HostAccountInfo,
+    LicenseInfo,
 } from "src/components/AccountDetails";
 
 import { classNames, config } from "src/utils";
@@ -44,8 +45,8 @@ function AdminDashboard({ userSession, accountId }) {
             component: <BasicAccountInfo account={account} />,
         },
         {
-            title: "Bookings",
-            component: <>Bookings of {accountId}</>,
+            title: "Licenses",
+            component: <LicenseInfo account={account} />,
         },
     ]);
 

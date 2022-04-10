@@ -62,7 +62,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 //                         authorization,
 //                     },
 //                 });
-//                 debugger;
 //                 // retry the request, returning the new observable
 //                 return forward(operation);
 //             }
