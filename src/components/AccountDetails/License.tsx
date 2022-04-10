@@ -73,7 +73,7 @@ export const LicenseInfo = ({ account }) => {
                                                 })}{" "}
                                                 <button
                                                     type="button"
-                                                    className=""
+                                                    className="ml-2"
                                                 >
                                                     View photos
                                                 </button>
