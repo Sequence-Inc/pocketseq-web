@@ -40,7 +40,6 @@ const useRegister = () => {
             errorRef.current?.open(err.message);
         },
         onCompleted: ({ registerUser }) => {
-            // debugger;
             if (registerUser?.action === "verify-email") {
                 // login after successfull user register
                 const obj = { email: watch().email };

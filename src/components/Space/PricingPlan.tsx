@@ -489,7 +489,7 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
     const [durationOptions, setDurationOptions] =
         useState<number[]>(dailyOptions);
     const [cooldownTime, setCooldownTime] = useState<string>();
-    const [maintenanceFee, setMaintenanceFee] = useState<string>();
+    const [maintenanceFee, setMaintenanceFee] = useState<string>("0");
     const [fromDateActive, setFormDateActive] = useState<boolean>(false);
     const [toDateActive, setToDateActive] = useState<boolean>(false);
     const [fromDate, setFromDate] = useState<Moment>(moment().add(1, "d"));
@@ -685,7 +685,7 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
                     onChange={(event) => setCooldownTime(event.target.value)}
                 />
             </div>
-            <div>
+            {/* <div>
                 <div className="flex items-center">
                     <TextField
                         label={t("price-plan-handling-fee")}
@@ -700,7 +700,7 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
                     />
                     <div className="ml-2 text-lg text-gray-500">円</div>
                 </div>
-            </div>
+            </div> */}
             <div className="items-center flex-none sm:space-x-4 sm:flex">
                 <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
                     &nbsp;

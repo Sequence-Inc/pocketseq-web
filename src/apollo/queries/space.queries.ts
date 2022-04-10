@@ -145,6 +145,22 @@ export const MY_SPACES = gql`
     }
 `;
 
+export const GET_MY_LICENSE = gql`
+    query MyLicense{
+        getMyLicenses {
+            id
+            type
+            approved
+            remarks
+            photos {
+                ${PHOTO}
+            }
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
 // spacePricePlans {
 //     ${SPACE_PRICE_PLAN}
 // }
@@ -270,6 +286,17 @@ export const REMOVE_NEAREST_STATION = gql`
 export const GET_UPLOAD_TOKEN = gql`
     mutation AddSpacePhotos($spaceId: ID!, $imageInputs: [ImageUploadInput]!) {
         addSpacePhotos(spaceId: $spaceId, imageInputs: $imageInputs) {
+            type
+            url
+            mime
+            key
+        }
+    }
+`;
+
+export const GET_LICENSE_UPLOAD_TOKEN = gql`
+    mutation addLicense($input: AddLicenseInput!) {
+        addLicense(input: $input) {
             type
             url
             mime

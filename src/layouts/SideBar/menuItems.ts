@@ -8,6 +8,7 @@ import {
     MailIcon,
     UserCircleIcon,
     BadgeCheckIcon,
+    IdentificationIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
@@ -65,6 +66,7 @@ export const navigation = [
         Icon: CalendarIcon,
         roles: ["host"],
     },
+    
     {
         name: "施設管理",
         href: "/host/my-space",
@@ -83,6 +85,12 @@ export const navigation = [
     //     Icon: CogIcon,
     //     roles: ["host"],
     // },
+    {
+        name: "Licenses",
+        href: "/host/license",
+        Icon: IdentificationIcon,
+        roles: ["host"],
+    },
     {
         name: "トップに戻る",
         href: "/",

@@ -73,7 +73,6 @@ const useRegisterHost = () => {
             errorRef.current?.open(err.message);
         },
         onCompleted: ({ registerHost }) => {
-            // debugger;
             if (registerHost?.action === "verify-email") {
                 // login after successfull user register
                 const obj = {
@@ -90,7 +89,7 @@ const useRegisterHost = () => {
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
         formModel.hostType =
-            formData.hostType === "個人" ? "Individual" : "company";
+            formData.hostType === "個人" ? "Individual" : "Corporate";
         formModel.user && delete formModel.user.confirmPassword;
         formModel.company && delete formModel.company.confirmPassword;
         delete formModel.terms;
