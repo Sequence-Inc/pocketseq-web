@@ -26,7 +26,7 @@ export const SingleListItem = ({
         maximumCapacity,
         spaceSize,
         spaceTypes,
-        pricePlans,
+        spacePricePlans,
         address,
         photos,
     } = data;
@@ -37,6 +37,8 @@ export const SingleListItem = ({
     const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
 
     const photo: IPhoto = photos[0];
+
+    console.log(spacePricePlans);
 
     return (
         <div
@@ -60,7 +62,12 @@ export const SingleListItem = ({
                 {/* price section */}
                 <div className="flex items-end space-x-4">
                     <Price
-                        amount={FormatPrice("HOURLY", pricePlans, true, true)}
+                        amount={FormatPrice(
+                            "HOURLY",
+                            spacePricePlans,
+                            true,
+                            true
+                        )}
                     />
                     <Tag
                         Icon={StarIcon}

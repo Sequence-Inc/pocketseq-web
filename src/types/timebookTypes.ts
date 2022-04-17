@@ -13,6 +13,7 @@ export interface ISpace {
     nearestStations?: INearestStation[];
     numberOfSeats: number;
     pricePlans: ISpacePricePlan[];
+    spacePricePlans: ISpacePricePlan[];
     spaceSize: number;
     spaceTypes: ISpaceType[];
     address: IAddress;
