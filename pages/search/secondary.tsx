@@ -72,7 +72,7 @@ const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
                                 photos: [
                                     {
                                         medium: {
-                                            url: "/services/lifestyle.jpg",
+                                            url: result.thumbnail,
                                         },
                                     },
                                 ],
@@ -249,12 +249,12 @@ const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
                     </div>
                 </div>
                 <div className="sticky top-0 right-0 hidden w-full h-screen col-span-4 pt-16 lg:block">
-                    {/* <GoogleMap
+                    <GoogleMap
                         markers={locationMarkers}
                         type="multi"
                         activeIndex={activeIndex}
                         setActiveIndex={setActiveIndex}
-                    /> */}
+                    />
                 </div>
             </div>
         </MainLayout>
