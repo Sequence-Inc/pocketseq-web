@@ -19,6 +19,11 @@ export interface ISpace {
     address: IAddress;
     photos?: IPhoto[];
     host?: IHOST;
+    thumbnail?: string;
+    _geoloc?: {
+        lat: number;
+        lng: number;
+    };
 }
 
 export interface IAddress {

@@ -38,7 +38,7 @@ export const SingleListItem = ({
 
     const photo: IPhoto = photos[0];
 
-    console.log(spacePricePlans);
+    // console.log(spacePricePlans);
 
     return (
         <div
