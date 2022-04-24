@@ -140,7 +140,7 @@ const navigation = {
             name: "プライバシーポリシー",
             href: "/terms/privacy-policy",
         },
-        { name: "timeQonnect利用規約", href: "/about/terms" },
+        { name: config.appName + "利用規約", href: "/about/terms" },
         { name: "ゲスト規約", href: "/terms/guest-terms" },
         { name: "ホスト規約", href: "/terms/host-terms" },
 
