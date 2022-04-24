@@ -8,5 +8,5 @@ export * from "./stringHelper";
 export * from "./searchHelper";
 
 export const config = {
-    appName: "timeQonnect",
+    appName: "PocketseQ",
 };
