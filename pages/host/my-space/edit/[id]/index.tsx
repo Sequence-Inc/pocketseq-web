@@ -33,7 +33,6 @@ const EditNewSpace = ({ userSession }) => {
     } = useQuery(GET_SPACE_BY_ID, {
         variables: { id },
         fetchPolicy: "network-only",
-        skip: !id,
     });
 
     const steps = [
