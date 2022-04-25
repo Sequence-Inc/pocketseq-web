@@ -19,10 +19,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import createApolloClient from "src/apollo/apolloClient";
-import {
-    GET_AVAILABLE_SPACE_TYPES,
-    GET_TOP_PICK_SPACES,
-} from "src/apollo/queries/space.queries";
+import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import {
     ILocationMarker,
     IPhoto,
