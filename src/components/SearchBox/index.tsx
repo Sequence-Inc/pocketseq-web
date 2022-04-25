@@ -1,17 +1,14 @@
-import { useRouter } from "next/router";
-import { Button, Tag, TextField } from "@element";
+import React, { useState } from "react";
+import { Calendar } from "antd";
+import { Button, Tag } from "@element";
 import {
     CalendarIcon,
     FlagIcon,
     LocationMarkerIcon,
     SearchIcon,
 } from "@heroicons/react/solid";
-import React from "react";
 import { Popover } from "@element";
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
-import { selectionSetMatchesResult } from "@apollo/client/cache/inmemory/helpers";
+import moment from "moment";
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
@@ -53,7 +50,14 @@ export const SearchBox = ({
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
 
-    const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
+    const onPanelChange = (value, mode) => {
+        // console.log(value, mode);
+        console.log(value.format("YYYY-MM-DD"));
+    };
+    const disabledDate = (current) => {
+        // Can not select days before today and today
+        return current && current < moment().endOf("day");
+    };
 
     return (
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
@@ -191,12 +195,16 @@ export const SearchBox = ({
                         </Tag>
                     }
                 >
-                    <ul>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                    </ul>
+                    <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl">
+                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                            ご利用日
+                        </p>
+                        <Calendar
+                            disabledDate={disabledDate}
+                            fullscreen={false}
+                            onPanelChange={onPanelChange}
+                        />
+                    </div>
                 </Popover>
             </div>
             <div>
