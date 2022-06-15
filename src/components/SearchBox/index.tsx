@@ -54,6 +54,7 @@ export const SearchBox = ({
         // console.log(value, mode);
         console.log(value.format("YYYY-MM-DD"));
     };
+
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current < moment().endOf("day");
