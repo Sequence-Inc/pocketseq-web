@@ -103,7 +103,7 @@ const Teaser = () => {
                                         id="join-heading"
                                     >
                                         <img
-                                            src="/logo.svg"
+                                            src="/pocketseq-logo.svg"
                                             className="w-1/2 mx-auto"
                                         />
                                     </h2>
