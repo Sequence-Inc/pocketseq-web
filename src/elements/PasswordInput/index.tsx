@@ -37,7 +37,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
                 <div className="flex flex-wrap items-end justify-between">
                     <label
                         htmlFor={id}
-                        className="inline-block text-sm font-medium text-gray-700"
+                        className="inline-block text-sm font-bold text-gray-700"
                     >
                         {label}
                     </label>

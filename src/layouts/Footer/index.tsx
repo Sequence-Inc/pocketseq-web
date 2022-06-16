@@ -189,6 +189,6 @@ const navigation = {
         { name: "約款", href: "/about/terms" },
         { name: "特定商取引法に基づく表示", href: "/about/bylaws" },
         { name: "よくある質問", href: "#" },
-        { name: "お問い合わせ", href: "mailto:info@timebook.jp" },
+        { name: "お問い合わせ", href: "mailto:info@pocketseq.com" },
     ],
 };

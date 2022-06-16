@@ -204,7 +204,7 @@ export default function PrivaryPolicy({ userSession }) {
                         <br />
                         {config.appName} 担当者宛
                         <br />
-                        E-mail: info@timebook.jp
+                        E-mail: info@pocketseq.com
                         <br />
                         (なお、受付時間は、平日 10 時から 17
                         時までとさせていただきます。)
