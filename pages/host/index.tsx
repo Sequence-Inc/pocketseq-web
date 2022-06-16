@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
 import { Container } from "@element";
 import { HOST } from "src/apollo/queries/host.queries";
 import DashboardCard from "src/components/DashboardCard";
 import { PhotoIdUploader, AddStripe, LoadingSpinner } from "src/components";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import { config } from "src/utils";
 
 interface IBalanceInput {
     currency: string;
@@ -30,11 +32,11 @@ interface IHost {
     name: string;
     stripeAccountId: string;
     photoId: any;
-    account: IAccount;
+    stripeAccount: IAccount;
     approved: boolean;
 }
 
-const HostDashboard = ({ currentSession }) => {
+const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery<{ host: IHost }>(HOST, {
         fetchPolicy: "network-only",
     });
@@ -45,9 +47,9 @@ const HostDashboard = ({ currentSession }) => {
 
     if (loading) {
         return (
-            <HostLayout>
+            <HostLayout userSession={userSession}>
                 <Head>
-                    <title>ホスト管理 - time book</title>
+                    <title>ホスト管理 - {config.appName}</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <LoadingSpinner />
@@ -57,10 +59,44 @@ const HostDashboard = ({ currentSession }) => {
     }
 
     if (error) {
+        if (error.message === "Your account is pending approval.") {
+            return (
+                <HostLayout userSession={userSession}>
+                    <Head>
+                        <title>ホスト管理 - {config.appName}</title>
+                    </Head>
+                    <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
+                        <div className="w-full sm:w-1/2 mx-auto h-full">
+                            <div className="mt-20 space-y-4 text-gray-600">
+                                <h3 className="font-bold text-lg">
+                                    ご登録ありがとうございます。
+                                </h3>
+                                <p>
+                                    アカウントの申請を承りました。
+                                    <br />
+                                    内容を確認致しまして、3営業日以内にご登録のアドレスへご連絡させていただきます。
+                                    <br />
+                                    3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
+                                </p>
+                                <p>
+                                    お問い合わせ：
+                                    <a
+                                        href="mailto:info@timeqonnect.jp"
+                                        className="text-gray-600 hover:text-gray-700 hover:underline"
+                                    >
+                                        info@timeqonnect.jp
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </Container>
+                </HostLayout>
+            );
+        }
         return (
-            <HostLayout>
+            <HostLayout userSession={userSession}>
                 <Head>
-                    <title>ホスト管理 - time book</title>
+                    <title>ホスト管理 - {config.appName}</title>
                 </Head>
                 <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                     <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
@@ -75,15 +111,13 @@ const HostDashboard = ({ currentSession }) => {
         );
     }
     if (data) {
-        if (data?.host?.account?.balance) {
+        if (data?.host?.stripeAccount?.balance) {
             hasStripeAccount = true;
         }
         if (data?.host?.photoId?.large?.url) {
             hasPhotoId = true;
         }
     }
-
-    console.log(hasStripeAccount, hasPhotoId, data);
 
     const dashboardContent = (host) => {
         if (!host) return null;
@@ -120,10 +154,25 @@ const HostDashboard = ({ currentSession }) => {
             content = dashboardContent(data?.host);
         } else {
             content = (
-                <div className="sm:w-1/2 mx-auto">
-                    <div className="my-6 text-gray-700">
-                        Your account is pending approval from Timebook
-                        administration.
+                <div className="w-full sm:w-2/3 mx-auto">
+                    <div className="my-6 text-gray-700 text-left space-y-3">
+                        <h3 className="font-bold text-lg">
+                            ご登録ありがとうございます。
+                        </h3>
+                        <p>
+                            アカウントの申請を承りました。
+                            <br />
+                            内容を確認致しまして、3営業日以内にご登録のアドレスへご連絡させていただきます。
+                            <br />
+                            3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
+                            <br />
+                        </p>
+                        <p>
+                            お問い合わせ：
+                            <a href="mailto:info@timeqonnect.jp">
+                                info@timeqonnect.jp
+                            </a>
+                        </p>
                     </div>
                 </div>
             );
@@ -131,20 +180,20 @@ const HostDashboard = ({ currentSession }) => {
     } else {
         if (!hasStripeAccount && !hasPhotoId) {
             content = (
-                <div className="sm:w-1/2 mx-auto space-y-4">
+                <div className="w-full sm:w-2/3 mx-auto space-y-4">
                     <PhotoIdUploader />
-                    <AddStripe account={data.host.account} />
+                    <AddStripe account={data.host.stripeAccount} />
                 </div>
             );
         } else if (!hasStripeAccount) {
             content = (
-                <div className="sm:w-1/2 mx-auto">
-                    <AddStripe account={data.host.account} />
+                <div className="w-full sm:w-2/3 mx-auto">
+                    <AddStripe account={data.host.stripeAccount} />
                 </div>
             );
         } else {
             content = (
-                <div className="sm:w-1/2 mx-auto">
+                <div className="w-full sm:w-2/3 mx-auto">
                     <PhotoIdUploader />
                 </div>
             );
@@ -152,9 +201,9 @@ const HostDashboard = ({ currentSession }) => {
     }
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>ホスト管理 - time book</title>
+                <title>ホスト管理 - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 space-y-8 max-w-4xl h-full">
                 <div className="w-full mx-auto h-full space-y-6">{content}</div>
@@ -163,4 +212,22 @@ const HostDashboard = ({ currentSession }) => {
     );
 };
 
-export default withAuth(HostDashboard);
+export default HostDashboard;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

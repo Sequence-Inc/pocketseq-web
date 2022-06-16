@@ -12,12 +12,18 @@ export interface ISpace {
     name: string;
     nearestStations?: INearestStation[];
     numberOfSeats: number;
+    pricePlans: ISpacePricePlan[];
     spacePricePlans: ISpacePricePlan[];
     spaceSize: number;
     spaceTypes: ISpaceType[];
     address: IAddress;
     photos?: IPhoto[];
     host?: IHOST;
+    thumbnail?: string;
+    _geoloc?: {
+        lat: number;
+        lng: number;
+    };
 }
 
 export interface IAddress {

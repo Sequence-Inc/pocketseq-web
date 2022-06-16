@@ -7,7 +7,7 @@ export const HOST = gql`
             id
             name
             stripeAccountId
-            account {
+            stripeAccount {
                 ${STRIPE_ACCOUNT}
             }
             photoId{
@@ -29,34 +29,47 @@ export const ADD_PHOTO_ID = gql`
 `;
 
 export const RESERVATIONS = gql`
-    query Reservations($spaceId: ID, $paginate: PaginationOption, $filter: ReservationsFilter){
-        reservations(spaceId: $spaceId, paginate: $paginate, filter:$filter){
+    query Reservations(
+        $spaceId: ID
+        $paginate: PaginationOption
+        $filter: ReservationsFilter
+    ) {
+        reservations(spaceId: $spaceId, paginate: $paginate, filter: $filter) {
             data {
-            id
-            fromDateTime
-            toDateTime
-            status
-            createdAt
-            updatedAt
-            approved
-            approvedOn
-            space {
                 id
-                name
-            }
+                fromDateTime
+                toDateTime
+                status
+                createdAt
+                updatedAt
+                approved
+                approvedOn
+                space {
+                    id
+                    name
+                }
             }
             paginationInfo {
-            hasNext
-            hasPrevious
-            nextCursor
+                hasNext
+                hasPrevious
+                nextCursor
             }
         }
     }
 `;
 
 export const APPROVE_RESERVATION = gql`
-    mutation ApproveReservation($reservationId: ID!){
-        approveReservation(reservationId: $reservationId){
+    mutation ApproveReservation($reservationId: ID!) {
+        approveReservation(reservationId: $reservationId) {
+            message
+            action
+        }
+    }
+`;
+
+export const CANCEL_RESERVATION_HOST = gql`
+    mutation CancelReservationHost($input: CancelReservationInput!) {
+        cancelReservation(input: $input) {
             message
             action
         }

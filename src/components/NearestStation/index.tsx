@@ -38,7 +38,7 @@ export const NearestStation = ({ onAdd, closeForm }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         // Check everything
-        setLoading(true)
+        setLoading(true);
         if (
             !prefectureId ||
             !lineId ||
@@ -47,11 +47,11 @@ export const NearestStation = ({ onAdd, closeForm }) => {
             !time
         ) {
             alert("All information are required.");
-            setLoading(false)
+            setLoading(false);
             return;
         }
         await onAdd({ prefectureId, lineId, stationId, via, time });
-        setLoading(false)
+        setLoading(false);
     };
 
     return (
@@ -130,11 +130,11 @@ export const NearestStation = ({ onAdd, closeForm }) => {
                     singleRow
                 /> */}
                 <Select
-                    label="Via"
+                    label="最寄駅からのアクセス"
                     value={via}
                     options={["徒歩", "車／タクシー", "バス"]}
                     onChange={(event) => setVia(event as string)}
-                    errorMessage="Via is required"
+                    errorMessage="最寄駅からのアクセス is required"
                     disabled={loading}
                     singleRow
                 />
@@ -143,9 +143,9 @@ export const NearestStation = ({ onAdd, closeForm }) => {
             <div>
                 <TextField
                     // defaultValue={}
-                    label="Time"
+                    label="時間"
                     // error={}
-                    errorMessage="Time is required"
+                    errorMessage="時間 is required"
                     type="number"
                     disabled={loading}
                     onChange={(event) => setTime(event.target.value)}

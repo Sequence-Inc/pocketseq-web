@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { config } from "src/utils";
 
 const Footer = () => {
     return (
@@ -24,7 +25,7 @@ const Footer = () => {
                             </ul>
                         </div> */}
                         <div>
-                            <h3 className="text-lg font-medium tracking-wider text-gray-200">
+                            <h3 className="text-lg font-bold tracking-wider text-gray-200">
                                 ご利用ガイド
                             </h3>
                             <ul className="mt-4 space-y-2">
@@ -40,8 +41,8 @@ const Footer = () => {
                             </ul>
                         </div>
                         <div>
-                            <h3 className="text-lg font-medium tracking-wider text-gray-200">
-                                time bookについて
+                            <h3 className="text-lg font-bold tracking-wider text-gray-200">
+                                {config.appName}について
                             </h3>
                             <ul className="mt-4 space-y-2">
                                 {navigation.company.map((item) => (
@@ -58,8 +59,8 @@ const Footer = () => {
                     </div>
                     <div className="md:grid md:grid-cols-2 md:gap-8">
                         <div>
-                            {/* <h3 className="text-lg font-medium tracking-wider text-gray-200">
-                                time bookについて
+                            {/* <h3 className="text-lg font-bold tracking-wider text-gray-200">
+                                {config.appName}について
                             </h3>
                             <ul className="mt-4 space-y-2">
                                 {navigation.company.map((item) => (
@@ -75,8 +76,8 @@ const Footer = () => {
                         </div>
                         <div className="flex justify-center mt-12 md:mt-0">
                             <div>
-                                <h2 className="text-lg font-semibold tracking-wider text-gray-400 uppercase">
-                                    time book
+                                <h2 className="text-xl font-semibold text-gray-400">
+                                    {config.appName}
                                 </h2>
                                 <div className="flex mt-4 space-x-6 md:order-2">
                                     {navigation.social.map((item) => (
@@ -99,7 +100,7 @@ const Footer = () => {
                 </div>
                 <div className="flex flex-col items-center pt-8 mt-8 border-t border-gray-700 lg:flex-row">
                     <p className="mt-8 mr-8 text-base text-gray-400 md:mt-0">
-                        &copy; 2022 time book
+                        &copy; 2022 {config.appName}
                     </p>
                     <nav className="flex flex-wrap">
                         {navigation.others.map((item) => (
@@ -139,7 +140,7 @@ const navigation = {
             name: "プライバシーポリシー",
             href: "/terms/privacy-policy",
         },
-        { name: "timebook利用規約", href: "/about/terms" },
+        { name: config.appName + "利用規約", href: "/about/terms" },
         { name: "ゲスト規約", href: "/terms/guest-terms" },
         { name: "ホスト規約", href: "/terms/host-terms" },
 

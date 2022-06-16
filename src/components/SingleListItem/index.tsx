@@ -38,6 +38,8 @@ export const SingleListItem = ({
 
     const photo: IPhoto = photos[0];
 
+    // console.log(spacePricePlans);
+
     return (
         <div
             className={`flex flex-col sm:flex-row space-x-6 ${

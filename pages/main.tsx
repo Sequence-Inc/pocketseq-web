@@ -5,7 +5,6 @@ import { Container, Tag } from "@element";
 import {
     CategoryItem,
     ItemGrid,
-    ICategoryItem,
     IExploreItem,
     RegisterCTA,
     SingleExploreItem,
@@ -27,6 +26,9 @@ import {
     GET_AVAILABLE_SPACE_TYPES,
     GET_TOP_PICK_SPACES,
 } from "src/apollo/queries/space.queries";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils/index";
+import createApolloClient from "src/apollo/apolloClient";
 
 const exploreAreas: IExploreItem[] = [
     {
@@ -55,24 +57,23 @@ const features = [
     {
         name: "Secure",
         icon: ShieldCheckIcon,
-        description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+        description: `${config.appName}はゲスト・ホストを含めすべてのユーザー様の個人情報保護の重要性を認識したうえで個人情報保護法を遵守いたします。`,
     },
     {
         name: "Save Spaces",
         icon: BookmarkAltIcon,
         description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+            "より多くのゲストがご利用できるようより多くのスペースを確保してまいります。",
     },
     {
         name: "Popular",
         icon: FireIcon,
         description:
-            "何とかごくごくおしまいがセロをむしっなた。みんなしばらくに譜を云いのに顔を思っだます。",
+            "ホストの皆様の大切なスペースを「こだわり」を持ったユーザーの皆様へご提供できるようそして、より多くのユーザーの皆様が繰り返しご利用いただけるよう営業してまいります。",
     },
 ];
 
-export default function Home() {
+export default function Home({ userSession, availableSpaceTypes }) {
     const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
         fetchPolicy: "network-only",
     });
@@ -90,21 +91,44 @@ export default function Home() {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>time book</title>
+                <title>
+                    {config.appName} | 「人×場所×体験」を繋げる
+                    目的に合った場所を検索しよう
+                </title>
+                <meta
+                    name="description"
+                    content="timeQonnect タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                <meta
+                    name="keywords"
+                    content="timeQonnect,タイムブック,レンタルスペース, ペット可"
+                />
+                <meta
+                    property="og:title"
+                    content="timeQonnect | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう"
+                />
+                <meta
+                    property="og:description"
+                    content="timeQonnect タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる"
+                />
+                {/* <meta
+                    property="og:image"
+                    content="OGP用の紹介画像のパスを指定してください"
+                /> */}
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
-                <HeroSection />
+                <HeroSection availableSpaceTypes={availableSpaceTypes} />
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     {/* Blob */}
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
                                 <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
-                                    time bookとは
+                                    {config.appName}とは
                                 </p>
-                                <p className="w-2/3 mx-auto mt-6 text-xl font-light text-gray-500">
-                                    会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる
+                                <p className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
+                                    ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
                                 </p>
                                 <div className="mt-12">
                                     <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -228,3 +252,17 @@ export default function Home() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const client = createApolloClient();
+    const { data } = await client.query({
+        query: GET_AVAILABLE_SPACE_TYPES,
+    });
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+            availableSpaceTypes: data.availableSpaceTypes,
+        },
+    };
+};

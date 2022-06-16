@@ -1,10 +1,17 @@
 import { Footer, Header } from "@layout";
+import { Session } from "next-auth";
 import React from "react";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = ({
+    userSession,
+    children,
+}: {
+    userSession: Session;
+    children: React.ReactNode;
+}) => {
     return (
         <div>
-            <Header />
+            <Header userSession={userSession} />
             <div className="py-20 align-middle bg-gray-100">
                 <div>{children}</div>
             </div>

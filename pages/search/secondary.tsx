@@ -1,5 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { GridViewSearch, ListViewSearch, SearchBox } from "@comp";
+import {
+    GridViewSearch,
+    ListViewSearch,
+    LoadingSpinner,
+    SearchBox,
+} from "@comp";
 import { Alert, GoogleMap, Pagination, Pill, Select } from "@element";
 import {
     LightBulbIcon,
@@ -8,20 +13,25 @@ import {
     ViewListIcon,
 } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
+import createApolloClient from "src/apollo/apolloClient";
+import {
+    GET_AVAILABLE_SPACE_TYPES,
+    GET_TOP_PICK_SPACES,
+} from "src/apollo/queries/space.queries";
 import {
     ILocationMarker,
     IPhoto,
     IRating,
     ISpace,
 } from "src/types/timebookTypes";
-import { FormatPrice, searchSpace } from "src/utils";
+import { config, FormatPrice, searchSpace } from "src/utils";
 
-const Secondary = ({ resetToStartObj }) => {
+const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<"list" | "grid">("list");
     const [page, setPage] = useState<number>(1);
@@ -30,67 +40,79 @@ const Secondary = ({ resetToStartObj }) => {
     const [area, setArea] = useState(null);
     const [spaceTypes, setSpaceTypes] = useState(null);
 
+    const [searchDataReceived, setSearchDataReceived] = useState(false);
     const [algoliaSearchResults, setAlgoliaSearchResults] = useState([]);
 
     useEffect(() => {
-        console.log(area, spaceTypes);
         searchSpace("", {
             city: area,
             spaceType: spaceTypes,
-        }).then((data) => {
-            console.log(data);
-            if (data.nbHits > 0) {
-                setAlgoliaSearchResults(
-                    data.hits.map((result: any) => {
-                        return {
-                            id: result.objectID,
-                            name: result.name,
-                            maximumCapacity: result.maximumCapacity,
-                            numberOfSeats: result.numberOfSeats,
-                            spaceTypes: result.spaceTypes.map((type) => ({
-                                title: type,
-                            })),
-                            spaceSize: result.spaceSize,
-                            spacePricePlans: result.price,
-                            address: {
-                                prefecture: { name: result.prefecture },
-                                city: result.city,
-                                latitude: result._geoloc?.lat,
-                                longitude: result._geoloc?.lng,
-                            },
-                            photos: [
-                                { medium: { url: "/services/lifestyle.jpg" } },
-                            ],
-                        };
-                    })
-                );
-            } else {
-                setAlgoliaSearchResults([]);
-            }
-        });
+        })
+            .then((data) => {
+                if (data.nbHits > 0) {
+                    console.log(data);
+                    setAlgoliaSearchResults(
+                        data.hits.map((result: any) => {
+                            return {
+                                id: result.objectID,
+                                name: result.name,
+                                maximumCapacity: result.maximumCapacity,
+                                numberOfSeats: result.numberOfSeats,
+                                spaceTypes: result.spaceTypes.map((type) => ({
+                                    title: type,
+                                })),
+                                spaceSize: result.spaceSize,
+                                spacePricePlans: result.price,
+                                address: {
+                                    prefecture: { name: result.prefecture },
+                                    city: result.city,
+                                    latitude: result._geoloc?.lat,
+                                    longitude: result._geoloc?.lng,
+                                },
+                                photos: [
+                                    {
+                                        medium: {
+                                            url: result.thumbnail,
+                                        },
+                                    },
+                                ],
+                            };
+                        })
+                    );
+                } else {
+                    setAlgoliaSearchResults([]);
+                }
+            })
+            .finally(() => {
+                setSearchDataReceived(true);
+            });
     }, [area, spaceTypes]);
 
-    const { data, loading, error } = useQuery(GET_TOP_PICK_SPACES, {
-        variables: {
-            paginationInfo: {
-                take: 4,
-                skip: 0,
-            },
-        },
-        fetchPolicy: "network-only",
-    });
+    // const { data, loading, error } = useQuery(GET_TOP_PICK_SPACES, {
+    //     variables: {
+    //         paginationInfo: {
+    //             take: 4,
+    //             skip: 0,
+    //         },
+    //     },
+    //     fetchPolicy: "network-only",
+    // });
 
-    if (error) {
-        return <h3>Error occurred: {error.message}</h3>;
-    }
+    // if (error) {
+    //     return <h3>Error occurred: {error.message}</h3>;
+    // }
 
-    if (loading) {
-        return <h3>Loading...</h3>;
+    // if (loading) {
+    //     return <h3>Loading...</h3>;
+    // }
+
+    if (!searchDataReceived) {
+        return <LoadingSpinner />;
     }
 
     // const searchResults: ISpace[] = data.allSpaces.data;
     const searchResults: ISpace[] = algoliaSearchResults;
-
+    console.log(searchResults);
     const locationMarkers: ILocationMarker[] = searchResults.map(
         (space: ISpace) => {
             return {
@@ -116,14 +138,17 @@ const Secondary = ({ resetToStartObj }) => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout userSession={userSession}>
             <Head>
-                <title>Search | Timebook</title>
+                <title>Search | {config.appName}</title>
             </Head>
             <div className="relative grid grid-cols-1 lg:grid-cols-9">
                 <div className="px-6 py-10 mt-16 lg:col-span-5">
                     <div className="flex justify-center">
-                        <SearchBox onChange={handleFilterChange} />
+                        <SearchBox
+                            onChange={handleFilterChange}
+                            availableSpaceTypes={availableSpaceTypes}
+                        />
                     </div>
                     <div className="pt-10">
                         <p className="text-gray-500">300+ 件</p>
@@ -237,3 +262,23 @@ const Secondary = ({ resetToStartObj }) => {
 };
 
 export default Secondary;
+
+export const getServerSideProps = async (context) => {
+    // const session = await getSession(context);
+    // return {
+    //     props: {
+    //         userSession: session,
+    //     },
+    // };
+    const client = createApolloClient();
+    const { data } = await client.query({
+        query: GET_AVAILABLE_SPACE_TYPES,
+    });
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+            availableSpaceTypes: data.availableSpaceTypes,
+        },
+    };
+};

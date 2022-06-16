@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { ClockIcon } from "@heroicons/react/outline";
+import { config } from "src/utils";
 
 interface LogoProps {
     variant?: "default" | "dark";
@@ -26,7 +26,7 @@ const Logo = ({ variant, className }: LogoProps) => {
                 alt="time book logo"
                 className="w-10 h-10"
             />
-            <span className="ml-2 text-lg font-medium h-7">time book</span>
+            <span className="ml-3 text-lg font-bold h-7">{config.appName}</span>
         </div>
     );
 };

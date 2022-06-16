@@ -1,16 +1,34 @@
+import React, { useEffect, useState, Fragment, useRef } from "react";
 import { useMutation } from "@apollo/client";
-import { Button, Select, TextField } from "@element";
-import { PlusIcon } from "@heroicons/react/outline";
-import { TrashIcon } from "@heroicons/react/solid";
+import { Button, HostCalendarView, Select, TextField } from "@element";
+import { ExclamationIcon, PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { DatePicker } from "antd";
+import useTranslation from "next-translate/useTranslation";
+import { Popover, Dialog, Transition } from "@headlessui/react";
+
 import {
     ADD_PRICING_PLAN,
     REMOVE_PRICING_PLAN,
 } from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
+import moment, { Moment } from "moment";
+import { LoadingSpinner } from "../LoadingSpinner";
+import { PriceFormatter } from "src/utils";
 
-import useTranslation from "next-translate/useTranslation";
+const planTypes = [
+    { title: "DAILY", label: "日" },
+    { title: "HOURLY", label: "時間" },
+    { title: "MINUTES", label: "分" },
+];
+
+export const durationSuffix = (type) => {
+    return planTypes.filter((plan) => plan.title === type)[0].label;
+};
+
+const dailyOptions = Array.from({ length: 30 }, (_, index) => index + 1);
+const hourlyOptions = Array.from({ length: 24 }, (_, index) => index + 1);
+const minutesOptions = [5, 10, 15, 30, 45];
 
 const PricingPlan = ({
     activeStep,
@@ -20,64 +38,82 @@ const PricingPlan = ({
     initialValue,
     refetch,
 }: IOtherSpacesProps) => {
+    const [defaultPricePlans, setDefaultPricePlans] = useState([]);
     const [pricePlans, setPricePlans] = useState([]);
-    const [toggleForm, setToggleForm] = useState(false);
+    const [openForm, setOpenForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activePlan, setActivePlan] = useState(-1);
-    const [mutate] = useMutation(ADD_PRICING_PLAN);
-    const [mutateRemovePrice] = useMutation(REMOVE_PRICING_PLAN);
+    const [addPricePlan, { error: addPricePlanError }] =
+        useMutation(ADD_PRICING_PLAN);
+    const [mutateRemovePrice, { error: removePricePlanError }] =
+        useMutation(REMOVE_PRICING_PLAN);
     const router = useRouter();
     const { id } = router.query;
 
     const { t } = useTranslation("adminhost");
 
+    const setSeparatePlans = (mergedPlans) => {
+        const defaultPlans = [];
+        const plans = [];
+        mergedPlans.map((plan) => {
+            if (plan.isDefault) {
+                defaultPlans.push(plan);
+            } else {
+                plans.push(plan);
+            }
+        });
+        setDefaultPricePlans(defaultPlans);
+        setPricePlans(plans);
+    };
+
     useEffect(() => {
-        if (initialValue) setPricePlans(initialValue);
+        if (initialValue) {
+            setSeparatePlans(initialValue);
+        }
     }, [initialValue]);
 
     const showForm = () => {
-        setToggleForm(true);
+        setOpenForm(true);
     };
 
     const closeForm = () => {
-        setToggleForm(false);
+        setOpenForm(false);
     };
 
     const addPlan = async (plan) => {
-        const { data } = await mutate({
+        const { data, errors } = await addPricePlan({
             variables: {
                 spaceId: initialValue ? id : spaceId,
-                pricePlans: [plan],
+                pricePlan: plan,
             },
         });
-        if (data) {
-            const newPlan = {
-                ...plan,
-                id: data.addSpacePricePlans.id,
-            };
-            setPricePlans([...pricePlans, newPlan]);
+        if (errors) {
+            console.log("has error", errors);
+        } else {
+            const newPlan = data.addPricePlan;
+            setSeparatePlans([...pricePlans, newPlan]);
             initialValue && refetch();
-            setToggleForm(false);
+            setOpenForm(false);
         }
     };
-    const removePlan = async (index, priceId) => {
+
+    const removePlan = async (planId) => {
         setLoading(true);
-        setActivePlan(index);
         try {
             const { data } = await mutateRemovePrice({
                 variables: {
-                    input: {
-                        id: priceId,
-                        spaceId: initialValue ? id : spaceId,
-                    },
+                    id: planId,
                 },
             });
             if (data) {
-                const newPlans = pricePlans.filter((_, idx) => idx !== index);
-                setPricePlans(newPlans);
+                const newDefaultPlans = defaultPricePlans.filter(
+                    (_) => _.id !== planId
+                );
+                const newPlans = pricePlans.filter((_) => _.id !== planId);
+                setSeparatePlans([...newDefaultPlans, ...newPlans]);
             }
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -95,53 +131,121 @@ const PricingPlan = ({
     }
 
     const handlePricingPlan = async () => {
-        if (pricePlans.length > 0) handleNext();
+        handleNext();
+    };
+
+    const listPlans = (plans, type) => {
+        return [...plans.filter((plan) => plan.type === type)].sort(
+            (a, b) => a.duration - b.duration
+        );
+    };
+
+    const renderPlanItemsFromCategory = (category) => {
+        return category.map((plan) => {
+            return (
+                <div key={plan.id}>
+                    <PricePlanItem
+                        pricePlan={plan}
+                        index={plan.id}
+                        removePlan={(value) => removePlan(value)}
+                    />
+                </div>
+            );
+        });
+    };
+
+    const renderDefaultPricePlans = () => {
+        const daily = listPlans(defaultPricePlans, "DAILY");
+        const hourly = listPlans(defaultPricePlans, "HOURLY");
+        const minutes = listPlans(defaultPricePlans, "MINUTES");
+
+        return (
+            <div className="flex w-full space-x-6">
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">日</h3>
+                    {renderPlanItemsFromCategory(daily)}
+                </div>
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">時間</h3>
+                    {renderPlanItemsFromCategory(hourly)}
+                </div>
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">分</h3>
+                    {renderPlanItemsFromCategory(minutes)}
+                </div>
+            </div>
+        );
+    };
+
+    const renderPricePlans = () => {
+        const daily = listPlans(pricePlans, "DAILY");
+        const hourly = listPlans(pricePlans, "HOURLY");
+        const minutes = listPlans(pricePlans, "MINUTES");
+
+        return (
+            <div className="flex w-full space-x-6">
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">日</h3>
+                    {renderPlanItemsFromCategory(daily)}
+                </div>
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">時間</h3>
+                    {renderPlanItemsFromCategory(hourly)}
+                </div>
+                <div className="w-full space-y-3">
+                    <h3 className="text-sm text-gray-500 font-bold">分</h3>
+                    {renderPlanItemsFromCategory(minutes)}
+                </div>
+            </div>
+        );
     };
 
     return (
         <div className="">
-            <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    {t("price-plan-title")}
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                    {t("price-plan-description")}
-                </p>
+            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
+                <div>
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                        {t("price-plan-title")}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        {t("price-plan-description")}
+                    </p>
+                </div>
+                <div>
+                    <button
+                        onClick={showForm}
+                        className="flex items-center justify-center w-full p-2 text-sm font-medium text-white bg-primary border border-transparent rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-primaryHover focus:ring-primaryHover"
+                    >
+                        <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
+                        {t("price-plan-add")}
+                    </button>
+                </div>
             </div>
-            <div className="w-full my-6 space-y-3 sm:w-96 sm:ml-64">
-                {/* <h3 className="font-medium text-gray-700">Price Plans</h3> */}
-                {pricePlans.map((price, index) => {
-                    return (
-                        <PricePlanItem
-                            key={index}
-                            index={index}
-                            pricePlan={price}
-                            removePlan={removePlan}
-                            isLoading={loading && activePlan === index && true}
+            {openForm && (
+                <div className="w-full p-6 space-y-3">
+                    <h3 className="text-2xl text-primary font-bold text-center">
+                        料金プラン追加する
+                    </h3>
+                    <div>
+                        <PricePlanForm
+                            addPlan={addPlan}
+                            closeForm={closeForm}
+                            addError={addPricePlanError}
                         />
-                    );
-                })}
-            </div>
-            <div className="mb-8">
-                {toggleForm && (
-                    <PricePlanForm addPlan={addPlan} closeForm={closeForm} />
-                )}
-                {toggleForm ? null : (
-                    <div className="items-center flex-none sm:space-x-4 sm:flex">
-                        <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
-                            &nbsp;
-                        </div>
-                        <div className="relative rounded-md sm:w-96">
-                            <button
-                                onClick={showForm}
-                                className="flex items-center justify-center w-full p-2 text-sm font-medium text-gray-500 bg-gray-100 border border-transparent rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-gray-200 focus:ring-gray-300"
-                            >
-                                <PlusIcon className="w-5 h-5 mr-2 text-inherit" />
-                                {t("price-plan-add")}
-                            </button>
-                        </div>
                     </div>
-                )}
+                </div>
+            )}
+            <div className="w-full p-6 space-y-3">
+                <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
+                    基本料金プラン
+                </h2>
+                {renderDefaultPricePlans()}
+            </div>
+            <div className="w-full p-6 space-y-3">
+                <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-2">
+                    特別プラン
+                </h2>
+                {renderPricePlans()}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
                 {initialValue ? null : (
@@ -170,7 +274,9 @@ const PricingPlan = ({
 
 export default PricingPlan;
 
-const PricePlanItem = ({ index, pricePlan, removePlan, isLoading }) => {
+const PricePlanItem = ({ index, pricePlan, removePlan }) => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
     const {
         id,
         type,
@@ -180,54 +286,217 @@ const PricePlanItem = ({ index, pricePlan, removePlan, isLoading }) => {
         cooldownTime,
         lastMinuteDiscount,
         maintenanceFee,
+        fromDate,
+        toDate,
     } = pricePlan;
 
+    const cancelButtonRef = useRef(null);
+
+    const deletePlan = async () => {
+        setIsLoading(true);
+        await removePlan(id);
+        setIsLoading(false);
+        setOpen(false);
+    };
+
     return (
-        <div
-            key={index}
-            className="flex items-center px-4 py-3 text-white rounded-md bg-primary"
-        >
-            <div className="flex-auto">
-                {title} - ￥{amount}/{duration}
-                {type === "HOURLY" ? "時間" : "日"}
-            </div>
-            {isLoading ? (
-                <svg
-                    version="1.1"
-                    id="loader-1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    className="w-6 h-6 mr-3 text-green-200 animate-spin"
-                    viewBox="0 0 50 50"
+        <>
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog
+                    as="div"
+                    className="fixed z-10 inset-0 overflow-y-auto"
+                    initialFocus={cancelButtonRef}
+                    onClose={setOpen}
                 >
-                    <path
-                        fill="currentColor"
-                        d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
-                    ></path>
-                </svg>
-            ) : (
-                <button onClick={() => removePlan(index, id)}>
-                    <TrashIcon className="w-6 h-6 text-green-200 hover:text-green-100" />
-                </button>
-            )}
-        </div>
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        </Transition.Child>
+
+                        {/* This element is to trick the browser into centering the modal contents. */}
+                        <span
+                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                            aria-hidden="true"
+                        >
+                            &#8203;
+                        </span>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        >
+                            <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                                <div>
+                                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                                        <ExclamationIcon
+                                            className="h-6 w-6 text-red-600"
+                                            aria-hidden="true"
+                                        />
+                                    </div>
+                                    <div className="mt-3 text-center sm:mt-5">
+                                        {isLoading && (
+                                            <LoadingSpinner loadingText="Deleting..." />
+                                        )}
+
+                                        {!isLoading && (
+                                            <>
+                                                <Dialog.Title
+                                                    as="h3"
+                                                    className="text-lg leading-6 font-medium text-gray-900"
+                                                >
+                                                    Are you sure?
+                                                </Dialog.Title>
+                                                <div className="mt-2">
+                                                    <p className="text-sm text-gray-500">
+                                                        Would you like to delete
+                                                        "{title}" plan?
+                                                    </p>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                                    <button
+                                        type="button"
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onClick={() => deletePlan()}
+                                    >
+                                        Delete
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                        onClick={() => setOpen(false)}
+                                        ref={cancelButtonRef}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+            <Popover key={index} className="relative">
+                <Popover.Button className="flex w-full items-center px-4 py-3 text-white rounded-md bg-primary hover:bg-primaryHover">
+                    <div className="flex-grow text-left">{title}</div>
+                    <div className="w-10 text-center">
+                        {duration}
+                        {durationSuffix(type)}
+                    </div>
+                    <div className="w-20 text-right">
+                        {PriceFormatter(amount)}
+                    </div>
+                </Popover.Button>
+                <Popover.Panel className="absolute top-11.5 left-0 right-0 py-4 px-3 rounded-md shadow z-20 bg-white text-gray-700 space-y-4">
+                    <div className="text-gray-500 space-y-2">
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                プランタイトル
+                            </div>
+                            <div>{title}</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                対タイプ
+                            </div>
+                            <div>{durationSuffix(type)}対</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                期間
+                            </div>
+                            <div>{`${duration}${durationSuffix(type)}`}</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                料金
+                            </div>
+                            <div>{PriceFormatter(amount)}</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                開始日
+                            </div>
+                            <div>
+                                {fromDate
+                                    ? moment(fromDate).format("YYYY-MM-DD")
+                                    : "無し"}
+                            </div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                終了日
+                            </div>
+                            <div>
+                                {toDate
+                                    ? moment(toDate).format("YYYY-MM-DD")
+                                    : "無し"}
+                            </div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                直前割引
+                            </div>
+                            <div>{PriceFormatter(lastMinuteDiscount)}</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                リセット時間
+                            </div>
+                            <div>{cooldownTime}分</div>
+                        </div>
+                        <div className="w-full flex items-center space-x-4">
+                            <div className="w-28 font-bold text-right">
+                                手数料
+                            </div>
+                            <div>{PriceFormatter(maintenanceFee)}</div>
+                        </div>
+                    </div>
+                    <div className="flex justify-center w-full text-center border-t pt-3">
+                        <button
+                            className="flex items-center  text-base text-red-500 hover:text-red-600"
+                            onClick={() => setOpen(true)}
+                        >
+                            <TrashIcon className="w-5 h-5 mr-1" /> 消す
+                        </button>
+                    </div>
+                </Popover.Panel>
+            </Popover>
+        </>
     );
 };
 
-const PricePlanForm = ({ addPlan, closeForm }) => {
+const PricePlanForm = ({ addPlan, closeForm, addError }) => {
     const [title, setTitle] = useState("");
-    const [type, setType] = useState("HOURLY");
+    const [type, setType] = useState("DAILY");
     const [amount, setAmount] = useState<string>();
     const [lastMinuteDiscount, setLastMinuteDiscount] = useState<string>();
-    const [duration, setDuration] = useState<string>();
+    const [duration, setDuration] = useState<number>();
+    const [durationOptions, setDurationOptions] =
+        useState<number[]>(dailyOptions);
     const [cooldownTime, setCooldownTime] = useState<string>();
-    const [maintenanceFee, setMaintenanceFee] = useState<string>();
+    const [maintenanceFee, setMaintenanceFee] = useState<string>("0");
+    const [fromDateActive, setFormDateActive] = useState<boolean>(false);
+    const [toDateActive, setToDateActive] = useState<boolean>(false);
+    const [fromDate, setFromDate] = useState<Moment>(moment().add(1, "d"));
+    const [toDate, setToDate] = useState<Moment>(moment().add(6, "M"));
     const [loading, setLoading] = useState(false);
 
     const { t } = useTranslation("adminhost");
-
-    const planTypes = [{ title: "HOURLY" }, { title: "DAILY" }];
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -236,20 +505,44 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             setLoading(false);
             return;
         }
-        await addPlan({
-            title,
-            type,
-            amount: parseFloat(amount),
-            lastMinuteDiscount: parseFloat(lastMinuteDiscount),
-            duration: parseFloat(duration),
-            cooldownTime: parseInt(cooldownTime),
-            maintenanceFee: parseFloat(maintenanceFee),
-        });
-        setLoading(false);
+        try {
+            await addPlan({
+                title,
+                type,
+                amount: parseFloat(amount),
+                duration,
+                lastMinuteDiscount: parseFloat(lastMinuteDiscount),
+                cooldownTime: parseInt(cooldownTime),
+                maintenanceFee: parseFloat(maintenanceFee),
+                fromDate: fromDateActive
+                    ? fromDate.format("YYYY-MM-DD").toString()
+                    : null,
+                toDate: toDateActive
+                    ? toDate.format("YYYY-MM-DD").toString()
+                    : null,
+            });
+        } catch (error) {
+            alert(`Error! ${error.message}`);
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        if (type === "DAILY") {
+            setDurationOptions(dailyOptions);
+            setDuration(dailyOptions[0]);
+        } else if (type === "HOURLY") {
+            setDurationOptions(hourlyOptions);
+            setDuration(hourlyOptions[0]);
+        } else if (type === "MINUTES") {
+            setDurationOptions(minutesOptions);
+            setDuration(minutesOptions[0]);
+        }
+    }, [type]);
 
     return (
         <div className="space-y-4">
+            {addError && <div>Add error</div>}
             <div>
                 <TextField
                     label={t("price-plan-name")}
@@ -263,11 +556,11 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
             </div>
             <div className="">
                 <Select
-                    label="Plan Type"
+                    label="対タイプ"
                     options={planTypes}
                     error={null}
                     errorMessage="Space Types is required"
-                    labelKey="title"
+                    labelKey="label"
                     valueKey="title"
                     singleRow
                     value={type}
@@ -277,39 +570,109 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
                 />
             </div>
             <div>
-                <TextField
-                    label="Duration"
-                    error={null}
-                    errorMessage="Duration is required"
-                    autoFocus
-                    singleRow
-                    value={duration}
-                    onChange={(event) => setDuration(event.target.value)}
-                />
+                <div className="flex items-center">
+                    <Select
+                        label="期間"
+                        options={durationOptions}
+                        error={null}
+                        errorMessage="duration"
+                        singleRow
+                        value={duration}
+                        onChange={(event) => {
+                            setDuration(event as number);
+                        }}
+                    />
+                    <div className="ml-2 text-lg text-gray-500">
+                        {durationSuffix(type)}
+                    </div>
+                </div>
             </div>
             <div>
-                <TextField
-                    label={t("price-plan-price")}
-                    error={null}
-                    errorMessage="Price is required"
-                    autoFocus
-                    singleRow
-                    value={amount}
-                    onChange={(event) => setAmount(event.target.value)}
-                />
+                <div className="flex items-center">
+                    <TextField
+                        label={t("price-plan-price")}
+                        error={null}
+                        errorMessage="Price is required"
+                        autoFocus
+                        singleRow
+                        value={amount}
+                        onChange={(event) => setAmount(event.target.value)}
+                    />
+                    <div className="ml-2 text-lg text-gray-500">円</div>
+                </div>
             </div>
             <div>
-                <TextField
-                    label={t("price-plan-discount")}
-                    error={null}
-                    errorMessage=""
-                    autoFocus
-                    singleRow
-                    value={lastMinuteDiscount}
-                    onChange={(event) =>
-                        setLastMinuteDiscount(event.target.value)
-                    }
-                />
+                <div className="flex items-center">
+                    <div className="sm:space-x-4 flex-none flex items-center">
+                        <label className="block text-sm font-bold text-gray-700 sm:text-right w-60">
+                            開始日
+                        </label>
+                        <div className="h-10 flex items-center">
+                            <input
+                                type="checkbox"
+                                checked={fromDateActive ? true : false}
+                                onChange={() =>
+                                    setFormDateActive(!fromDateActive)
+                                }
+                            />
+                        </div>
+                        {fromDateActive && (
+                            <div className="relative rounded-md">
+                                <DatePicker
+                                    mode="date"
+                                    id="fromDate"
+                                    className="appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary"
+                                    value={fromDate}
+                                    defaultValue={null}
+                                    onChange={(value) => setFromDate(value)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div className="flex items-center">
+                    <div className="sm:space-x-4 flex-none sm:flex items-center">
+                        <label className="block text-sm font-bold text-gray-700 sm:text-right w-60">
+                            終了日
+                        </label>
+                        <div className="h-10 flex items-center">
+                            <input
+                                type="checkbox"
+                                checked={toDateActive ? true : false}
+                                onChange={() => setToDateActive(!toDateActive)}
+                            />
+                        </div>
+                        {toDateActive && (
+                            <div className="relative rounded-md">
+                                <DatePicker
+                                    mode="date"
+                                    id="fromDate"
+                                    className="appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400 focus:outline-none sm:text-sm border-gray-300 focus:ring-primary focus:border-primary"
+                                    value={toDate}
+                                    onChange={(value) => setToDate(value)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div className="flex items-center">
+                    <TextField
+                        label={t("price-plan-discount")}
+                        error={null}
+                        errorMessage=""
+                        autoFocus
+                        singleRow
+                        value={lastMinuteDiscount}
+                        onChange={(event) =>
+                            setLastMinuteDiscount(event.target.value)
+                        }
+                    />
+                    <div className="ml-2 text-lg text-gray-500">円</div>
+                </div>
             </div>
             <div>
                 <TextField
@@ -322,17 +685,22 @@ const PricePlanForm = ({ addPlan, closeForm }) => {
                     onChange={(event) => setCooldownTime(event.target.value)}
                 />
             </div>
-            <div>
-                <TextField
-                    label={t("price-plan-handling-fee")}
-                    error={null}
-                    errorMessage=""
-                    autoFocus
-                    singleRow
-                    value={maintenanceFee}
-                    onChange={(event) => setMaintenanceFee(event.target.value)}
-                />
-            </div>
+            {/* <div>
+                <div className="flex items-center">
+                    <TextField
+                        label={t("price-plan-handling-fee")}
+                        error={null}
+                        errorMessage=""
+                        autoFocus
+                        singleRow
+                        value={maintenanceFee}
+                        onChange={(event) =>
+                            setMaintenanceFee(event.target.value)
+                        }
+                    />
+                    <div className="ml-2 text-lg text-gray-500">円</div>
+                </div>
+            </div> */}
             <div className="items-center flex-none sm:space-x-4 sm:flex">
                 <div className="block text-sm font-medium text-gray-700 sm:text-right w-60">
                     &nbsp;

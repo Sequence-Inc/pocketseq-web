@@ -7,6 +7,10 @@ import {
     STATION,
     SPACE,
     PAGINATION,
+    SPACE_TYPES,
+    SPACE_SETTING,
+    USER_ACCOUNT,
+    COMPANY_ACCOUNT,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -87,7 +91,7 @@ export const ADD_SPACE = gql`
     mutation AddSpace($input: AddSpaceInput!) {
         addSpace(input: $input) {
             space {
-                id
+                ${SPACE}
             }
             result {
                 message
@@ -115,15 +119,15 @@ export const MY_SPACES = gql`
             numberOfSeats
             spaceSize
             needApproval
+            photos {
+                ${PHOTO}
+            }
             nearestStations {
                 station {
                     ${STATION}
                 }
                 via
                 time
-            }
-            spacePricePlans {
-                ${SPACE_PRICE_PLAN}
             }
             spaceTypes {
                 id
@@ -136,9 +140,30 @@ export const MY_SPACES = gql`
             address {
                 ${ADDRESS}
             }
+            published
         }
     }
 `;
+
+export const GET_MY_LICENSE = gql`
+    query MyLicense{
+        getMyLicenses {
+            id
+            type
+            approved
+            remarks
+            photos {
+                ${PHOTO}
+            }
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
+// spacePricePlans {
+//     ${SPACE_PRICE_PLAN}
+// }
 
 export const GET_STATION_BY_ID = gql`
     query StaionByID($id: IntID!){
@@ -170,12 +195,64 @@ export const UPDATE_SPACE_ADDRESS = gql`
         }
     }
 `;
+export const UPDATE_SPACE_SETTING = gql`
+    mutation UpdateSpaceSetting($input: UpdateSpaceSettingInput!) {
+        updateSpaceSetting(input: $input) {
+            result {
+                message
+                action
+            }
+        }
+    }
+`;
+
+export const ADD_DEFAULT_SPACE_PRICE = gql`
+    mutation AddDefaultPrice($spaceId: ID!, $input: AddDefaultPriceInput!) {
+        addDefaultPrice(spaceId: $spaceId, input: $input) {
+            result {
+                message
+                action
+            }
+        }
+    }
+`;
+
+export const UPDATE_DEFAULT_SPACE_PRICE = gql`
+    mutation UpdateDefaultPrice(
+        $spaceId: ID!
+        $input: UpdateDefaultPriceInput!
+    ) {
+        updateDefaultPrice(spaceId: $spaceId, input: $input) {
+            result {
+                message
+                action
+            }
+        }
+    }
+`;
 
 export const UPDATE_TYPES_IN_SPACE = gql`
     mutation UpdateTypesInSpace($input: UpdateTypesInSpaceInput!) {
         updateTypesInSpace(input: $input) {
             message
             action
+        }
+    }
+`;
+
+export const ADD_DEFAULT_SPACE_SETTINGS = gql`
+    mutation AddDefaultSpaceSetting(
+        $spaceId: ID!
+        $spaceSetting: AddDefaultSpaceSettingInput!
+    ) {
+        addDefaultSpaceSetting(spaceId: $spaceId, spaceSetting: $spaceSetting) {
+            result {
+                message
+                action
+            }
+            setting {
+                ${SPACE_SETTING}
+            }
         }
     }
 `;
@@ -217,26 +294,37 @@ export const GET_UPLOAD_TOKEN = gql`
     }
 `;
 
+export const GET_LICENSE_UPLOAD_TOKEN = gql`
+    mutation addLicense($input: AddLicenseInput!) {
+        addLicense(input: $input) {
+            type
+            url
+            mime
+            key
+        }
+    }
+`;
+
 export const ADD_PRICING_PLAN = gql`
-    mutation AddSpacePricePlans(
+    mutation AddPricePlan(
         $spaceId: ID!
-        $pricePlans: [AddSpacePricePlanInput]!
+        $pricePlan: AddPricePlanInput!
     ) {
-        addSpacePricePlans(spaceId: $spaceId, pricePlans: $pricePlans) {
+        addPricePlan(spaceId: $spaceId, pricePlan: $pricePlan) {
             result {
                 message
                 action
             }
-            spacePricePlans {
-                id
+            pricePlan {
+                ${SPACE_PRICE_PLAN}
             }
         }
     }
 `;
 
 export const REMOVE_PRICING_PLAN = gql`
-    mutation RemoveSpacePricePlan($input: RemoveSpacePricePlanInput!) {
-        removeSpacePricePlan(input: $input) {
+    mutation RemoveSpacePricePlan($id: ID!) {
+        removeSpacePricePlan(id: $id) {
             message
             action
         }
@@ -247,6 +335,19 @@ export const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
         spaceById(id: $id) {
             ${SPACE}
+            settings {
+                id
+                totalStock
+                isDefault
+                closed
+                businessDays
+                openingHr
+                closingHr
+                breakFromHr
+                breakToHr
+                fromDate
+                toDate
+            }
         }
     }
 `;
@@ -258,6 +359,161 @@ export const GET_TOP_PICK_SPACES = gql`
                 ${SPACE}
             }
             ${PAGINATION} 
+        }
+    }
+`;
+
+export const ADD_SETTING_OVERRIDE = gql`
+    mutation OverrideSpaceSetting(
+        $spaceId: ID!
+        $spaceSetting: OverrideSpaceSettingInput!
+    ) {
+        overrideSpaceSetting(spaceId: $spaceId, spaceSetting: $spaceSetting) {
+            result {
+                message
+                action
+            }
+            setting {
+                id
+                totalStock
+                isDefault
+                closed
+                businessDays
+                openingHr
+                closingHr
+                breakFromHr
+                breakToHr
+                fromDate
+                toDate
+            }
+        }
+    }
+`;
+
+export const ADD_PRICE_OVERRIDE = gql`
+    mutation OverrideSpacePriceOverride(
+        $pricePlanId: ID!
+        $input: PricePlanOverrideInput!
+    ) {
+        addPricePlanOverride(pricePlanId: $pricePlanId, input: $input) {
+            result {
+                message
+                action
+            }
+            pricePlanOverride {
+                id
+                type
+                amount
+                daysOfWeek
+                fromDate
+                toDate
+            }
+        }
+    }
+`;
+
+export const REMOVE_PRICE_OVERRIDE = gql`
+    mutation RemoveSpacePriceOverride($id: ID!) {
+        removePricePlanOverride(id: $id) {
+            message
+            action
+        }
+    }
+`;
+
+export const PUBLISH_SPACE = gql`
+    mutation PublishSpace($id: ID!) {
+        publishSpace(id: $id) {
+            message
+            action
+        }
+    }
+`;
+
+export const UNPUBLISH_SPACE = gql`
+    mutation PublishSpace($id: ID!) {
+        publishSpace(id: $id) {
+            message
+            action
+        }
+    }
+`;
+
+export const GET_PRICE_PLANS = gql`
+    query getApplicablePricePlans($input: GetApplicablePricePlansInput) {
+        getApplicablePricePlans(input: $input) {
+            total
+            duration
+            durationType
+            applicablePricePlans {
+                title
+                duration
+                type
+                isDefault
+                isOverride
+                fromDate
+                toDate
+                amount
+                appliedTimes
+            }
+        }
+    }
+`;
+
+export const GET_RESERVATION_BY_ID = gql`
+    query reservationById($id: ID!){
+        reservationById(id: $id){
+            id
+            reservationId
+            fromDateTime
+            toDateTime
+            status
+            updatedAt
+            createdAt
+            approved
+            approvedOn
+            reservee {
+                ${USER_ACCOUNT}
+                ${COMPANY_ACCOUNT}
+            }
+            space {
+                ${SPACE}
+            }
+            transaction {
+                id
+                amount
+                currency
+                status
+                paymentMethodInfo {
+                    brand
+                    last4
+                    country
+                    expYear
+                    expMonth
+                }
+            }
+        }
+    }
+`;
+
+export const CANCEL_RESERVATION = gql`
+    mutation cancelReservation($input: CancelReservationInput!) {
+        cancelReservation(input: $input) {
+            message
+            action
+        }
+    }
+`;
+export const ADD_REVIEW = gql`
+    mutation addReview($input: GiveRatingInput!) {
+        giveRating(input: $input) {
+            id
+            rating
+            comment
+            spaceId
+            byAccountId
+            createdAt
+            updatedAt
         }
     }
 `;

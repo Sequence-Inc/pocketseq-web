@@ -80,8 +80,19 @@ export const HOST = `
         ${PHOTO}
     }
     stripeAccountId
-    account {
+    stripeAccount {
         ${STRIPE_ACCOUNT}
+    }
+    license {
+        id
+        type
+        approved
+        remarks
+        photos {
+            ${PHOTO}
+        }
+        createdAt
+        updatedAt
     }
     createdAt
     updatedAt
@@ -168,12 +179,23 @@ export const SPACE_TYPE = `
 export const SPACE_PRICE_PLAN = `
     id
     title
+    isDefault
     type
-    amount
     duration
+    amount
     maintenanceFee
     lastMinuteDiscount
     cooldownTime
+    fromDate
+    toDate
+    overrides {
+        id
+        type
+        amount
+        daysOfWeek
+        fromDate
+        toDate
+    }
 `;
 
 export const STATION = `
@@ -196,6 +218,9 @@ export const SPACE_TYPES = `
     spaceTypes {
         id
         title
+        photo {
+            ${PHOTO}
+        }
     }
 `;
 
@@ -218,15 +243,13 @@ export const SPACE = `
     numberOfSeats
     spaceSize
     needApproval
-
+    published
     ${SPACE_TYPES}
     address {
         ${ADDRESS}
     }
     ${NEAREST_STATIONS}
-    spacePricePlans {
-        ${SPACE_PRICE_PLAN}
-    }
+    
     photos {
         ${PHOTO}
     }
@@ -235,7 +258,23 @@ export const SPACE = `
         name
         createdAt
     }
+    pricePlans {
+        ${SPACE_PRICE_PLAN}
+    }    
 `;
+
+export const SPACE_SETTING = `
+    id
+    totalStock
+    isDefault
+    closed
+    businessDays
+    openingHr
+    closingHr
+    breakFromHr
+    breakToHr
+    fromDate
+    toDate`;
 
 export const PAYMENT_SOURCE = `
     paymentSource{

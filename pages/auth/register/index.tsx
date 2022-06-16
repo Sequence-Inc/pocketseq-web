@@ -9,8 +9,9 @@ import Link from "next/link";
 import ErrorModal from "src/elements/ErrorModal";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
 
-const Register = () => {
+const Register = ({ userSession }) => {
     const {
         register,
         errors,
@@ -27,7 +28,7 @@ const Register = () => {
     const { t } = useTranslation("common");
 
     return (
-        <AuthLayout>
+        <AuthLayout userSession={userSession}>
             <Head>
                 <title>{t("register-an-account")} | Space Rental</title>
             </Head>
@@ -129,13 +130,12 @@ const Register = () => {
                                     htmlFor="terms"
                                     className="ml-3 text-sm text-gray-500 align-baseline"
                                 >
-                                    I agree to{" "}
                                     <a
                                         href="#"
                                         className="inline-block text-gray-500 hover:text-primary"
                                         target="_blank"
                                     >
-                                        terms and conditions
+                                        利用規約に同意いたします
                                     </a>
                                 </label>
                             </div>
@@ -189,8 +189,20 @@ const Register = () => {
     );
 };
 
-// export const getServerSideProps = async (context) => {
-//     return { props: {} };
-// };
-
 export default Register;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (session) {
+        const { callbackUrl } = context.query;
+        return {
+            redirect: {
+                permanent: false,
+                destination: callbackUrl || "/",
+            },
+        };
+    }
+    return {
+        props: {},
+    };
+}

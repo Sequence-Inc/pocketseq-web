@@ -1,5 +1,3 @@
-// const withPWA = require("next-pwa");
-// const runtimeCaching = require("next-pwa/cache");
 const nextTranslate = require("next-translate");
 
 module.exports = nextTranslate({
@@ -9,15 +7,12 @@ module.exports = nextTranslate({
             "cdnspacemarket.com",
             "timebook-api-dev-media.s3.ap-northeast-1.amazonaws.com",
             "timebook-api-prod-media.s3.ap-northeast-1.amazonaws.com",
+            "timebook-public-media.s3.ap-northeast-1.amazonaws.com",
         ],
     },
-    // pwa: {
-    //     dest: "public",
-    //     runtimeCaching,
-    //     disable: true,
-    // },
     webpack: (config) => {
-        config.experiments = { topLevelAwait: true };
+        config.experiments = { topLevelAwait: true, layers: true };
         return config;
     },
+    experiments: true,
 });

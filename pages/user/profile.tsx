@@ -8,23 +8,22 @@ import { GET_PROFILE } from "src/apollo/queries/user.queries";
 import React from "react";
 import withAuth from "src/utils/withAuth";
 import Link from "next/link";
+import requireAuth from "src/utils/authecticatedRoute";
+import { getSession } from "next-auth/react";
+import { config } from "src/utils";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const tabs = [
     { name: "Profile", href: "#", current: true },
     { name: "Calendar", href: "#", current: false },
     { name: "Recognition", href: "#", current: false },
 ];
-const HostDashboard = ({ currentSession }) => {
+const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery(GET_PROFILE, {
         fetchPolicy: "network-only",
     });
 
-    if (loading)
-        return (
-            <div className="flex items-center justify-center h-content">
-                <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
-            </div>
-        );
+    if (loading) return <LoadingSpinner />;
 
     if (error)
         return (
@@ -50,9 +49,9 @@ const HostDashboard = ({ currentSession }) => {
         "Name (Kana)": nameKana,
     };
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - Timebook</title>
+                <title>Profile - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <>
@@ -142,17 +141,6 @@ const HostDashboard = ({ currentSession }) => {
                                         </dd>
                                     </div>
                                 ))}
-                                <div className="sm:col-span-2">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        About
-                                    </dt>
-                                    <dd
-                                    //     className="mt-1 max-w-prose text-sm text-gray-900 space-y-5"
-                                    //     dangerouslySetInnerHTML={{
-                                    //         __html: profile.about,
-                                    //     }}
-                                    />
-                                </div>
                             </dl>
                         </div>
                     </article>
@@ -162,17 +150,22 @@ const HostDashboard = ({ currentSession }) => {
     );
 };
 
-// export async function getStaticProps(props) {
-//     const { data: localSession, error: localSessionError } =
-//         await client.query();
-//     const { data, error } = await client.query({ query: HOST });
-//     return {
-//         props: null,
-//     };
-// }
+export default HostDashboard;
 
-export default withAuth(HostDashboard);
-
-function classNames(...args: [string]): string {
-    return args.join(" ");
-}
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/api/auth/signin",
+        roles: ["user"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

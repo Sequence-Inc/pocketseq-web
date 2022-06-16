@@ -2,14 +2,18 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
+    ADD_DEFAULT_SPACE_PRICE,
+    ADD_DEFAULT_SPACE_SETTINGS,
     ADD_SPACE,
     ADD_SPACE_ADDRESS,
     GET_AVAILABLE_SPACE_TYPES,
     GET_LINES_BY_PREFECTURE,
     GET_STATIONS_BY_LINE,
     MY_SPACES,
+    UPDATE_DEFAULT_SPACE_PRICE,
     UPDATE_SPACE,
     UPDATE_SPACE_ADDRESS,
+    UPDATE_SPACE_SETTING,
     UPDATE_TYPES_IN_SPACE,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
@@ -79,6 +83,7 @@ const defaultValues = {
 const useAddSpace = () => {
     const {
         register,
+        unregister,
         control,
         formState: { errors },
         setValue,
@@ -136,6 +141,7 @@ const useAddSpace = () => {
     return {
         spaceTypes,
         register,
+        unregister,
         watch,
         control,
         setValue,
@@ -168,11 +174,13 @@ export const useBasicSpace = (fn, initialValue) => {
     const [cache, setCache] = useState({});
     const {
         register,
+        unregister,
         control,
         formState: { errors },
         watch,
         setValue,
         handleSubmit,
+        getValues,
     } = useForm({
         defaultValues: {
             name: undefined,
@@ -187,36 +195,115 @@ export const useBasicSpace = (fn, initialValue) => {
             city: undefined,
             addressLine1: undefined,
             addressLine2: undefined,
+            openingHr: 8.0,
+            closingHr: 18.0,
+            breakFromHr: 13,
+            breakToHr: 14,
+            totalStock: 1,
+            businessDays: [0, 1, 2, 3, 4, 5],
+            pricePlan: {
+                dailyAmount: 0,
+                hourlyAmount: 0,
+                fiveMinuteAmount: 0,
+                tenMinuteAmount: 0,
+                fifteenMinuteAmount: 0,
+                thirtyMinuteAmount: 0,
+                fortyFiveMinuteAmount: 0,
+            },
         },
     });
+
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
     const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
+    const [mutateSpaceSettings] = useMutation(ADD_DEFAULT_SPACE_SETTINGS);
+    const [mutateSpaceDefaultPrice] = useMutation(ADD_DEFAULT_SPACE_PRICE);
     // update api
     const [updateSpace] = useMutation(UPDATE_SPACE);
     const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
+    const [updateSpaceSetting] = useMutation(UPDATE_SPACE_SETTING);
+    const [updateSpaceDefaultPrice] = useMutation(UPDATE_DEFAULT_SPACE_PRICE);
 
     const [loading, setLoading] = useState(false);
 
+    const filterDefaultSpaceSetting = (settings) => {
+        if (!settings) return null;
+        return settings.filter((setting) => setting.isDefault)[0];
+    };
+    const filterDefaultPricePlans = (plans) => {
+        let defaultPlan = {
+            dailyAmount: 0,
+            hourlyAmount: 0,
+            fiveMinuteAmount: 0,
+            tenMinuteAmount: 0,
+            fifteenMinuteAmount: 0,
+            thirtyMinuteAmount: 0,
+            fortyFiveMinuteAmount: 0,
+        };
+        plans.map((plan) => {
+            if (plan.isDefault === true) {
+                if (plan.type === "DAILY") {
+                    defaultPlan.dailyAmount = plan.amount;
+                } else if (plan.type === "HOURLY") {
+                    defaultPlan.hourlyAmount = plan.amount;
+                } else if (plan.type === "MINUTES") {
+                    if (plan.duration === 5) {
+                        defaultPlan.fiveMinuteAmount = plan.amount;
+                    } else if (plan.duration === 10) {
+                        defaultPlan.tenMinuteAmount = plan.amount;
+                    } else if (plan.duration === 15) {
+                        defaultPlan.fifteenMinuteAmount = plan.amount;
+                    } else if (plan.duration === 30) {
+                        defaultPlan.thirtyMinuteAmount = plan.amount;
+                    } else if (plan.duration === 45) {
+                        defaultPlan.fortyFiveMinuteAmount = plan.amount;
+                    }
+                }
+            }
+        });
+        return defaultPlan;
+    };
+
     useEffect(() => {
         if (initialValue) {
-            setValue("name", initialValue?.name);
-            setValue("description", initialValue?.description);
-            setValue("maximumCapacity", initialValue?.maximumCapacity);
-            setValue("numberOfSeats", initialValue?.numberOfSeats);
-            setValue("spaceSize", initialValue?.spaceSize);
-            setValue("spaceTypes", initialValue?.spaceTypes[0]?.id);
-            setValue("needApproval", initialValue?.needApproval);
-            setValue("zipCode", initialValue?.address?.postalCode);
-            setValue("prefecture", initialValue?.address?.prefecture?.id);
-            setValue("city", initialValue?.address?.city);
-            setValue("addressLine1", initialValue?.address?.addressLine1);
-            setValue("addressLine2", initialValue?.address?.addressLine2);
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            setValue("maximumCapacity", initialValue.maximumCapacity);
+            setValue("numberOfSeats", initialValue.numberOfSeats);
+            setValue("spaceSize", initialValue.spaceSize);
+            setValue("spaceTypes", initialValue.spaceTypes[0]?.id);
+            setValue("needApproval", initialValue.needApproval);
+            setValue("zipCode", initialValue.address?.postalCode);
+            setValue("prefecture", initialValue.address?.prefecture?.id);
+            setValue("city", initialValue.address?.city);
+            setValue("addressLine1", initialValue.address?.addressLine1);
+            setValue("addressLine2", initialValue.address?.addressLine2);
             setFreeCoords({
-                lat: initialValue?.address?.latitude,
-                lng: initialValue?.address?.longitude,
+                lat: initialValue.address?.latitude,
+                lng: initialValue.address?.longitude,
             });
+
+            if (initialValue.settings?.length > 0) {
+                const defaultSetting = filterDefaultSpaceSetting(
+                    initialValue.settings
+                );
+                if (defaultSetting) {
+                    setValue("openingHr", defaultSetting.openingHr);
+                    setValue("closingHr", defaultSetting.closingHr);
+                    setValue("breakFromHr", defaultSetting.breakFromHr);
+                    setValue("breakToHr", defaultSetting.breakToHr);
+                    setValue("businessDays", defaultSetting.businessDays);
+                    setValue("totalStock", defaultSetting.totalStock);
+                }
+            }
+            if (initialValue.pricePlans?.length > 0) {
+                setValue(
+                    "pricePlan",
+                    filterDefaultPricePlans(initialValue.pricePlans)
+                );
+            }
         }
     }, [initialValue]);
 
@@ -236,14 +323,29 @@ export const useBasicSpace = (fn, initialValue) => {
             city: formData.city,
             addressLine1: formData.addressLine1,
             addressLine2: formData.addressLine2,
-            // latitude: freeCoords?.lat || 0,
-            // longitude: freeCoords?.lng || 0
         };
+
+        const spaceSettingModel = {
+            totalStock: formData.totalStock,
+            businessDays: formData.businessDays,
+            openingHr: formData.openingHr,
+            closingHr: formData.closingHr,
+            breakFromHr: formData.breakFromHr,
+            breakToHr: formData.breakToHr,
+        };
+
+        // check if need to update
         if (initialValue) {
-            const updateSpacesData = await updateSpace({
-                variables: { input: { ...basicModel, id: initialValue.id } },
-            });
-            await Promise.all([
+            // update
+            const defaultSetting = filterDefaultSpaceSetting(
+                initialValue.settings
+            );
+            const spaceSetting = {
+                ...spaceSettingModel,
+                id: defaultSetting.id,
+            };
+            console.log(spaceSetting);
+            const updateMutations = [
                 updateSpaceAddress({
                     variables: {
                         spaceId: initialValue.id,
@@ -253,10 +355,39 @@ export const useBasicSpace = (fn, initialValue) => {
                         },
                     },
                 }),
-                // mutateSpaceTypes({ variables: { input: { spaceId: initialValue.spaceTypes?.id, spaceTypeIds: [formData.spaceTypes] } } })
-            ]);
+                updateSpace({
+                    variables: {
+                        input: { ...basicModel, id: initialValue.id },
+                    },
+                }),
+                mutateSpaceTypes({
+                    variables: {
+                        input: {
+                            spaceId: initialValue.id,
+                            spaceTypeIds: [formData.spaceTypes],
+                        },
+                    },
+                }),
+                updateSpaceDefaultPrice({
+                    variables: {
+                        spaceId: initialValue.id,
+                        input: formData.pricePlan,
+                    },
+                }),
+                updateSpaceSetting({
+                    variables: {
+                        input: {
+                            ...spaceSettingModel,
+                            id: defaultSetting.id,
+                        },
+                    },
+                }),
+            ];
+
+            await Promise.all(updateMutations);
             alert("successfully updated!!");
         } else {
+            // add new!
             const addSpacesData = await mutate({
                 variables: { input: basicModel },
             });
@@ -275,6 +406,18 @@ export const useBasicSpace = (fn, initialValue) => {
                         },
                     },
                 }),
+                mutateSpaceSettings({
+                    variables: {
+                        spaceId: addSpacesData.data.addSpace.space.id,
+                        spaceSetting: spaceSettingModel,
+                    },
+                }),
+                mutateSpaceDefaultPrice({
+                    variables: {
+                        spaceId: addSpacesData.data.addSpace.space.id,
+                        input: formData.pricePlan,
+                    },
+                }),
             ]);
             addSpacesData.data.addSpace.space.id &&
                 fn(addSpacesData.data.addSpace.space.id);
@@ -290,6 +433,7 @@ export const useBasicSpace = (fn, initialValue) => {
         freeCoords,
         setFreeCoords,
         register,
+        unregister,
         control,
         errors,
         watch,
@@ -297,6 +441,7 @@ export const useBasicSpace = (fn, initialValue) => {
         onSubmit,
         loading,
         prefectures,
+        getValues,
     };
 };
 

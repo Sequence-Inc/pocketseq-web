@@ -1,6 +1,12 @@
 import Link from "next/link";
-import { IAddress, ISpaceType, ISpacePricePlan } from "../types/timebookTypes";
+import {
+    IAddress,
+    ISpaceType,
+    ISpacePricePlan,
+    IPhoto,
+} from "../types/timebookTypes";
 import { PriceFormatter } from "./priceFormatter";
+import { Moment } from "moment";
 
 export const FormatShortAddress = (address: IAddress): string => {
     if (!address) {
@@ -55,9 +61,8 @@ const FormatPriceString = (
     return null;
 };
 
-export const GetTimeStamp = (date: Date): number => {
-    const dateObject = new Date(date);
-    return Math.floor(dateObject.getTime() / 1000);
+export const GetTimeStamp = (date: Moment): number => {
+    return date.startOf("day").unix();
 };
 
 export const DateFromTimeStamp = (
@@ -102,4 +107,47 @@ export const DateFromTimeStamp = (
         return newDate.toLocaleTimeString("ja-JP", options);
     }
     return newDate.toLocaleDateString("ja-JP", options);
+};
+
+export function publicImage(
+    photo: IPhoto,
+    size: "thumbnail" | "small" | "medium" | "large"
+) {
+    const { id } = photo;
+
+    return `https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/${size}/${id}.jpeg`;
+}
+
+export const getTimeFromFloat = (time) => {
+    return {
+        hour: parseInt(time.toString()),
+        minute: ((time % 1) * 60).toString(),
+    };
+};
+
+export const getMinuteInFloat = (minute) => {
+    return ((parseInt(minute) / 60) * 100) / 100;
+};
+
+export const toBase64 = (data: string): string => {
+    return Buffer.from(data).toString("base64");
+};
+
+export const fromBase64 = (data: string): string => {
+    return Buffer.from(data, "base64").toString();
+};
+
+export const reservationStatusJapanify = (key: string): string => {
+    const map = {
+        RESERVED: "予約済み",
+        CANCELED: "キャンセル",
+        HOLD: "ホールド",
+        PENDING: "ペンディング",
+        FAILED: "FAILED",
+        DISAPPROVED: "DISAPPROVED",
+    };
+    if (map[key]) {
+        return map[key];
+    }
+    return key;
 };

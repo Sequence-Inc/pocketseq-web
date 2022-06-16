@@ -5,14 +5,16 @@ import { PageHeader } from "@comp";
 
 import { Header, Footer } from "@layout";
 import Link from "next/link";
+import { config } from "src/utils";
+import { getSession } from "next-auth/react";
 
-export default function ByLaws() {
+export default function ByLaws({ userSession }) {
     return (
         <div className="bg-gray-50">
             <Head>
-                <title>time book | 約款</title>
+                <title>{config.appName} | 約款</title>
             </Head>
-            <Header />
+            <Header userSession={userSession} />
             <main>
                 <PageHeader>約款</PageHeader>
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
@@ -130,3 +132,12 @@ export default function ByLaws() {
         </div>
     );
 }
+
+export const getServerSideProps = async (context) => {
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+        },
+    };
+};

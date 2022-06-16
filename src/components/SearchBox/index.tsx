@@ -1,17 +1,14 @@
-import { useRouter } from "next/router";
-import { Button, Tag, TextField } from "@element";
+import React, { useState } from "react";
+import { Calendar } from "antd";
+import { Button, Tag } from "@element";
 import {
     CalendarIcon,
     FlagIcon,
     LocationMarkerIcon,
     SearchIcon,
 } from "@heroicons/react/solid";
-import React from "react";
 import { Popover } from "@element";
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
-import { selectionSetMatchesResult } from "@apollo/client/cache/inmemory/helpers";
+import moment from "moment";
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
@@ -42,28 +39,26 @@ const areaList = [
     "江戸川区",
 ];
 
-export const SearchBox = ({ onChange }) => {
+export const SearchBox = ({
+    onChange,
+    availableSpaceTypes,
+}: {
+    onChange: any;
+    availableSpaceTypes?: any;
+}) => {
     const [area, setArea] = useState<string>("");
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
-    // console.log(items);
 
-    // const [loading, setLoading] = useState<boolean>(true);
-    const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
+    const onPanelChange = (value, mode) => {
+        // console.log(value, mode);
+        console.log(value.format("YYYY-MM-DD"));
+    };
 
-    const {
-        data,
-        loading: spaceTypesLoading,
-        error,
-    } = useQuery(GET_AVAILABLE_SPACE_TYPES);
-
-    if (error) {
-        return <h3>Error occurred while fetching space types</h3>;
-    }
-
-    if (spaceTypesLoading) {
-        return <h3>Loading...</h3>;
-    }
+    const disabledDate = (current) => {
+        // Can not select days before today and today
+        return current && current < moment().endOf("day");
+    };
 
     return (
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
@@ -165,7 +160,7 @@ export const SearchBox = ({ onChange }) => {
                             </button>
                         </div> */}
                         <ul className="mt-2">
-                            {data.availableSpaceTypes.map(
+                            {availableSpaceTypes.map(
                                 (item: any, index: number) => (
                                     <li
                                         key={index.toString()}
@@ -196,17 +191,21 @@ export const SearchBox = ({ onChange }) => {
                             numberOfLines={1}
                         >
                             <span className="text-gray-400">
-                                {date || "目的日時"}
+                                {date || "ご利用日"}
                             </span>
                         </Tag>
                     }
                 >
-                    <ul>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                        <li>Suman</li>
-                    </ul>
+                    <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl">
+                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                            ご利用日
+                        </p>
+                        <Calendar
+                            disabledDate={disabledDate}
+                            fullscreen={false}
+                            onPanelChange={onPanelChange}
+                        />
+                    </div>
                 </Popover>
             </div>
             <div>

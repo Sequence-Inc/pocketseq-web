@@ -1,41 +1,47 @@
-import { ApolloClient, HttpLink } from "@apollo/client";
-import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
+import { ApolloClient, HttpLink, from } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { clientTypeDefs, cache } from "./cache";
-import { getSession, logout } from "src/utils/auth";
+import { getSession } from "next-auth/react";
 import { onError } from "apollo-link-error";
-// import { fromPromise } from 'apollo-link';
 
-// const getNewToken = async () => {
-//     return await { accessToken: "gg", refreshToken: "gg" }
-// }
+// const errorLink = onError(
+//     ({ graphQLErrors, networkError, operation, forward }) => {
+//         if (graphQLErrors) {
+//             graphQLErrors.forEach(({ action }) => {
+//                 if (action === "refresh-token") {
+//                     logout();
+//                     // return fromPromise(
+//                     //     getNewToken()
+//                     //         .then(({ accessToken, refreshToken }) => {
+//                     //             // cookies.set('token', refreshToken);
+//                     //             // accessTokenVAR(accessToken);
+//                     //             return token;
+//                     //         })
+//                     //         .catch(error => {
+//                     //             console.log(error)
+//                     //             return;
+//                     //         })
+//                     // ).filter(value => Boolean(value))
+//                     //     .flatMap(() => {
+//                     //         // retry the request, returning the new observable
+//                     //         return forward(operation);
+//                     //     });
+//                 }
+//             });
+//         }
+//     }
+// );
 
-const errorLink = onError(
-    ({ graphQLErrors, networkError, operation, forward }) => {
-        if (graphQLErrors) {
-            graphQLErrors.forEach(({ action }) => {
-                if (action === "refresh-token") {
-                    logout();
-                    // return fromPromise(
-                    //     getNewToken()
-                    //         .then(({ accessToken, refreshToken }) => {
-                    //             // cookies.set('token', refreshToken);
-                    //             // accessTokenVAR(accessToken);
-                    //             return token;
-                    //         })
-                    //         .catch(error => {
-                    //             console.log(error)
-                    //             return;
-                    //         })
-                    // ).filter(value => Boolean(value))
-                    //     .flatMap(() => {
-                    //         // retry the request, returning the new observable
-                    //         return forward(operation);
-                    //     });
-                }
-            });
-        }
-    }
-);
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+        graphQLErrors.map(({ message, locations, path }) =>
+            console.log(
+                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            )
+        );
+
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+});
 
 // const getNewToken = async () => {
 //     const token = await "ss";
@@ -56,7 +62,6 @@ const errorLink = onError(
 //                         authorization,
 //                     },
 //                 });
-//                 debugger;
 //                 // retry the request, returning the new observable
 //                 return forward(operation);
 //             }
@@ -68,30 +73,40 @@ const errorLink = onError(
 //     if (networkError) console.log(`[Network error]: ${networkError}`);
 // });
 
-const token = getSession()?.accessToken
-    ? `Bearer ${getSession()?.accessToken}`
-    : "";
-
-// await before instantiating ApolloClient, else queries might run before the cache is persisted
-if (typeof window !== "undefined") {
-    await persistCache({
-        cache,
-        storage: new LocalStorageWrapper(window.localStorage),
-    });
-}
-
 const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL,
     // uri: "http://localhost:3001/dev/graphql",
-    headers: {
-        Authorization: token,
-    },
+    // uri: "http://47ad-2400-1a00-b010-ce46-14ba-bb36-5297-22c6.ngrok.io/dev/graphql",
 });
 
-const createApolloClient = () => {
+const authLink = (token: string = undefined) => {
+    return setContext(async (_, { headers }: { headers: Headers }) => {
+        let accessToken = "Bearer ";
+        if (token) {
+            accessToken += token;
+        } else {
+            const session = await getSession();
+            if (session && session.accessToken) {
+                accessToken += session.accessToken;
+            } else {
+                accessToken = "";
+            }
+        }
+
+        const modifiedHeader = {
+            headers: {
+                ...headers,
+                authorization: accessToken,
+            },
+        };
+        return modifiedHeader;
+    });
+};
+
+const createApolloClient = (token: string = undefined) => {
     return new ApolloClient({
         ssrMode: typeof window === "undefined",
-        link: errorLink.concat(httpLink),
+        link: from([errorLink, authLink(token), httpLink]),
         cache,
         typeDefs: clientTypeDefs,
         connectToDevTools: true,

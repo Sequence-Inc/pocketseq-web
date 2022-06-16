@@ -12,8 +12,12 @@ import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { useRouter } from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
+import { getSession } from "next-auth/react";
+import requireAuth from "src/utils/authecticatedRoute";
+import Head from "next/head";
+import { config } from "src/utils";
 
-const EditNewSpace = () => {
+const EditNewSpace = ({ userSession }) => {
     const { loading, confirmRef } = useAddSpace();
     const [spaceId, setSpaceId] = useState();
     const [activeStep, setActiveStep] = useState(0);
@@ -29,8 +33,8 @@ const EditNewSpace = () => {
     } = useQuery(GET_SPACE_BY_ID, {
         variables: { id },
         fetchPolicy: "network-only",
-        skip: !id,
     });
+
     const steps = [
         t("space-basic"),
         t("space-nearest-stations"),
@@ -39,7 +43,10 @@ const EditNewSpace = () => {
     ];
 
     return (
-        <HostLayout>
+        <HostLayout userSession={userSession}>
+            <Head>
+                <title>Edit space | {config.appName}</title>
+            </Head>
             <ConfirmModal ref={confirmRef} redirect="/user-host/my-space" />
             <Container className="py-4 sm:py-6 lg:py-8">
                 <Stepper
@@ -80,7 +87,7 @@ const EditNewSpace = () => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.spacePricePlans}
+                            initialValue={data?.spaceById?.pricePlans}
                             refetch={refetch}
                         />
                     ) : null}
@@ -91,3 +98,21 @@ const EditNewSpace = () => {
 };
 
 export default EditNewSpace;
+
+export const getServerSideProps = async (context) => {
+    const userSession = await getSession(context);
+    const validation = requireAuth({
+        session: userSession,
+        pathAfterFailure: "/",
+        roles: ["host"],
+    });
+    if (validation !== true) {
+        return validation;
+    } else {
+        return {
+            props: {
+                userSession,
+            },
+        };
+    }
+};

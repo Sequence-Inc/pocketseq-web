@@ -7,9 +7,9 @@ import {
     UsersIcon,
     MailIcon,
     UserCircleIcon,
-    BadgeCheckIcon
+    BadgeCheckIcon,
+    IdentificationIcon,
 } from "@heroicons/react/outline";
-// import {  } from "@heroicons/react/solid";
 
 export const navigation = [
     {
@@ -31,51 +31,46 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Hosts",
+        name: "ホスト",
         href: "/admin/hosts",
         Icon: UsersIcon,
         roles: ["admin"],
     },
     {
-        name: "施設管理",
-        href: "#",
-        Icon: ViewListIcon,
-        roles: ["admin"],
-    },
-    {
-        name: "Settings",
+        name: "システム設定",
         href: "/admin/settings/",
         Icon: CogIcon,
         roles: ["admin"],
     },
     {
-        name: "Profile",
+        name: "プロフィール",
         href: "/user/profile",
         Icon: UserCircleIcon,
         roles: ["user"],
     },
     {
-        name: "Settings",
+        name: "設定",
         href: "/user/settings",
         Icon: CogIcon,
         roles: ["user"],
     },
     {
-        name: "My Reservations",
-        href: "/user/reservation-list",
-        Icon: BadgeCheckIcon,
+        name: "予約",
+        href: "/user/reservation",
+        Icon: CalendarIcon,
         roles: ["user"],
     },
+    {
+        name: "予約",
+        href: "/host/reservation",
+        Icon: CalendarIcon,
+        roles: ["host"],
+    },
+    
     {
         name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
-        roles: ["host"],
-    },
-    {
-        name: "予約の確認",
-        href: "#",
-        Icon: CalendarIcon,
         roles: ["host"],
     },
     {
@@ -84,16 +79,16 @@ export const navigation = [
         Icon: MailIcon,
         roles: ["user", "host"],
     },
+    // {
+    //     name: "設定",
+    //     href: "#",
+    //     Icon: CogIcon,
+    //     roles: ["host"],
+    // },
     {
-        name: "設定",
-        href: "#",
-        Icon: CogIcon,
-        roles: ["host"],
-    },
-    {
-        name: "Reservations",
-        href: "/host/reservation-list",
-        Icon: BadgeCheckIcon,
+        name: "Licenses",
+        href: "/host/license",
+        Icon: IdentificationIcon,
         roles: ["host"],
     },
     {

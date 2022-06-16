@@ -14,9 +14,9 @@ export interface IColumns {
 }
 interface ITableProps {
     columns: any;
-    data: any[],
+    data: any[];
     paginate?: any;
-    handlePaginate?: (type: 'prev' | 'next') => void;
+    handlePaginate?: (type: "prev" | "next") => void;
 }
 
 const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
@@ -43,7 +43,7 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                                 {headerGroup.headers.map((column: any) => (
                                     <th
                                         key={column.id}
-                                        className={`px-4 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase bg-gray-50 ${column.className}`}
+                                        className={`px-4 py-3 font-bold text-sm tracking-wider text-gray-500 uppercase bg-gray-50 ${column.className}`}
                                         {...column.getHeaderProps()}
                                     >
                                         {column.render("Header")}
@@ -61,14 +61,14 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                             return (
                                 <tr
                                     key={row.id}
-                                    className="bg-white"
+                                    className="bg-white hover:bg-gray-50 "
                                     {...row.getRowProps()}
                                 >
                                     {row.cells.map((cell: any) => {
                                         return (
                                             <td
                                                 key={cell.column.id}
-                                                className={`px-4 py-2 text-sm text-gray-900 max-w-0 whitespace-nowrap ${cell.column.childClassName}`}
+                                                className={`px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap${cell.column.childClassName}`}
                                                 {...cell.getCellProps()}
                                             >
                                                 {cell.render("Cell")}
@@ -90,7 +90,9 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                             className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                             disabled={!paginate?.hasPrevious}
                             type="button"
-                            onClick={() => { handlePaginate('next') }}
+                            onClick={() => {
+                                handlePaginate("next");
+                            }}
                         >
                             {t("previous-page")}
                         </button>
@@ -98,7 +100,9 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                             className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                             disabled={!paginate?.hasNext}
                             type="button"
-                            onClick={() => { handlePaginate('prev') }}
+                            onClick={() => {
+                                handlePaginate("prev");
+                            }}
                         >
                             {t("next-page")}
                         </button>

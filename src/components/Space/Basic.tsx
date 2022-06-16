@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
 import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
@@ -7,6 +7,13 @@ import axios from "axios";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 
 import useTranslation from "next-translate/useTranslation";
+import {
+    BusinessDaysManager,
+    PricingPlanManager,
+    BusinessHourManager,
+    StockManager,
+} from "@page/host/my-space/edit/[id]/days-of-week";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 interface IBasicSpace {
     activeStep: number;
@@ -25,6 +32,7 @@ const Basic = ({
     initialValue,
     spaceLoading,
 }: IBasicSpace) => {
+    const [change, setChange] = useState<boolean>(false);
     const { spaceTypes } = useAddSpace();
     const {
         prefectures,
@@ -34,13 +42,14 @@ const Basic = ({
         cache,
         setCache,
         freeCoords,
-        setFreeCoords,
         register,
+        unregister,
         control,
         errors,
         watch,
         setValue,
         onSubmit,
+        getValues,
     } = useBasicSpace(handleNext, initialValue);
 
     const hasNext: boolean = activeStep < steps.length - 1 && true;
@@ -61,11 +70,10 @@ const Basic = ({
                 // check if prefix already has the data
                 if (!cache[prefix]) {
                     // fetch data
-                    console.log("fetching data from web for", prefix);
                     const { data } = await axios.get(
                         "https://yubinbango.github.io/yubinbango-data/data/" +
-                        prefix +
-                        ".js"
+                            prefix +
+                            ".js"
                     );
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
@@ -102,9 +110,7 @@ const Basic = ({
                 </p>
             </div>
             {spaceLoading ? (
-                <div className="flex items-center justify-center h-content">
-                    <div className="w-24 h-24 border-t-2 border-b-2 border-green-500 rounded-full animate-spin" />
-                </div>
+                <LoadingSpinner />
             ) : (
                 <form onSubmit={onSubmit}>
                     <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
@@ -210,7 +216,6 @@ const Basic = ({
                                 control={control}
                                 render={({ field }: any) => (
                                     <div>
-                                        {console.log(field)}
                                         <input
                                             {...field}
                                             checked={field.value}
@@ -223,13 +228,21 @@ const Basic = ({
                                             htmlFor="needApproval"
                                             className="ml-3 text-sm font-medium text-gray-600 align-baseline cursor-pointer"
                                         >
-                                            enable need host approval
+                                            リクエスト予約
+                                            <br />
+                                            ※施設側の確認が必要な場合
                                         </label>
                                     </div>
                                 )}
                             />
                         </div>
 
+                        <div className="pb-1">
+                            <div className="border-t border-gray-200 my-8"></div>
+                            <h3 className="md:ml-60 md:pl-4 font-bold text-primary text-xl">
+                                住所
+                            </h3>
+                        </div>
                         <div className="">
                             <TextField
                                 {...register("zipCode", {
@@ -318,30 +331,71 @@ const Basic = ({
                     <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
                         <label
                             htmlFor="Map"
-                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
+                            className={
+                                "block text-sm font-bold text-gray-700 sm:text-right w-60"
+                            }
                         >
                             Map
                         </label>
                         <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
-                            <GoogleMap
-                                setFreeCoords={setFreeCoords}
-                                mark={freeCoords}
-                                zoom={15}
+                            <GoogleMap mark={freeCoords} zoom={16} />
+                        </div>
+                    </div>
+
+                    <div className="pb-1">
+                        <div className="border-t border-gray-200 my-8"></div>
+                        <h3 className="md:ml-60 md:pl-4 font-bold text-primary text-xl">
+                            基本設定
+                        </h3>
+                    </div>
+                    <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                        <div className="w-full rounded-md">
+                            <BusinessDaysManager
+                                defaultValue={getValues("businessDays")}
+                                onSave={(value) => {
+                                    setValue("businessDays", value);
+                                }}
+                            />
+
+                            {/* <HolidayManager
+                                defaultValue={false}
+                                onSave={(value) => console.log(value)}
+                            /> */}
+                            <BusinessHourManager
+                                defaultValue={{
+                                    openingHr: getValues("openingHr"),
+                                    closingHr: getValues("closingHr"),
+                                    breakFromHr: getValues("breakFromHr"),
+                                    breakToHr: getValues("breakToHr"),
+                                }}
+                                onSave={(value) => {
+                                    const {
+                                        openingHr,
+                                        closingHr,
+                                        breakFromHr,
+                                        breakToHr,
+                                    } = value;
+                                    setValue("openingHr", openingHr);
+                                    setValue("closingHr", closingHr);
+                                    if (breakFromHr && breakToHr) {
+                                        setValue("breakFromHr", breakFromHr);
+                                        setValue("breakToHr", breakToHr);
+                                    }
+                                }}
+                            />
+                            <StockManager
+                                defaultValue={getValues("totalStock")}
+                                onSave={(value) => {
+                                    setValue("totalStock", value);
+                                }}
+                            />
+                            <PricingPlanManager
+                                defaultValue={getValues("pricePlan")}
+                                onSave={(value) => setValue("pricePlan", value)}
                             />
                         </div>
                     </div>
-                    <div className="px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
-                        <label
-                            htmlFor="Map"
-                            className={"block text-sm font-medium text-gray-700 sm:text-right w-60"}
-                        >
-                            Current Coordinates
-                        </label>
-                        <div className="w-full overflow-hidden rounded-md sm:w-96">
-                            <p>Latitude: {freeCoords?.lat}</p>
-                            <p>Longitude: {freeCoords?.lng}</p>
-                        </div>
-                    </div>
+
                     {initialValue ? (
                         <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                             <Button
@@ -355,9 +409,10 @@ const Basic = ({
                         </div>
                     ) : (
                         <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
-                            <Button className="w-auto px-8" disabled={true}>
+                            {/* <Button className="w-auto px-8" disabled={true}>
                                 {t("previous-page")}
-                            </Button>
+                            </Button> */}
+                            <div></div>
                             <Button
                                 type="submit"
                                 variant="primary"
