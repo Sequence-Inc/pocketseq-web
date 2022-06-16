@@ -83,10 +83,10 @@ export default function ByLaws({ userSession }) {
                                 <br />
                                 お問い合わせ先:{" "}
                                 <a
-                                    href="mailto:info@timebook.jp"
+                                    href="mailto:info@pocketseq.com"
                                     className="underline hover:text-gray-600"
                                 >
-                                    info@timebook.jp
+                                    info@pocketseq.com
                                 </a>
                                 <br />
                                 所在地: 東京都大田区大森北4-12-3 CASA K 2C

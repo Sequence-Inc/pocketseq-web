@@ -32,7 +32,7 @@ const CorporateForm = ({ register, errors, watch, loading }) => {
                 errorMessage="Company email is required"
                 label="メールアドレス"
                 id="company.email"
-                placeholder="例）info@timebook.co.jp"
+                placeholder="例）info@pocketseq.com"
                 disabled={loading}
             />
             <TextField

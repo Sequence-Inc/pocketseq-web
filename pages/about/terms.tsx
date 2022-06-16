@@ -114,7 +114,7 @@ export default function ByLaws({ userSession }) {
                                             お客様窓口
                                         </td>
                                         <td className="border px-4 py-2">
-                                            <Link href="mailto:info@timebook.jp">
+                                            <Link href="mailto:info@pocketseq.com">
                                                 <a className="underline hover:text-gray-600">
                                                     こちらからお問い合わせください
                                                 </a>
