@@ -43,7 +43,6 @@ const HotelSpace = ({ userSession }) => {
     };
 
     useEffect(() => {
-        console.log({ keys });
         const newData: IColumns[] = keys.map(({ name, key }: TTableKey) => ({
             Header: name.toUpperCase(),
             accessor: key,
@@ -114,7 +113,6 @@ const HotelSpace = ({ userSession }) => {
             },
         });
         const filteredNewData = newData.filter((res) => res !== undefined);
-        console.log({ filteredNewData });
         setColumns(filteredNewData);
     }, []);
 
@@ -149,7 +147,7 @@ const HotelSpace = ({ userSession }) => {
                             </div>
                         </div>
                         <div className="flex mt-6 space-x-3 md:mt-0 md:ml-4">
-                            <Link href="/host/my-space/add">
+                            <Link href="/host/hotel-space/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
                                         {t("add-hotel")}
