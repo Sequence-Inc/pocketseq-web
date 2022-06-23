@@ -11,9 +11,10 @@
     "previous-page": "前のページ",
     "next-page": "次のページ",
     "save": "保存",
-
     "add-space": "スペースの追加",
+    "add-hotel": "スペースの追加",
     "my-spaces": "マイスペース",
+    "my-hotel-spaces": "私のホテル",
     "space-name": "スペース名",
     "space-description": "紹介文",
     "max-capacity": "最大収容人数",

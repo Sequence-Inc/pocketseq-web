@@ -113,3 +113,16 @@ export interface IPaymentMethod {
     country: string;
     customer: string | number;
 }
+
+export interface IColumns {
+    Header: string;
+    accessor: string;
+    className?: string;
+    childClassName?: string;
+    Cell?: any;
+}
+
+export type TTableKey = {
+    name: string | undefined;
+    key: string;
+};
