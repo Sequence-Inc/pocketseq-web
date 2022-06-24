@@ -6,6 +6,16 @@ import Head from "next/head";
 import { Container } from "@element";
 import { OfficeBuildingIcon } from "@heroicons/react/outline";
 import useTranslation from "next-translate/useTranslation";
+import { Tabs } from "antd";
+import {
+    General,
+    Rooms,
+    Pricing,
+    Plans,
+    Options,
+} from "src/components/HotelSpace";
+
+const { TabPane } = Tabs;
 
 function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
@@ -28,7 +38,7 @@ function AddHotelSpace({ userSession }) {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            {t("my-hotel-spaces")}
+                                            {t("add-hotel")}
                                         </h1>
                                     </div>
                                 </div>
@@ -39,6 +49,26 @@ function AddHotelSpace({ userSession }) {
                     </div>
                 </Container>
             </div>
+
+            <Container className="bg-white py-4 sm:py-6 lg:py-8 mt-3 mb-3 sm:mb-5">
+                <Tabs defaultActiveKey="1" tabBarGutter={40}>
+                    <TabPane tab="General" key="1">
+                        <General />
+                    </TabPane>
+                    <TabPane tab="Rooms" key="2">
+                        <Rooms />
+                    </TabPane>
+                    <TabPane tab="Pricing" key="3">
+                        <Pricing />
+                    </TabPane>
+                    <TabPane tab="Plans" key="4">
+                        <Plans />
+                    </TabPane>
+                    <TabPane tab="Options" key="5">
+                        <Options />
+                    </TabPane>
+                </Tabs>
+            </Container>
         </HostLayout>
     );
 }
