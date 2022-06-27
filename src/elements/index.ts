@@ -22,3 +22,4 @@ export { default as PhotoUploadField } from "./PhotoUploadField";
 export { default as DatePickerField } from "./DatePickerField";
 export { default as HostCalendarView } from "./HostCalendarView";
 export { default as TimePickerField } from "./TimePickerField";
+export { default as FileUpload } from "./FileUpload";
