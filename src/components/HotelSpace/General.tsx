@@ -5,6 +5,8 @@ import {
     TextField,
     TimePickerField,
     Select,
+    HotelNearestStation,
+    Button,
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 
@@ -55,8 +57,10 @@ const General = () => {
 
                     <div className="max-w-screen-sm">
                         <div className="pb-2">
-                            <h3 className="font-bold text-xl">Photos</h3>
-                            <p>
+                            <h3 className="font-medium text-lg text-gray-900">
+                                Photos
+                            </h3>
+                            <p className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
                             </p>
                         </div>
@@ -67,8 +71,8 @@ const General = () => {
                         />
                     </div>
 
-                    <div className="pb-2">
-                        <h3 className="font-bold text-xl">Address</h3>
+                    <div className="pb-0">
+                        <h3 className="font-medium text-lg">Address</h3>
                     </div>
                     <div className="lg:w-32 md:w-52 sm:max-w-sm">
                         <TextField
@@ -150,12 +154,34 @@ const General = () => {
                     </div>
 
                     <div className="pb-2">
-                        <h3 className="font-bold text-xl">最寄り駅</h3>
+                        <h3 className="font-bold text-lg text-gray-900">
+                            最寄り駅
+                        </h3>
                         <p className="mt-1 text-sm text-gray-500">
                             施設様のご利用しやすい最寄り駅をお選びください
                             <br />
                             ※複数お選びいただけます。
                         </p>
+                    </div>
+                    <div>
+                        <HotelNearestStation />
+                    </div>
+
+                    <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
+                        <Button
+                            variant="primary"
+                            className="bg-indigo-600 w-16"
+                            type="submit"
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="w-16"
+                            type="button"
+                        >
+                            Cancel
+                        </Button>
                     </div>
                 </div>
             </form>
