@@ -174,7 +174,7 @@ const Rooms = () => {
                     <div className="grid grid-cols-7">
                         {BASIC_PIRCING.map((pricing, index) => (
                             <div
-                                className="flex flex-col border first:rounded-l-md last:rounded-r-md px-2 py-2"
+                                className="flex flex-col border text-center first:rounded-l-md last:rounded-r-md px-2 py-2"
                                 key={index}
                             >
                                 <p className=" text-xl">{pricing}</p>
@@ -211,13 +211,15 @@ const Rooms = () => {
                     <div className="flex justify-end space-x-3 border-t mt-4 pt-5">
                         <Button
                             type="button"
-                            className="bg-indigo-100 text-indigo-700 font-medium text-sm w-16"
+                            variant="primary"
+                            className="bg-indigo-600 font-medium text-sm w-16 hover:bg-indigo-400"
                         >
                             Save
                         </Button>
                         <Button
                             type="button"
-                            className="font-medium text-sm w-16"
+                            variant="white"
+                            className="font-medium border-l text-sm w-16"
                         >
                             Cancel
                         </Button>
