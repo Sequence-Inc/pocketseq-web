@@ -64,6 +64,9 @@ const General = () => {
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
                             </p>
                         </div>
+                        <p className="text-sm text-gray-700 font-medium">
+                            Upload Photos
+                        </p>
                         <FileUpload
                             hideLabel
                             label="Photos"
