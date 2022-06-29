@@ -22,6 +22,7 @@ interface TimePickerFieldProps {
     step?: string;
     singleRow?: boolean;
     use12Hours?: boolean;
+    suffixIcon?: React.ReactNode;
 }
 
 const TimePickerField = React.forwardRef<
@@ -82,6 +83,7 @@ const TimePickerField = React.forwardRef<
                     value={value}
                     onChange={(event) => onChange(event)}
                     use12Hours={use12Hours}
+                    {...rest}
                 />
 
                 {error && (

@@ -20,7 +20,7 @@ const General = () => {
     return (
         <>
             <form>
-                <div className="px-0 py-3 space-y-4 sm:py-6">
+                <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="max-w-screen-sm">
                         <TextField
                             label={t("name")}

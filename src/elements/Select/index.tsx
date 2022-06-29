@@ -19,12 +19,14 @@ interface SelectProps {
     errorMessage?: string;
     singleRow?: boolean;
     disabled?: boolean;
+    className?: string;
 }
 
 const Select = React.forwardRef<any, SelectProps>((props, ref) => {
     const {
         options,
         onChange,
+        className,
         valueKey,
         labelKey,
         value,
@@ -49,7 +51,8 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                         className={clsx(
                             singleRow
                                 ? "flex-none sm:flex sm:items-center sm:space-x-4"
-                                : ""
+                                : "",
+                            className ? className : ""
                         )}
                     >
                         {label && (
