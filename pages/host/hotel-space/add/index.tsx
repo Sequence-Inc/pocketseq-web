@@ -7,13 +7,7 @@ import { Container } from "@element";
 import { OfficeBuildingIcon } from "@heroicons/react/outline";
 import useTranslation from "next-translate/useTranslation";
 import { Tabs } from "antd";
-import {
-    General,
-    Rooms,
-    Pricing,
-    Plans,
-    Options,
-} from "src/components/HotelSpace";
+import { General, Rooms, Pricing, Plans } from "src/components/HotelSpace";
 
 const { TabPane } = Tabs;
 
@@ -63,9 +57,6 @@ function AddHotelSpace({ userSession }) {
                     </TabPane>
                     <TabPane tab="Plans" key="4">
                         <Plans />
-                    </TabPane>
-                    <TabPane tab="Options" key="5">
-                        <Options />
                     </TabPane>
                 </Tabs>
             </Container>

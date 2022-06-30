@@ -52,7 +52,6 @@ const General = () => {
                             prefix +
                             ".js"
                     );
-                    console.log({ data });
                     const newCache = { ...cache };
                     newCache[prefix] = JSON.parse(
                         data.trim().slice(7, data.length - 3)
@@ -66,7 +65,7 @@ const General = () => {
                 const address = cache[prefix]
                     ? cache[prefix][fullZipCode]
                     : null;
-                console.log({ address });
+
                 if (address) {
                     setValue("prefecture", address[0], { shouldDirty: true });
                     setValue("city", address[1]);
