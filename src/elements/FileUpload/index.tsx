@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import useTranslation from "next-translate/useTranslation";
 
@@ -46,6 +46,15 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
         const handleSelectPhoto = (event) => {
             setPhotos([...photos, ...event.target.files]);
         };
+
+        useEffect(() => {
+            if (!photos.length) {
+                onChange(null);
+            }
+            const newPhotos = photos.filter((res) => typeof res === "object");
+            const imageInputs = newPhotos.map((res) => ({ mime: res.type }));
+            onChange(imageInputs);
+        }, [photos]);
         return (
             <div
                 className={clsx(

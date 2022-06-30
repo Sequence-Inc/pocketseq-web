@@ -21,7 +21,8 @@ const General = () => {
     const { t } = useTranslation("adminhost");
 
     const {
-        handleSubmit,
+        onSubmit,
+        errors,
         reset,
         setValue,
         watch,
@@ -78,7 +79,7 @@ const General = () => {
     }, [watch().zipCode]);
     return (
         <>
-            <form>
+            <form onSubmit={onSubmit}>
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="lg:w-6/12 md:w-6/12 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
@@ -86,10 +87,12 @@ const General = () => {
                         </p>
                         <TextField
                             label={""}
-                            {...register("name")}
+                            {...register("name", {
+                                required: true,
+                            })}
+                            error={errors.name && true}
                             errorMessage="Name is required"
                             autoFocus
-                            onChange={() => {}}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-6/12 sm:w-full">
@@ -98,32 +101,57 @@ const General = () => {
                         </p>
                         <TextArea
                             label=""
+                            {...register("description", {
+                                required: true,
+                            })}
                             errorMessage="Description is required"
                             autoFocus
+                            error={errors.description && true}
                             rows={3}
-                            onChange={() => {}}
                         />
                     </div>
                     <div className="lg:w-80 md:w-80 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
                             Check in time
                         </p>
-                        <TimePickerField
-                            label=""
-                            onChange={(e) => console.log(e)}
-                            format={format}
-                            use12Hours={true}
+                        <Controller
+                            rules={{ required: true }}
+                            control={control}
+                            name="checkInTime"
+                            render={({ field: { onChange } }) => (
+                                <TimePickerField
+                                    label=""
+                                    onChange={(e) => {
+                                        onChange(e?.format("HH:mm:ss"));
+                                    }}
+                                    error={errors.checkInTime && true}
+                                    errorMessage="Check In time is required"
+                                    format={format}
+                                    use12Hours={true}
+                                />
+                            )}
                         />
                     </div>
                     <div className="lg:w-80 md:w-80 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
                             Check out time
                         </p>
-                        <TimePickerField
-                            label=""
-                            onChange={(e) => console.log(e)}
-                            format={format}
-                            use12Hours={true}
+                        <Controller
+                            rules={{ required: true }}
+                            control={control}
+                            name="checkOutTime"
+                            render={({ field: { onChange } }) => (
+                                <TimePickerField
+                                    label=""
+                                    onChange={(e) => {
+                                        onChange(e?.format("HH:mm:ss"));
+                                    }}
+                                    error={errors.checkOutTime && true}
+                                    errorMessage="Check Out time is required"
+                                    format={format}
+                                    use12Hours={true}
+                                />
+                            )}
                         />
                     </div>
 
@@ -139,11 +167,21 @@ const General = () => {
                         <p className="text-sm text-gray-700 font-medium">
                             Upload Photos
                         </p>
-                        <FileUpload
-                            hideLabel
-                            className="w-full"
-                            label="Photos"
-                            onChange={(e) => console.log(e)}
+
+                        <Controller
+                            rules={{ required: true }}
+                            control={control}
+                            name="photos"
+                            render={({ field: { onChange } }) => (
+                                <FileUpload
+                                    hideLabel
+                                    className="w-full"
+                                    label="Photos"
+                                    error={errors.photos && true}
+                                    errorMessage="Photos are required"
+                                    onChange={(e) => onChange(e)}
+                                />
+                            )}
                         />
                     </div>
 

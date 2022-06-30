@@ -18,6 +18,9 @@ const useAddGeneral = (fn) => {
         getValues,
     } = useForm();
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+    const onSubmit = handleSubmit(async (formData) => {
+        console.log({ formData });
+    });
 
     return {
         register,
@@ -26,7 +29,7 @@ const useAddGeneral = (fn) => {
         errors,
         watch,
         setValue,
-        handleSubmit,
+        onSubmit,
         getValues,
         zipCode,
         setZipCode,

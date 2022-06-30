@@ -37,9 +37,9 @@ const TimePickerField = React.forwardRef<
         errorMessage,
         singleRow,
         value,
-        onChange,
         defaultValue,
         use12Hours,
+        onChange,
         ...rest
     } = props;
 
@@ -70,6 +70,7 @@ const TimePickerField = React.forwardRef<
                 <TimePicker
                     mode="date"
                     id={id}
+                    ref={ref}
                     className={clsx(
                         "appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400",
                         "focus:outline-none sm:text-sm",
