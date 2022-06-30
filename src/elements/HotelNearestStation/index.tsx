@@ -36,40 +36,49 @@ export const HotelNearestStation = React.forwardRef<HTMLInputElement, any>(
                             );
                         })}
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Province
+                        </p>
                         <TextField
-                            label="Province"
+                            label=""
                             onChange={() => {}}
                             placeholder={"Please select"}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Train Line
+                        </p>
                         <TextField
-                            label="Train Line"
+                            label=""
                             onChange={() => {}}
                             placeholder={"Please select"}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Train Station
+                        </p>
                         <TextField
-                            label="Train Station"
+                            label=""
                             onChange={() => {}}
                             placeholder={"Please select"}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Access type
+                        </p>
                         <TextField
-                            label="Access type"
+                            label=""
                             onChange={() => {}}
                             placeholder={"Please select"}
                         />
                     </div>
-                    <div className="max-w-sm">
-                        <TextField
-                            label="Time"
-                            onChange={() => {}}
-                            type="number"
-                        />
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">Time</p>
+                        <TextField label="" onChange={() => {}} type="number" />
                     </div>
                 </div>
                 <div className="flex max-w-sm border-t mt-4 py-4 items-center justify-end space-x-3">

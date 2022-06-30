@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     FileUpload,
     TextArea,
@@ -9,53 +9,126 @@ import {
     Button,
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
+import axios from "axios";
 
 import { useForm, Controller } from "react-hook-form";
+import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
+import useAddGeneral from "@hooks/useAddHotelSpace";
 
 const format = "HH:mm a";
 
 const General = () => {
     const { t } = useTranslation("adminhost");
-    const { handleSubmit, reset, watch, control, register } = useForm();
+
+    const {
+        handleSubmit,
+        reset,
+        setValue,
+        watch,
+        control,
+        register,
+        zipCode,
+        setZipCode,
+        cache,
+        setCache,
+        prefectures,
+    } = useAddGeneral(handleNext);
+
+    function handleNext(id): void {
+        console.log({ id });
+    }
+
+    useEffect(() => {
+        const api = async () => {
+            const newZipCode = normalizeZipCodeInput(watch().zipCode, zipCode);
+            setZipCode(newZipCode);
+            if (newZipCode?.length === 3) {
+                const prefix = newZipCode;
+                // check if prefix already has the data
+                if (!cache[prefix]) {
+                    // fetch data
+                    const { data } = await axios.get(
+                        "https://yubinbango.github.io/yubinbango-data/data/" +
+                            prefix +
+                            ".js"
+                    );
+                    console.log({ data });
+                    const newCache = { ...cache };
+                    newCache[prefix] = JSON.parse(
+                        data.trim().slice(7, data.length - 3)
+                    );
+                    setCache(newCache);
+                }
+            } else if (newZipCode?.length === 7) {
+                const tempCode: string = newZipCode.substring(0, 3);
+                const prefix: string = tempCode;
+                const fullZipCode = newZipCode;
+                const address = cache[prefix]
+                    ? cache[prefix][fullZipCode]
+                    : null;
+                console.log({ address });
+                if (address) {
+                    setValue("prefecture", address[0], { shouldDirty: true });
+                    setValue("city", address[1]);
+                    setValue("addressLine1", address[2]);
+                    setValue("addressLine2", address[3]);
+                }
+            }
+        };
+        watch().zipCode && api();
+    }, [watch().zipCode]);
     return (
         <>
             <form>
                 <div className="px-0 py-3 space-y-6 sm:py-6">
-                    <div className="max-w-screen-sm">
+                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
+                        <p className="text-sm leading-5 font-medium">
+                            {t("name")}
+                        </p>
                         <TextField
-                            label={t("name")}
+                            label={""}
+                            {...register("name")}
                             errorMessage="Name is required"
                             autoFocus
                             onChange={() => {}}
                         />
                     </div>
-                    <div className="max-w-screen-sm">
+                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
+                        <p className="text-sm leading-5 font-medium">
+                            Description
+                        </p>
                         <TextArea
-                            label="Description"
+                            label=""
                             errorMessage="Description is required"
                             autoFocus
                             rows={3}
                             onChange={() => {}}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-80 sm:w-full">
+                        <p className="text-sm leading-5 font-medium">
+                            Check in time
+                        </p>
                         <TimePickerField
-                            label="Check in time"
+                            label=""
                             onChange={(e) => console.log(e)}
                             format={format}
                             use12Hours={true}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-80 sm:w-full">
+                        <p className="text-sm leading-5 font-medium">
+                            Check out time
+                        </p>
                         <TimePickerField
-                            label="Check out time"
+                            label=""
                             onChange={(e) => console.log(e)}
                             format={format}
                             use12Hours={true}
                         />
                     </div>
 
-                    <div className="max-w-screen-sm">
+                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
                         <div className="pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
                                 Photos
@@ -69,25 +142,31 @@ const General = () => {
                         </p>
                         <FileUpload
                             hideLabel
+                            className="w-full"
                             label="Photos"
                             onChange={(e) => console.log(e)}
                         />
                     </div>
 
                     <div className="pb-0">
-                        <h3 className="font-medium text-lg">Address</h3>
+                        <h3 className="font-medium text-lg leading-6">
+                            Address
+                        </h3>
                     </div>
-                    <div className="lg:w-32 md:w-52 sm:max-w-sm">
+                    <div className="lg:w-32 md:w-52 sm:max-w-sm space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            {t("address-postal-code")}
+                        </p>
                         <TextField
                             {...register("zipCode", {
                                 required: true,
                             })}
                             placeholder="〒"
-                            label={t("address-postal-code")}
+                            label=""
                             errorMessage="Zip Code is required"
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full">
                         <Controller
                             name={`prefecture`}
                             control={control}
@@ -96,38 +175,48 @@ const General = () => {
                             //     initialValue?.address?.Prefecture?.id
                             // }
                             render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    label={t("address-prefecture")}
-                                    options={
-                                        // prefectures?.availablePrefectures ||
-                                        []
-                                    }
-                                    // error={errors?.prefecture && true}
-                                    onChange={(event) => {
-                                        field.onChange(event);
-                                    }}
-                                    errorMessage="Prefecture is required"
-                                    labelKey="name"
-                                    valueKey="id"
-                                    // disabled={loading}
-                                />
+                                <div className="space-y-2">
+                                    <p>{t("address-prefecture")}</p>
+                                    <Select
+                                        {...field}
+                                        label=""
+                                        options={
+                                            prefectures?.availablePrefectures ||
+                                            []
+                                        }
+                                        // error={errors?.prefecture && true}
+                                        onChange={(event) => {
+                                            field.onChange(event);
+                                        }}
+                                        errorMessage="Prefecture is required"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        // disabled={loading}
+                                    />
+                                </div>
                             )}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            {t("address-city")}
+                        </p>
+
                         <TextField
                             {...register("city", {
                                 required: true,
                             })}
                             // defaultValue={initialValue?.address?.city}
-                            label={t("address-city")}
+                            label=""
                             // error={errors.city && true}
                             errorMessage="City is required"
                             // disabled={loading}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            {t("address-line-1")}
+                        </p>
                         <TextField
                             {...register("addressLine1", {
                                 required: true,
@@ -135,13 +224,16 @@ const General = () => {
                             // defaultValue={
                             //     initialValue?.address?.addressLine1
                             // }
-                            label={t("address-line-1")}
+                            label=""
                             // error={errors.zipCode && true}
                             errorMessage="Address Line 1 is required"
                             // disabled={loading}
                         />
                     </div>
-                    <div className="max-w-sm">
+                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            {t("address-line-2")}
+                        </p>
                         <TextField
                             {...register("addressLine2", {
                                 required: true,
@@ -149,7 +241,7 @@ const General = () => {
                             // defaultValue={
                             //     initialValue?.address?.addressLine2
                             // }
-                            label={t("address-line-2")}
+                            label={""}
                             // error={errors.zipCode && true}
                             errorMessage="Address Line 2 is required"
                             // disabled={loading}
@@ -157,7 +249,7 @@ const General = () => {
                     </div>
 
                     <div className="pb-2">
-                        <h3 className="font-bold text-lg text-gray-900">
+                        <h3 className="font-medium text-lg text-gray-900 leading-6">
                             最寄り駅
                         </h3>
                         <p className="mt-1 text-sm text-gray-500">
@@ -173,7 +265,7 @@ const General = () => {
                     <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
                         <Button
                             variant="primary"
-                            className="bg-indigo-600 w-16"
+                            className="bg-indigo-600 w-16 hover:bg-indigo-400"
                             type="submit"
                         >
                             Save
