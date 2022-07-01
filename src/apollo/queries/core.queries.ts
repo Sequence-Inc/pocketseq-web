@@ -205,6 +205,7 @@ export const STATION = `
     address
     longitude
     latitude
+    prefectureCode
 `;
 
 export const PAGINATION = `

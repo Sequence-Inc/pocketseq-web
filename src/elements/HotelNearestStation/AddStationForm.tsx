@@ -33,7 +33,6 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             error: trainLinesError,
         },
     ] = useLazyQuery(GET_LINES);
-    console.log({ trainLinesData });
 
     const [
         getStations,
