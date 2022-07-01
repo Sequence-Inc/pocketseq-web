@@ -301,7 +301,7 @@ const General = () => {
                             name="nearestStations"
                             rules={{ required: true }}
                             render={({ field: { onChange } }) => (
-                                <HotelNearestStation />
+                                <HotelNearestStation onChange={onChange} />
                             )}
                         />
                     </div>

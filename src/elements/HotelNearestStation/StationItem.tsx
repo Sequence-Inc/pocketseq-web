@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
-import {
-    ADD_NEAREST_STATION,
-    REMOVE_NEAREST_STATION,
-    GET_STATION_BY_ID,
-} from "src/apollo/queries/space.queries";
-import {
-    GET_LINES,
-    GET_PREFECTURES,
-    GET_STATIONS,
-    GET_PREFECTURE_BY_ID,
-} from "src/apollo/queries/station.queries";
+import { GET_STATION_BY_ID } from "src/apollo/queries/space.queries";
+import { GET_PREFECTURES } from "src/apollo/queries/station.queries";
 import { useQuery, useLazyQuery } from "@apollo/client";
 
 type TStationItem = {
@@ -22,7 +13,7 @@ type TStationItem = {
 };
 
 const StationItem = ({ station }) => {
-    const { stationId, via, time } = station;
+    const { stationId, accessType, time } = station;
 
     const [stationDetail, setDetails] = useState<TStationItem>();
 
@@ -31,13 +22,10 @@ const StationItem = ({ station }) => {
         skip: !stationId,
         fetchPolicy: "network-only",
     });
-    console.log({ data });
-
     const [
         getPrefecturById,
         {
             data: prefectureData,
-
             loading: prefectureLoading,
             error: prefectureError,
         },
@@ -47,7 +35,6 @@ const StationItem = ({ station }) => {
         if (!data?.stationByID?.prefectureCode) {
             return;
         }
-
         getPrefecturById({
             variables: {
                 prefectureId: parseInt(
@@ -67,7 +54,6 @@ const StationItem = ({ station }) => {
         }
 
         const prefecture = prefectureData.availablePrefectures.find((item) => {
-            console.log({ item });
             return (
                 parseInt(item.id, 10) ===
                 parseInt(data.stationByID.prefectureCode, 10)
@@ -97,7 +83,7 @@ const StationItem = ({ station }) => {
                     {stationName}
                 </p>
                 <div className="flex items-center px-1.5 py-1.5 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                    <p>{time + " on " + via}</p>
+                    <p>{time + " on " + accessType}</p>
                 </div>
             </div>
 

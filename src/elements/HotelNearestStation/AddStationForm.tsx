@@ -14,7 +14,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
     const [prefectureId, setPrefectureId] = useState(null);
     const [lineId, setLineId] = useState(null);
     const [stationId, setStationId] = useState(null);
-    const [via, setVia] = useState("");
+    const [accessType, setAccessType] = useState("");
     const [time, setTime] = useState(0);
     const [alertModalOpen, setAlertModal] = useState(false);
     const toggleAlertModal = () => setAlertModal((prev) => !prev);
@@ -41,20 +41,19 @@ const AddStationForm = ({ onAdd, closeForm }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        // Check everything
         setLoading(true);
         if (
             !prefectureId ||
             !lineId ||
             !stationId ||
-            via.trim() === "" ||
+            accessType.trim() === "" ||
             !time
         ) {
             toggleAlertModal();
             setLoading(false);
             return;
         }
-        await onAdd({ prefectureId, lineId, stationId, via, time });
+        await onAdd({ prefectureId, lineId, stationId, accessType, time });
         setLoading(false);
     };
 
@@ -138,9 +137,9 @@ const AddStationForm = ({ onAdd, closeForm }) => {
 
                 <Select
                     label=""
-                    value={via}
+                    value={accessType}
                     options={["徒歩", "車／タクシー", "バス"]}
-                    onChange={(event) => setVia(event as string)}
+                    onChange={(event) => setAccessType(event as string)}
                     errorMessage="最寄駅からのアクセス is required"
                     disabled={loading}
                 />
