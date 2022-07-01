@@ -221,7 +221,7 @@ const General = () => {
                                             prefectures?.availablePrefectures ||
                                             []
                                         }
-                                        // error={errors?.prefecture && true}
+                                        error={errors?.prefecture && true}
                                         onChange={(event) => {
                                             field.onChange(event);
                                         }}
@@ -295,8 +295,15 @@ const General = () => {
                             ※複数お選びいただけます。
                         </p>
                     </div>
-                    <div>
-                        <HotelNearestStation />
+                    <div className="lg:w-6/12 md:w-8/12 sm:w-full">
+                        <Controller
+                            control={control}
+                            name="nearestStations"
+                            rules={{ required: true }}
+                            render={({ field: { onChange } }) => (
+                                <HotelNearestStation />
+                            )}
+                        />
                     </div>
 
                     <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
