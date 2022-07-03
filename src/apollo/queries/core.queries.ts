@@ -205,6 +205,7 @@ export const STATION = `
     address
     longitude
     latitude
+    prefectureCode
 `;
 
 export const PAGINATION = `
@@ -288,4 +289,21 @@ export const PAYMENT_SOURCE = `
         country
         customer
     }
+`;
+
+export const HOTLE_ROOM = `
+    id
+    name
+    description
+    paymentTerm
+    maxCapacityAdult
+    maxCapacityChild
+    stock
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    createdAt
+    updatedAt
+
 `;

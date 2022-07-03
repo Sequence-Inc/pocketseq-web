@@ -6,14 +6,15 @@
     "select-photo": "画像を選択する",
     "clear": "削除",
     "register": "登録する",
-
+    "name": "名前",
     "cancel": "キャンセル",
     "previous-page": "前のページ",
     "next-page": "次のページ",
     "save": "保存",
-
     "add-space": "スペースの追加",
+    "add-hotel": "スペースの追加",
     "my-spaces": "マイスペース",
+    "my-hotel-spaces": "私のホテル",
     "space-name": "スペース名",
     "space-description": "紹介文",
     "max-capacity": "最大収容人数",
@@ -46,5 +47,7 @@
     "photo-description": "この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。",
     "photo-select": "画像選択",
     "photo-upload": "アップロード",
-    "photo-upload-description": "JPEGファイルでご登録下さい。"
+    "photo-upload-description": "JPEGファイルでご登録下さい。",
+
+    "hotel-space-status": "Status"
 }
