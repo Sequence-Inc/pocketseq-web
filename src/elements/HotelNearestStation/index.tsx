@@ -4,34 +4,18 @@ import StationItem from "./StationItem";
 import AddStationForm from "./AddStationForm";
 import TextField from "../TextField";
 import Button from "../Button";
+import { TStationTypes } from "@appTypes/timebookTypes";
 
 interface IHotelNearestStation {
     onChange: any;
 }
-
-const STATIONS = [
-    // {
-    //     name: "Omori Station",
-    //     location: "Tokyo",
-    //     trainLine: "Keihin Tohoku Line",
-    //     accessType: "foot",
-    //     time: "10 min",
-    // },
-    // {
-    //     name: "Kamata Station",
-    //     location: "Tokyo",
-    //     trainLine: "Keihin Tohoku Line",
-    //     accessType: "foot",
-    //     time: "15 min",
-    // },
-];
 
 export const HotelNearestStation = React.forwardRef<
     HTMLInputElement,
     IHotelNearestStation
 >((props, ref) => {
     const { onChange } = props;
-    const [stations, setStations] = useState<any[]>(STATIONS);
+    const [stations, setStations] = useState<TStationTypes[]>([]);
     const [toggleForm, setToggleForm] = useState(false);
 
     const showForm = () => {
@@ -51,15 +35,13 @@ export const HotelNearestStation = React.forwardRef<
         ]);
     };
 
-    // const resmoeStation = async
-
     return (
         <div className="w-full">
             <div className="mb-3">
-                {stations.map((station, index) => {
+                {stations?.map((station, index) => {
                     return <StationItem key={index} station={station} />;
                 })}
-                {!toggleForm && stations.length < 1 ? (
+                {!toggleForm && stations?.length < 1 ? (
                     <p className="text-sm text-center text-gray-800">
                         No Nearest station added yet. Please in below button to
                         add new station

@@ -110,6 +110,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                     labelKey="name"
                     valueKey="id"
                     disabled={loading}
+                    loading={trainLinesLoading}
                 />
             </div>
 
@@ -127,6 +128,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                     labelKey="stationName"
                     valueKey="id"
                     disabled={loading}
+                    loading={stationsLoading}
                 />
             </div>
 

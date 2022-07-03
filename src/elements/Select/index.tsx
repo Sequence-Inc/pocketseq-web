@@ -3,6 +3,8 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
+import { LoadingSpinner } from "@comp";
+import { Spin } from "antd";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -20,6 +22,7 @@ interface SelectProps {
     singleRow?: boolean;
     disabled?: boolean;
     className?: string;
+    loading?: boolean;
 }
 
 const Select = React.forwardRef<any, SelectProps>((props, ref) => {
@@ -35,6 +38,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         errorMessage,
         disabled = false,
         singleRow = false,
+        loading,
     } = props;
 
     const getSelectedLabel = () => {
@@ -102,57 +106,65 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                     static
                                     className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                                 >
-                                    {options.map((option, index) => (
-                                        <Listbox.Option
-                                            key={option.id || index}
-                                            className={({ active }) =>
-                                                classNames(
-                                                    active
-                                                        ? "text-white bg-primary"
-                                                        : "text-gray-700",
-                                                    "cursor-default select-none relative py-2 pl-3 pr-9"
-                                                )
-                                            }
-                                            value={
-                                                valueKey
-                                                    ? option[valueKey]
-                                                    : option
-                                            }
-                                        >
-                                            {({ selected, active }) => (
-                                                <>
-                                                    <span
-                                                        className={classNames(
-                                                            selected
-                                                                ? "font-semibold"
-                                                                : "font-normal",
-                                                            "block truncate"
-                                                        )}
-                                                    >
-                                                        {labelKey
-                                                            ? option[labelKey]
-                                                            : option}
-                                                    </span>
-
-                                                    {selected ? (
+                                    {loading && (
+                                        <div className="w-full flex items-center justify-center">
+                                            <Spin />
+                                        </div>
+                                    )}
+                                    {!loading &&
+                                        options.map((option, index) => (
+                                            <Listbox.Option
+                                                key={option.id || index}
+                                                className={({ active }) =>
+                                                    classNames(
+                                                        active
+                                                            ? "text-white bg-primary"
+                                                            : "text-gray-700",
+                                                        "cursor-default select-none relative py-2 pl-3 pr-9"
+                                                    )
+                                                }
+                                                value={
+                                                    valueKey
+                                                        ? option[valueKey]
+                                                        : option
+                                                }
+                                            >
+                                                {({ selected, active }) => (
+                                                    <>
                                                         <span
                                                             className={classNames(
-                                                                active
-                                                                    ? "text-white"
-                                                                    : "text-primary",
-                                                                "absolute inset-y-0 right-0 flex items-center pr-4"
+                                                                selected
+                                                                    ? "font-semibold"
+                                                                    : "font-normal",
+                                                                "block truncate"
                                                             )}
                                                         >
-                                                            <CheckIcon
-                                                                className="w-5 h-5"
-                                                                aria-hidden="true"
-                                                            />
+                                                            {labelKey
+                                                                ? option[
+                                                                      labelKey
+                                                                  ]
+                                                                : option}
                                                         </span>
-                                                    ) : null}
-                                                </>
-                                            )}
-                                        </Listbox.Option>
-                                    ))}
+
+                                                        {selected ? (
+                                                            <span
+                                                                className={classNames(
+                                                                    active
+                                                                        ? "text-white"
+                                                                        : "text-primary",
+                                                                    "absolute inset-y-0 right-0 flex items-center pr-4"
+                                                                )}
+                                                            >
+                                                                <CheckIcon
+                                                                    className="w-5 h-5"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </span>
+                                                        ) : null}
+                                                    </>
+                                                )}
+                                            </Listbox.Option>
+                                        ))}
                                 </Listbox.Options>
                             </Transition>
                         </div>

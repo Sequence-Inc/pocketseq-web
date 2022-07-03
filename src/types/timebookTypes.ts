@@ -126,3 +126,9 @@ export type TTableKey = {
     name: string | undefined;
     key: string;
 };
+
+export type TStationTypes = {
+    stationId: string;
+    accessType: string;
+    time: number;
+};
