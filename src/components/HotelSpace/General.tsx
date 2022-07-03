@@ -17,13 +17,17 @@ import useAddGeneral from "@hooks/useAddHotelSpace";
 
 const format = "HH:mm a";
 
-const General = () => {
+interface IGeneralFormProps {
+    setActiveTab: any;
+    activeTab: number;
+}
+
+const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
 
     const {
         onSubmit,
         errors,
-        reset,
         loading,
         setValue,
         watch,
@@ -38,6 +42,7 @@ const General = () => {
 
     function handleNext(id): void {
         console.log({ id });
+        setActiveTab(activeTab + 1);
     }
 
     useEffect(() => {

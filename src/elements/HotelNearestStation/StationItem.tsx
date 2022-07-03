@@ -63,7 +63,7 @@ const StationItem = ({ station }) => {
         setDetails(
             (prev) =>
                 (prev && { ...prev, location: prefecture.name }) || {
-                    location: prefecture.name,
+                    location: prefecture?.name,
                 }
         );
     }, [

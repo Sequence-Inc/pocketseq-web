@@ -79,6 +79,10 @@ const useAddGeneral = (fn) => {
                 console.log(err);
             }
         }
+
+        if (data?.addHotel?.hotel?.id) {
+            return fn(data?.addHotel?.hotel?.id);
+        }
     });
 
     return {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
@@ -13,6 +13,7 @@ const { TabPane } = Tabs;
 
 function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
+    const [activeTab, setActiveTab] = useState<number>(1);
 
     return (
         <HostLayout userSession={userSession}>
@@ -45,9 +46,17 @@ function AddHotelSpace({ userSession }) {
             </div>
 
             <Container className="bg-white py-4 sm:py-6 lg:py-8 mt-3 mb-3 sm:mb-5">
-                <Tabs defaultActiveKey="1" tabBarGutter={40}>
+                <Tabs
+                    defaultActiveKey="1"
+                    tabBarGutter={40}
+                    activeKey={activeTab?.toString()}
+                    onTabClick={(key) => setActiveTab(parseInt(key, 10))}
+                >
                     <TabPane tab="General" key="1">
-                        <General />
+                        <General
+                            setActiveTab={setActiveTab}
+                            activeTab={activeTab}
+                        />
                     </TabPane>
                     <TabPane tab="Rooms" key="2">
                         <Rooms />
