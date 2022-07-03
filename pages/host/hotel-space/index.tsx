@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, Table } from "@element";
 import router from "next/router";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 import useTranslation from "next-translate/useTranslation";
 import {
@@ -15,30 +18,32 @@ import {
 import Link from "next/link";
 
 import { IColumns, TTableKey } from "src/types/timebookTypes";
+import { MY_HOTELS } from "src/apollo/queries/hotel.queries";
 
 const HotelSpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
+    const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const { t } = useTranslation("adminhost");
+    const { data, loading, error } = useQuery(MY_HOTELS, {
+        fetchPolicy: "network-only",
+    });
 
     const keys: TTableKey[] = [
         { name: t("space-name"), key: "name" },
-        { name: t("max-capacity"), key: "maximumCapacity" },
-        { name: t("space-size"), key: "spaceSize" },
-        { name: t("space-types"), key: "spaceTypes" },
+        { name: t("hotel-space-status"), key: "status" },
     ];
 
     const columnClassName = (key): string | undefined => {
-        if (key === "maximumCapacity") return "w-44";
         if (key === "name") return "min-w-10 text-left";
-        if (key === "spaceSize") return "w-32";
+        if (key === "status") return "w-32 text-left";
     };
 
     const childClassname = (key): string => {
-        if (key === "maximumCapacity" || key === "spaceSize") {
+        if (key === "maximumCapacity" || key === "status") {
             return "text-right";
         } else {
-            return "text-left";
+            return "text-left ";
         }
     };
 
@@ -49,30 +54,16 @@ const HotelSpace = ({ userSession }) => {
             className: columnClassName(key),
             childClassName: childClassname(key),
             Cell: ({ column, row, value }) => {
-                if (column.id === "spaceTypes") {
-                    return (
-                        <div className="flex justify-center">
-                            {value.map((res: any) => (
-                                <span
-                                    key={res?.title}
-                                    className="inline-flex items-center px-3 py-1 text-xs text-primary bg-green-100 rounded-full"
-                                >
-                                    {res?.title}
-                                </span>
-                            ))}
-                        </div>
-                    );
-                }
                 if (column?.id === "name") {
                     return (
                         <div className="text-left">
-                            <Link
+                            {/* <Link
                                 href={`/host/my-space/edit/${row?.original?.id}/view`}
-                            >
-                                <a className="text-gray-600 hover:text-gray-700">
-                                    {value}
-                                </a>
-                            </Link>
+                            > */}
+                            <a className="text-gray-600 hover:text-gray-700">
+                                {value}
+                            </a>
+                            {/* </Link> */}
                         </div>
                     );
                 }
@@ -87,7 +78,8 @@ const HotelSpace = ({ userSession }) => {
                 return (
                     <div className="flex items-center justify-center space-x-2">
                         <button
-                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 cursor-not-allowed"
+                            // hover:bg-gray-200
                             // onClick={() => {
                             //     router.push(
                             //         `/host/my-space/edit/${row.original.id}/view`
@@ -98,7 +90,8 @@ const HotelSpace = ({ userSession }) => {
                             確認
                         </button>
                         <button
-                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  cursor-not-allowed"
+                            // hover:bg-gray-200
                             // onClick={() => {
                             //     router.push(
                             //         `/host/my-space/edit/${row.original.id}`
@@ -114,12 +107,20 @@ const HotelSpace = ({ userSession }) => {
         });
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
+        setLoadComplete(true);
     }, []);
 
     let content;
 
-    if (columns) {
-        content = <Table columns={columns} data={[]} />;
+    if (loading) {
+        content = <LoadingSpinner loadingText="Loading hotels..." />;
+    }
+    if (error) {
+        content = <div>An error occurred: {error.message}</div>;
+    }
+
+    if (loadComplete && data) {
+        content = <Table columns={columns} data={data.myHotels} />;
     }
 
     return (

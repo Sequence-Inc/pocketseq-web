@@ -47,5 +47,7 @@
     "photo-description": "この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。",
     "photo-select": "画像選択",
     "photo-upload": "アップロード",
-    "photo-upload-description": "JPEGファイルでご登録下さい。"
+    "photo-upload-description": "JPEGファイルでご登録下さい。",
+
+    "hotel-space-status": "Status"
 }

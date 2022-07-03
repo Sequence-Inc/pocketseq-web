@@ -290,3 +290,20 @@ export const PAYMENT_SOURCE = `
         customer
     }
 `;
+
+export const HOTLE_ROOM = `
+    id
+    name
+    description
+    paymentTerm
+    maxCapacityAdult
+    maxCapacityChild
+    stock
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    createdAt
+    updatedAt
+
+`;

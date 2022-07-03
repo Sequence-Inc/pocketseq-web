@@ -24,6 +24,7 @@ const General = () => {
         onSubmit,
         errors,
         reset,
+        loading,
         setValue,
         watch,
         control,
@@ -93,6 +94,7 @@ const General = () => {
                             error={errors.name && true}
                             errorMessage="Name is required"
                             autoFocus
+                            disabled={loading}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-6/12 sm:w-full">
@@ -108,6 +110,7 @@ const General = () => {
                             autoFocus
                             error={errors.description && true}
                             rows={3}
+                            disabled={loading}
                         />
                     </div>
                     <div className="lg:w-80 md:w-80 sm:w-full">
@@ -128,6 +131,7 @@ const General = () => {
                                     errorMessage="Check In time is required"
                                     format={format}
                                     use12Hours={true}
+                                    disabled={loading}
                                 />
                             )}
                         />
@@ -150,6 +154,7 @@ const General = () => {
                                     errorMessage="Check Out time is required"
                                     format={format}
                                     use12Hours={true}
+                                    disabled={loading}
                                 />
                             )}
                         />
@@ -201,6 +206,7 @@ const General = () => {
                             placeholder="〒"
                             label=""
                             errorMessage="Zip Code is required"
+                            disabled={loading}
                         />
                     </div>
                     <div className="lg:w-80 md:w-9/12 sm:w-full">
@@ -228,7 +234,7 @@ const General = () => {
                                         errorMessage="Prefecture is required"
                                         labelKey="name"
                                         valueKey="id"
-                                        // disabled={loading}
+                                        disabled={loading}
                                     />
                                 </div>
                             )}
@@ -245,9 +251,9 @@ const General = () => {
                             })}
                             // defaultValue={initialValue?.address?.city}
                             label=""
-                            // error={errors.city && true}
+                            error={errors.city && true}
                             errorMessage="City is required"
-                            // disabled={loading}
+                            disabled={loading}
                         />
                     </div>
                     <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
@@ -262,9 +268,9 @@ const General = () => {
                             //     initialValue?.address?.addressLine1
                             // }
                             label=""
-                            // error={errors.zipCode && true}
+                            error={errors.addressLine1 && true}
                             errorMessage="Address Line 1 is required"
-                            // disabled={loading}
+                            disabled={loading}
                         />
                     </div>
                     <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
@@ -279,9 +285,9 @@ const General = () => {
                             //     initialValue?.address?.addressLine2
                             // }
                             label={""}
-                            // error={errors.zipCode && true}
+                            error={errors.addressLine2 && true}
                             errorMessage="Address Line 2 is required"
-                            // disabled={loading}
+                            disabled={loading}
                         />
                     </div>
 
