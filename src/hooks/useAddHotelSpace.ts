@@ -34,10 +34,14 @@ const useAddGeneral = (fn) => {
     );
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
+
+        const payloadPhotos = formData.photos.map((res) => ({
+            mime: res.type,
+        }));
         const payload = {
             name: formData.name,
             description: formData.description,
-            photos: formData.photos,
+            photos: payloadPhotos,
             nearestStations: formData.nearestStations,
             checkInTime: formData.checkInTime,
             checkOutTime: formData.checkOutTime,
@@ -68,7 +72,7 @@ const useAddGeneral = (fn) => {
                                 "Content-Type": mime,
                             },
                         };
-                        axios.put(url, formData.photos[index], options);
+                        return axios.put(url, formData.photos[index], options);
                     })
                 );
             } catch (err) {

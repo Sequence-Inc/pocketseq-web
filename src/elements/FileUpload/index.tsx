@@ -52,8 +52,8 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                 onChange(null);
             }
             const newPhotos = photos.filter((res) => typeof res === "object");
-            const imageInputs = newPhotos.map((res) => ({ mime: res.type }));
-            onChange(imageInputs);
+            // const imageInputs = newPhotos.map((res) => ({ mime: res.type }));
+            onChange(newPhotos);
         }, [photos]);
         return (
             <div
