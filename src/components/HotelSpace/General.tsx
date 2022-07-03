@@ -14,6 +14,7 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 import useAddGeneral from "@hooks/useAddHotelSpace";
+import { useRouter } from "next/router";
 
 const format = "HH:mm a";
 
@@ -24,7 +25,7 @@ interface IGeneralFormProps {
 
 const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
-
+    const router = useRouter();
     const {
         onSubmit,
         errors,
@@ -83,6 +84,7 @@ const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
         };
         watch().zipCode && api();
     }, [watch().zipCode]);
+
     return (
         <>
             <form onSubmit={onSubmit}>
@@ -329,6 +331,7 @@ const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
                             variant="secondary"
                             className="w-16"
                             type="button"
+                            onClick={() => router.push("/host/hotel-space")}
                         >
                             Cancel
                         </Button>
