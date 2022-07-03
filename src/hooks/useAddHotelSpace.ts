@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
@@ -7,7 +8,7 @@ import { ADD_HOTEL_SPACE } from "src/apollo/queries/hotel.queries";
 const useAddGeneral = (fn) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
-
+    const [loading, setLoading] = useState(false);
     const {
         register,
         unregister,
@@ -21,14 +22,18 @@ const useAddGeneral = (fn) => {
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
 
-    const [mutate, { loading }] = useMutation(ADD_HOTEL_SPACE, {
-        onCompleted: (data) => {
-            if (data?.addSpace?.message) {
-                confirmRef.current.open(data?.addSpace?.message);
-            }
-        },
-    });
+    const [mutate, { loading: add_hotel_space_loading }] = useMutation(
+        ADD_HOTEL_SPACE,
+        {
+            onCompleted: (data) => {
+                if (data?.addSpace?.message) {
+                    confirmRef.current.open(data?.addSpace?.message);
+                }
+            },
+        }
+    );
     const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
         const payload = {
             name: formData.name,
             description: formData.description,
@@ -44,17 +49,38 @@ const useAddGeneral = (fn) => {
                 addressLine2: formData.addressLine2,
             },
         };
-        console.log({ payload });
-        const addHotelData = await mutate({
+        const { data, errors } = await mutate({
             variables: { input: payload },
         });
 
-        return addHotelData;
+        if (errors) {
+            console.log("Errors", errors);
+            setLoading(false);
+            return;
+        }
+        if (data) {
+            try {
+                await Promise.all(
+                    data.addHotel.uploadRes.map((token, index) => {
+                        const { url, mime } = token;
+                        const options = {
+                            headers: {
+                                "Content-Type": mime,
+                            },
+                        };
+                        axios.put(url, formData.photos[index], options);
+                    })
+                );
+            } catch (err) {
+                console.log(err);
+            }
+        }
     });
 
     return {
         register,
         unregister,
+        loading,
         control,
         errors,
         watch,
