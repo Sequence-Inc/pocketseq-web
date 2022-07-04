@@ -94,11 +94,13 @@ const Plans = () => {
                         />
                         <div className="flex space-x-2">
                             <DatePickerField
+                                onChange={() => {}}
                                 className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                 label="from"
                                 labelClassName=" ml-2 font-medium "
                             />
                             <DatePickerField
+                                onChange={() => {}}
                                 className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                 label="to"
                                 labelClassName=" ml-2 font-medium "
@@ -118,11 +120,13 @@ const Plans = () => {
                         />
                         <div className="flex space-x-2">
                             <DatePickerField
+                                onChange={() => {}}
                                 className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                 label="from"
                                 labelClassName=" ml-2 font-medium "
                             />
                             <DatePickerField
+                                onChange={() => {}}
                                 className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                 label="to"
                                 labelClassName=" ml-2 font-medium "

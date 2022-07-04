@@ -65,17 +65,6 @@ const useAddGeneral = (fn) => {
         }
         if (data) {
             try {
-                // await Promise.all(
-                //     data.addHotel.uploadRes.map((token, index) => {
-                //         const { url, mime } = token;
-                //         const options = {
-                //             headers: {
-                //                 "Content-Type": mime,
-                //             },
-                //         };
-                //         return axios.put(url, formData.photos[index], options);
-                //     })
-                // );
                 await handleUpload(data.addHotel.uploadRes, formData.photos);
             } catch (err) {
                 console.log(err);
