@@ -132,3 +132,10 @@ export type TStationTypes = {
     accessType: string;
     time: number;
 };
+
+export type TImageUploadResult = {
+    type: string;
+    url: string;
+    mime: string;
+    key: string;
+};

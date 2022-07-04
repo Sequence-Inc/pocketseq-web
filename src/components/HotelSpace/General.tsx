@@ -21,9 +21,14 @@ const format = "HH:mm a";
 interface IGeneralFormProps {
     setActiveTab: any;
     activeTab: number;
+    setHotelId: any;
 }
 
-const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
+const General = ({
+    setActiveTab,
+    activeTab,
+    setHotelId,
+}: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
     const router = useRouter();
     const {
@@ -42,7 +47,7 @@ const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
     } = useAddGeneral(handleNext);
 
     function handleNext(id): void {
-        console.log({ id });
+        setHotelId(id);
         setActiveTab(activeTab + 1);
     }
 
@@ -324,6 +329,8 @@ const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-400"
                             type="submit"
+                            loading={loading}
+                            loadingText={"Please wait"}
                         >
                             Save
                         </Button>
@@ -331,6 +338,7 @@ const General = ({ setActiveTab, activeTab }: IGeneralFormProps) => {
                             variant="secondary"
                             className="w-16"
                             type="button"
+                            disabled={loading}
                             onClick={() => router.push("/host/hotel-space")}
                         >
                             Cancel

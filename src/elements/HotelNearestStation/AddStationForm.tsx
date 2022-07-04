@@ -17,7 +17,10 @@ const AddStationForm = ({ onAdd, closeForm }) => {
     const [accessType, setAccessType] = useState("");
     const [time, setTime] = useState(0);
     const [alertModalOpen, setAlertModal] = useState(false);
-    const toggleAlertModal = () => setAlertModal((prev) => !prev);
+    const toggleAlertModal = () => {
+        console.log("toggler clled");
+        setAlertModal((prev) => !prev);
+    };
 
     const {
         data: prefectureData,

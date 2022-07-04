@@ -14,6 +14,7 @@ const { TabPane } = Tabs;
 function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
     const [activeTab, setActiveTab] = useState<number>(1);
+    const [hotelId, setHotelId] = useState();
 
     return (
         <HostLayout userSession={userSession}>
@@ -56,15 +57,20 @@ function AddHotelSpace({ userSession }) {
                         <General
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
+                            setHotelId={setHotelId}
                         />
                     </TabPane>
-                    <TabPane tab="Rooms" key="2">
-                        <Rooms />
+                    <TabPane tab="Rooms" key="2" disabled={!hotelId}>
+                        <Rooms
+                            setActiveTab={setActiveTab}
+                            activeTab={activeTab}
+                            setHotelId={setHotelId}
+                        />
                     </TabPane>
-                    <TabPane tab="Pricing" key="3">
+                    <TabPane tab="Pricing" key="3" disabled={!hotelId}>
                         <Pricing />
                     </TabPane>
-                    <TabPane tab="Plans" key="4">
+                    <TabPane tab="Plans" key="4" disabled={!hotelId}>
                         <Plans />
                     </TabPane>
                 </Tabs>

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import { ADD_HOTEL_SPACE } from "src/apollo/queries/hotel.queries";
+import handleUpload from "src/utils/uploadImages";
 
 const useAddGeneral = (fn) => {
     const [zipCode, setZipCode] = useState("");
@@ -64,17 +65,7 @@ const useAddGeneral = (fn) => {
         }
         if (data) {
             try {
-                await Promise.all(
-                    data.addHotel.uploadRes.map((token, index) => {
-                        const { url, mime } = token;
-                        const options = {
-                            headers: {
-                                "Content-Type": mime,
-                            },
-                        };
-                        return axios.put(url, formData.photos[index], options);
-                    })
-                );
+                await handleUpload(data.addHotel.uploadRes, formData.photos);
             } catch (err) {
                 console.log(err);
             }
@@ -102,5 +93,7 @@ const useAddGeneral = (fn) => {
         prefectures,
     };
 };
+
+// export const useAddRooms = (fn)=>
 
 export default useAddGeneral;
