@@ -15,7 +15,13 @@ import { useForm, Controller } from "react-hook-form";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const Rooms = () => {
+interface IRoomFormProps {
+    setActiveTab: any;
+    activeTab: number;
+    setHotelId: any;
+}
+
+const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
     const { t } = useTranslation("adminhost");
     const { handleSubmit, reset, watch, control, register } = useForm();
 

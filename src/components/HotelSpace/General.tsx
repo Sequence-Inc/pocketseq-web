@@ -329,6 +329,8 @@ const General = ({
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-400"
                             type="submit"
+                            loading={loading}
+                            loadingText={"Please wait"}
                         >
                             Save
                         </Button>
@@ -336,6 +338,7 @@ const General = ({
                             variant="secondary"
                             className="w-16"
                             type="button"
+                            disabled={loading}
                             onClick={() => router.push("/host/hotel-space")}
                         >
                             Cancel

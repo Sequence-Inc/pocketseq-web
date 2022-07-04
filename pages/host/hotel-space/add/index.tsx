@@ -61,7 +61,11 @@ function AddHotelSpace({ userSession }) {
                         />
                     </TabPane>
                     <TabPane tab="Rooms" key="2" disabled={!hotelId}>
-                        <Rooms />
+                        <Rooms
+                            setActiveTab={setActiveTab}
+                            activeTab={activeTab}
+                            setHotelId={setHotelId}
+                        />
                     </TabPane>
                     <TabPane tab="Pricing" key="3" disabled={!hotelId}>
                         <Pricing />
