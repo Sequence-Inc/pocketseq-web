@@ -12,7 +12,7 @@
     "next-page": "次のページ",
     "save": "保存",
     "add-space": "スペースの追加",
-    "add-hotel": "スペースの追加",
+    "add-hotel": "宿泊スペースの追加",
     "my-spaces": "マイスペース",
     "my-hotel-spaces": "宿泊スペース",
     "space-name": "スペース名",
@@ -49,5 +49,5 @@
     "photo-upload": "アップロード",
     "photo-upload-description": "JPEGファイルでご登録下さい。",
 
-    "hotel-space-status": "Status"
+    "hotel-space-status": ""
 }
