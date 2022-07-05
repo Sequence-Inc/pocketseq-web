@@ -1,6 +1,11 @@
 import React from "react";
+import { TAddHotelProps } from "@appTypes/timebookTypes";
 
-const Pricing = () => {
+interface IPricingFormProps extends TAddHotelProps {
+    hotelId: string;
+}
+
+const Pricing = (props: IPricingFormProps) => {
     return <div>Pricing</div>;
 };
 

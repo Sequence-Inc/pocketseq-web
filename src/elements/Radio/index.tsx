@@ -38,12 +38,13 @@ const RadioField = React.forwardRef<HTMLInputElement, RadioProps>(
             singleRow,
             options,
             direction,
+            onChange,
             ...rest
         } = props;
-        const [value, setValue] = useState(options[0]?.value);
+        const [value, setValue] = useState<string | undefined | number>();
         const handleChange = (e: RadioChangeEvent) => {
-            console.log("radio checked", e.target.value);
             setValue(e.target.value);
+            onChange(e.target.value);
         };
         return (
             <div

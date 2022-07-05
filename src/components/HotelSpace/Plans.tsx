@@ -5,17 +5,21 @@ import {
     TextField,
     TimePickerField,
     Select,
-    HotelNearestStation,
     Button,
     SwitchField,
     DatePickerField,
     RadioField,
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
+import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { useForm, Controller } from "react-hook-form";
 
 const format = "HH:mm a";
+
+interface IPlanFormProps extends TAddHotelProps {
+    hotelId: string;
+}
 
 const ROOM_TYPES = [
     { value: "Suit", label: "Suit" },
@@ -35,7 +39,7 @@ const PAYMENT_TYPES = [
     { value: "perPerson", label: "Per Person Basis" },
 ];
 
-const Plans = () => {
+const Plans = (props: IPlanFormProps) => {
     const { t } = useTranslation("adminhost");
     const { handleSubmit, reset, watch, control, register } = useForm();
     return (

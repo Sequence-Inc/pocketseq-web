@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 interface IHOST {
     accountId: string;
     name: string;
@@ -138,4 +140,10 @@ export type TImageUploadResult = {
     url: string;
     mime: string;
     key: string;
+};
+
+export type TAddHotelProps = {
+    setActiveTab: Dispatch<SetStateAction<number>>;
+    activeTab: number;
+    hotleId?: string;
 };

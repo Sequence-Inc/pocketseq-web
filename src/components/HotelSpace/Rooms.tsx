@@ -3,49 +3,59 @@ import {
     FileUpload,
     TextArea,
     TextField,
-    TimePickerField,
     Select,
-    HotelNearestStation,
     Button,
     RadioField,
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 
-import { useForm, Controller } from "react-hook-form";
+import { TAddHotelProps } from "@appTypes/timebookTypes";
+
+import { Controller } from "react-hook-form";
+import { useAddRooms } from "@hooks/useAddHotelSpace";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-interface IRoomFormProps {
-    setActiveTab: any;
-    activeTab: number;
-    setHotelId: any;
+interface IRoomFormProps extends TAddHotelProps {
+    hotelId: string;
 }
 
-const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
+const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
     const { t } = useTranslation("adminhost");
-    const { handleSubmit, reset, watch, control, register } = useForm();
+    const { onSubmit, loading, reset, errors, watch, control, register } =
+        useAddRooms(hotleId);
 
     return (
-        <form>
+        <form onSubmit={onSubmit} id="add-hotel-rooms">
             <div className="px-0 py-3 space-y-6 sm:py-6">
                 <div className="lg:w-6/12 md:w-3/4 sm:w-full">
+                    <p className="text-sm leading-5 font-medium">{t("name")}</p>
                     <TextField
-                        label={t("name")}
+                        label={""}
+                        {...register("name", {
+                            required: true,
+                        })}
+                        error={errors.name && true}
                         errorMessage="Name is required"
                         autoFocus
-                        onChange={() => {}}
+                        disabled={loading}
                     />
                 </div>
                 <div className="lg:w-6/12 md:w-3/4 sm:w-full">
+                    <p className="text-sm leading-5 font-medium">Description</p>
                     <TextArea
-                        label={"Description"}
+                        label=""
+                        {...register("description", {
+                            required: true,
+                        })}
                         errorMessage="Description is required"
                         autoFocus
+                        error={errors.description && true}
                         rows={3}
-                        onChange={() => {}}
+                        disabled={loading}
                     />
                 </div>
-                <div className="max-w-screen-sm">
+                <div className="lg:w-6/12 md:w-6/12 sm:w-full">
                     <div className="pb-2">
                         <h3 className="font-medium text-lg text-gray-900">
                             Photos
@@ -57,10 +67,22 @@ const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
                     <p className="text-sm text-gray-700 font-medium">
                         Upload Photos
                     </p>
-                    <FileUpload
-                        hideLabel
-                        label="Photos"
-                        onChange={(e) => console.log(e)}
+
+                    <Controller
+                        rules={{ required: true }}
+                        control={control}
+                        name="photos"
+                        render={({ field: { onChange } }) => (
+                            <FileUpload
+                                id="room_form"
+                                hideLabel
+                                className="w-full"
+                                label=""
+                                error={errors.photos && true}
+                                errorMessage="Photos are required"
+                                onChange={(e) => onChange(e)}
+                            />
+                        )}
                     />
                 </div>
                 <div className="max-w-screen-sm">
@@ -69,13 +91,26 @@ const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
                             Payment Terms
                         </p>
                     </div>
-                    <RadioField
-                        label=""
-                        onChange={(e) => console.log(e)}
-                        options={[
-                            { value: "perRoom", label: "Per Room Basis" },
-                            { value: "perPerson", label: "Per Person Basis" },
-                        ]}
+                    <Controller
+                        rules={{ required: true }}
+                        control={control}
+                        name="paymentTerm"
+                        render={({ field: { onChange } }) => (
+                            <RadioField
+                                label=""
+                                onChange={(e) => onChange(e)}
+                                options={[
+                                    {
+                                        value: "PER_ROOM",
+                                        label: "Per Room Basis",
+                                    },
+                                    {
+                                        value: "PER_PERSON",
+                                        label: "Per Person Basis",
+                                    },
+                                ]}
+                            />
+                        )}
                     />
                 </div>
                 <div className="w-6/12">
@@ -101,18 +136,18 @@ const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
                                         <Select
                                             {...field}
                                             label={""}
-                                            options={
-                                                // prefectures?.availablePrefectures ||
-                                                []
-                                            }
+                                            options={[
+                                                1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                                            ]}
                                             // error={errors?.prefecture && true}
                                             onChange={(event) => {
+                                                console.log({ event });
                                                 field.onChange(event);
                                             }}
+                                            value=""
                                             errorMessage="Prefecture is required"
                                             labelKey="name"
-                                            valueKey="id"
-                                            // disabled={loading}
+                                            disabled={loading}
                                         />
                                     </div>
                                 )}
@@ -216,7 +251,7 @@ const Rooms = ({ setActiveTab, activeTab, setHotelId }: IRoomFormProps) => {
 
                     <div className="flex justify-end space-x-3 border-t mt-4 pt-5">
                         <Button
-                            type="button"
+                            type="submit"
                             variant="primary"
                             className="bg-indigo-600 font-medium text-sm w-16 hover:bg-indigo-400"
                         >

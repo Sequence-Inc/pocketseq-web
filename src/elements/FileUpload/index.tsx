@@ -8,7 +8,7 @@ interface PhotoUploadFieldProps {
     label: string;
     placeholder?: string;
     type?: string;
-    id?: string;
+    id: string;
     className?: string;
     error?: boolean;
     errorMessage?: string;
@@ -105,13 +105,13 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                                 </svg>
                                 <div className="flex justify-center text-sm text-gray-600">
                                     <label
-                                        htmlFor="file-upload"
+                                        htmlFor={id}
                                         className="relative font-medium text-center bg-white rounded-md cursor-pointer text-primary hover:text-green-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                                     >
                                         <span>{t("photo-upload")}</span>
                                         <input
-                                            id="file-upload"
-                                            name="file-upload"
+                                            id={id}
+                                            name={id}
                                             type="file"
                                             accept="image/jpeg"
                                             className="sr-only"
@@ -119,7 +119,6 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                                             onChange={handleSelectPhoto}
                                         />
                                     </label>
-                                    {/* <p className="pl-1">or drag and drop</p> */}
                                 </div>
                                 <p className="text-xs text-gray-500 text-center">
                                     {t("photo-upload-description")}

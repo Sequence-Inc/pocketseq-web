@@ -3,10 +3,14 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
-import { ADD_HOTEL_SPACE } from "src/apollo/queries/hotel.queries";
+import {
+    ADD_HOTEL_SPACE,
+    ADD_HOTEL_ROOMS,
+} from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
+import ToastAlert from "src/components/Toast";
 
-const useAddGeneral = (fn) => {
+export const useAddGeneral = (fn) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const [loading, setLoading] = useState(false);
@@ -20,6 +24,7 @@ const useAddGeneral = (fn) => {
         handleSubmit,
         getValues,
     } = useForm();
+
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
 
@@ -94,6 +99,68 @@ const useAddGeneral = (fn) => {
     };
 };
 
-// export const useAddRooms = (fn)=>
+export const useAddRooms = (hotleSpaceId: string) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [hotelId] = useState<string>(hotleSpaceId);
+    const {
+        register,
+        unregister,
+        control,
+        formState: { errors },
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+    } = useForm();
 
-export default useAddGeneral;
+    const [mutate] = useMutation(ADD_HOTEL_ROOMS);
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+        const payloadPhotos = formData.photos.map((res) => ({
+            mime: res.type,
+        }));
+
+        const payload = {
+            name: formData.name,
+            description: formData.description,
+            photos: payloadPhotos,
+            paymentTerms: formData.paymentTerms,
+            maxCapacityAdult: formData.maxCapacityAdult,
+            maxCapacityChild: formData.maxCapacityChild,
+            stock: formData.stock,
+        };
+
+        const { data, errors } = await mutate({
+            variables: { hotelId, input: payload },
+        });
+        if (errors) {
+            console.log("Errors", errors);
+            setLoading(false);
+            return;
+        }
+
+        if (data) {
+            try {
+                await handleUpload(data.addHotel.uploadRes, formData.photos);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        console.log("success");
+    });
+
+    return {
+        register,
+        unregister,
+        loading,
+        control,
+        errors,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        onSubmit,
+    };
+};

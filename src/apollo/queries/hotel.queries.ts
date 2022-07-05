@@ -1,5 +1,11 @@
 import { gql } from "@apollo/client";
-import { ADDRESS, PHOTO, STATION, HOTLE_ROOM } from "./core.queries";
+import {
+    ADDRESS,
+    PHOTO,
+    STATION,
+    HOTLE_ROOM,
+    IMAGE_UPLOAD_RESULT,
+} from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
     mutation AddHotel($input: AddHotelInput!) {
@@ -17,6 +23,20 @@ export const ADD_HOTEL_SPACE = gql`
                 key
             }
         }
+    }
+`;
+
+export const ADD_HOTEL_ROOMS = gql`
+    mutation AddHotelRoom($hotelId:ID!,  $input: ADDHotelRoomInput!){
+        addHotelRoom(hotelId:$hotelId, input:$input){
+            message
+            hotelRoom{
+                ${HOTLE_ROOM}
+            }
+            uploadRes{
+                ${IMAGE_UPLOAD_RESULT}
+            }
+     }
     }
 `;
 
