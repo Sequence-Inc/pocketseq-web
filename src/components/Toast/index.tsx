@@ -86,7 +86,7 @@ const Toast = (props: TToastProps) => {
 };
 
 const ToastAlert = {
-    success: () => <Toast />,
+    success: () => <Toast showToast={true} hidesIn={2} />,
     error: () => <Toast />,
     info: () => <Toast />,
     warning: () => <Toast />,

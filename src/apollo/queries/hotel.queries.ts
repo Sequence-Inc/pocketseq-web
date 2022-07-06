@@ -27,7 +27,7 @@ export const ADD_HOTEL_SPACE = gql`
 `;
 
 export const ADD_HOTEL_ROOMS = gql`
-    mutation AddHotelRoom($hotelId:ID!,  $input: ADDHotelRoomInput!){
+    mutation AddHotelRoom($hotelId:ID!,  $input: AddHotelRoomInput!){
         addHotelRoom(hotelId:$hotelId, input:$input){
             message
             hotelRoom{

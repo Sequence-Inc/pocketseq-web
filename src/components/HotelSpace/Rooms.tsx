@@ -16,14 +16,13 @@ import { useAddRooms } from "@hooks/useAddHotelSpace";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-interface IRoomFormProps extends TAddHotelProps {
-    hotelId: string;
-}
+interface IRoomFormProps extends TAddHotelProps {}
 
-const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
+const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
     const { t } = useTranslation("adminhost");
+    console.log("hotel id in room form", hotelId);
     const { onSubmit, loading, reset, errors, watch, control, register } =
-        useAddRooms(hotleId);
+        useAddRooms(hotelId);
 
     return (
         <form onSubmit={onSubmit} id="add-hotel-rooms">
@@ -98,6 +97,7 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                         render={({ field: { onChange } }) => (
                             <RadioField
                                 label=""
+                                disabled={loading}
                                 onChange={(e) => onChange(e)}
                                 options={[
                                     {
@@ -122,12 +122,9 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                     <div className="flex space-x-2">
                         <div className=" lg:w-6/12">
                             <Controller
-                                name={`Adult`}
+                                name={`maxCapacityAdult`}
                                 control={control}
                                 rules={{ required: true }}
-                                // defaultValue={
-                                //     initialValue?.address?.Prefecture?.id
-                                // }
                                 render={({ field }) => (
                                     <div>
                                         <p className="text-sm leading-5 font-medium text-gray-700">
@@ -136,17 +133,21 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                                         <Select
                                             {...field}
                                             label={""}
-                                            options={[
-                                                1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                                            ]}
-                                            // error={errors?.prefecture && true}
+                                            options={Array.from(Array(11)).map(
+                                                (_, i) => ({
+                                                    value: i,
+                                                    label: i,
+                                                })
+                                            )}
+                                            error={
+                                                errors?.maxCapacityChild && true
+                                            }
                                             onChange={(event) => {
-                                                console.log({ event });
                                                 field.onChange(event);
                                             }}
-                                            value=""
-                                            errorMessage="Prefecture is required"
-                                            labelKey="name"
+                                            valueKey="value"
+                                            errorMessage="Adult Capacity is required"
+                                            labelKey="label"
                                             disabled={loading}
                                         />
                                     </div>
@@ -156,12 +157,9 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
 
                         <div className="lg:w-6/12">
                             <Controller
-                                name={`Child`}
+                                name={`maxCapacityChild`}
                                 control={control}
                                 rules={{ required: true }}
-                                // defaultValue={
-                                //     initialValue?.address?.Prefecture?.id
-                                // }
                                 render={({ field }) => (
                                     <div>
                                         <p className="text-sm leading-5 font-medium text-gray-700">
@@ -170,18 +168,22 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                                         <Select
                                             {...field}
                                             label={""}
-                                            options={
-                                                // prefectures?.availablePrefectures ||
-                                                []
+                                            options={Array.from(Array(11)).map(
+                                                (_, i) => ({
+                                                    value: i,
+                                                    label: i,
+                                                })
+                                            )}
+                                            error={
+                                                errors?.maxCapacityChild && true
                                             }
-                                            // error={errors?.prefecture && true}
                                             onChange={(event) => {
                                                 field.onChange(event);
                                             }}
-                                            errorMessage="Prefecture is required"
-                                            labelKey="name"
-                                            valueKey="id"
-                                            // disabled={loading}
+                                            errorMessage="Child Capacity is required"
+                                            labelKey="label"
+                                            valueKey="value"
+                                            disabled={loading}
                                         />
                                     </div>
                                 )}
@@ -196,11 +198,17 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                     </div>
                     <TextField
                         label=""
-                        onChange={(e) => console.log(e)}
+                        {...register("stock", {
+                            required: true,
+                        })}
+                        errorMessage="Stock is required"
+                        autoFocus
+                        error={errors.stock && true}
                         type="number"
+                        disabled={loading}
                     />
                 </div>
-                <div className="sm:w-6/12">
+                {/* <div className="sm:w-6/12">
                     <div className="flex justify-between items-center pb-4">
                         <p className="text-lg font-medium leading-6">
                             Basic Pricing Setting
@@ -248,23 +256,26 @@ const Rooms = ({ setActiveTab, activeTab, hotleId }: IRoomFormProps) => {
                             </div>
                         ))}
                     </div>
+                </div> */}
 
-                    <div className="flex justify-end space-x-3 border-t mt-4 pt-5">
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            className="bg-indigo-600 font-medium text-sm w-16 hover:bg-indigo-400"
-                        >
-                            Save
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="white"
-                            className="font-medium border-l text-sm w-16"
-                        >
-                            Cancel
-                        </Button>
-                    </div>
+                <div className="flex justify-end space-x-3 border-t mt-4 pt-5 lg:w-6/12 md:w-8/12 sm:w-6/12  ">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        loading={loading}
+                        loadingText="Adding Room"
+                        className="bg-indigo-600 font-medium text-sm w-16 hover:bg-indigo-400"
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="white"
+                        disabled={loading}
+                        className="font-medium border-l text-sm w-16"
+                    >
+                        Cancel
+                    </Button>
                 </div>
             </div>
         </form>

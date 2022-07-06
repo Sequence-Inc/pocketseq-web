@@ -125,15 +125,17 @@ export const useAddRooms = (hotleSpaceId: string) => {
             name: formData.name,
             description: formData.description,
             photos: payloadPhotos,
-            paymentTerms: formData.paymentTerms,
+            paymentTerm: formData.paymentTerm,
             maxCapacityAdult: formData.maxCapacityAdult,
             maxCapacityChild: formData.maxCapacityChild,
-            stock: formData.stock,
+            stock: parseInt(formData?.stock || 0, 10),
         };
+        console.log({ hotelId, payload });
 
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
         });
+        console.log({ data });
         if (errors) {
             console.log("Errors", errors);
             setLoading(false);
@@ -142,13 +144,17 @@ export const useAddRooms = (hotleSpaceId: string) => {
 
         if (data) {
             try {
-                await handleUpload(data.addHotel.uploadRes, formData.photos);
+                await handleUpload(
+                    data.addHotelRoom.uploadRes,
+                    formData.photos
+                );
             } catch (err) {
                 console.log(err);
             }
         }
-
+        setLoading(false);
         console.log("success");
+        return ToastAlert.success();
     });
 
     return {

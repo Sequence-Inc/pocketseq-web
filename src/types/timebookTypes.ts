@@ -145,5 +145,5 @@ export type TImageUploadResult = {
 export type TAddHotelProps = {
     setActiveTab: Dispatch<SetStateAction<number>>;
     activeTab: number;
-    hotleId?: string;
+    hotelId?: string;
 };
