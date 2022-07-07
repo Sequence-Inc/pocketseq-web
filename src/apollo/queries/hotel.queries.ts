@@ -70,3 +70,11 @@ export const MY_HOTELS = gql`
         }
     }
 `;
+
+export const ROOMS_BY_HOTEL_ID = gql`
+    query HotelRoomsByHotelId($hotelId:ID!){
+        myHotelRooms(hotelId:$hotelId){
+            ${HOTLE_ROOM}
+        }
+    }
+`;

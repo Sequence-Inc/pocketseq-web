@@ -147,3 +147,33 @@ export type TAddHotelProps = {
     activeTab: number;
     hotelId?: string;
 };
+
+export type TImage = {
+    width: number;
+    height: number;
+    url: string;
+};
+
+export type Photo = {
+    id: string;
+    mime: string;
+    type: string;
+    thumbnail?: TImage;
+    small?: TImage;
+    medium?: TImage;
+    large?: TImage;
+};
+
+export type THotelRoom = {
+    id: string;
+    name: string;
+    description: string;
+    paymentTerm: string;
+    maxCapacityAdult: number;
+    maxCapacityChild: number;
+    stock: number;
+    hotelId: number;
+    photos?: Photo[];
+    createdAt: Date;
+    updatedAt: Date;
+};
