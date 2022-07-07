@@ -8,6 +8,7 @@ import {
     ADD_HOTEL_ROOMS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
+import { ROOMS_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 
 export const useAddGeneral = (fn, options = {}) => {
     const [zipCode, setZipCode] = useState("");
@@ -112,7 +113,9 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         getValues,
     } = useForm();
 
-    const [mutate] = useMutation(ADD_HOTEL_ROOMS);
+    const [mutate] = useMutation(ADD_HOTEL_ROOMS, {
+        refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
+    });
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
