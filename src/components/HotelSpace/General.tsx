@@ -10,8 +10,7 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 import axios from "axios";
-
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
 import { useAddGeneral } from "@hooks/useAddHotelSpace";
 import { useRouter } from "next/router";

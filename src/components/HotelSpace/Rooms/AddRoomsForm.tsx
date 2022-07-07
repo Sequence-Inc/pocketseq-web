@@ -18,13 +18,16 @@ const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface IAddRoomFormProps {
     hotelId: string;
+    handleSubmit?: any;
 }
 
-const AddRoomForm = ({ hotelId }: IAddRoomFormProps) => {
+const AddRoomForm = ({ hotelId, handleSubmit }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
-    console.log("hotel id in room form", hotelId);
-    const { onSubmit, loading, reset, errors, watch, control, register } =
-        useAddRooms(hotelId);
+
+    const { onSubmit, loading, errors, control, register } = useAddRooms(
+        hotelId,
+        handleSubmit
+    );
 
     return (
         <form onSubmit={onSubmit} id="add-hotel-rooms">
@@ -101,6 +104,8 @@ const AddRoomForm = ({ hotelId }: IAddRoomFormProps) => {
                                 label=""
                                 disabled={loading}
                                 onChange={(e) => onChange(e)}
+                                error={errors?.paymentTerm && true}
+                                errorMessage="Payment Term is required"
                                 options={[
                                     {
                                         value: "PER_ROOM",

@@ -8,9 +8,8 @@ import {
     ADD_HOTEL_ROOMS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
-import ToastAlert from "src/components/Toast";
 
-export const useAddGeneral = (fn) => {
+export const useAddGeneral = (fn, options = {}) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const [loading, setLoading] = useState(false);
@@ -23,7 +22,7 @@ export const useAddGeneral = (fn) => {
         setValue,
         handleSubmit,
         getValues,
-    } = useForm();
+    } = useForm(options);
 
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
@@ -99,7 +98,7 @@ export const useAddGeneral = (fn) => {
     };
 };
 
-export const useAddRooms = (hotleSpaceId: string) => {
+export const useAddRooms = (hotleSpaceId: string, fn) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [hotelId] = useState<string>(hotleSpaceId);
     const {
@@ -130,12 +129,10 @@ export const useAddRooms = (hotleSpaceId: string) => {
             maxCapacityChild: formData.maxCapacityChild,
             stock: parseInt(formData?.stock || 0, 10),
         };
-        console.log({ hotelId, payload });
 
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
         });
-        console.log({ data });
         if (errors) {
             console.log("Errors", errors);
             setLoading(false);
@@ -153,8 +150,7 @@ export const useAddRooms = (hotleSpaceId: string) => {
             }
         }
         setLoading(false);
-        console.log("success");
-        return ToastAlert.success();
+        return fn();
     });
 
     return {
