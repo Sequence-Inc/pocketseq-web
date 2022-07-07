@@ -27,3 +27,4 @@ export { default as HotelNearestStation } from "./HotelNearestStation";
 export { default as RadioField } from "./Radio";
 export { default as SwitchField } from "./Switch";
 export { default as PhotoUpload } from "./PhotUpload";
+export { default as ToastAlert } from "./Toast";

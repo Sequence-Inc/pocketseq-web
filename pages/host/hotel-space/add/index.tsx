@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
-import { Container } from "@element";
+import { Container, ToastAlert } from "@element";
 import { OfficeBuildingIcon } from "@heroicons/react/outline";
 import useTranslation from "next-translate/useTranslation";
 import { Tabs } from "antd";
