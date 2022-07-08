@@ -177,3 +177,32 @@ export type THotelRoom = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type THotelPriceScheme = {
+    id?: string;
+    name?: string;
+    roomCharge?: string;
+    oneAdultCharge?: string;
+    twoAdultCharge?: string;
+    threeAdultCharge?: string;
+    fourAdultCharge?: string;
+    fiveAdultCharge?: string;
+    sixAdultCharge?: string;
+    sevenAdultCharge?: string;
+    eightAdultCharge?: string;
+    nineAdultCharge?: string;
+    tenAdultCharge?: string;
+    oneChildCharge?: string;
+    twoChildCharge?: string;
+    threeChildCharge?: string;
+    fourChildCharge?: string;
+    fiveChildCharge?: string;
+    sixChildCharge?: string;
+    sevenChildCharge?: string;
+    eightChildCharge?: string;
+    nineChildCharge?: string;
+    tenChildCharge?: string;
+    hotelId?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+};

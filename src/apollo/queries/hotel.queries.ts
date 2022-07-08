@@ -86,3 +86,14 @@ export const PRICING_BY_HOTEL_ID = gql`
         }
     }
 `;
+
+export const ADD_PRICING_SCHEME = gql`
+    mutation AddPricingScheme($hotelId:ID,$input:AddPriceSchemeInput!){
+        addPriceScheme(hotelId:$hotelId,input:$input){
+            message
+            priceSchema{
+                ${PRICE_SCHEME_OBJECT}
+            }
+        }
+    }
+`;

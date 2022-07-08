@@ -7,7 +7,16 @@ import {
     ADD_HOTEL_ROOMS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
-import { ROOMS_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
+import {
+    ROOMS_BY_HOTEL_ID,
+    ADD_PRICING_SCHEME,
+} from "src/apollo/queries/hotel.queries";
+
+const noOp = () => {};
+
+type TOptions = {
+    onCompleted?: Function;
+};
 
 export const useAddGeneral = (fn, options = {}) => {
     const [zipCode, setZipCode] = useState("");
@@ -150,6 +159,41 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         }
         setLoading(false);
         return fn();
+    });
+
+    return {
+        register,
+        unregister,
+        loading,
+        control,
+        errors,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        onSubmit,
+    };
+};
+
+export const useAddPriceScheme = (hotelId, options: TOptions) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const {
+        register,
+        unregister,
+        control,
+        formState: { errors },
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+    } = useForm();
+
+    const [mutate] = useMutation(ADD_HOTEL_ROOMS);
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+        console.log({ formData });
+        setLoading(false);
     });
 
     return {
