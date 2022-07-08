@@ -29,6 +29,9 @@
             ],
             "@appTypes/*": [
                 "src/types/*"
+            ],
+            "@config": [
+                "src/config/index.ts"
             ]
         },
         "allowJs": true,

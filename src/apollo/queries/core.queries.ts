@@ -307,3 +307,33 @@ export const HOTLE_ROOM = `
     updatedAt
 
 `;
+
+export const PRICE_SCHEME_OBJECT = `
+id
+name
+roomCharge
+oneAdultCharge
+twoAdultCharge
+threeAdultCharge
+fourAdultCharge
+fiveAdultCharge
+sixAdultCharge
+sevenAdultCharge
+eightAdultCharge
+nineAdultCharge
+tenAdultCharge
+oneChildCharge
+twoChildCharge
+threeChildCharge
+fourChildCharge
+fiveChildCharge
+sixChildCharge
+sevenChildCharge
+eightChildCharge
+nineChildCharge
+tenChildCharge
+hotelId
+createdAt
+updatedAt
+
+`;

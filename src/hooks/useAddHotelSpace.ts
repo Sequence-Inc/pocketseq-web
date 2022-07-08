@@ -1,7 +1,6 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@apollo/client";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import {
     ADD_HOTEL_SPACE,
@@ -28,16 +27,13 @@ export const useAddGeneral = (fn, options = {}) => {
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
 
-    const [mutate, { loading: add_hotel_space_loading }] = useMutation(
-        ADD_HOTEL_SPACE,
-        {
-            onCompleted: (data) => {
-                if (data?.addSpace?.message) {
-                    confirmRef.current.open(data?.addSpace?.message);
-                }
-            },
-        }
-    );
+    const [mutate] = useMutation(ADD_HOTEL_SPACE, {
+        onCompleted: (data) => {
+            if (data?.addSpace?.message) {
+                confirmRef.current.open(data?.addSpace?.message);
+            }
+        },
+    });
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
 

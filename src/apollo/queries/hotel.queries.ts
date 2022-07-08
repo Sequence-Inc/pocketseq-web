@@ -5,6 +5,7 @@ import {
     STATION,
     HOTLE_ROOM,
     IMAGE_UPLOAD_RESULT,
+    PRICE_SCHEME_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -75,6 +76,13 @@ export const ROOMS_BY_HOTEL_ID = gql`
     query HotelRoomsByHotelId($hotelId:ID!){
         myHotelRooms(hotelId:$hotelId){
             ${HOTLE_ROOM}
+        }
+    }
+`;
+export const PRICING_BY_HOTEL_ID = gql`
+    query PricingByHotelId($hotelId:ID!){
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
         }
     }
 `;
