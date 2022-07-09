@@ -5,17 +5,16 @@ import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import {
     ADD_HOTEL_SPACE,
     ADD_HOTEL_ROOMS,
-} from "src/apollo/queries/hotel.queries";
-import handleUpload from "src/utils/uploadImages";
-import {
     ROOMS_BY_HOTEL_ID,
     ADD_PRICING_SCHEME,
 } from "src/apollo/queries/hotel.queries";
+import handleUpload from "src/utils/uploadImages";
 
 const noOp = () => {};
 
 type TOptions = {
     onCompleted?: Function;
+    onError?: Function;
 };
 
 export const useAddGeneral = (fn, options = {}) => {
@@ -188,12 +187,24 @@ export const useAddPriceScheme = (hotelId, options: TOptions) => {
         getValues,
     } = useForm();
 
-    const [mutate] = useMutation(ADD_HOTEL_ROOMS);
+    const [mutate] = useMutation(ADD_PRICING_SCHEME);
 
     const onSubmit = handleSubmit(async (formData) => {
-        setLoading(true);
-        console.log({ formData });
         setLoading(false);
+
+        const { data, errors } = await mutate({
+            variables: { hotelId, input: formData },
+        });
+        if (errors) {
+            console.log("Errors", errors);
+            setLoading(false);
+            if (options?.onError) return options.onError();
+            return;
+        }
+
+        setLoading(false);
+
+        return options.onCompleted();
     });
 
     return {

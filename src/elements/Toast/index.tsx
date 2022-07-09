@@ -1,23 +1,91 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from "react";
+import React, {
+    forwardRef,
+    useEffect,
+    useImperativeHandle,
+    useMemo,
+} from "react";
 import { Fragment, useRef } from "react";
 import { Transition } from "@headlessui/react";
 
 import { useState } from "react";
 
-import { CheckCircleIcon } from "@heroicons/react/outline";
+import {
+    CheckCircleIcon,
+    ExclamationCircleIcon,
+} from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
+
+enum EAlertEnums {
+    "success",
+    "error",
+    "info",
+    "warning",
+}
+interface IAlertProps {
+    message?: string;
+}
 
 const ToastAlert = forwardRef(({ redirect }: any, ref) => {
     const [show, setShow] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>();
+    const [message, setMessage] = useState<JSX.Element>();
+
+    const content = useMemo(
+        () => ({
+            error: (message) => (
+                <>
+                    <div className="flex-shrink-0">
+                        <ExclamationCircleIcon
+                            className="h-6 w-6 text-red-400"
+                            aria-hidden="true"
+                        />
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                        <p className="text-sm font-medium text-gray-900">
+                            {message || "Something went wrong"}
+                        </p>
+                        {/* <p className="mt-1 text-sm text-gray-500">
+                                            Anyone with a link can now view this
+                                            file.
+                                        </p> */}
+                    </div>
+                </>
+            ),
+
+            success: (message) => (
+                <>
+                    <div className="flex-shrink-0">
+                        <CheckCircleIcon
+                            className="h-6 w-6 text-green-400"
+                            aria-hidden="true"
+                        />
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                        <p className="text-sm font-medium text-gray-900">
+                            {message || "Action Successful"}
+                        </p>
+                    </div>
+                </>
+            ),
+        }),
+        []
+    );
 
     useImperativeHandle(ref, () => ({
         open: (message) => {
             setMessage(message);
             setShow(true);
         },
+        showSuccess: ({ message }: IAlertProps) => {
+            setShow(true);
+            setMessage(content.success(message));
+        },
+        showError: ({ message }: IAlertProps) => {
+            setShow(true);
+            setMessage(content.error(message));
+        },
+
         close: () => {
-            setMessage("");
+            setMessage(<></>);
             setShow(false);
         },
     }));
@@ -52,21 +120,7 @@ const ToastAlert = forwardRef(({ redirect }: any, ref) => {
                         <div className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
                             <div className="p-4">
                                 <div className="flex items-start">
-                                    <div className="flex-shrink-0">
-                                        <CheckCircleIcon
-                                            className="h-6 w-6 text-green-400"
-                                            aria-hidden="true"
-                                        />
-                                    </div>
-                                    <div className="ml-3 w-0 flex-1 pt-0.5">
-                                        <p className="text-sm font-medium text-gray-900">
-                                            Successfully saved!
-                                        </p>
-                                        <p className="mt-1 text-sm text-gray-500">
-                                            Anyone with a link can now view this
-                                            file.
-                                        </p>
-                                    </div>
+                                    {message}
                                     <div className="ml-4 flex-shrink-0 flex">
                                         <button
                                             type="button"

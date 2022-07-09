@@ -4,6 +4,7 @@ import { useAddPriceScheme } from "@hooks/useAddHotelSpace";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "@config";
 import { TextField, Button } from "@element";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
+import { useToast } from "@hooks/useToasts";
 
 interface IPriceListProps {
     hotelId: string;
@@ -26,9 +27,26 @@ const AddPriceScheme = ({
 }: IPriceListProps) => {
     const [formInputs, setFormInputs] = useState(null);
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
-    const { register, loading, errors, onSubmit } = useAddPriceScheme(hotelId, {
-        onCompleted,
-    });
+
+    const { addAlert } = useToast();
+
+    const { register, loading, errors, onSubmit, setValue } = useAddPriceScheme(
+        hotelId,
+        {
+            onCompleted: () => {
+                addAlert({
+                    type: "success",
+                    message: "Added Pricing scheme",
+                }),
+                    onCompleted();
+            },
+            onError: () =>
+                addAlert({
+                    type: "error",
+                    message: "Could not add pricing scheme ",
+                }),
+        }
+    );
 
     const handleCreateForm = useCallback(() => {
         if (!hotelRooms?.length) {
@@ -79,12 +97,21 @@ const AddPriceScheme = ({
                                 formElement.key === "roomCharge" ||
                                 formElement.key === "oneAdultCharge"
                             ),
+                            min: {
+                                value: 0,
+                                message: "Must be greater than 0",
+                            },
+                            valueAsNumber: true,
                         })}
                         className=""
                         label=""
                         type="number"
+                        step="0.01"
                         error={errors[formElement.key] && true}
-                        errorMessage={`This field is required`}
+                        errorMessage={
+                            errors[formElement.key]?.message ||
+                            `This field is required`
+                        }
                     />
                 </div>
             );
