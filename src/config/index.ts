@@ -23,3 +23,13 @@ export const PRICE_SCHEME_CHILD = [
     { key: "nineChildCharge", name: "9 Child" },
     { key: "tenChildCharge", name: "10 Child" },
 ];
+
+export const DAY_OF_WEEK = [
+    { name: "Sun", value: 0 },
+    { name: "Mon", value: 1 },
+    { name: "Tue", value: 2 },
+    { name: "Wed", value: 3 },
+    { name: "Thu", value: 4 },
+    { name: "Fri", value: 5 },
+    { name: "Sat", value: 6 },
+];

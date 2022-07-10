@@ -291,23 +291,6 @@ export const PAYMENT_SOURCE = `
     }
 `;
 
-export const HOTLE_ROOM = `
-    id
-    name
-    description
-    paymentTerm
-    maxCapacityAdult
-    maxCapacityChild
-    stock
-    hotelId
-    photos{
-        ${PHOTO}
-    }
-    createdAt
-    updatedAt
-
-`;
-
 export const PRICE_SCHEME_OBJECT = `
 id
 name
@@ -335,5 +318,33 @@ tenChildCharge
 hotelId
 createdAt
 updatedAt
+
+`;
+
+export const HOTLE_ROOM = `
+    id
+    name
+    description
+    paymentTerm
+    maxCapacityAdult
+    maxCapacityChild
+    stock
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    basicPriceSettings{
+        id
+        dayOfWeek
+        priceScheme{
+            ${PRICE_SCHEME_OBJECT}
+        }
+        hotelRoomId
+        packagePlanId
+        createdAt
+        updatedAt
+    }
+    createdAt
+    updatedAt
 
 `;

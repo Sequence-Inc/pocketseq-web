@@ -5,7 +5,7 @@ import { useQuery, NetworkStatus } from "@apollo/client";
 import { ROOMS_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 import { useToast } from "@hooks/useToasts";
 import RoomList from "./RoomList";
-import { Button } from "@element";
+import { Button, Container } from "@element";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import AddRoomForm from "./AddRoomsForm";
 
@@ -32,10 +32,10 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
     };
     const handleSubmit = () => {
         toggleForm();
-        addAlert();
+        addAlert({ type: "success", message: "Successfully added hotel room" });
     };
     return (
-        <div>
+        <Container>
             <div className="flex md:justify-end">
                 <div className="flex px-6 mt-6 space-x-3 md:mt-0 md:ml-4">
                     {!formVisible && (
@@ -47,7 +47,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             {t("add-hotel")}
                         </Button>
                     )}
-
+                    {/* 
                     {formVisible && (
                         <Button
                             variant="secondary"
@@ -56,7 +56,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                         >
                             Close Form
                         </Button>
-                    )}
+                    )} */}
                 </div>
             </div>
 
@@ -81,9 +81,13 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                 </div>
             )}
             {formVisible && (
-                <AddRoomForm hotelId={hotelId} handleSubmit={handleSubmit} />
+                <AddRoomForm
+                    hotelId={hotelId}
+                    handleSubmit={handleSubmit}
+                    toggleForm={toggleForm}
+                />
             )}
-        </div>
+        </Container>
     );
 };
 

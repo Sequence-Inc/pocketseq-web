@@ -110,7 +110,7 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         register,
         unregister,
         control,
-        formState: { errors },
+        formState: { errors, dirtyFields },
         watch,
         setValue,
         handleSubmit,
@@ -135,7 +135,13 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
             maxCapacityAdult: formData.maxCapacityAdult,
             maxCapacityChild: formData.maxCapacityChild,
             stock: parseInt(formData?.stock || 0, 10),
+            basicPriceSettings:
+                formData?.basicPriceSettings?.length > 0
+                    ? formData?.basicPriceSettings
+                    : [],
         };
+
+        console.log({ payload });
 
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
@@ -171,6 +177,7 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         handleSubmit,
         getValues,
         onSubmit,
+        dirtyFields,
     };
 };
 

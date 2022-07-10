@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
     FileUpload,
     TextArea,
@@ -11,23 +11,43 @@ import useTranslation from "next-translate/useTranslation";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
-import { Controller } from "react-hook-form";
+import { Controller, useFieldArray } from "react-hook-form";
 import { useAddRooms } from "@hooks/useAddHotelSpace";
+import { useQuery } from "@apollo/client";
+import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
+
+import { DAY_OF_WEEK } from "@config";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface IAddRoomFormProps {
     hotelId: string;
     handleSubmit?: any;
+    toggleForm?: any;
 }
 
-const AddRoomForm = ({ hotelId, handleSubmit }: IAddRoomFormProps) => {
+const AddRoomForm = ({
+    hotelId,
+    handleSubmit,
+    toggleForm,
+}: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
 
-    const { onSubmit, loading, errors, control, register } = useAddRooms(
-        hotelId,
-        handleSubmit
-    );
+    const { onSubmit, loading, errors, dirtyFields, control, register } =
+        useAddRooms(hotelId, handleSubmit);
+
+    const { fields, append, insert, update } = useFieldArray({
+        name: "basicPriceSettings",
+        control,
+    });
+    const {
+        data: priceSchemes,
+        loading: priceSchemeLoading,
+        error: priceSchemeError,
+    } = useQuery(PRICING_BY_HOTEL_ID, {
+        skip: !hotelId,
+        variables: { hotelId },
+    });
 
     return (
         <form onSubmit={onSubmit} id="add-hotel-rooms">
@@ -215,55 +235,83 @@ const AddRoomForm = ({ hotelId, handleSubmit }: IAddRoomFormProps) => {
                         disabled={loading}
                     />
                 </div>
-                {/* <div className="sm:w-6/12">
-                    <div className="flex justify-between items-center pb-4">
+                <div className="w-full sm:w-9/12">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
                         <p className="text-lg font-medium leading-6">
                             Basic Pricing Setting
                         </p>
                         <Button
                             type="button"
-                            className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                            className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                         >
                             Pricing Overrides
                         </Button>
                     </div>
-                    <div className="grid grid-cols-7">
-                        {BASIC_PIRCING.map((pricing, index) => (
+                    {priceSchemes?.myPriceSchemes?.length > 0 && (
+                        <p className="space-y-3  text-base font-semibold text-center leading-10 mt-4 text-gray-400">
+                            Add pricing schemes first (on next page)
+                        </p>
+                    )}
+
+                    <div className="flex flex-wrap space-y-3 lg:space-y-0 ">
+                        {DAY_OF_WEEK.map((pricing, index) => (
                             <div
-                                className="flex flex-col border text-center first:rounded-l-md last:rounded-r-md px-2 py-2"
+                                className="flex w-full flex-row items-center justify-between lg:flex-1 lg:flex-col lg:justify-between lg:items-center lg:border first:rounded-l-md last:rounded-r-md "
                                 key={index}
                             >
-                                <p className=" text-xl">{pricing}</p>
+                                <p className="text-xl">{pricing.name}</p>
                                 <Controller
-                                    name={`Adult`}
+                                    name={`basicPriceSettings.${index}`}
                                     control={control}
-                                    rules={{ required: true }}
+                                    rules={{ required: false }}
                                     // defaultValue={
                                     //     initialValue?.address?.Prefecture?.id
                                     // }
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            label={""}
-                                            options={
-                                                // prefectures?.availablePrefectures ||
-                                                []
-                                            }
-                                            // error={errors?.prefecture && true}
-                                            onChange={(event) => {
-                                                field.onChange(event);
-                                            }}
-                                            errorMessage="Prefecture is required"
-                                            labelKey="name"
-                                            valueKey="id"
-                                            // disabled={loading}
-                                        />
-                                    )}
+                                    render={({ field }) => {
+                                        return (
+                                            <Select
+                                                // {...field}
+                                                label={""}
+                                                className="lg:w-20"
+                                                options={
+                                                    priceSchemes?.myPriceSchemes ||
+                                                    []
+                                                }
+                                                error={
+                                                    errors?.prefecture && true
+                                                }
+                                                onChange={(event) => {
+                                                    field.onChange({
+                                                        dayOfWeek:
+                                                            pricing.value,
+                                                        priceSchemeId: event,
+                                                    });
+                                                    update(index, {
+                                                        dayOfWeek:
+                                                            pricing.value,
+                                                        priceSchemeId: event,
+                                                    });
+                                                }}
+                                                value={
+                                                    fields[index]?.priceSchemeId
+                                                }
+                                                errorMessage="Prefecture is required"
+                                                labelKey="name"
+                                                valueKey="id"
+                                                disabled={
+                                                    loading ||
+                                                    priceSchemeLoading ||
+                                                    !priceSchemes
+                                                        ?.myPriceSchemes?.length
+                                                }
+                                            />
+                                        );
+                                    }}
                                 />
                             </div>
                         ))}
                     </div>
-                </div> */}
+                </div>
 
                 <div className="flex justify-end space-x-3 border-t mt-4 pt-5 lg:w-6/12 md:w-8/12 sm:w-6/12  ">
                     <Button
@@ -279,6 +327,7 @@ const AddRoomForm = ({ hotelId, handleSubmit }: IAddRoomFormProps) => {
                         type="button"
                         variant="white"
                         disabled={loading}
+                        onClick={toggleForm}
                         className="font-medium border-l text-sm w-16"
                     >
                         Cancel
