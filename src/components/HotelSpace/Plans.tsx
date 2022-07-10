@@ -187,6 +187,7 @@ const Plans = (props: IPlanFormProps) => {
                             Upload Photos
                         </p>
                         <FileUpload
+                            id="planFiles"
                             hideLabel
                             label="Photos"
                             onChange={(e) => console.log(e)}
