@@ -6,7 +6,6 @@ import moment, { Moment } from "moment";
 
 interface DatePickerFieldProps {
     label: string;
-    labelClassName?: string;
     placeholder?: string;
     type?: string;
     id?: string;
@@ -38,7 +37,6 @@ const DatePickerField = React.forwardRef<
         value,
         onChange,
         defaultValue,
-        labelClassName,
         ...rest
     } = props;
 
@@ -46,7 +44,7 @@ const DatePickerField = React.forwardRef<
         <div
             className={clsx(
                 singleRow
-                    ? `sm:space-x-4 flex-none sm:flex items-center`
+                    ? "sm:space-x-4 flex-none sm:flex items-center"
                     : "space-y-1",
                 className ? className : ""
             )}
@@ -55,8 +53,7 @@ const DatePickerField = React.forwardRef<
                 htmlFor={id}
                 className={clsx(
                     "block text-sm font-bold text-gray-700",
-                    singleRow ? "sm:text-right w-60" : "",
-                    labelClassName ? labelClassName : ""
+                    singleRow ? "sm:text-right w-60" : ""
                 )}
             >
                 {label}

@@ -9,7 +9,6 @@ import {
     UserCircleIcon,
     BadgeCheckIcon,
     IdentificationIcon,
-    OfficeBuildingIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
@@ -67,17 +66,11 @@ export const navigation = [
         Icon: CalendarIcon,
         roles: ["host"],
     },
-
+    
     {
         name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
-        roles: ["host"],
-    },
-    {
-        name: "Hotel Space Management",
-        href: "/host/hotel-space",
-        Icon: OfficeBuildingIcon,
         roles: ["host"],
     },
     {
