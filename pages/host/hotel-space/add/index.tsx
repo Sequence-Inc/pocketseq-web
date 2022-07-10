@@ -15,6 +15,7 @@ function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
     const [activeTab, setActiveTab] = useState<number>(1);
     const [hotelId, setHotelId] = useState("cl52jeuss009909mi2ycq3id3");
+    // const [hotelId, setHotelId] = useState<string>();
 
     return (
         <HostLayout userSession={userSession}>

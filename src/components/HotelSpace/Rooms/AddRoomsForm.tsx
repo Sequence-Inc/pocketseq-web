@@ -11,7 +11,12 @@ import useTranslation from "next-translate/useTranslation";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
-import { Controller, useFieldArray } from "react-hook-form";
+import {
+    Controller,
+    useFieldArray,
+    UseFieldArrayReturn,
+    FieldArrayWithId,
+} from "react-hook-form";
 import { useAddRooms } from "@hooks/useAddHotelSpace";
 import { useQuery } from "@apollo/client";
 import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
@@ -25,6 +30,10 @@ interface IAddRoomFormProps {
     handleSubmit?: any;
     toggleForm?: any;
 }
+interface IFields extends FieldArrayWithId {
+    dayOfWeek: string;
+    priceSchemeId: string;
+}
 
 const AddRoomForm = ({
     hotelId,
@@ -36,7 +45,14 @@ const AddRoomForm = ({
     const { onSubmit, loading, errors, dirtyFields, control, register } =
         useAddRooms(hotelId, handleSubmit);
 
-    const { fields, append, insert, update } = useFieldArray({
+    const {
+        fields,
+        append,
+        insert,
+        update,
+    }: UseFieldArrayReturn & {
+        fields: IFields[];
+    } = useFieldArray({
         name: "basicPriceSettings",
         control,
     });
@@ -235,7 +251,7 @@ const AddRoomForm = ({
                         disabled={loading}
                     />
                 </div>
-                <div className="w-full sm:w-9/12">
+                <div className="w-full sm:w-9/12 space-y-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
                         <p className="text-lg font-medium leading-6">
                             Basic Pricing Setting
@@ -247,70 +263,76 @@ const AddRoomForm = ({
                             Pricing Overrides
                         </Button>
                     </div>
-                    {priceSchemes?.myPriceSchemes?.length > 0 && (
+                    {priceSchemes?.myPriceSchemes?.length < 1 && (
                         <p className="space-y-3  text-base font-semibold text-center leading-10 mt-4 text-gray-400">
                             Add pricing schemes first (on next page)
                         </p>
                     )}
-
-                    <div className="flex flex-wrap space-y-3 lg:space-y-0 ">
-                        {DAY_OF_WEEK.map((pricing, index) => (
-                            <div
-                                className="flex w-full flex-row items-center justify-between lg:flex-1 lg:flex-col lg:justify-between lg:items-center lg:border first:rounded-l-md last:rounded-r-md "
-                                key={index}
-                            >
-                                <p className="text-xl">{pricing.name}</p>
-                                <Controller
-                                    name={`basicPriceSettings.${index}`}
-                                    control={control}
-                                    rules={{ required: false }}
-                                    // defaultValue={
-                                    //     initialValue?.address?.Prefecture?.id
-                                    // }
-                                    render={({ field }) => {
-                                        return (
-                                            <Select
-                                                // {...field}
-                                                label={""}
-                                                className="lg:w-20"
-                                                options={
-                                                    priceSchemes?.myPriceSchemes ||
-                                                    []
-                                                }
-                                                error={
-                                                    errors?.prefecture && true
-                                                }
-                                                onChange={(event) => {
-                                                    field.onChange({
-                                                        dayOfWeek:
-                                                            pricing.value,
-                                                        priceSchemeId: event,
-                                                    });
-                                                    update(index, {
-                                                        dayOfWeek:
-                                                            pricing.value,
-                                                        priceSchemeId: event,
-                                                    });
-                                                }}
-                                                value={
-                                                    fields[index]?.priceSchemeId
-                                                }
-                                                errorMessage="Prefecture is required"
-                                                labelKey="name"
-                                                valueKey="id"
-                                                disabled={
-                                                    loading ||
-                                                    priceSchemeLoading ||
-                                                    !priceSchemes
-                                                        ?.myPriceSchemes?.length
-                                                }
-                                            />
-                                        );
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    {priceSchemes?.myPriceSchemes?.length > 0 && (
+                        <div className="flex flex-wrap space-y-3 lg:space-y-0 ">
+                            {DAY_OF_WEEK.map((pricing, index) => (
+                                <div
+                                    className="flex w-full flex-row items-center justify-between lg:flex-1 lg:flex-col lg:justify-between lg:items-center lg:border first:rounded-l-md last:rounded-r-md "
+                                    key={index}
+                                >
+                                    <p className="text-xl">{pricing.name}</p>
+                                    <Controller
+                                        name={`basicPriceSettings.${index}`}
+                                        control={control}
+                                        rules={{ required: false }}
+                                        // defaultValue={
+                                        //     initialValue?.address?.Prefecture?.id
+                                        // }
+                                        render={({ field }) => {
+                                            return (
+                                                <Select
+                                                    // {...field}
+                                                    label={""}
+                                                    className="lg:w-20"
+                                                    options={
+                                                        priceSchemes?.myPriceSchemes ||
+                                                        []
+                                                    }
+                                                    error={
+                                                        errors?.prefecture &&
+                                                        true
+                                                    }
+                                                    onChange={(event) => {
+                                                        field.onChange({
+                                                            dayOfWeek:
+                                                                pricing.value,
+                                                            priceSchemeId:
+                                                                event,
+                                                        });
+                                                        update(index, {
+                                                            dayOfWeek:
+                                                                pricing.value,
+                                                            priceSchemeId:
+                                                                event,
+                                                        });
+                                                    }}
+                                                    value={
+                                                        fields[index]
+                                                            ?.priceSchemeId
+                                                    }
+                                                    errorMessage="Prefecture is required"
+                                                    labelKey="name"
+                                                    valueKey="id"
+                                                    disabled={
+                                                        loading ||
+                                                        priceSchemeLoading ||
+                                                        !priceSchemes
+                                                            ?.myPriceSchemes
+                                                            ?.length
+                                                    }
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex justify-end space-x-3 border-t mt-4 pt-5 lg:w-6/12 md:w-8/12 sm:w-6/12  ">

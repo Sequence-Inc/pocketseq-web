@@ -122,10 +122,14 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
     });
 
     const onSubmit = handleSubmit(async (formData) => {
-        setLoading(true);
+        // setLoading(true);
         const payloadPhotos = formData.photos.map((res) => ({
             mime: res.type,
         }));
+
+        const basicPriceSettings = formData.basicPriceSettings.filter(
+            (item) => item !== undefined
+        );
 
         const payload = {
             name: formData.name,
@@ -135,13 +139,8 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
             maxCapacityAdult: formData.maxCapacityAdult,
             maxCapacityChild: formData.maxCapacityChild,
             stock: parseInt(formData?.stock || 0, 10),
-            basicPriceSettings:
-                formData?.basicPriceSettings?.length > 0
-                    ? formData?.basicPriceSettings
-                    : [],
+            basicPriceSettings: basicPriceSettings,
         };
-
-        console.log({ payload });
 
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
