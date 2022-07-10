@@ -1,12 +1,23 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@apollo/client";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
-import { ADD_HOTEL_SPACE } from "src/apollo/queries/hotel.queries";
+import {
+    ADD_HOTEL_SPACE,
+    ADD_HOTEL_ROOMS,
+    ROOMS_BY_HOTEL_ID,
+    ADD_PRICING_SCHEME,
+} from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 
-const useAddGeneral = (fn) => {
+const noOp = () => {};
+
+type TOptions = {
+    onCompleted?: Function;
+    onError?: Function;
+};
+
+export const useAddGeneral = (fn, options = {}) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const [loading, setLoading] = useState(false);
@@ -19,20 +30,18 @@ const useAddGeneral = (fn) => {
         setValue,
         handleSubmit,
         getValues,
-    } = useForm();
+    } = useForm(options);
+
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
 
-    const [mutate, { loading: add_hotel_space_loading }] = useMutation(
-        ADD_HOTEL_SPACE,
-        {
-            onCompleted: (data) => {
-                if (data?.addSpace?.message) {
-                    confirmRef.current.open(data?.addSpace?.message);
-                }
-            },
-        }
-    );
+    const [mutate] = useMutation(ADD_HOTEL_SPACE, {
+        onCompleted: (data) => {
+            if (data?.addSpace?.message) {
+                confirmRef.current.open(data?.addSpace?.message);
+            }
+        },
+    });
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
 
@@ -94,6 +103,127 @@ const useAddGeneral = (fn) => {
     };
 };
 
-// export const useAddRooms = (fn)=>
+export const useAddRooms = (hotleSpaceId: string, fn) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [hotelId] = useState<string>(hotleSpaceId);
+    const {
+        register,
+        unregister,
+        control,
+        formState: { errors, dirtyFields },
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+    } = useForm();
 
-export default useAddGeneral;
+    const [mutate] = useMutation(ADD_HOTEL_ROOMS, {
+        refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
+    });
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+        const payloadPhotos = formData.photos.map((res) => ({
+            mime: res.type,
+        }));
+
+        const payload = {
+            name: formData.name,
+            description: formData.description,
+            photos: payloadPhotos,
+            paymentTerm: formData.paymentTerm,
+            maxCapacityAdult: formData.maxCapacityAdult,
+            maxCapacityChild: formData.maxCapacityChild,
+            stock: parseInt(formData?.stock || 0, 10),
+            basicPriceSettings:
+                formData?.basicPriceSettings?.length > 0
+                    ? formData?.basicPriceSettings
+                    : [],
+        };
+
+        console.log({ payload });
+
+        const { data, errors } = await mutate({
+            variables: { hotelId, input: payload },
+        });
+        if (errors) {
+            console.log("Errors", errors);
+            setLoading(false);
+            return;
+        }
+
+        if (data) {
+            try {
+                await handleUpload(
+                    data.addHotelRoom.uploadRes,
+                    formData.photos
+                );
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        setLoading(false);
+        return fn();
+    });
+
+    return {
+        register,
+        unregister,
+        loading,
+        control,
+        errors,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        onSubmit,
+        dirtyFields,
+    };
+};
+
+export const useAddPriceScheme = (hotelId, options: TOptions) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const {
+        register,
+        unregister,
+        control,
+        formState: { errors },
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+    } = useForm();
+
+    const [mutate] = useMutation(ADD_PRICING_SCHEME);
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(false);
+
+        const { data, errors } = await mutate({
+            variables: { hotelId, input: formData },
+        });
+        if (errors) {
+            console.log("Errors", errors);
+            setLoading(false);
+            if (options?.onError) return options.onError();
+            return;
+        }
+
+        setLoading(false);
+
+        return options.onCompleted();
+    });
+
+    return {
+        register,
+        unregister,
+        loading,
+        control,
+        errors,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        onSubmit,
+    };
+};

@@ -10,17 +10,16 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 import axios from "axios";
-
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
-import useAddGeneral from "@hooks/useAddHotelSpace";
+import { useAddGeneral } from "@hooks/useAddHotelSpace";
 import { useRouter } from "next/router";
+
+import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 const format = "HH:mm a";
 
-interface IGeneralFormProps {
-    setActiveTab: any;
-    activeTab: number;
+interface IGeneralFormProps extends TAddHotelProps {
     setHotelId: any;
 }
 
@@ -92,7 +91,7 @@ const General = ({
 
     return (
         <>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} id="add-hotel-space">
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="lg:w-6/12 md:w-6/12 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
@@ -191,9 +190,11 @@ const General = ({
                             name="photos"
                             render={({ field: { onChange } }) => (
                                 <FileUpload
+                                    key="room_form"
+                                    id="general_form"
                                     hideLabel
                                     className="w-full"
-                                    label="Photos"
+                                    label=""
                                     error={errors.photos && true}
                                     errorMessage="Photos are required"
                                     onChange={(e) => onChange(e)}

@@ -6,9 +6,7 @@ import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, Table } from "@element";
-import router from "next/router";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
-
 import useTranslation from "next-translate/useTranslation";
 import {
     PencilAltIcon,

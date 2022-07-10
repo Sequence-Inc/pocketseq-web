@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
-import { Container } from "@element";
+import { Container, ToastAlert } from "@element";
 import { OfficeBuildingIcon } from "@heroicons/react/outline";
 import useTranslation from "next-translate/useTranslation";
 import { Tabs } from "antd";
@@ -14,7 +14,7 @@ const { TabPane } = Tabs;
 function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
     const [activeTab, setActiveTab] = useState<number>(1);
-    const [hotelId, setHotelId] = useState();
+    const [hotelId, setHotelId] = useState("cl52jeuss009909mi2ycq3id3");
 
     return (
         <HostLayout userSession={userSession}>
@@ -64,14 +64,22 @@ function AddHotelSpace({ userSession }) {
                         <Rooms
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            setHotelId={setHotelId}
+                            hotelId={hotelId}
                         />
                     </TabPane>
                     <TabPane tab="Pricing" key="3" disabled={!hotelId}>
-                        <Pricing />
+                        <Pricing
+                            setActiveTab={setActiveTab}
+                            activeTab={activeTab}
+                            hotelId={hotelId}
+                        />
                     </TabPane>
                     <TabPane tab="Plans" key="4" disabled={!hotelId}>
-                        <Plans />
+                        <Plans
+                            setActiveTab={setActiveTab}
+                            activeTab={activeTab}
+                            hotelId={hotelId}
+                        />
                     </TabPane>
                 </Tabs>
             </Container>

@@ -291,6 +291,36 @@ export const PAYMENT_SOURCE = `
     }
 `;
 
+export const PRICE_SCHEME_OBJECT = `
+id
+name
+roomCharge
+oneAdultCharge
+twoAdultCharge
+threeAdultCharge
+fourAdultCharge
+fiveAdultCharge
+sixAdultCharge
+sevenAdultCharge
+eightAdultCharge
+nineAdultCharge
+tenAdultCharge
+oneChildCharge
+twoChildCharge
+threeChildCharge
+fourChildCharge
+fiveChildCharge
+sixChildCharge
+sevenChildCharge
+eightChildCharge
+nineChildCharge
+tenChildCharge
+hotelId
+createdAt
+updatedAt
+
+`;
+
 export const HOTLE_ROOM = `
     id
     name
@@ -302,6 +332,17 @@ export const HOTLE_ROOM = `
     hotelId
     photos{
         ${PHOTO}
+    }
+    basicPriceSettings{
+        id
+        dayOfWeek
+        priceScheme{
+            ${PRICE_SCHEME_OBJECT}
+        }
+        hotelRoomId
+        packagePlanId
+        createdAt
+        updatedAt
     }
     createdAt
     updatedAt
