@@ -1,19 +1,11 @@
 import { gql } from "@apollo/client";
-import { PREFECTURE, STATION } from "./core.queries";
+import { PREFECTURE } from "./core.queries";
 
 export const GET_PREFECTURES = gql`
     query GetPrefectures {
         availablePrefectures {
            ${PREFECTURE}
         }
-    }
-`;
-
-export const GET_PREFECTURE_BY_ID = gql`
-query GetPrefecturesByID($prefectureId: Int!){
-    prefectureById(id:$prefectureId){
-    ${PREFECTURE}
-    }
     }
 `;
 
@@ -41,14 +33,6 @@ export const GET_STATIONS = gql`
             address
             longitude
             latitude
-        }
-    }
-`;
-
-export const GET_STATION_BY_ID = gql`
-    query stationById($stationId: Int!) {
-        stationByID(id: $stationId) {
-           ${STATION}
         }
     }
 `;

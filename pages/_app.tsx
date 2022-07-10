@@ -9,7 +9,6 @@ import "@style/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "src/apollo/apollo";
 import { SessionProvider } from "next-auth/react";
-import { ToastProvider } from "@hooks/useToasts";
 
 function TimeBook({
     Component,
@@ -41,9 +40,7 @@ function TimeBook({
                         content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
                     />
                 </Head>
-                <ToastProvider>
-                    <Component {...pageProps} />
-                </ToastProvider>
+                <Component {...pageProps} />
             </ApolloProvider>
         </SessionProvider>
     );
