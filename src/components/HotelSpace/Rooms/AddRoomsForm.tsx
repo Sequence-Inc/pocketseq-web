@@ -183,7 +183,7 @@ const AddRoomForm = ({
                                                 })
                                             )}
                                             error={
-                                                errors?.maxCapacityChild && true
+                                                errors?.maxCapacityAdult && true
                                             }
                                             onChange={(event) => {
                                                 field.onChange(event);
