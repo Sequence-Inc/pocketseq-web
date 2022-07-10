@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 interface IHOST {
     accountId: string;
     name: string;
@@ -113,3 +115,94 @@ export interface IPaymentMethod {
     country: string;
     customer: string | number;
 }
+
+export interface IColumns {
+    Header: string;
+    accessor: string;
+    className?: string;
+    childClassName?: string;
+    Cell?: any;
+}
+
+export type TTableKey = {
+    name: string | undefined;
+    key: string;
+};
+
+export type TStationTypes = {
+    stationId: string;
+    accessType: string;
+    time: number;
+};
+
+export type TImageUploadResult = {
+    type: string;
+    url: string;
+    mime: string;
+    key: string;
+};
+
+export type TAddHotelProps = {
+    setActiveTab: Dispatch<SetStateAction<number>>;
+    activeTab: number;
+    hotelId?: string;
+};
+
+export type TImage = {
+    width: number;
+    height: number;
+    url: string;
+};
+
+export type Photo = {
+    id: string;
+    mime: string;
+    type: string;
+    thumbnail?: TImage;
+    small?: TImage;
+    medium?: TImage;
+    large?: TImage;
+};
+
+export type THotelRoom = {
+    id: string;
+    name: string;
+    description: string;
+    paymentTerm: string;
+    maxCapacityAdult: number;
+    maxCapacityChild: number;
+    stock: number;
+    hotelId: number;
+    photos?: Photo[];
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+export type THotelPriceScheme = {
+    id?: string;
+    name?: string;
+    roomCharge?: string;
+    oneAdultCharge?: string;
+    twoAdultCharge?: string;
+    threeAdultCharge?: string;
+    fourAdultCharge?: string;
+    fiveAdultCharge?: string;
+    sixAdultCharge?: string;
+    sevenAdultCharge?: string;
+    eightAdultCharge?: string;
+    nineAdultCharge?: string;
+    tenAdultCharge?: string;
+    oneChildCharge?: string;
+    twoChildCharge?: string;
+    threeChildCharge?: string;
+    fourChildCharge?: string;
+    fiveChildCharge?: string;
+    sixChildCharge?: string;
+    sevenChildCharge?: string;
+    eightChildCharge?: string;
+    nineChildCharge?: string;
+    tenChildCharge?: string;
+    hotelId?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+};

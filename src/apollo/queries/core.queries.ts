@@ -205,6 +205,7 @@ export const STATION = `
     address
     longitude
     latitude
+    prefectureCode
 `;
 
 export const PAGINATION = `
@@ -288,4 +289,62 @@ export const PAYMENT_SOURCE = `
         country
         customer
     }
+`;
+
+export const PRICE_SCHEME_OBJECT = `
+id
+name
+roomCharge
+oneAdultCharge
+twoAdultCharge
+threeAdultCharge
+fourAdultCharge
+fiveAdultCharge
+sixAdultCharge
+sevenAdultCharge
+eightAdultCharge
+nineAdultCharge
+tenAdultCharge
+oneChildCharge
+twoChildCharge
+threeChildCharge
+fourChildCharge
+fiveChildCharge
+sixChildCharge
+sevenChildCharge
+eightChildCharge
+nineChildCharge
+tenChildCharge
+hotelId
+createdAt
+updatedAt
+
+`;
+
+export const HOTLE_ROOM = `
+    id
+    name
+    description
+    paymentTerm
+    maxCapacityAdult
+    maxCapacityChild
+    stock
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    basicPriceSettings{
+        id
+        dayOfWeek
+        priceScheme{
+            ${PRICE_SCHEME_OBJECT}
+        }
+        hotelRoomId
+        packagePlanId
+        createdAt
+        updatedAt
+    }
+    createdAt
+    updatedAt
+
 `;

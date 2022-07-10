@@ -1,14 +1,13 @@
 import React from "react";
 import clsx from "clsx";
-import { DatePicker } from "antd";
+import { TimePicker } from "antd";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment, { Moment } from "moment";
 
-interface DatePickerFieldProps {
+interface TimePickerFieldProps {
     label: string;
-    labelClassName?: string;
     placeholder?: string;
-    type?: string;
+    format?: string;
     id?: string;
     className?: string;
     error?: boolean;
@@ -22,11 +21,13 @@ interface DatePickerFieldProps {
     value?: Moment;
     step?: string;
     singleRow?: boolean;
+    use12Hours?: boolean;
+    suffixIcon?: React.ReactNode;
 }
 
-const DatePickerField = React.forwardRef<
+const TimePickerField = React.forwardRef<
     HTMLInputElement,
-    DatePickerFieldProps
+    TimePickerFieldProps
 >((props, ref) => {
     const {
         label,
@@ -36,9 +37,9 @@ const DatePickerField = React.forwardRef<
         errorMessage,
         singleRow,
         value,
-        onChange,
         defaultValue,
-        labelClassName,
+        use12Hours,
+        onChange,
         ...rest
     } = props;
 
@@ -46,7 +47,7 @@ const DatePickerField = React.forwardRef<
         <div
             className={clsx(
                 singleRow
-                    ? `sm:space-x-4 flex-none sm:flex items-center`
+                    ? "sm:space-x-4 flex-none sm:flex items-center"
                     : "space-y-1",
                 className ? className : ""
             )}
@@ -55,8 +56,7 @@ const DatePickerField = React.forwardRef<
                 htmlFor={id}
                 className={clsx(
                     "block text-sm font-bold text-gray-700",
-                    singleRow ? "sm:text-right w-60" : "",
-                    labelClassName ? labelClassName : ""
+                    singleRow ? "sm:text-right w-60" : ""
                 )}
             >
                 {label}
@@ -67,9 +67,10 @@ const DatePickerField = React.forwardRef<
                     singleRow ? "sm:w-96" : ""
                 )}
             >
-                <DatePicker
+                <TimePicker
                     mode="date"
                     id={id}
+                    ref={ref}
                     className={clsx(
                         "appearance-none block w-full px-3 py-2 border rounded-md text-gray-700 placeholder-gray-400",
                         "focus:outline-none sm:text-sm",
@@ -82,6 +83,8 @@ const DatePickerField = React.forwardRef<
                     )}
                     value={value}
                     onChange={(event) => onChange(event)}
+                    use12Hours={use12Hours}
+                    {...rest}
                 />
 
                 {error && (
@@ -100,15 +103,16 @@ const DatePickerField = React.forwardRef<
     );
 });
 
-DatePickerField.defaultProps = {
+TimePickerField.defaultProps = {
     label: "",
     placeholder: "",
-    type: "text",
+    format: "text",
     id: "",
     className: "",
     error: false,
     errorMessage: "",
     singleRow: false,
+    use12Hours: false,
 };
 
-export default DatePickerField;
+export default TimePickerField;
