@@ -325,7 +325,7 @@ const General = ({
                         />
                     </div>
 
-                    <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
+                    <div className="w-full sm:w-6/12 flex items-center space-x-3  sm:justify-end border-t py-6">
                         <Button
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-400"
