@@ -92,7 +92,7 @@ const General = ({
     return (
         <>
             <form onSubmit={onSubmit} id="add-hotel-space">
-                <div className="px-0 py-3 space-y-6 sm:py-6">
+                <div className="px-2 py-3 space-y-6 sm:py-6">
                     <div className="w-full md:w-8/12 lg:w-6/12">
                         <p className="text-sm leading-5 font-medium">
                             {t("name")}

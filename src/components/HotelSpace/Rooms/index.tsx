@@ -35,7 +35,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
         addAlert({ type: "success", message: "Successfully added hotel room" });
     };
     return (
-        <Container>
+        <>
             <div className="flex md:justify-end">
                 <div className="flex px-6 mt-6 space-x-3 md:mt-0 md:ml-4">
                     {!formVisible && (
@@ -47,16 +47,6 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             {t("add-hotel")}
                         </Button>
                     )}
-                    {/* 
-                    {formVisible && (
-                        <Button
-                            variant="secondary"
-                            Icon={XIcon}
-                            onClick={toggleForm}
-                        >
-                            Close Form
-                        </Button>
-                    )} */}
                 </div>
             </div>
 
@@ -68,7 +58,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                         refetching={networkStatus === NetworkStatus.refetch}
                     />
 
-                    <div className="flex justify-start px-7  w-full ">
+                    <div className="flex justify-start w-full ">
                         <Button
                             type="button"
                             variant="primary"
@@ -87,7 +77,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                     toggleForm={toggleForm}
                 />
             )}
-        </Container>
+        </>
     );
 };
 
