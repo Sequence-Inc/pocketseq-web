@@ -11,6 +11,15 @@ import { PencilAltIcon } from "@heroicons/react/outline";
 import PricingList from "./PriceList";
 import AddPriceScheme from "./AddPriceScheme";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import {
+    THotelRoom,
+    IColumns,
+    TTableKey,
+    THotelPriceScheme,
+} from "@appTypes/timebookTypes";
+import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "@config";
+import { Table } from "@element";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 interface IPricingFormProps extends TAddHotelProps {
     hotelId: string;
@@ -54,44 +63,111 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         refetch();
     };
 
+    const [columns, setColumns] = useState<IColumns[] | undefined>();
+    const [loadComplete, setLoadComplete] = useState<boolean>(false);
+
+    const columnClassName = (key): string | undefined => {
+        return "text-center text-xs border w-10 px-0";
+    };
+
+    const childClassname = (key): string => {
+        const commonClass = "border text-center";
+
+        return commonClass;
+    };
+
+    const handleCreateTable = useCallback(() => {
+        if (!hotelRooms?.myHotelRooms?.length) {
+            return;
+        }
+
+        const maxAdultCapacity = Math.max(
+            ...hotelRooms?.myHotelRooms?.map(
+                (room) => room?.maxCapacityAdult || 0
+            )
+        );
+
+        // const maxAdultCapacity = 10;
+
+        const maxChildCapacity = Math.max(
+            ...hotelRooms?.myHotelRooms?.map(
+                (room) => room?.maxCapacityChild || 0
+            )
+        );
+
+        // const maxChildCapacity = 10;
+
+        const keys: TTableKey[] = [
+            { name: "", key: "name" },
+            { name: "Room Charge", key: "roomCharge" },
+        ];
+
+        for (
+            let i = 0;
+            i < (maxAdultCapacity <= 10 ? maxAdultCapacity : 10);
+            i++
+        ) {
+            keys.push(PRICE_SCHEME_ADULTS[i]);
+        }
+
+        for (
+            let i = 0;
+            i < (maxChildCapacity <= 10 ? maxChildCapacity : 10);
+            i++
+        ) {
+            keys.push(PRICE_SCHEME_CHILD[i]);
+        }
+
+        const newData: IColumns[] = keys.map(({ name, key }: TTableKey) => ({
+            Header: name.toUpperCase(),
+            accessor: key,
+            className: columnClassName(key),
+            childClassName: childClassname(key),
+            Cell: ({ column, row, value }) => {
+                if (column?.id === "name") {
+                    return (
+                        <div className="text-left">
+                            <a className="text-gray-600 hover:text-gray-700">
+                                {value}
+                            </a>
+                        </div>
+                    );
+                }
+                return value;
+            },
+        }));
+
+        const filteredNewData = newData.filter((res) => res !== undefined);
+        setColumns(filteredNewData);
+        setLoadComplete(true);
+
+        return () => {};
+    }, [hotelRooms?.myHotelRooms]);
+
+    useEffect(() => {
+        handleCreateTable();
+    }, [handleCreateTable]);
+
     useEffect(() => {
         return () => setFormVisible(false);
     }, []);
+    let content;
+    if (loading || pricingLoading) {
+        content = <LoadingSpinner loadingText="Loading Rooms..." />;
+    }
 
+    if (loadComplete && hotelRooms?.myHotelRooms?.length) {
+        content = (
+            <Table
+                columns={columns}
+                data={pricingDatas?.myPriceSchemes || []}
+                hidePagination
+            />
+        );
+    }
     return (
         <>
-            <Container className="py-4 text-gray-700">
-                {!formVisible && (
-                    <div className="mb-5 space-y-5">
-                        <PricingList
-                            hotelRooms={hotelRooms?.myHotelRooms}
-                            pricingData={pricingDatas?.myPriceSchemes}
-                            roomsLoading={loading}
-                            priceLoading={pricingLoading}
-                            refetching={networkStatus === NetworkStatus.refetch}
-                        />
-
-                        <div className="flex justify-start w-full ">
-                            <Button
-                                type="button"
-                                variant="primary"
-                                onClick={toggleForm}
-                                className="font-medium text-sm px-2 w-40 bg-indigo-100 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-500 focus:ring-0"
-                            >
-                                Add Price Scheme
-                            </Button>
-                        </div>
-                    </div>
-                )}
-                {formVisible && (
-                    <AddPriceScheme
-                        hotelId={hotelId}
-                        hotelRooms={hotelRooms?.myHotelRooms}
-                        closeForm={toggleForm}
-                        onCompleted={handleSubmit}
-                    />
-                )}
-            </Container>
+            <Container className="py-4 text-gray-700">{content}</Container>
         </>
     );
 };

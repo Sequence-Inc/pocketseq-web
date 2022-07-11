@@ -15,11 +15,18 @@ export interface IColumns {
 interface ITableProps {
     columns: any;
     data: any[];
+    hidePagination?: boolean;
     paginate?: any;
     handlePaginate?: (type: "prev" | "next") => void;
 }
 
-const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
+const Table = ({
+    columns,
+    data,
+    paginate,
+    handlePaginate,
+    hidePagination = false,
+}: ITableProps) => {
     const { t } = useTranslation("adminhost");
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({
@@ -72,7 +79,7 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                                                 return (
                                                     <td
                                                         key={cell.column.id}
-                                                        className={`px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap${cell.column.childClassName}`}
+                                                        className={`px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap ${cell.column.childClassName}`}
                                                         {...cell.getCellProps()}
                                                     >
                                                         {cell.render("Cell")}
@@ -85,33 +92,35 @@ const Table = ({ columns, data, paginate, handlePaginate }: ITableProps) => {
                             </tbody>
                         </table>
                         {/* Pagination */}
-                        <nav
-                            className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
-                            aria-label="Pagination"
-                        >
-                            <div className="flex justify-between flex-1 sm:justify-end">
-                                <button
-                                    className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                    disabled={!paginate?.hasPrevious}
-                                    type="button"
-                                    onClick={() => {
-                                        handlePaginate("next");
-                                    }}
-                                >
-                                    {t("previous-page")}
-                                </button>
-                                <button
-                                    className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                    disabled={!paginate?.hasNext}
-                                    type="button"
-                                    onClick={() => {
-                                        handlePaginate("prev");
-                                    }}
-                                >
-                                    {t("next-page")}
-                                </button>
-                            </div>
-                        </nav>
+                        {!hidePagination && (
+                            <nav
+                                className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
+                                aria-label="Pagination"
+                            >
+                                <div className="flex justify-between flex-1 sm:justify-end">
+                                    <button
+                                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        disabled={!paginate?.hasPrevious}
+                                        type="button"
+                                        onClick={() => {
+                                            handlePaginate("next");
+                                        }}
+                                    >
+                                        {t("previous-page")}
+                                    </button>
+                                    <button
+                                        className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        disabled={!paginate?.hasNext}
+                                        type="button"
+                                        onClick={() => {
+                                            handlePaginate("prev");
+                                        }}
+                                    >
+                                        {t("next-page")}
+                                    </button>
+                                </div>
+                            </nav>
+                        )}
                     </div>
                 </div>
             </div>
