@@ -93,7 +93,7 @@ const General = ({
         <>
             <form onSubmit={onSubmit} id="add-hotel-space">
                 <div className="px-0 py-3 space-y-6 sm:py-6">
-                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
+                    <div className="w-full md:w-8/12 lg:w-6/12">
                         <p className="text-sm leading-5 font-medium">
                             {t("name")}
                         </p>
@@ -108,7 +108,7 @@ const General = ({
                             disabled={loading}
                         />
                     </div>
-                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
+                    <div className="w-full md:w-8/12 lg:w-6/12">
                         <p className="text-sm leading-5 font-medium">
                             Description
                         </p>
@@ -124,7 +124,7 @@ const General = ({
                             disabled={loading}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-80 sm:w-full">
+                    <div className="w-full sm:w-80">
                         <p className="text-sm leading-5 font-medium">
                             Check in time
                         </p>
@@ -147,7 +147,7 @@ const General = ({
                             )}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-80 sm:w-full">
+                    <div className="w-full sm:w-80">
                         <p className="text-sm leading-5 font-medium">
                             Check out time
                         </p>
@@ -171,7 +171,7 @@ const General = ({
                         />
                     </div>
 
-                    <div className="lg:w-6/12 md:w-6/12 sm:w-full">
+                    <div className="w-full md:w-8/12 lg:w-6/12">
                         <div className="pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
                                 Photos
@@ -208,7 +208,7 @@ const General = ({
                             Address
                         </h3>
                     </div>
-                    <div className="lg:w-32 md:w-52 sm:max-w-sm space-y-2">
+                    <div className=" w-full sm:w-32 space-y-2">
                         <p className="text-sm leading-5 font-medium">
                             {t("address-postal-code")}
                         </p>
@@ -222,7 +222,7 @@ const General = ({
                             disabled={loading}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-9/12 sm:w-full">
+                    <div className="w-full md:w-8/12 lg:w-6/12 sm:w-full">
                         <Controller
                             name={`prefecture`}
                             control={control}
@@ -253,7 +253,7 @@ const General = ({
                             )}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
                         <p className="text-sm leading-5 font-medium">
                             {t("address-city")}
                         </p>
@@ -269,7 +269,7 @@ const General = ({
                             disabled={loading}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
                         <p className="text-sm leading-5 font-medium">
                             {t("address-line-1")}
                         </p>
@@ -286,7 +286,7 @@ const General = ({
                             disabled={loading}
                         />
                     </div>
-                    <div className="lg:w-80 md:w-9/12 sm:w-full space-y-2">
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
                         <p className="text-sm leading-5 font-medium">
                             {t("address-line-2")}
                         </p>
@@ -314,7 +314,7 @@ const General = ({
                             ※複数お選びいただけます。
                         </p>
                     </div>
-                    <div className="lg:w-6/12 md:w-8/12 sm:w-full">
+                    <div className="w-full md:w-8/12 lg:w-6/12">
                         <Controller
                             control={control}
                             name="nearestStations"
@@ -325,7 +325,7 @@ const General = ({
                         />
                     </div>
 
-                    <div className="w-full sm:w-6/12 flex items-center space-x-3  sm:justify-end border-t py-6">
+                    <div className="w-full md:w-8/12 lg:w-6/12 flex items-center space-x-3  justify-end border-t py-6">
                         <Button
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-400"
