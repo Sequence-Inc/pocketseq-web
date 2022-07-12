@@ -38,7 +38,7 @@ const Table = ({
         <div className="flex flex-col mt-2">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                    <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">
+                    <div className="overflow-hidden  align-middle shadow sm:rounded-lg">
                         <table
                             className="min-w-full divide-y divide-gray-200"
                             {...getTableProps()}

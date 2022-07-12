@@ -6,7 +6,7 @@ import {
 } from "src/apollo/queries/hotel.queries";
 import { useQuery, NetworkStatus } from "@apollo/client";
 import useTranslation from "next-translate/useTranslation";
-import { Container, Button } from "@element";
+import { Container, Button, TextField } from "@element";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import PricingList from "./PriceList";
 import AddPriceScheme from "./AddPriceScheme";
@@ -29,7 +29,6 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const { t } = useTranslation("adminhost");
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const toggleForm = () => setFormVisible((prev) => !prev);
-
     const {
         data: hotelRooms,
         loading,
@@ -54,6 +53,8 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         skip: !hotelId,
     });
 
+    const [tableData, setTableData] = useState<THotelPriceScheme[]>();
+
     const handleNext = () => {
         setActiveTab(activeTab + 1);
     };
@@ -67,11 +68,20 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const columnClassName = (key): string | undefined => {
-        return "text-center text-xs border w-10 px-0";
+        const commonClass =
+            "border text-center font-semibold whitespace-nowrap text-gray-900 bg-white";
+        switch (key) {
+            case "name":
+                return `${commonClass} w-11`;
+            case "roomCharge":
+                return `${commonClass}  text-xs`;
+            default:
+                return `${commonClass} text-base`;
+        }
     };
 
     const childClassname = (key): string => {
-        const commonClass = "border text-center";
+        const commonClass = "border text-center px-0";
 
         return commonClass;
     };
@@ -87,15 +97,11 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
             )
         );
 
-        // const maxAdultCapacity = 10;
-
         const maxChildCapacity = Math.max(
             ...hotelRooms?.myHotelRooms?.map(
                 (room) => room?.maxCapacityChild || 0
             )
         );
-
-        // const maxChildCapacity = 10;
 
         const keys: TTableKey[] = [
             { name: "", key: "name" },
@@ -126,23 +132,30 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
             Cell: ({ column, row, value }) => {
                 if (column?.id === "name") {
                     return (
-                        <div className="text-left">
-                            <a className="text-gray-600 hover:text-gray-700">
-                                {value}
-                            </a>
+                        <div className="flex items-center justify-center px-1">
+                            <p className="text-base font-semibold">{value}</p>
                         </div>
                     );
                 }
-                return value;
+                return (
+                    <div className="flex items-center justify-center px-1">
+                        <TextField
+                            label=" "
+                            defaultValue={value}
+                            onChange={(val) => console.log({ val })}
+                        />
+                    </div>
+                );
             },
         }));
 
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
+        setTableData(pricingDatas?.myPriceSchemes || []);
         setLoadComplete(true);
 
         return () => {};
-    }, [hotelRooms?.myHotelRooms]);
+    }, [hotelRooms?.myHotelRooms, pricingDatas?.myPriceSchemes]);
 
     useEffect(() => {
         handleCreateTable();
@@ -158,17 +171,52 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
     if (loadComplete && hotelRooms?.myHotelRooms?.length) {
         content = (
-            <Table
-                columns={columns}
-                data={pricingDatas?.myPriceSchemes || []}
-                hidePagination
-            />
+            <Table columns={columns} data={tableData || []} hidePagination />
         );
     }
+
+    const addNewScheme = useCallback(() => {
+        setTableData((prev) => [
+            ...prev,
+            {
+                name: "",
+                roomCharge: "",
+                oneAdultCharge: "",
+                twoAdultCharge: "",
+                threeAdultCharge: "",
+                fourAdultCharge: "",
+                fiveAdultCharge: "",
+                sixAdultCharge: "",
+                sevenAdultCharge: "",
+                eightAdultCharge: "",
+                nineAdultCharge: "",
+                tenAdultCharge: "",
+                oneChildCharge: "",
+                twoChildCharge: "",
+                threeChildCharge: "",
+                fourChildCharge: "",
+                fiveChildCharge: "",
+                sixChildCharge: "",
+                sevenChildCharge: "",
+                eightChildCharge: "",
+                nineChildCharge: "",
+                tenChildCharge: "",
+            },
+        ]);
+    }, []);
+
     return (
-        <>
-            <Container className="py-4 text-gray-700">{content}</Container>
-        </>
+        <div className="px-2 pb-2">
+            <div className="py-4 text-gray-700">{content}</div>
+
+            <Button
+                variant="primary"
+                className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
+                onClick={addNewScheme}
+            >
+                Add Price Scheme
+            </Button>
+        </div>
     );
 };
 
