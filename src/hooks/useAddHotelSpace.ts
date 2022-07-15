@@ -10,12 +10,26 @@ import {
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
+
 const noOp = () => {};
+
+const ROOM_CHARGE_KEY = "roomCharge";
+const AddPriceSchemaInputKeys = [
+    ROOM_CHARGE_KEY,
+    ...PRICE_SCHEME_ADULTS.map((item) => item.key),
+    ...PRICE_SCHEME_CHILD.map((item) => item.key),
+];
 
 type TOptions = {
     onCompleted?: Function;
     onError?: Function;
     refetchQueries?: any;
+};
+
+type AddPriceShcemaProps = {
+    hotelId: string;
+    formProps: UseFormProps;
+    options?: TOptions;
 };
 
 export const useAddGeneral = (fn, options = {}) => {
@@ -180,18 +194,6 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         dirtyFields,
     };
 };
-
-type AddPriceShcemaProps = {
-    hotelId: string;
-    formProps: UseFormProps;
-    options?: TOptions;
-};
-
-const AddPriceSchemaInputKeys = [
-    "roomCharge",
-    ...PRICE_SCHEME_ADULTS.map((item) => item.key),
-    ...PRICE_SCHEME_CHILD.map((item) => item.key),
-];
 
 export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     const { hotelId, formProps, options } = props;

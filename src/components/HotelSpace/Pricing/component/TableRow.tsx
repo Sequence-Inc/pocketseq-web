@@ -61,7 +61,6 @@ const TableRow = (props: TableRowProps) => {
             return null;
         }
         const formFields: React.ReactElement[] = [];
-        console.log({ errors });
         {
             columns?.map((col, index) => {
                 if (col?.key === "name") {
