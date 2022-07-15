@@ -207,7 +207,18 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
         getValues,
     } = useForm(formProps);
 
-    const [mutate] = useMutation(ADD_PRICING_SCHEME);
+    const [mutate] = useMutation(ADD_PRICING_SCHEME, {
+        ...options,
+        onCompleted: (data) => {
+            options.onCompleted();
+            setLoading(false);
+        },
+        onError: (error) => {
+            console.log({ error });
+            options?.onError();
+            setLoading(false);
+        },
+    });
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(false);
@@ -219,19 +230,9 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
             )
         ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
 
-        const { data, errors } = await mutate({
+        return mutate({
             variables: { hotelId, input: payload },
         });
-        if (errors) {
-            console.log("Errors", errors);
-            setLoading(false);
-            if (options?.onError) return options.onError();
-            return;
-        }
-
-        setLoading(false);
-
-        return options.onCompleted();
     });
 
     return {

@@ -36,7 +36,7 @@ const TableRow = (props: TableRowProps) => {
                     },
                 },
             ],
-            onCompleted: () => {
+            onCompleted: (data) => {
                 addAlert({
                     type: "success",
                     message: "Successfully added new price scheme",
