@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormProps } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import {
     ADD_HOTEL_SPACE,
@@ -180,18 +180,25 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
     };
 };
 
-export const useAddPriceScheme = (hotelId, options: TOptions) => {
+type AddPriceShcemaProps = {
+    hotelId: string;
+    formProps: UseFormProps;
+    options?: TOptions;
+};
+
+export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
+    const { hotelId, formProps, options } = props;
     const [loading, setLoading] = useState<boolean>(false);
     const {
         register,
         unregister,
         control,
-        formState: { errors },
+        formState: { errors, isDirty },
         watch,
         setValue,
         handleSubmit,
         getValues,
-    } = useForm();
+    } = useForm(formProps);
 
     const [mutate] = useMutation(ADD_PRICING_SCHEME);
 
@@ -219,6 +226,7 @@ export const useAddPriceScheme = (hotelId, options: TOptions) => {
         loading,
         control,
         errors,
+        isDirty,
         watch,
         setValue,
         handleSubmit,
