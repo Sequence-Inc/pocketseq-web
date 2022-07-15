@@ -177,13 +177,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
     return (
         <div className="px-2 pb-2">
-            <div className="py-4 text-gray-700">
-                {/* <Table
-                    columns={columns}
-                    data={pricingDatas?.myPriceSchemes || []}
-                /> */}
-                {content}
-            </div>
+            <div className="py-4 text-gray-700">{content}</div>
 
             <Button
                 variant="primary"

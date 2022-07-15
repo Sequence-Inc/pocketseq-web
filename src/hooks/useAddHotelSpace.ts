@@ -9,12 +9,13 @@ import {
     ADD_PRICING_SCHEME,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
-
+import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
 const noOp = () => {};
 
 type TOptions = {
     onCompleted?: Function;
     onError?: Function;
+    refetchQueries?: any;
 };
 
 export const useAddGeneral = (fn, options = {}) => {
@@ -186,6 +187,12 @@ type AddPriceShcemaProps = {
     options?: TOptions;
 };
 
+const AddPriceSchemaInputKeys = [
+    "roomCharge",
+    ...PRICE_SCHEME_ADULTS.map((item) => item.key),
+    ...PRICE_SCHEME_CHILD.map((item) => item.key),
+];
+
 export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     const { hotelId, formProps, options } = props;
     const [loading, setLoading] = useState<boolean>(false);
@@ -205,8 +212,15 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(false);
 
+        // This piece of code filter all the unnecessary keys & values on formData and
+        const payload = Object.entries(
+            Object.fromEntries(
+                AddPriceSchemaInputKeys.map((key) => [key, formData[key]])
+            )
+        ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
+
         const { data, errors } = await mutate({
-            variables: { hotelId, input: formData },
+            variables: { hotelId, input: payload },
         });
         if (errors) {
             console.log("Errors", errors);

@@ -33,6 +33,9 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
             ...rest
         } = props;
 
+        if (error) {
+            console.log({ error });
+        }
         return (
             <div
                 className={clsx(
