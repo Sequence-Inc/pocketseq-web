@@ -23,6 +23,7 @@ interface SelectProps {
     disabled?: boolean;
     className?: string;
     loading?: boolean;
+    hidePlaceholder?: boolean;
 }
 
 const Select = React.forwardRef<any, SelectProps>((props, ref) => {
@@ -39,12 +40,18 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         disabled = false,
         singleRow = false,
         loading,
+        hidePlaceholder = false,
     } = props;
 
     const getSelectedLabel = () => {
-        if (!valueKey) return value ? value : "Select an option";
+        if (!valueKey)
+            return value ? value : hidePlaceholder ? " " : "Select an option";
         const selectedObj = options.find((r) => r[valueKey] === value);
-        return selectedObj ? selectedObj[labelKey] : "Select an option";
+        return selectedObj
+            ? selectedObj[labelKey]
+            : hidePlaceholder
+            ? " "
+            : "Select an option";
     };
 
     return (
@@ -84,7 +91,12 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                     "focus:outline-none focus:ring-1 sm:text-sm"
                                 )}
                             >
-                                <span key={value} className="block truncate">
+                                <span
+                                    key={value}
+                                    className={`flex items-center truncate  ${
+                                        hidePlaceholder && "h-4"
+                                    }`}
+                                >
                                     {getSelectedLabel()}
                                 </span>
                                 <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">

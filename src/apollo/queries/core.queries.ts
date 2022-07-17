@@ -321,6 +321,7 @@ updatedAt
 
 `;
 
+// Todo add    packagePlanId in basicPriceSettings later
 export const HOTLE_ROOM = `
     id
     name
@@ -340,7 +341,6 @@ export const HOTLE_ROOM = `
             ${PRICE_SCHEME_OBJECT}
         }
         hotelRoomId
-        packagePlanId
         createdAt
         updatedAt
     }

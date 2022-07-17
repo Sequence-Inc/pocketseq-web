@@ -1,6 +1,8 @@
 import React from "react";
 import clsx from "clsx";
 
+import { Spin } from "antd";
+
 interface ButtonProps {
     variant?: "primary" | "secondary" | "white" | "disabled";
     rounded?: boolean;
@@ -53,7 +55,9 @@ const Button = (props: ButtonProps) => {
             {...rest}
         >
             {loading ? (
-                "loading..."
+                <div className="flex p-0 justify-center">
+                    <div className="animate-spin h-5 w-5 border-3 border-b-0 border-r-0 rounded-full" />
+                </div>
             ) : !!Icon ? (
                 <div className="flex items-center">
                     <Icon className="w-5 h-5 mr-2 text-inherit" />

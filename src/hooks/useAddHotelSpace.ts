@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormProps } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import {
     ADD_HOTEL_SPACE,
@@ -9,12 +9,27 @@ import {
     ADD_PRICING_SCHEME,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
+import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
 
 const noOp = () => {};
+
+const ROOM_CHARGE_KEY = "roomCharge";
+export const AddPriceSchemaInputKeys = [
+    ROOM_CHARGE_KEY,
+    ...PRICE_SCHEME_ADULTS.map((item) => item.key),
+    ...PRICE_SCHEME_CHILD.map((item) => item.key),
+];
 
 type TOptions = {
     onCompleted?: Function;
     onError?: Function;
+    refetchQueries?: any;
+};
+
+type AddPriceShcemaProps = {
+    hotelId: string;
+    formProps: UseFormProps;
+    options?: TOptions;
 };
 
 export const useAddGeneral = (fn, options = {}) => {
@@ -180,37 +195,54 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
     };
 };
 
-export const useAddPriceScheme = (hotelId, options: TOptions) => {
+export const useReduceObject = (obj: Object, filterKeys: string[]) => {
+    return Object.entries(
+        Object.fromEntries(filterKeys.map((key) => [key, obj[key]]))
+    ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
+};
+
+export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
+    const { hotelId, formProps, options } = props;
     const [loading, setLoading] = useState<boolean>(false);
     const {
         register,
         unregister,
         control,
-        formState: { errors },
+        formState: { errors, isDirty, dirtyFields },
         watch,
         setValue,
         handleSubmit,
         getValues,
-    } = useForm();
+        trigger,
+        setError,
+    } = useForm(formProps);
 
-    const [mutate] = useMutation(ADD_PRICING_SCHEME);
+    const [mutate] = useMutation(ADD_PRICING_SCHEME, {
+        ...options,
+        onCompleted: (data) => {
+            options.onCompleted();
+            setLoading(false);
+        },
+        onError: (error) => {
+            console.log({ error });
+            options?.onError();
+            setLoading(false);
+        },
+    });
 
     const onSubmit = handleSubmit(async (formData) => {
-        setLoading(false);
+        setLoading(true);
 
-        const { data, errors } = await mutate({
-            variables: { hotelId, input: formData },
+        // This piece of code filter all the unnecessary keys & values on formData and
+        const payload = Object.entries(
+            Object.fromEntries(
+                AddPriceSchemaInputKeys.map((key) => [key, formData[key]])
+            )
+        ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
+
+        return mutate({
+            variables: { hotelId, input: payload },
         });
-        if (errors) {
-            console.log("Errors", errors);
-            setLoading(false);
-            if (options?.onError) return options.onError();
-            return;
-        }
-
-        setLoading(false);
-
-        return options.onCompleted();
     });
 
     return {
@@ -219,10 +251,14 @@ export const useAddPriceScheme = (hotelId, options: TOptions) => {
         loading,
         control,
         errors,
+        isDirty,
         watch,
         setValue,
         handleSubmit,
         getValues,
         onSubmit,
+        trigger,
+        setError,
+        dirtyFields,
     };
 };

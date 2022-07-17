@@ -98,7 +98,7 @@ const RoomList = (props: IRoomListProps) => {
         content = <Table columns={columns} data={data} />;
     }
 
-    return <Container className="py-4 text-gray-700">{content}</Container>;
+    return <div className="py-4 text-gray-700">{content}</div>;
 };
 
 export default RoomList;
