@@ -1,9 +1,8 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
+
 import { useState } from "react";
-import router from "next/router";
 
 const ConfirmModal = forwardRef(({ onConfirm, children }: any, ref) => {
     const [open, setOpen] = useState<boolean>(false);
