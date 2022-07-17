@@ -6,11 +6,7 @@ import {
 } from "src/apollo/queries/hotel.queries";
 import { useQuery, NetworkStatus } from "@apollo/client";
 import useTranslation from "next-translate/useTranslation";
-import { Container, Button, TextField } from "@element";
-import { PencilAltIcon } from "@heroicons/react/outline";
-import PricingList from "./PriceList";
-import AddPriceScheme from "./AddPriceScheme";
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { Button, TextField } from "@element";
 import {
     THotelRoom,
     IColumns,
@@ -18,8 +14,9 @@ import {
     THotelPriceScheme,
 } from "@appTypes/timebookTypes";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "@config";
-import { Table } from "@element";
+import Table from "./component/Table";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
+import TableRow from "./component/TableRow";
 
 interface IPricingFormProps extends TAddHotelProps {
     hotelId: string;
@@ -29,6 +26,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const { t } = useTranslation("adminhost");
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const toggleForm = () => setFormVisible((prev) => !prev);
+    const [hasNew, setHasNew] = useState(false);
     const {
         data: hotelRooms,
         loading,
@@ -64,27 +62,8 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         refetch();
     };
 
-    const [columns, setColumns] = useState<IColumns[] | undefined>();
+    const [columns, setColumns] = useState<TTableKey[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
-
-    const columnClassName = (key): string | undefined => {
-        const commonClass =
-            "border text-center font-semibold whitespace-nowrap text-gray-900 bg-white";
-        switch (key) {
-            case "name":
-                return `${commonClass} w-11`;
-            case "roomCharge":
-                return `${commonClass}  text-xs`;
-            default:
-                return `${commonClass} text-base`;
-        }
-    };
-
-    const childClassname = (key): string => {
-        const commonClass = "border text-center px-0";
-
-        return commonClass;
-    };
 
     const handleCreateTable = useCallback(() => {
         if (!hotelRooms?.myHotelRooms?.length) {
@@ -124,38 +103,22 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
             keys.push(PRICE_SCHEME_CHILD[i]);
         }
 
-        const newData: IColumns[] = keys.map(({ name, key }: TTableKey) => ({
-            Header: name.toUpperCase(),
-            accessor: key,
-            className: columnClassName(key),
-            childClassName: childClassname(key),
-            Cell: ({ column, row, value }) => {
-                if (column?.id === "name") {
-                    return (
-                        <div className="flex items-center justify-center px-1">
-                            <p className="text-base font-semibold">{value}</p>
-                        </div>
-                    );
-                }
-                return (
-                    <div className="flex items-center justify-center px-1">
-                        <TextField
-                            label=" "
-                            defaultValue={value}
-                            onChange={(val) => console.log({ val })}
-                        />
-                    </div>
-                );
-            },
-        }));
-
-        const filteredNewData = newData.filter((res) => res !== undefined);
-        setColumns(filteredNewData);
+        setColumns(keys);
         setTableData(pricingDatas?.myPriceSchemes || []);
         setLoadComplete(true);
 
         return () => {};
     }, [hotelRooms?.myHotelRooms, pricingDatas?.myPriceSchemes]);
+
+    const handleRemoveRow = useCallback(
+        (rowId: number) => {
+            const newRows = [...tableData].filter(
+                (_, index) => index !== rowId
+            );
+            setTableData(newRows);
+        },
+        [tableData]
+    );
 
     useEffect(() => {
         handleCreateTable();
@@ -164,6 +127,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     useEffect(() => {
         return () => setFormVisible(false);
     }, []);
+
     let content;
     if (loading || pricingLoading) {
         content = <LoadingSpinner loadingText="Loading Rooms..." />;
@@ -171,7 +135,11 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
     if (loadComplete && hotelRooms?.myHotelRooms?.length) {
         content = (
-            <Table columns={columns} data={tableData || []} hidePagination />
+            <Table
+                columns={columns}
+                data={tableData || []}
+                handleRemoveRow={handleRemoveRow}
+            />
         );
     }
 
@@ -179,6 +147,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         setTableData((prev) => [
             ...prev,
             {
+                hotelId,
                 name: "",
                 roomCharge: "",
                 oneAdultCharge: "",
@@ -201,6 +170,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                 eightChildCharge: "",
                 nineChildCharge: "",
                 tenChildCharge: "",
+                isNew: true,
             },
         ]);
     }, []);
@@ -213,6 +183,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                 variant="primary"
                 className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
                 onClick={addNewScheme}
+                loading={loading || pricingLoading}
             >
                 Add Price Scheme
             </Button>
