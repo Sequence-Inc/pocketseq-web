@@ -44,29 +44,33 @@ const InputFields = [
 ];
 
 const ModalBody = ({ getValues, dirtyFields }) => {
-    console.log({ dirtyFields, getValues: getValues() });
     const formFields = useReduceObject(getValues(), Object.keys(dirtyFields));
-    console.log({ formFields });
 
     const content = useMemo(() => {
         if (!Object.keys(formFields)?.length) return <LoadingSpinner />;
 
         return Object.keys(formFields).map((fieldKey, index) => {
             const { name } = InputFields.find((item) => item.key === fieldKey);
-            console.log({ name });
 
             return (
-                <div>
-                    <p>{}</p>
+                <div
+                    className="flex space-x-4 my-2 w-full bg-gray-100 items-center p-2"
+                    key={index}
+                >
+                    <p className="text-sm font-semibold">{name}&nbsp;:</p>
+                    <p className="text-base font-medium ">
+                        {formFields[fieldKey]}
+                    </p>
                 </div>
             );
         });
     }, [formFields]);
     return (
         <div className="w-96">
-            <p className="text-left font-bold text-gray-600">
+            <p className="text-left text-base font-bold text-gray-600 mb-3">
                 Are you satisfied with your inputs
             </p>
+            {content}
         </div>
     );
 };
@@ -143,7 +147,7 @@ const TableRow = (props: TableRowProps) => {
                     <td
                         className={
                             "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap  border-l-0 border-b-0 " +
-                            `${loading && " bg-gray-100"}`
+                            `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
                     >
@@ -160,7 +164,7 @@ const TableRow = (props: TableRowProps) => {
                     <td
                         className={
                             "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
-                            `${loading && " bg-gray-100"}`
+                            `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
                     >

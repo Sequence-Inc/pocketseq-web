@@ -35,7 +35,7 @@ const ConfirmModal = forwardRef(({ onConfirm, children }: any, ref) => {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <Dialog.Overlay className=" fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" />
+                        <Dialog.Overlay className=" fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" />
                     </Transition.Child>
 
                     {/* This element is to trick the browser into centering the modal contents. */}
@@ -54,14 +54,7 @@ const ConfirmModal = forwardRef(({ onConfirm, children }: any, ref) => {
                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
-                        <div className="inline-block  px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-                            {/* <div>
-                                <div className="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
-                                    <CheckIcon
-                                        className="w-6 h-6 text-green-600"
-                                        aria-hidden="true"
-                                    />
-                                </div> */}
+                        <div className="inline-block  px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle w-2/4  sm:p-6">
                             <div className="mt-3 text-center sm:mt-5">
                                 <div className="mt-2">{children}</div>
                             </div>
