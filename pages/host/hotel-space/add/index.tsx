@@ -14,14 +14,23 @@ const { TabPane } = Tabs;
 function AddHotelSpace({ userSession }) {
     const { t } = useTranslation("adminhost");
     const [activeTab, setActiveTab] = useState<number>(1);
-    const [hotelId, setHotelId] = useState("cl52jeuss009909mi2ycq3id3");
-    // const [hotelId, setHotelId] = useState<string>();
+    const [hotelId, setHotelId] = useState<string>();
 
     return (
         <HostLayout userSession={userSession}>
             <Head>
                 <title>Hotel Space</title>
             </Head>
+            <div className="bg-white shadow p-6 mb-3 sm:mb-5">
+                HOTEL ID FOR TEST PURPOSE ONLY:{" "}
+                <input
+                    type="text"
+                    value={hotelId}
+                    onChange={(event) => {
+                        setHotelId(event.target.value);
+                    }}
+                />
+            </div>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
                     <div className="py-8 md:flex md:items-center md:justify-between">

@@ -59,7 +59,10 @@ const HotelSpace = ({ userSession }) => {
                                 href={`/host/my-space/edit/${row?.original?.id}/view`}
                             > */}
                             <a className="text-gray-600 hover:text-gray-700">
-                                {value}
+                                {value}{" "}
+                                <span className="text-sm">
+                                    ({row.original.id})
+                                </span>
                             </a>
                             {/* </Link> */}
                         </div>
