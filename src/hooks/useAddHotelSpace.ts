@@ -14,7 +14,7 @@ import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
 const noOp = () => {};
 
 const ROOM_CHARGE_KEY = "roomCharge";
-const AddPriceSchemaInputKeys = [
+export const AddPriceSchemaInputKeys = [
     ROOM_CHARGE_KEY,
     ...PRICE_SCHEME_ADULTS.map((item) => item.key),
     ...PRICE_SCHEME_CHILD.map((item) => item.key),
@@ -195,6 +195,12 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
     };
 };
 
+export const useReduceObject = (obj: Object, filterKeys: string[]) => {
+    return Object.entries(
+        Object.fromEntries(filterKeys.map((key) => [key, obj[key]]))
+    ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
+};
+
 export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     const { hotelId, formProps, options } = props;
     const [loading, setLoading] = useState<boolean>(false);
@@ -202,11 +208,13 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
         register,
         unregister,
         control,
-        formState: { errors, isDirty },
+        formState: { errors, isDirty, dirtyFields },
         watch,
         setValue,
         handleSubmit,
         getValues,
+        trigger,
+        setError,
     } = useForm(formProps);
 
     const [mutate] = useMutation(ADD_PRICING_SCHEME, {
@@ -223,7 +231,7 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     });
 
     const onSubmit = handleSubmit(async (formData) => {
-        setLoading(false);
+        setLoading(true);
 
         // This piece of code filter all the unnecessary keys & values on formData and
         const payload = Object.entries(
@@ -249,5 +257,8 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
         handleSubmit,
         getValues,
         onSubmit,
+        trigger,
+        setError,
+        dirtyFields,
     };
 };

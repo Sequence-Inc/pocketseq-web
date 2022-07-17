@@ -1,12 +1,28 @@
 import { Button, TextField } from "@element";
-import { useAddPriceScheme } from "@hooks/useAddHotelSpace";
+import {
+    useAddPriceScheme,
+    useReduceObject,
+    AddPriceSchemaInputKeys,
+} from "@hooks/useAddHotelSpace";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
+
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { useRowState } from "react-table";
 import { THotelPriceScheme } from "@appTypes/timebookTypes";
 import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 import { useToast } from "@hooks/useToasts";
-PRICING_BY_HOTEL_ID;
+import { CheckIcon, XIcon } from "@heroicons/react/outline";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
+import ErrorModal from "src/elements/ErrorModal";
+import ConfirmModal from "./ConfirmModal";
+
 type TColumns = {
     className?: string;
     key: string;
@@ -19,10 +35,58 @@ interface TableRowProps {
     columns?: TColumns[];
     handleRemoveRow?: any;
 }
+
+const InputFields = [
+    { key: "roomCharge", name: "Room Charge" },
+
+    ...PRICE_SCHEME_ADULTS,
+    ...PRICE_SCHEME_CHILD,
+];
+
+const ModalBody = ({ getValues, dirtyFields }) => {
+    console.log({ dirtyFields, getValues: getValues() });
+    const formFields = useReduceObject(getValues(), Object.keys(dirtyFields));
+    console.log({ formFields });
+
+    const content = useMemo(() => {
+        if (!Object.keys(formFields)?.length) return <LoadingSpinner />;
+
+        return Object.keys(formFields).map((fieldKey, index) => {
+            const { name } = InputFields.find((item) => item.key === fieldKey);
+            console.log({ name });
+
+            return (
+                <div>
+                    <p>{}</p>
+                </div>
+            );
+        });
+    }, [formFields]);
+    return (
+        <div className="w-96">
+            <p className="text-left font-bold text-gray-600">
+                Are you satisfied with your inputs
+            </p>
+        </div>
+    );
+};
+
 const TableRow = (props: TableRowProps) => {
     const { row, columns, handleRemoveRow } = props;
     const { addAlert } = useToast();
-    const { isDirty, register, onSubmit, errors } = useAddPriceScheme({
+    const [content, setContent] = useState<React.ReactElement[]>();
+    const errorModal = useRef(null);
+    const confirmModal = useRef(null);
+    const {
+        isDirty,
+        register,
+        onSubmit,
+        trigger,
+        errors,
+        loading,
+        getValues,
+        dirtyFields,
+    } = useAddPriceScheme({
         hotelId: row?.hotelId,
         formProps: {
             defaultValues: { ...row },
@@ -50,77 +114,127 @@ const TableRow = (props: TableRowProps) => {
             },
         },
     });
-    const [content, setContent] = useState<React.ReactElement[]>();
+
+    const handleSubmitForm = useCallback(async () => {
+        const result = await trigger();
+
+        if (!result) {
+            return errorModal.current.open("Fill all the required fields");
+        }
+
+        return confirmModal.current.open();
+    }, []);
+
+    const onConFirm = useCallback(() => {
+        confirmModal.current.close();
+        onSubmit();
+    }, []);
 
     const handleRemove = useCallback(() => {
         handleRemoveRow(props.rowId);
     }, []);
 
     const handleBuildForm = useCallback(() => {
-        if (!Object.keys(row)?.length || !columns?.length) {
-            return null;
-        }
         const formFields: React.ReactElement[] = [];
-        {
-            columns?.map((col, index) => {
-                if (col?.key === "name") {
-                    formFields.push(
-                        <td
-                            className="px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap  border-l-0 border-b-0"
-                            key={col.key}
-                        >
-                            {row[col.key] || ""}
-                        </td>
-                    );
-                } else {
-                    formFields.push(
-                        <td
-                            className="px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap border min-w-max border-b-0 last:border-r-0"
-                            key={col.key}
-                        >
-                            <TextField
-                                label=""
-                                {...register(`${col.key}`, {
-                                    required: !!(
-                                        col.key === "roomCharge" ||
-                                        col.key === "oneAdultCharge"
-                                    ),
-                                    min: {
-                                        value: 0,
-                                        message: "Must be greater than 0",
-                                    },
-                                    valueAsNumber: true,
-                                })}
-                                type="number"
-                                step="0.01"
-                                key={index}
-                                error={errors[col.key] && true}
-                            />
-                        </td>
-                    );
-                }
-            });
-        }
+        console.log({ errors, loading });
+        columns?.map((col, index) => {
+            if (col?.key === "name") {
+                formFields.push(
+                    <td
+                        className={
+                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap  border-l-0 border-b-0 " +
+                            `${loading && " bg-gray-100"}`
+                        }
+                        key={col.key}
+                    >
+                        {!loading && <p>{row[col.key]}</p>}
+                        {loading && (
+                            <div>
+                                <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin"></div>
+                            </div>
+                        )}
+                    </td>
+                );
+            } else {
+                formFields.push(
+                    <td
+                        className={
+                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
+                            `${loading && " bg-gray-100"}`
+                        }
+                        key={col.key}
+                    >
+                        <TextField
+                            label=""
+                            disabled={loading}
+                            {...register(`${col.key}`, {
+                                required: !!(
+                                    col.key === "roomCharge" ||
+                                    col.key === "oneAdultCharge"
+                                ),
+                                min: {
+                                    value: 0,
+                                    message: "Must be greater than 0",
+                                },
+                                valueAsNumber: true,
+                            })}
+                            id={col.key}
+                            type="number"
+                            step="0.01"
+                            key={index}
+                            error={errors[col.key] && true}
+                            errorMessage={`Required`}
+                        />
+                    </td>
+                );
+            }
+        });
 
         setContent(formFields);
-    }, [row, columns, errors]);
+    }, [row, columns, errors, loading]);
 
     useEffect(handleBuildForm, [handleBuildForm]);
+
     return (
         <>
+            <ErrorModal ref={errorModal} />
+            <ConfirmModal ref={confirmModal} onConfirm={onConFirm}>
+                <ModalBody getValues={getValues} dirtyFields={dirtyFields} />
+            </ConfirmModal>
             <tr>
                 {content}
 
                 {isDirty && row.isNew && (
                     <td className="flex mt-3 ml-2  space-x-2 items-center absolute ">
-                        <Button onClick={onSubmit}>Save</Button>
-                        <Button onClick={handleRemove}>Cancel</Button>
+                        <Button
+                            onClick={handleSubmitForm}
+                            Icon={CheckIcon}
+                            className="text-green-400"
+                            loading={loading}
+                        >
+                            {" "}
+                        </Button>
+                        <Button
+                            onClick={handleRemove}
+                            Icon={XIcon}
+                            loading={loading}
+                            className="text-red-400"
+                        >
+                            {" "}
+                        </Button>
                     </td>
                 )}
 
                 {!isDirty && row.isNew && (
                     <td className="flex mt-3 ml-2  space-x-2 items-center absolute ">
-                        <Button onClick={handleRemove}>Cancel</Button>
+                        <Button
+                            onClick={handleRemove}
+                            Icon={XIcon}
+                            loading={loading}
+                            className="text-red-400"
+                        >
+                            {" "}
+                        </Button>
                     </td>
                 )}
             </tr>

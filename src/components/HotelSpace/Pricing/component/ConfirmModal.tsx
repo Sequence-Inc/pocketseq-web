@@ -5,17 +5,14 @@ import { CheckIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import router from "next/router";
 
-const ConfirmModal = forwardRef(({ redirect }: any, ref) => {
+const ConfirmModal = forwardRef(({ onConfirm, children }: any, ref) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>();
 
     useImperativeHandle(ref, () => ({
-        open: (message) => {
-            setMessage(message);
+        open: () => {
             setOpen(true);
         },
         close: () => {
-            setMessage("");
             setOpen(false);
         },
     }));
@@ -25,7 +22,7 @@ const ConfirmModal = forwardRef(({ redirect }: any, ref) => {
             <Dialog
                 as="div"
                 auto-reopen="true"
-                className="fixed inset-0 z-10 overflow-y-auto"
+                className="fixed  inset-0 z-10 overflow-y-auto"
                 onClose={setOpen}
             >
                 <div className="flex items-end  justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -38,7 +35,7 @@ const ConfirmModal = forwardRef(({ redirect }: any, ref) => {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <Dialog.Overlay className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" />
+                        <Dialog.Overlay className=" fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" />
                     </Transition.Child>
 
                     {/* This element is to trick the browser into centering the modal contents. */}
@@ -58,29 +55,22 @@ const ConfirmModal = forwardRef(({ redirect }: any, ref) => {
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
                         <div className="inline-block  px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-                            <div>
+                            {/* <div>
                                 <div className="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
                                     <CheckIcon
                                         className="w-6 h-6 text-green-600"
                                         aria-hidden="true"
                                     />
-                                </div>
-                                <div className="mt-3 text-center sm:mt-5">
-                                    {/* <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                        Payment successful
-                                    </Dialog.Title> */}
-                                    <div className="mt-2">
-                                        <p className="text-sm text-gray-500">
-                                            {message}
-                                        </p>
-                                    </div>
-                                </div>
+                                </div> */}
+                            <div className="mt-3 text-center sm:mt-5">
+                                <div className="mt-2">{children}</div>
                             </div>
+                            {/* </div> */}
                             <div className="mt-5 sm:mt-6">
                                 <button
                                     type="button"
-                                    className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                                    onClick={() => router.push(redirect)}
+                                    className="inline-flex justify-center  px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                                    onClick={onConfirm}
                                 >
                                     Confirm
                                 </button>

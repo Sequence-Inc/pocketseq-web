@@ -183,6 +183,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                 variant="primary"
                 className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
                 onClick={addNewScheme}
+                loading={loading || pricingLoading}
             >
                 Add Price Scheme
             </Button>
