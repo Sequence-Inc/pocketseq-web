@@ -24,43 +24,25 @@ interface IPricingFormProps extends TAddHotelProps {
 
 const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const { t } = useTranslation("adminhost");
-    const [formVisible, setFormVisible] = useState<boolean>(false);
-    const toggleForm = () => setFormVisible((prev) => !prev);
-    const [hasNew, setHasNew] = useState(false);
-    const {
-        data: hotelRooms,
-        loading,
-        error,
-    } = useQuery(ROOMS_BY_HOTEL_ID, {
+
+    const { data: hotelRooms, loading } = useQuery(ROOMS_BY_HOTEL_ID, {
         variables: {
             hotelId,
         },
         skip: !hotelId,
     });
 
-    const {
-        data: pricingDatas,
-        loading: pricingLoading,
-        error: pricingErrors,
-        networkStatus,
-        refetch,
-    } = useQuery(PRICING_BY_HOTEL_ID, {
-        variables: {
-            hotelId,
-        },
-        skip: !hotelId,
-    });
+    const { data: pricingDatas, loading: pricingLoading } = useQuery(
+        PRICING_BY_HOTEL_ID,
+        {
+            variables: {
+                hotelId,
+            },
+            skip: !hotelId,
+        }
+    );
 
     const [tableData, setTableData] = useState<THotelPriceScheme[]>();
-
-    const handleNext = () => {
-        setActiveTab(activeTab + 1);
-    };
-
-    const handleSubmit = () => {
-        toggleForm();
-        refetch();
-    };
 
     const [columns, setColumns] = useState<TTableKey[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
@@ -104,6 +86,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         }
 
         setColumns(keys);
+
         setTableData(pricingDatas?.myPriceSchemes || []);
         setLoadComplete(true);
 
@@ -123,10 +106,6 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     useEffect(() => {
         handleCreateTable();
     }, [handleCreateTable]);
-
-    useEffect(() => {
-        return () => setFormVisible(false);
-    }, []);
 
     let content;
     if (loading || pricingLoading) {
@@ -179,14 +158,32 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         <div className="px-2 pb-2">
             <div className="py-4 text-gray-700">{content}</div>
 
-            <Button
-                variant="primary"
-                className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
-                onClick={addNewScheme}
-                loading={loading || pricingLoading}
-            >
-                Add Price Scheme
-            </Button>
+            {!hotelRooms?.myHotelRooms?.length && (
+                <div className="flex flex-col space-y-4">
+                    <p className="text-sm font-semibold text-gray-500">
+                        Rooms are not added yet!! Please add rooms first.
+                    </p>
+                    <Button
+                        variant="primary"
+                        className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
+                        onClick={() => setActiveTab(activeTab - 1)}
+                        loading={loading || pricingLoading}
+                    >
+                        Back
+                    </Button>
+                </div>
+            )}
+
+            {hotelRooms?.myHotelRooms?.length > 0 && (
+                <Button
+                    variant="primary"
+                    className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
+                    onClick={addNewScheme}
+                    loading={loading || pricingLoading}
+                >
+                    Add Price Scheme
+                </Button>
+            )}
         </div>
     );
 };
