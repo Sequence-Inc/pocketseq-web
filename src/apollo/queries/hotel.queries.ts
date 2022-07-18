@@ -6,6 +6,7 @@ import {
     HOTLE_ROOM,
     IMAGE_UPLOAD_RESULT,
     PRICE_SCHEME_OBJECT,
+    PACKAGE_PLAN,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -95,5 +96,19 @@ export const ADD_PRICING_SCHEME = gql`
                 ${PRICE_SCHEME_OBJECT}
             }
         }
+    }
+`;
+
+export const ADD_HOTEL_PACKAGE_PLANS = gql`
+    mutation ADDPackgePlan($hotelId:ID!, $input:AddPackagePlanInput!){
+            addPackagePlan(hotelId:$hotelId,input:$input){
+                message
+                packagePlan{
+                    ${PACKAGE_PLAN}
+                }
+                uploadRes{
+                    ${IMAGE_UPLOAD_RESULT}
+                }
+            }
     }
 `;

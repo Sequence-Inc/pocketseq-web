@@ -82,6 +82,7 @@ const DatePickerField = React.forwardRef<
                     )}
                     value={value}
                     onChange={(event) => onChange(event)}
+                    {...rest}
                 />
 
                 {error && (

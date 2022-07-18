@@ -1,12 +1,13 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { useRef, useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useRef, useState } from "react";
 import { useForm, UseFormProps } from "react-hook-form";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import {
     ADD_HOTEL_SPACE,
     ADD_HOTEL_ROOMS,
-    ROOMS_BY_HOTEL_ID,
     ADD_PRICING_SCHEME,
+    ROOMS_BY_HOTEL_ID,
+    ADD_HOTEL_PACKAGE_PLANS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
@@ -30,6 +31,10 @@ type AddPriceShcemaProps = {
     hotelId: string;
     formProps: UseFormProps;
     options?: TOptions;
+};
+
+type AddPlansProps = {
+    hotelId: string;
 };
 
 export const useAddGeneral = (fn, options = {}) => {
@@ -260,5 +265,72 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
         trigger,
         setError,
         dirtyFields,
+    };
+};
+
+const MY_ROOMS_BY_HOTEL_ID = gql`
+    query HotelRoomsByHotelId($hotelId: ID!) {
+        myHotelRooms(hotelId: $hotelId) {
+            id
+            name
+        }
+    }
+`;
+
+export const useAddPlans = (props: AddPlansProps) => {
+    const { hotelId } = props;
+    const [loading, setLoading] = useState(false);
+    const {
+        data: hotelRooms,
+        refetch: refetchRooms,
+        error: fetchRoomErrors,
+    } = useQuery(MY_ROOMS_BY_HOTEL_ID, {
+        variables: {
+            hotelId,
+        },
+    });
+    const {
+        register,
+        unregister,
+        control,
+        formState: { errors, dirtyFields },
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        trigger,
+        setError,
+    } = useForm();
+
+    useEffect(() => {
+        console.log(getValues());
+    }, [dirtyFields]);
+    const watchShowUsage = watch("usagePeriod", false);
+
+    const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS);
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+
+        return mutate({
+            variables: { hotelId, input: formData },
+        });
+    });
+
+    return {
+        hotelRooms,
+        loading,
+        fetchRoomErrors,
+        control,
+        errors,
+        refetchRooms,
+        register,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        trigger,
+        setError,
+        onSubmit,
+        watchShowUsage,
     };
 };

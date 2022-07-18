@@ -14,6 +14,7 @@ import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { useForm, Controller } from "react-hook-form";
+import { useAddPlans } from "@hooks/useAddHotelSpace";
 
 const format = "HH:mm a";
 
@@ -40,11 +41,22 @@ const PAYMENT_TYPES = [
 ];
 
 const Plans = (props: IPlanFormProps) => {
+    const { hotelId } = props;
+    const {
+        hotelRooms,
+        refetchRooms,
+        fetchRoomErrors,
+        watchShowUsage,
+        register,
+        setValue,
+    } = useAddPlans({
+        hotelId,
+    });
     const { t } = useTranslation("adminhost");
-    const { handleSubmit, reset, watch, control, register } = useForm();
+
     return (
         <>
-            <form>
+            <form className="px-2">
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
@@ -54,7 +66,7 @@ const Plans = (props: IPlanFormProps) => {
                             label={""}
                             errorMessage="Name is required"
                             autoFocus
-                            onChange={() => {}}
+                            {...register("name")}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
@@ -66,25 +78,10 @@ const Plans = (props: IPlanFormProps) => {
                             errorMessage="Description is required"
                             autoFocus
                             rows={3}
-                            onChange={() => {}}
+                            {...register("description")}
                         />
                     </div>
-                    {/* <div className="max-w-sm">
-                        <TimePickerField
-                            label="Check in time"
-                            onChange={(e) => console.log(e)}
-                            format={format}
-                            use12Hours={true}
-                        />
-                    </div>
-                    <div className="max-w-sm">
-                        <TimePickerField
-                            label="Check out time"
-                            onChange={(e) => console.log(e)}
-                            format={format}
-                            use12Hours={true}
-                        />
-                    </div> */}
+
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
                             label={
@@ -94,22 +91,24 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
-                            onChange={() => {}}
+                            onChange={(val) => setValue("usagePeriod", val)}
                         />
-                        <div className="flex space-x-2">
-                            <DatePickerField
-                                onChange={() => {}}
-                                className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
-                                label="from"
-                                labelClassName=" ml-2 font-medium "
-                            />
-                            <DatePickerField
-                                onChange={() => {}}
-                                className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
-                                label="to"
-                                labelClassName=" ml-2 font-medium "
-                            />
-                        </div>
+                        {watchShowUsage && (
+                            <div className="flex space-x-2">
+                                <DatePickerField
+                                    onChange={() => {}}
+                                    className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
+                                    label="from"
+                                    labelClassName=" ml-2 font-medium "
+                                />
+                                <DatePickerField
+                                    onChange={() => {}}
+                                    className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
+                                    label="to"
+                                    labelClassName=" ml-2 font-medium "
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
@@ -251,49 +250,6 @@ const Plans = (props: IPlanFormProps) => {
                             options={[]}
                             label=""
                         />
-                    </div>
-                    <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
-                        <div className="pb-2">
-                            <h3 className="font-medium text-lg text-gray-900">
-                                Price Setting
-                            </h3>
-                        </div>
-                        <div className="grid grid-cols-7">
-                            {BASIC_PIRCING.map((pricing, index) => (
-                                <div
-                                    className="flex flex-col border text-center first:rounded-l-md last:rounded-r-md px-2 py-2"
-                                    key={index}
-                                >
-                                    <p className=" text-xl">{pricing}</p>
-                                    <Controller
-                                        name={`Adult`}
-                                        control={control}
-                                        rules={{ required: true }}
-                                        // defaultValue={
-                                        //     initialValue?.address?.Prefecture?.id
-                                        // }
-                                        render={({ field }) => (
-                                            <Select
-                                                {...field}
-                                                label={""}
-                                                options={
-                                                    // prefectures?.availablePrefectures ||
-                                                    []
-                                                }
-                                                // error={errors?.prefecture && true}
-                                                onChange={(event) => {
-                                                    field.onChange(event);
-                                                }}
-                                                errorMessage="Prefecture is required"
-                                                labelKey="name"
-                                                valueKey="id"
-                                                // disabled={loading}
-                                            />
-                                        )}
-                                    />
-                                </div>
-                            ))}
-                        </div>
                     </div>
 
                     <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
