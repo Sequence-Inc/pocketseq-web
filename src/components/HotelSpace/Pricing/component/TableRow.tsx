@@ -136,6 +136,7 @@ const TableRow = (props: TableRowProps) => {
 
     const handleBuildForm = useCallback(() => {
         const formFields: React.ReactElement[] = [];
+
         columns?.map((col, index) => {
             if (col?.key === "name") {
                 formFields.push(
@@ -172,7 +173,7 @@ const TableRow = (props: TableRowProps) => {
                         /> */}
                         <TextField
                             label=""
-                            disabled={loading}
+                            disabled={loading || !row?.isNew}
                             {...register(`${col.key}`, {
                                 required: !!(
                                     col.key === "roomCharge" ||

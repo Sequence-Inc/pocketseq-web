@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 import { useQuery, NetworkStatus } from "@apollo/client";
@@ -26,6 +26,13 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
             skip: !hotelId,
         }
     );
+
+    const [defaultFormData, setDefaultFormData] = useState(null);
+
+    const setFormData = (data) => {
+        setDefaultFormData(data);
+        toggleForm();
+    };
 
     const handleNext = () => {
         setActiveTab(activeTab + 1);
@@ -56,6 +63,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                         data={data?.myHotelRooms}
                         loading={loading}
                         refetching={networkStatus === NetworkStatus.refetch}
+                        setFormData={setFormData}
                     />
 
                     <div className="flex justify-start w-full ">
@@ -75,6 +83,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                     hotelId={hotelId}
                     handleSubmit={handleSubmit}
                     toggleForm={toggleForm}
+                    initialValue={defaultFormData}
                 />
             )}
         </>

@@ -15,6 +15,7 @@ import {
     ROOMS_BY_HOTEL_ID,
     ADD_HOTEL_PACKAGE_PLANS,
     UPDATE_HOTEL_SPACE,
+    UPDATE_HOTEL_ROOMS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -214,7 +215,10 @@ export const useAddGeneral = (fn, initialValue) => {
     };
 };
 
-export const useAddRooms = (hotleSpaceId: string, fn) => {
+export const useAddRooms = (
+    hotleSpaceId: string,
+    { fn, initialValue, addAlert }
+) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [hotelId] = useState<string>(hotleSpaceId);
     const {
@@ -232,49 +236,110 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
     });
 
-    const onSubmit = handleSubmit(async (formData) => {
-        // setLoading(true);
-        const payloadPhotos = formData.photos.map((res) => ({
-            mime: res.type,
-        }));
-
-        const basicPriceSettings = formData.basicPriceSettings.filter(
-            (item) => item !== undefined && item?.priceSchemeId
-        );
-
-        const payload = {
-            name: formData.name,
-            description: formData.description,
-            photos: payloadPhotos,
-            paymentTerm: formData.paymentTerm,
-            maxCapacityAdult: formData.maxCapacityAdult,
-            maxCapacityChild: formData.maxCapacityChild,
-            stock: parseInt(formData?.stock || 0, 10),
-            basicPriceSettings: basicPriceSettings,
-        };
-
-        const { data, errors } = await mutate({
-            variables: { hotelId, input: payload },
-        });
-        if (errors) {
-            console.log("Errors", errors);
-            setLoading(false);
-            return;
-        }
-
-        if (data) {
-            try {
-                await handleUpload(
-                    data.addHotelRoom.uploadRes,
-                    formData.photos
-                );
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        setLoading(false);
-        return fn();
+    const [updateHotelRoomGeneral] = useMutation(UPDATE_HOTEL_ROOMS, {
+        refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
     });
+
+    const onCreate = useCallback(
+        async (formData) => {
+            const payloadPhotos = formData.photos.map((res) => ({
+                mime: res.type,
+            }));
+
+            const basicPriceSettings = formData.basicPriceSettings.filter(
+                (item) => item !== undefined && item?.priceSchemeId
+            );
+
+            const payload = {
+                name: formData.name,
+                description: formData.description,
+                photos: payloadPhotos,
+                paymentTerm: formData.paymentTerm,
+                maxCapacityAdult: formData.maxCapacityAdult,
+                maxCapacityChild: formData.maxCapacityChild,
+                stock: parseInt(formData?.stock || 0, 10),
+                basicPriceSettings: basicPriceSettings,
+            };
+
+            const { data, errors } = await mutate({
+                variables: { hotelId, input: payload },
+            });
+            if (errors) {
+                console.log("Errors", errors);
+                setLoading(false);
+                return;
+            }
+
+            if (data) {
+                try {
+                    await handleUpload(
+                        data.addHotelRoom.uploadRes,
+                        formData.photos
+                    );
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+            setLoading(false);
+            return fn();
+        },
+        [hotelId]
+    );
+
+    const onUpdate = useCallback(
+        async (formData) => {
+            const payload = {
+                id: initialValue.id,
+                name: formData.name,
+                description: formData.description,
+                paymentTerm: formData.paymentTerm,
+                maxCapacityAdult: formData.maxCapacityAdult,
+                maxCapacityChild: formData.maxCapacityChild,
+                stock: parseInt(formData.stock, 10),
+            };
+
+            const { data, errors } = await updateHotelRoomGeneral({
+                variables: {
+                    input: payload,
+                },
+            });
+            console.log({ data });
+            if (data) {
+                addAlert({ type: "success", message: "Update successful" });
+            }
+
+            if (errors) {
+                console.log({ errors });
+                addAlert({ type: "error", message: "Something went wrong" });
+            }
+
+            setLoading(false);
+        },
+        [addAlert]
+    );
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+        if (!initialValue) {
+            return onCreate(formData);
+        }
+        if (initialValue) {
+            return onUpdate(formData);
+        }
+    });
+
+    useEffect(() => {
+        if (initialValue) {
+            console.log("add rooms initialValue", { initialValue });
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            setValue("photos", initialValue.photos);
+            setValue("paymentTerm", initialValue.paymentTerm);
+            setValue("maxCapacityAdult", initialValue.maxCapacityAdult);
+            setValue("maxCapacityChild", initialValue.maxCapacityChild);
+            setValue("stock", initialValue.stock);
+        }
+    }, [initialValue]);
 
     return {
         register,
