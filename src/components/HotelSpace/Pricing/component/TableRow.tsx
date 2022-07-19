@@ -1,9 +1,5 @@
 import { Button, TextField } from "@element";
-import {
-    useAddPriceScheme,
-    useReduceObject,
-    AddPriceSchemaInputKeys,
-} from "@hooks/useAddHotelSpace";
+import { useAddPriceScheme, useReduceObject } from "@hooks/useAddHotelSpace";
 
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
 
@@ -14,7 +10,6 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { useRowState } from "react-table";
 import { THotelPriceScheme } from "@appTypes/timebookTypes";
 import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 import { useToast } from "@hooks/useToasts";
@@ -22,6 +17,7 @@ import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import ErrorModal from "src/elements/ErrorModal";
 import ConfirmModal from "./ConfirmModal";
+import { Controller } from "react-hook-form";
 
 type TColumns = {
     className?: string;
@@ -38,7 +34,6 @@ interface TableRowProps {
 
 const InputFields = [
     { key: "roomCharge", name: "Room Charge" },
-
     ...PRICE_SCHEME_ADULTS,
     ...PRICE_SCHEME_CHILD,
 ];
@@ -90,6 +85,7 @@ const TableRow = (props: TableRowProps) => {
         loading,
         getValues,
         dirtyFields,
+        control,
     } = useAddPriceScheme({
         hotelId: row?.hotelId,
         formProps: {
@@ -140,7 +136,6 @@ const TableRow = (props: TableRowProps) => {
 
     const handleBuildForm = useCallback(() => {
         const formFields: React.ReactElement[] = [];
-        console.log({ errors, loading });
         columns?.map((col, index) => {
             if (col?.key === "name") {
                 formFields.push(
@@ -168,6 +163,13 @@ const TableRow = (props: TableRowProps) => {
                         }
                         key={col.key}
                     >
+                        {/* <Controller
+                            name={`${col.key}`}
+                            render={
+                                ({field})=>
+                            }
+                        control={control}
+                        /> */}
                         <TextField
                             label=""
                             disabled={loading}

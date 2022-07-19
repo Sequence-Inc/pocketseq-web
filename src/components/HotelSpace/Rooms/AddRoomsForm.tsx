@@ -56,6 +56,13 @@ const AddRoomForm = ({
         name: "basicPriceSettings",
         control,
     });
+
+    useEffect(() => {
+        DAY_OF_WEEK.map((day) =>
+            append({ dayOfWeek: day.value, priceSchemeId: null })
+        );
+    }, []);
+
     const {
         data: priceSchemes,
         loading: priceSchemeLoading,
@@ -286,6 +293,7 @@ const AddRoomForm = ({
                                         return (
                                             <Select
                                                 // {...field}
+
                                                 hidePlaceholder
                                                 label={""}
                                                 className="lg:w-16"
@@ -311,7 +319,7 @@ const AddRoomForm = ({
                                                 value={
                                                     fields[index]?.priceSchemeId
                                                 }
-                                                errorMessage="Prefecture is required"
+                                                errorMessage="Pricing is required"
                                                 labelKey="name"
                                                 valueKey="id"
                                                 disabled={

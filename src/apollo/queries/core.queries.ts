@@ -368,7 +368,46 @@ export const HOTLE_ROOM = `
     }
     createdAt
     updatedAt
+`;
 
+export const BASICE_PRICE_SETTINGS = `
+    id
+    dayOfWeek
+    priceScheme{
+        ${PRICE_SCHEME_OBJECT}
+    }
+    hotelRoomId
+    createdAt
+    updatedAt
+`;
+
+export const PACKAGE_PLAN = `
+    id
+    name
+    description
+    paymentTerm
+    stock
+    startUsage
+    endUsage
+    startReservation
+    endReservation
+    cutOffBeforeDays
+    cutOffTillTime
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    roomTypes{
+        id
+        ${HOTLE_ROOM}
+        priceSettings{
+            ${BASICE_PRICE_SETTINGS}
+        }
+        createdAt
+        updatedAt
+    }
+    createdAt
+    updatedAt
 `;
 
 export const PACKAGE_ROOM_TYPE_OBJECT = `

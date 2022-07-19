@@ -9,6 +9,7 @@ import {
     PRICE_OVERRIDE_OBJECT,
     STOCK_OVERRIDE_OBJECT,
     PLAN_OBJECT,
+    PACKAGE_PLAN,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -100,6 +101,7 @@ export const ADD_PRICING_SCHEME = gql`
         }
     }
 `;
+
 
 export const ROOMS_BY_ID = gql`
     query RoomsById($roomId:ID!){
@@ -250,6 +252,64 @@ export const REMOVE_PLAN_STOCK_OVERRIDE = gql`
         ) {
             message
             action
+
+export const ADD_HOTEL_PACKAGE_PLANS = gql`
+    mutation AddPackgePlan($hotelId:ID!, $input:AddPackagePlanInput!){
+            addPackagePlan(hotelId:$hotelId,input:$input){
+                message
+                packagePlan{
+                   id
+                   name
+                   description
+                   paymentTerm
+                   stock
+                   startUsage
+                   endUsage
+                   startReservation
+                   endReservation
+                   cutOffBeforeDays
+                   cutOffTillTime
+                   hotelId
+                   photos{
+                    ${PHOTO}
+                   }
+                   roomTypes{
+                    id
+                    hotelRoom{
+                        ${HOTLE_ROOM}
+                    }
+                    priceSettings{
+                        id
+                        dayOfWeek
+                        priceScheme{
+                            ${PRICE_SCHEME_OBJECT}
+                        }
+                        hotelRoomId
+                        createdAt
+                        updatedAt
+                    }
+
+                    createdAt
+                    updatedAt
+                   }
+                   createdAt
+                   updatedAt
+                }
+                uploadRes{
+                    ${IMAGE_UPLOAD_RESULT}
+                }
+            }
+    }
+`;
+
+export const MY_PACKGAE_PLANS = gql`
+    query MyPackagePlans {
+        myPackagePlans {
+            id
+            name
+            description
+            paymentTerm
+            stock
         }
     }
 `;
