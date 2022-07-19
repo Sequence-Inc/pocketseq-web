@@ -20,6 +20,7 @@ interface PhotoUploadFieldProps {
     value?: string | number;
     singleRow?: boolean;
     hideLabel?: boolean;
+    defaultPhotos?: any;
 }
 
 const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
@@ -34,6 +35,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
             value,
             onChange,
             hideLabel,
+            defaultPhotos,
             ...rest
         } = props;
         const [photos, setPhotos] = useState([]);
@@ -46,7 +48,9 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
         const handleSelectPhoto = (event) => {
             setPhotos([...photos, ...event.target.files]);
         };
-
+        const handleDeleteDefaultPhoto = (photoIndex) => {
+            console.log({ photoIndex });
+        };
         useEffect(() => {
             if (!photos.length) {
                 onChange(null);
@@ -82,6 +86,10 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                     )}
                 >
                     <div className="max-w-lg py-2 space-y-4 ">
+                        <DefaultPhotos
+                            photos={defaultPhotos}
+                            deletePhoto={handleDeleteDefaultPhoto}
+                        />
                         <SelectedPhotos
                             photos={photos}
                             deletePhoto={handleDelete}
@@ -142,6 +150,36 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
         );
     }
 );
+
+const DefaultPhotos = ({ photos, deletePhoto }) => {
+    if (!photos?.length) return null;
+
+    return (
+        <div>
+            <div className="grid grid-cols-3 gap-3">
+                {photos.map((photo, index) => {
+                    return (
+                        <div key={index} className="relative">
+                            <img
+                                src={photo?.medium?.url}
+                                className="object-cover rounded-lg w-36 h-36"
+                            />
+                            {typeof photo === "object" ? (
+                                <button
+                                    type="button"
+                                    onClick={() => deletePhoto(index)}
+                                    className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
+                                >
+                                    Remove
+                                </button>
+                            ) : null}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
 
 const SelectedPhotos = ({ photos, deletePhoto }) => {
     if (photos.length === 0) return null;

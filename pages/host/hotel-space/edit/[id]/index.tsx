@@ -82,21 +82,22 @@ function EditHotelSpace({ userSession }) {
                         <Rooms
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={hotelId}
+                            hotelId={data?.hotelById?.id || hotelId}
+                            // initialValue={data?.hotelById?.rooms}
                         />
                     </TabPane>
                     <TabPane tab="Pricing" key="3">
                         <Pricing
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={hotelId}
+                            hotelId={data?.hotelById?.id || hotelId}
                         />
                     </TabPane>
                     <TabPane tab="Plans" key="4">
                         <Plans
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={hotelId}
+                            hotelId={data?.hotelById?.id || hotelId}
                         />
                     </TabPane>
                 </Tabs>

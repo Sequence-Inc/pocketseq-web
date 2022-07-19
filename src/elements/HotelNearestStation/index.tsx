@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import StationItem from "./StationItem";
 import AddStationForm from "./AddStationForm";
@@ -8,13 +8,14 @@ import { TStationTypes } from "@appTypes/timebookTypes";
 
 interface IHotelNearestStation {
     onChange: any;
+    defaultValues: any;
 }
 
 export const HotelNearestStation = React.forwardRef<
     HTMLInputElement,
     IHotelNearestStation
 >((props, ref) => {
-    const { onChange } = props;
+    const { onChange, defaultValues } = props;
     const [stations, setStations] = useState<TStationTypes[]>([]);
     const [toggleForm, setToggleForm] = useState(false);
 
@@ -35,6 +36,16 @@ export const HotelNearestStation = React.forwardRef<
         ]);
     };
 
+    useEffect(() => {
+        if (defaultValues?.length > 0) {
+            const defVals = defaultValues.map((item) => ({
+                stationId: item.station.id,
+                accessType: item.accessType,
+                time: item.time,
+            }));
+            setStations(defVals);
+        }
+    }, [defaultValues]);
     return (
         <div className="w-full">
             <div className="mb-3">

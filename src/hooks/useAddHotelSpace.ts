@@ -14,6 +14,7 @@ import {
     ADD_PRICING_SCHEME,
     ROOMS_BY_HOTEL_ID,
     ADD_HOTEL_PACKAGE_PLANS,
+    UPDATE_HOTEL_SPACE,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -64,7 +65,21 @@ type AddPlansProps = {
     addAlert: any;
 };
 
-export const useAddGeneral = (fn, options = {}) => {
+// const addGeneralDefault = {
+//     name: null,
+//     description: null,
+//     photos: null,
+//     zipCode: null,
+//     prefecture: null,
+//     city: null,
+//     addressLine1: null,
+//     addressLine2: null,
+//     nearestStations: null,
+//     checkInTime: null,
+//     checkOutTime: null,
+// };
+
+export const useAddGeneral = (fn, initialValue) => {
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const [loading, setLoading] = useState(false);
@@ -77,7 +92,7 @@ export const useAddGeneral = (fn, options = {}) => {
         setValue,
         handleSubmit,
         getValues,
-    } = useForm(options);
+    } = useForm();
 
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
     const confirmRef = useRef(null);
@@ -89,9 +104,48 @@ export const useAddGeneral = (fn, options = {}) => {
             }
         },
     });
-    const onSubmit = handleSubmit(async (formData) => {
-        setLoading(true);
 
+    const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
+
+    useEffect(() => {
+        if (initialValue) {
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            setValue("photos", initialValue.photos);
+            setValue("zipCode", initialValue.address.postalCode);
+            setValue("prefecture", initialValue.address.prefecture.id);
+            setValue("city", initialValue.address.city);
+            setValue("addressLine1", initialValue.address.addressLine1);
+            setValue("addressLine2", initialValue.address.addressLine2);
+            setValue("nearestStations", initialValue.nearestStations);
+            setValue("checkInTime", initialValue.checkInTime);
+            setValue("checkOutTime", initialValue.checkOutTime);
+            // setValue("address", initialValue.address);
+        }
+    }, [initialValue]);
+
+    const onUpdate = useCallback(
+        async (formData) => {
+            const payload = {
+                id: initialValue.id,
+                name: formData.name,
+                description: formData.description,
+                checkInTime: formData.checkInTime,
+                checkOutTime: formData.checkOutTime,
+            };
+
+            const { data: updatedHotelGeneral, errors: updateGeneralError } =
+                await updateHotelGeneral({
+                    variables: { input: payload },
+                });
+            if (updateGeneralError) {
+                console.log({ updateGeneralError });
+            }
+            setLoading(false);
+        },
+        [initialValue]
+    );
+    const onCreate = useCallback(async (formData) => {
         const payloadPhotos = formData.photos.map((res) => ({
             mime: res.type,
         }));
@@ -129,6 +183,16 @@ export const useAddGeneral = (fn, options = {}) => {
 
         if (data?.addHotel?.hotel?.id) {
             return fn(data?.addHotel?.hotel?.id);
+        }
+    }, []);
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+
+        if (!initialValue) {
+            return onCreate(formData);
+        }
+        if (initialValue) {
+            return onUpdate(formData);
         }
     });
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { TimePicker } from "antd";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
@@ -33,6 +33,7 @@ const TimePickerField = React.forwardRef<
         label,
         id,
         className,
+        format,
         error,
         errorMessage,
         singleRow,
@@ -81,10 +82,12 @@ const TimePickerField = React.forwardRef<
                                 !error,
                         }
                     )}
-                    value={value}
+                    value={value && moment(value, format)}
                     onChange={(event) => onChange(event)}
                     use12Hours={use12Hours}
-                    {...rest}
+                    // defaultPickerValue={
+                    //     defaultValue && moment(defaultValue, format)
+                    // }
                 />
 
                 {error && (

@@ -31,6 +31,28 @@ export const ADD_HOTEL_SPACE = gql`
     }
 `;
 
+export const UPDATE_HOTEL_SPACE = gql`
+    mutation UpdateHotel($input: UpdateHotelInput!) {
+        updateHotel(input: $input) {
+            message
+            hotel {
+                id
+            }
+        }
+    }
+`;
+
+export const UPDATE_HOTEL_ADDRESS = gql`
+    mutation UpdateHotel($input: UpdateAddressInput!) {
+        updateHotel(input: $input) {
+            message
+            address {
+                id
+            }
+        }
+    }
+`;
+
 export const ADD_HOTEL_ROOMS = gql`
     mutation AddHotelRoom($hotelId:ID!,  $input: AddHotelRoomInput!){
         addHotelRoom(hotelId:$hotelId, input:$input){
