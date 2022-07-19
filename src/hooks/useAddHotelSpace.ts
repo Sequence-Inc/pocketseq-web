@@ -148,7 +148,7 @@ export const useAddRooms = (hotleSpaceId: string, fn) => {
         }));
 
         const basicPriceSettings = formData.basicPriceSettings.filter(
-            (item) => item !== undefined
+            (item) => item !== undefined && item?.priceSchemeId
         );
 
         const payload = {
@@ -300,12 +300,58 @@ export const useAddPlans = (props: AddPlansProps) => {
         getValues,
         trigger,
         setError,
+        reset,
     } = useForm();
 
-    useEffect(() => {
-        console.log(getValues());
-    }, [dirtyFields]);
     const watchShowUsage = watch("usagePeriod", false);
+    const watchShowReservation = watch("reservationPeriod", false);
+    const watchShowCutOff = watch("cutOffPeriod", false);
+
+    useEffect(() => {
+        if (!watchShowUsage) {
+            reset({
+                ...getValues(),
+                startUsage: undefined,
+                endUsage: undefined,
+            });
+            unregister(["startUsage", "endUsage"]);
+        }
+        if (watchShowUsage) {
+            register("startUsage", { required: true });
+
+            register("endUsage", { required: true });
+        }
+    }, [watchShowUsage]);
+
+    useEffect(() => {
+        if (!watchShowReservation) {
+            reset({
+                ...getValues(),
+                startReservation: undefined,
+                endReservation: undefined,
+            });
+            unregister(["startReservation", "endReservation"]);
+        }
+        if (watchShowReservation) {
+            register("startReservation", { required: true });
+            register("endReservation", { required: true });
+        }
+    }, [watchShowReservation]);
+
+    useEffect(() => {
+        if (!watchShowCutOff) {
+            reset({
+                ...getValues(),
+                cutOffBeforeDays: undefined,
+                cutOffTillDays: undefined,
+            });
+            unregister(["cutOffBeforeDays", "cutOffTillDays"]);
+        }
+        if (watchShowCutOff) {
+            register("cutOffBeforeDays", { required: true });
+            register("cutOffTillDays", { required: true });
+        }
+    }, [watchShowCutOff]);
 
     const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS);
     const onSubmit = handleSubmit(async (formData) => {
@@ -332,5 +378,7 @@ export const useAddPlans = (props: AddPlansProps) => {
         setError,
         onSubmit,
         watchShowUsage,
+        watchShowReservation,
+        watchShowCutOff,
     };
 };

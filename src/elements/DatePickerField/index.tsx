@@ -39,7 +39,6 @@ const DatePickerField = React.forwardRef<
         onChange,
         defaultValue,
         labelClassName,
-        ...rest
     } = props;
 
     return (
@@ -82,7 +81,6 @@ const DatePickerField = React.forwardRef<
                     )}
                     value={value}
                     onChange={(event) => onChange(event)}
-                    {...rest}
                 />
 
                 {error && (

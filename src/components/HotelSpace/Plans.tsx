@@ -13,10 +13,12 @@ import {
 import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useAddPlans } from "@hooks/useAddHotelSpace";
+import moment from "moment";
 
-const format = "HH:mm a";
+const timeFormat = "HH:mm a";
+const dateFormat = "YYYY-MM-DD";
 
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
@@ -36,8 +38,14 @@ const ROOM_TYPES = [
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const PAYMENT_TYPES = [
-    { value: "perRoom", label: "Per Room Basis" },
-    { value: "perPerson", label: "Per Person Basis" },
+    {
+        value: "PER_ROOM",
+        label: "Per Room Basis",
+    },
+    {
+        value: "PER_PERSON",
+        label: "Per Person Basis",
+    },
 ];
 
 const Plans = (props: IPlanFormProps) => {
@@ -49,6 +57,11 @@ const Plans = (props: IPlanFormProps) => {
         watchShowUsage,
         register,
         setValue,
+        watchShowReservation,
+        watchShowCutOff,
+        getValues,
+        control,
+        errors,
     } = useAddPlans({
         hotelId,
     });
@@ -96,16 +109,40 @@ const Plans = (props: IPlanFormProps) => {
                         {watchShowUsage && (
                             <div className="flex space-x-2">
                                 <DatePickerField
-                                    onChange={() => {}}
+                                    onChange={(val) => {
+                                        setValue(
+                                            "startUsage",
+                                            moment(val).format(dateFormat)
+                                        );
+                                    }}
                                     className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                     label="from"
                                     labelClassName=" ml-2 font-medium "
+                                    value={
+                                        getValues("startUsage") &&
+                                        moment(
+                                            getValues("startUsage"),
+                                            dateFormat
+                                        )
+                                    }
                                 />
                                 <DatePickerField
-                                    onChange={() => {}}
                                     className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                     label="to"
                                     labelClassName=" ml-2 font-medium "
+                                    value={
+                                        getValues("endUsage") &&
+                                        moment(
+                                            getValues("endUsage"),
+                                            dateFormat
+                                        )
+                                    }
+                                    onChange={(val) => {
+                                        setValue(
+                                            "endUsage",
+                                            moment(val).format(dateFormat)
+                                        );
+                                    }}
                                 />
                             </div>
                         )}
@@ -119,22 +156,50 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
-                            onChange={() => {}}
+                            onChange={(val) =>
+                                setValue("reservationPeriod", val)
+                            }
                         />
-                        <div className="flex space-x-2">
-                            <DatePickerField
-                                onChange={() => {}}
-                                className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
-                                label="from"
-                                labelClassName=" ml-2 font-medium "
-                            />
-                            <DatePickerField
-                                onChange={() => {}}
-                                className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
-                                label="to"
-                                labelClassName=" ml-2 font-medium "
-                            />
-                        </div>
+                        {watchShowReservation && (
+                            <div className="flex space-x-2">
+                                <DatePickerField
+                                    className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
+                                    label="from"
+                                    labelClassName=" ml-2 font-medium "
+                                    value={
+                                        getValues("startReservation") &&
+                                        moment(
+                                            getValues("startReservation"),
+                                            dateFormat
+                                        )
+                                    }
+                                    onChange={(val) => {
+                                        setValue(
+                                            "startReservation",
+                                            moment(val).format(dateFormat)
+                                        );
+                                    }}
+                                />
+                                <DatePickerField
+                                    value={
+                                        getValues("endReservation") &&
+                                        moment(
+                                            getValues("endReservation"),
+                                            dateFormat
+                                        )
+                                    }
+                                    onChange={(val) => {
+                                        setValue(
+                                            "endReservation",
+                                            moment(val).format(dateFormat)
+                                        );
+                                    }}
+                                    className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
+                                    label="to"
+                                    labelClassName=" ml-2 font-medium "
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
@@ -145,33 +210,53 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
-                            onChange={() => {}}
+                            onChange={(val) => setValue("cutOffPeriod", val)}
                         />
-                        <div className="flex space-x-2">
-                            <div className="flex items-center  space-x-2 max-w-min">
-                                <TextField
-                                    className="flex items-center space-x-2 w-14"
-                                    label=""
-                                    onChange={() => {}}
-                                />
-                                <p className="text-sm leading-6 font-medium min-w-max">
-                                    Days Before
-                                </p>
+                        {watchShowCutOff && (
+                            <div className="flex space-x-2">
+                                <div className="flex items-center  space-x-2 max-w-min">
+                                    <TextField
+                                        className="flex items-center space-x-2 w-14"
+                                        label=""
+                                        {...register("cutOffBeforeDays", {
+                                            required: watchShowCutOff,
+                                            min: 0,
+                                            valueAsNumber: true,
+                                        })}
+                                    />
+                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                        Days Before
+                                    </p>
+                                </div>
+                                <div className="flex items-center  space-x-2 ">
+                                    <Controller
+                                        rules={{ required: watchShowCutOff }}
+                                        control={control}
+                                        name="cutOffTillTime"
+                                        render={({ field: { onChange } }) => (
+                                            <TimePickerField
+                                                label=""
+                                                onChange={(e) => {
+                                                    onChange(
+                                                        e?.format("HH:mm:ss")
+                                                    );
+                                                }}
+                                                error={
+                                                    errors.checkInTime && true
+                                                }
+                                                className=" w-32"
+                                                errorMessage="Cut Off time is required"
+                                                format={timeFormat}
+                                                use12Hours={true}
+                                            />
+                                        )}
+                                    />
+                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                        Till time
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex items-center  space-x-2 max-w-min">
-                                <TimePickerField
-                                    className="w-16"
-                                    label=""
-                                    placeholder="11:00"
-                                    format="HH:mm"
-                                    onChange={() => {}}
-                                    suffixIcon={""}
-                                />
-                                <p className="text-sm leading-6 font-medium min-w-max">
-                                    Till time
-                                </p>
-                            </div>
-                        </div>
+                        )}
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="pb-2">
@@ -185,11 +270,22 @@ const Plans = (props: IPlanFormProps) => {
                         <p className="text-sm text-gray-700 font-medium">
                             Upload Photos
                         </p>
-                        <FileUpload
-                            id="planFiles"
-                            hideLabel
-                            label="Photos"
-                            onChange={(e) => console.log(e)}
+                        <Controller
+                            rules={{ required: true }}
+                            control={control}
+                            name="photos"
+                            render={({ field: { onChange } }) => (
+                                <FileUpload
+                                    key="plan_form"
+                                    id="plan_form"
+                                    hideLabel
+                                    className="w-full"
+                                    label=""
+                                    error={errors.photos && true}
+                                    errorMessage="Photos are required"
+                                    onChange={(e) => onChange(e)}
+                                />
+                            )}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
@@ -213,10 +309,20 @@ const Plans = (props: IPlanFormProps) => {
                                 Payment Terms
                             </h3>
                         </div>
-                        <RadioField
-                            label=""
-                            onChange={() => {}}
-                            options={PAYMENT_TYPES}
+
+                        <Controller
+                            rules={{ required: true }}
+                            control={control}
+                            name="paymentTerm"
+                            render={({ field: { onChange } }) => (
+                                <RadioField
+                                    label=""
+                                    onChange={(e) => onChange(e)}
+                                    error={errors?.paymentTerm && true}
+                                    errorMessage="Payment Term is required"
+                                    options={PAYMENT_TYPES}
+                                />
+                            )}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
@@ -226,9 +332,15 @@ const Plans = (props: IPlanFormProps) => {
                             </h3>
                         </div>
                         <TextField
-                            label=""
-                            onChange={() => {}}
                             className="w-20"
+                            label=""
+                            {...register("stock", {
+                                required: true,
+                            })}
+                            errorMessage="Stock is required"
+                            autoFocus
+                            error={errors.stock && true}
+                            type="number"
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
