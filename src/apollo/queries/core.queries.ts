@@ -355,7 +355,6 @@ export const BASICE_PRICE_SETTINGS = `
         ${PRICE_SCHEME_OBJECT}
     }
     hotelRoomId
-    hotelRoomPlanId
     createdAt
     updatedAt
 `;

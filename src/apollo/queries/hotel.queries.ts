@@ -100,15 +100,62 @@ export const ADD_PRICING_SCHEME = gql`
 `;
 
 export const ADD_HOTEL_PACKAGE_PLANS = gql`
-    mutation ADDPackgePlan($hotelId:ID!, $input:AddPackagePlanInput!){
+    mutation AddPackgePlan($hotelId:ID!, $input:AddPackagePlanInput!){
             addPackagePlan(hotelId:$hotelId,input:$input){
                 message
                 packagePlan{
-                    ${PACKAGE_PLAN}
+                   id
+                   name
+                   description
+                   paymentTerm
+                   stock
+                   startUsage
+                   endUsage
+                   startReservation
+                   endReservation
+                   cutOffBeforeDays
+                   cutOffTillTime
+                   hotelId
+                   photos{
+                    ${PHOTO}
+                   }
+                   roomTypes{
+                    id
+                    hotelRoom{
+                        ${HOTLE_ROOM}
+                    }
+                    priceSettings{
+                        id
+                        dayOfWeek
+                        priceScheme{
+                            ${PRICE_SCHEME_OBJECT}
+                        }
+                        hotelRoomId
+                        createdAt
+                        updatedAt
+                    }
+
+                    createdAt
+                    updatedAt
+                   }
+                   createdAt
+                   updatedAt
                 }
                 uploadRes{
                     ${IMAGE_UPLOAD_RESULT}
                 }
             }
+    }
+`;
+
+export const MY_PACKGAE_PLANS = gql`
+    query MyPackagePlans {
+        myPackagePlans {
+            id
+            name
+            description
+            paymentTerm
+            stock
+        }
     }
 `;

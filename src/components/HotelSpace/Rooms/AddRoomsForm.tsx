@@ -319,7 +319,7 @@ const AddRoomForm = ({
                                                 value={
                                                     fields[index]?.priceSchemeId
                                                 }
-                                                errorMessage="Prefecture is required"
+                                                errorMessage="Pricing is required"
                                                 labelKey="name"
                                                 valueKey="id"
                                                 disabled={
