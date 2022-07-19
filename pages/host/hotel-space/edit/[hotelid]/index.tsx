@@ -19,8 +19,7 @@ function EditHotelSpace({ userSession }) {
     const [activeTab, setActiveTab] = useState<number>(1);
     const [hotelId, setHotelId] = useState<string>();
     const router = useRouter();
-    const { id } = router.query;
-    console.log({ id });
+    const { hotelid: id } = router.query;
 
     const {
         data,
