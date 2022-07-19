@@ -21,12 +21,16 @@ const format = "HH:mm a";
 
 interface IGeneralFormProps extends TAddHotelProps {
     setHotelId: any;
+    initialValue?: any;
+    hotelLoading?: boolean;
 }
 
 const General = ({
     setActiveTab,
     activeTab,
     setHotelId,
+    initialValue,
+    hotelLoading,
 }: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
     const router = useRouter();
@@ -88,7 +92,6 @@ const General = ({
         };
         watch().zipCode && api();
     }, [watch().zipCode]);
-
     return (
         <>
             <form onSubmit={onSubmit} id="add-hotel-space">
@@ -102,6 +105,7 @@ const General = ({
                             {...register("name", {
                                 required: true,
                             })}
+                            defaultValue={initialValue?.name}
                             error={errors.name && true}
                             errorMessage="Name is required"
                             autoFocus
@@ -121,6 +125,7 @@ const General = ({
                             autoFocus
                             error={errors.description && true}
                             rows={3}
+                            defaultValue={initialValue?.description}
                             disabled={loading}
                         />
                     </div>
@@ -143,6 +148,7 @@ const General = ({
                                     format={format}
                                     use12Hours={true}
                                     disabled={loading}
+                                    defaultValue={initialValue?.checkInTIme}
                                 />
                             )}
                         />

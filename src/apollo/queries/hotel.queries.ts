@@ -73,6 +73,36 @@ export const MY_HOTELS = gql`
     }
 `;
 
+export const HOTEL_BY_ID = gql`
+    query HotelById($id:ID!){
+        hotelById(id:$id){
+                id
+                name
+                description
+                checkInTime
+                checkOutTime
+                status
+                address {
+                    ${ADDRESS}
+                }
+                nearestStations {
+                    station {
+                        ${STATION}
+                    }
+                    accessType
+                    time
+                }  
+                photos {
+                    ${PHOTO}
+                }
+                rooms{
+                    ${HOTLE_ROOM}
+                }
+                createdAt
+                updatedAt
+        }
+}`;
+
 export const ROOMS_BY_HOTEL_ID = gql`
     query HotelRoomsByHotelId($hotelId:ID!){
         myHotelRooms(hotelId:$hotelId){
