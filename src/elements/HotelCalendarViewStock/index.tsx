@@ -23,11 +23,6 @@ const HotelCalendarView = ({
     const [selectedStock, setSelectedStock] = useState(defaultStock);
 
     useEffect(() => {
-        // const basicPriceRanks = dow.map((day) => {
-        //     const rank = getBasicPriceRank(day);
-        //     return rank.priceScheme.name;
-        // });
-        // setBasicPriceRank(basicPriceRanks);
         const mappedOverrides = stockOverride.map((override) => {
             return {
                 fromDate: moment(override.startDate).startOf("day"),
