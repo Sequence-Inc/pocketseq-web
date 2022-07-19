@@ -132,7 +132,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                                         active
                                                             ? "text-white bg-primary"
                                                             : "text-gray-700",
-                                                        "cursor-default select-none relative py-2 pl-3 pr-9"
+                                                        "cursor-default select-none relative py-2 pl-3"
                                                     )
                                                 }
                                                 value={
@@ -164,7 +164,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                                                                     active
                                                                         ? "text-white"
                                                                         : "text-primary",
-                                                                    "absolute inset-y-0 right-0 flex items-center pr-4"
+                                                                    "absolute inset-y-0 right-0 flex items-center pr-1"
                                                                 )}
                                                             >
                                                                 <CheckIcon

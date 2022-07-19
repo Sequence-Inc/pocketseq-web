@@ -4,19 +4,13 @@ import {
     ROOMS_BY_HOTEL_ID,
     PRICING_BY_HOTEL_ID,
 } from "src/apollo/queries/hotel.queries";
-import { useQuery, NetworkStatus } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import useTranslation from "next-translate/useTranslation";
-import { Button, TextField } from "@element";
-import {
-    THotelRoom,
-    IColumns,
-    TTableKey,
-    THotelPriceScheme,
-} from "@appTypes/timebookTypes";
+import { Button } from "@element";
+import { TTableKey, THotelPriceScheme } from "@appTypes/timebookTypes";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "@config";
 import Table from "./component/Table";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
-import TableRow from "./component/TableRow";
 
 interface IPricingFormProps extends TAddHotelProps {
     hotelId: string;

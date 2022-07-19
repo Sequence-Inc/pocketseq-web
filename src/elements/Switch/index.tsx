@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 
@@ -16,8 +16,11 @@ interface SwitchInputField {
 
 const SwitchField = React.forwardRef<HTMLInputElement, SwitchInputField>(
     (props, ref) => {
-        const { singleRow = true, className, label } = props;
+        const { singleRow = true, className, label, onChange } = props;
         const [enabled, setEnabled] = useState(false);
+        useEffect(() => {
+            return onChange(enabled);
+        }, [enabled]);
         return (
             <Switch.Group>
                 <div
@@ -30,11 +33,12 @@ const SwitchField = React.forwardRef<HTMLInputElement, SwitchInputField>(
                 >
                     <Switch
                         checked={enabled}
-                        onChange={setEnabled}
+                        onChange={() => setEnabled((prev) => !prev)}
                         className={classNames(
                             enabled ? "bg-indigo-600" : "bg-gray-200",
                             "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         )}
+                        ref={ref}
                     >
                         <span className="sr-only">Use setting</span>
                         <span
