@@ -102,7 +102,6 @@ export const ADD_PRICING_SCHEME = gql`
     }
 `;
 
-
 export const ROOMS_BY_ID = gql`
     query RoomsById($roomId:ID!){
         hotelRoomById(id:$roomId){
@@ -252,6 +251,9 @@ export const REMOVE_PLAN_STOCK_OVERRIDE = gql`
         ) {
             message
             action
+        }
+    }
+`;
 
 export const ADD_HOTEL_PACKAGE_PLANS = gql`
     mutation AddPackgePlan($hotelId:ID!, $input:AddPackagePlanInput!){
