@@ -22,6 +22,7 @@ import { useQuery } from "@apollo/client";
 import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 
 import { DAY_OF_WEEK } from "@config";
+import { useToast } from "@hooks/useToasts";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -29,6 +30,7 @@ interface IAddRoomFormProps {
     hotelId: string;
     handleSubmit?: any;
     toggleForm?: any;
+    initialValue?: any;
 }
 interface IFields extends FieldArrayWithId {
     dayOfWeek: string;
@@ -39,11 +41,21 @@ const AddRoomForm = ({
     hotelId,
     handleSubmit,
     toggleForm,
+    initialValue,
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
 
-    const { onSubmit, loading, errors, dirtyFields, control, register } =
-        useAddRooms(hotelId, handleSubmit);
+    const { addAlert } = useToast();
+
+    const {
+        onSubmit,
+        loading,
+        errors,
+        dirtyFields,
+        control,
+        register,
+        getValues,
+    } = useAddRooms(hotelId, { fn: handleSubmit, initialValue, addAlert });
 
     const {
         fields,
@@ -131,6 +143,7 @@ const AddRoomForm = ({
                             error={errors.photos && true}
                             errorMessage="Photos are required"
                             onChange={(e) => onChange(e)}
+                            defaultPhotos={initialValue?.photos}
                         />
                     )}
                 />
@@ -151,6 +164,7 @@ const AddRoomForm = ({
                             disabled={loading}
                             onChange={(e) => onChange(e)}
                             error={errors?.paymentTerm && true}
+                            defaultValue={getValues("paymentTerm")}
                             errorMessage="Payment Term is required"
                             options={[
                                 {

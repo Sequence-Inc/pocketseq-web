@@ -14,6 +14,7 @@ import {
     PlusIcon,
 } from "@heroicons/react/outline";
 import Link from "next/link";
+import router from "next/router";
 
 import { IColumns, TTableKey } from "src/types/timebookTypes";
 import { MY_HOTELS } from "src/apollo/queries/hotel.queries";
@@ -79,7 +80,7 @@ const HotelSpace = ({ userSession }) => {
                 return (
                     <div className="flex items-center justify-center space-x-2">
                         <button
-                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 cursor-not-allowed"
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
                             // hover:bg-gray-200
                             // onClick={() => {
                             //     router.push(
@@ -91,13 +92,12 @@ const HotelSpace = ({ userSession }) => {
                             確認
                         </button>
                         <button
-                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  cursor-not-allowed"
-                            // hover:bg-gray-200
-                            // onClick={() => {
-                            //     router.push(
-                            //         `/host/my-space/edit/${row.original.id}`
-                            //     );
-                            // }}
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  hover:bg-gray-200"
+                            onClick={() => {
+                                router.push(
+                                    `/host/hotel-space/edit/${row.original.id}`
+                                );
+                            }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
                             編集

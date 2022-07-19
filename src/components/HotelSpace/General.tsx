@@ -16,17 +16,22 @@ import { useAddGeneral } from "@hooks/useAddHotelSpace";
 import { useRouter } from "next/router";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
+import { getVariableValues } from "graphql/execution/values";
 
 const format = "HH:mm a";
 
 interface IGeneralFormProps extends TAddHotelProps {
     setHotelId: any;
+    initialValue?: any;
+    hotelLoading?: boolean;
 }
 
 const General = ({
     setActiveTab,
     activeTab,
     setHotelId,
+    initialValue,
+    hotelLoading,
 }: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
     const router = useRouter();
@@ -43,7 +48,8 @@ const General = ({
         cache,
         setCache,
         prefectures,
-    } = useAddGeneral(handleNext);
+        getValues,
+    } = useAddGeneral(handleNext, initialValue);
 
     function handleNext(id): void {
         setHotelId(id);
@@ -89,6 +95,7 @@ const General = ({
         watch().zipCode && api();
     }, [watch().zipCode]);
 
+    console.log({ initialValue });
     return (
         <>
             <form onSubmit={onSubmit} id="add-hotel-space">
@@ -102,6 +109,7 @@ const General = ({
                             {...register("name", {
                                 required: true,
                             })}
+                            defaultValue={initialValue?.name}
                             error={errors.name && true}
                             errorMessage="Name is required"
                             autoFocus
@@ -121,6 +129,7 @@ const General = ({
                             autoFocus
                             error={errors.description && true}
                             rows={3}
+                            defaultValue={initialValue?.description}
                             disabled={loading}
                         />
                     </div>
@@ -138,11 +147,13 @@ const General = ({
                                     onChange={(e) => {
                                         onChange(e?.format("HH:mm:ss"));
                                     }}
+                                    id="checkInTime"
                                     error={errors.checkInTime && true}
                                     errorMessage="Check In time is required"
                                     format={format}
                                     use12Hours={true}
                                     disabled={loading}
+                                    value={getValues("checkInTime")}
                                 />
                             )}
                         />
@@ -161,11 +172,13 @@ const General = ({
                                     onChange={(e) => {
                                         onChange(e?.format("HH:mm:ss"));
                                     }}
+                                    id="checkOutTime"
                                     error={errors.checkOutTime && true}
                                     errorMessage="Check Out time is required"
                                     format={format}
                                     use12Hours={true}
                                     disabled={loading}
+                                    value={getValues("checkOutTime")}
                                 />
                             )}
                         />
@@ -197,7 +210,10 @@ const General = ({
                                     label=""
                                     error={errors.photos && true}
                                     errorMessage="Photos are required"
-                                    onChange={(e) => onChange(e)}
+                                    onChange={(e) => {
+                                        onChange(e);
+                                    }}
+                                    defaultPhotos={initialValue?.photos}
                                 />
                             )}
                         />
@@ -227,9 +243,7 @@ const General = ({
                             name={`prefecture`}
                             control={control}
                             rules={{ required: true }}
-                            // defaultValue={
-                            //     initialValue?.address?.Prefecture?.id
-                            // }
+                            defaultValue={initialValue?.address?.prefecture?.id}
                             render={({ field }) => (
                                 <div className="space-y-2">
                                     <p>{t("address-prefecture")}</p>
@@ -320,7 +334,12 @@ const General = ({
                             name="nearestStations"
                             rules={{ required: true }}
                             render={({ field: { onChange } }) => (
-                                <HotelNearestStation onChange={onChange} />
+                                <HotelNearestStation
+                                    onChange={onChange}
+                                    defaultValues={
+                                        initialValue?.nearestStations || []
+                                    }
+                                />
                             )}
                         />
                     </div>

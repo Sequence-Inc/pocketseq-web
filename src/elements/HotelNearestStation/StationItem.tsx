@@ -22,6 +22,7 @@ const StationItem = ({ station }) => {
         skip: !stationId,
         fetchPolicy: "network-only",
     });
+
     const [
         getPrefecturById,
         {
@@ -62,7 +63,7 @@ const StationItem = ({ station }) => {
 
         setDetails(
             (prev) =>
-                (prev && { ...prev, location: prefecture.name }) || {
+                (prev && { ...prev, location: prefecture?.name }) || {
                     location: prefecture?.name,
                 }
         );

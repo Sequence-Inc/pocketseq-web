@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { Input, Radio, Space } from "antd";
@@ -39,6 +39,7 @@ const RadioField = React.forwardRef<HTMLInputElement, RadioProps>(
             options,
             direction,
             onChange,
+            defaultValue,
             ...rest
         } = props;
         const [value, setValue] = useState<string | undefined | number>();
@@ -46,6 +47,12 @@ const RadioField = React.forwardRef<HTMLInputElement, RadioProps>(
             setValue(e.target.value);
             onChange(e.target.value);
         };
+
+        useEffect(() => {
+            if (defaultValue) {
+                setValue(defaultValue);
+            }
+        }, [defaultValue]);
         return (
             <div
                 className={clsx(
