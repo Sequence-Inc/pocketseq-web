@@ -28,3 +28,5 @@ export { default as RadioField } from "./Radio";
 export { default as SwitchField } from "./Switch";
 export { default as PhotoUpload } from "./PhotUpload";
 export { default as ToastAlert } from "./Toast";
+export { default as HotelCalendarView } from "./HotelCalendarView";
+export { default as HotelCalendarViewStock } from "./HotelCalendarViewStock";
