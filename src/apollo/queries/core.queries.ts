@@ -399,7 +399,9 @@ export const PACKAGE_PLAN = `
     }
     roomTypes{
         id
-        ${HOTLE_ROOM}
+        hotelRoom {
+            ${HOTLE_ROOM}
+        }
         priceSettings{
             ${BASICE_PRICE_SETTINGS}
         }

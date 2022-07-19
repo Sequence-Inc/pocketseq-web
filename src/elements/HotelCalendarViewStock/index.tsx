@@ -183,7 +183,7 @@ const HotelCalendarView = ({
         }
 
         if (!selectedStock) {
-            alert("Please select price plan to override.");
+            alert("Please enter new stock to override.");
             return;
         }
 
@@ -251,7 +251,7 @@ const HotelCalendarView = ({
             <div className="w-1/3 space-y-4">
                 {selectedDates.length > 0 && (
                     <div className="space-y-4 border border-gray-200 shadow-sm rounded p-3">
-                        <h3 className="font-bold">Override Price:</h3>
+                        <h3 className="font-bold">Override Stock:</h3>
                         <div className="flex flex-row space-x-4">
                             <input
                                 type="number"
@@ -289,7 +289,7 @@ const HotelCalendarView = ({
                     <div>Or Press 'Esc' key to clear selection.</div>
                 </div>
                 <div className="border border-gray-200 shadow-sm rounded p-3">
-                    <h3 className="font-bold">Saved Price Overrides:</h3>
+                    <h3 className="font-bold">Saved Stock Overrides:</h3>
                     <div className="mt-3 space-y-3">
                         {stockOverride.map((override) => {
                             return (

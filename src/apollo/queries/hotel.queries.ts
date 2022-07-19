@@ -187,14 +187,28 @@ export const REMOVE_ROOM_STOCK_OVERRIDE = gql`
 `;
 
 export const PLAN_AND_PLAN_OVERRIDE = gql`
-    query PlanById($planId:ID!, $hotelId:ID!){
-        packagePlanById(id:$planId){
+    query PlanById($roomPlanId:ID!, $packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
             ${PLAN_OBJECT}
         }
-        priceOverridesByRoomPlanId(roomPlanId:$planId){
+        priceOverridesByRoomPlanId(roomPlanId:$roomPlanId){
             ${PRICE_OVERRIDE_OBJECT}
         }
-        stockOverridesByPackagePlanId(packagePlanId: $planId){
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
+            ${STOCK_OVERRIDE_OBJECT}
+        }
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
+        }
+    }
+`;
+
+export const PLAN_AND_PLAN_STOCK_OVERRIDE = gql`
+    query PlanById($packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
+            ${PLAN_OBJECT}
+        }
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
             ${STOCK_OVERRIDE_OBJECT}
         }
         myPriceSchemes(hotelId:$hotelId){
@@ -307,11 +321,7 @@ export const ADD_HOTEL_PACKAGE_PLANS = gql`
 export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
         myPackagePlans {
-            id
-            name
-            description
-            paymentTerm
-            stock
+            ${PACKAGE_PLAN}
         }
     }
 `;
