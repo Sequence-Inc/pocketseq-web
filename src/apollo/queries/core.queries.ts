@@ -318,8 +318,37 @@ tenChildCharge
 hotelId
 createdAt
 updatedAt
-
 `;
+
+export const PRICE_OVERRIDE_OBJECT = `
+id
+startDate
+endDate
+priceScheme {
+    ${PRICE_SCHEME_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const STOCK_OVERRIDE_OBJECT = `
+id
+startDate
+endDate
+stock
+createdAt
+updatedAt
+`;
+
+export const BASIC_PRICE_SETTING_OBJECT = `
+id
+dayOfWeek
+priceScheme{
+    ${PRICE_SCHEME_OBJECT}
+}
+hotelRoomId
+createdAt
+updatedAt`;
 
 // Todo add    packagePlanId in basicPriceSettings later
 export const HOTLE_ROOM = `
@@ -335,16 +364,44 @@ export const HOTLE_ROOM = `
         ${PHOTO}
     }
     basicPriceSettings{
-        id
-        dayOfWeek
-        priceScheme{
-            ${PRICE_SCHEME_OBJECT}
-        }
-        hotelRoomId
-        createdAt
-        updatedAt
+        ${BASIC_PRICE_SETTING_OBJECT}
     }
     createdAt
     updatedAt
 
+`;
+
+export const PACKAGE_ROOM_TYPE_OBJECT = `
+id
+hotelRoom {
+    ${HOTLE_ROOM}
+}
+priceSettings {
+    ${BASIC_PRICE_SETTING_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const PLAN_OBJECT = `
+id
+name
+description
+paymentTerm
+stock
+startUsage
+endUsage
+startReservation
+endReservation
+cutOffBeforeDays
+cutOffTillTime
+hotelId
+photos {
+    ${PHOTO}
+}
+roomTypes  {
+    ${PACKAGE_ROOM_TYPE_OBJECT}
+}
+createdAt
+updatedAt
 `;

@@ -6,6 +6,9 @@ import {
     HOTLE_ROOM,
     IMAGE_UPLOAD_RESULT,
     PRICE_SCHEME_OBJECT,
+    PRICE_OVERRIDE_OBJECT,
+    STOCK_OVERRIDE_OBJECT,
+    PLAN_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -94,6 +97,159 @@ export const ADD_PRICING_SCHEME = gql`
             priceScheme{
                 ${PRICE_SCHEME_OBJECT}
             }
+        }
+    }
+`;
+
+export const ROOMS_BY_ID = gql`
+    query RoomsById($roomId:ID!){
+        hotelRoomById(id:$roomId){
+            ${HOTLE_ROOM}
+        }
+    }
+`;
+export const GET_ROOM_PRICE_OVERRIDE = gql`
+    query PriceOverridesByHotelRoomId($roomId:ID!){
+        priceOverridesByHotelRoomId(hotelRoomId:$roomId){
+            ${PRICE_OVERRIDE_OBJECT}
+        }
+    }
+`;
+
+export const ROOM_AND_ROOM_OVERRIDE = gql`
+    query RoomsById($roomId:ID!, $hotelId:ID!){
+        hotelRoomById(id:$roomId){
+            ${HOTLE_ROOM}
+        }
+        priceOverridesByHotelRoomId(hotelRoomId:$roomId){
+            ${PRICE_OVERRIDE_OBJECT}
+        }
+        stockOverridesByHotelRoomId(hotelRoomId: $roomId){
+            ${STOCK_OVERRIDE_OBJECT}
+        }
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
+        }
+    }
+`;
+
+export const ADD_ROOM_PRICE_OVERRIDE = gql`
+    mutation AddRoomPriceOverride($hotelRoomId: ID!, $priceOverride: AddPriceOverrideInput!){
+        addPriceOverrideInHotelRoom(hotelRoomId:$hotelRoomId, priceOverride: $priceOverride){
+            message
+            priceOverride {
+                ${PRICE_OVERRIDE_OBJECT}
+            }
+        }
+    }
+`;
+
+export const ADD_ROOM_STOCK_OVERRIDE = gql`
+    mutation AddStockOverrideInHotelRoom($hotelRoomId: ID!, $stockOverride: AddStockOverrideInput!){
+        addStockOverrideInHotelRoom(hotelRoomId:$hotelRoomId, stockOverride: $stockOverride){
+            message
+            stockOverride {
+                ${STOCK_OVERRIDE_OBJECT}
+            }
+        }
+    }
+`;
+
+export const REMOVE_ROOM_PRICE_OVERRIDE = gql`
+    mutation RemoveRoomPriceOverride(
+        $hotelRoomId: ID!
+        $priceOverrideIds: [ID]!
+    ) {
+        removePriceOverrideFromHotelRoom(
+            hotelRoomId: $hotelRoomId
+            priceOverrideIds: $priceOverrideIds
+        ) {
+            message
+            action
+        }
+    }
+`;
+
+export const REMOVE_ROOM_STOCK_OVERRIDE = gql`
+    mutation RemoveStockOverrideFromHotelRoom(
+        $hotelRoomId: ID!
+        $stockOverrideIds: [ID]!
+    ) {
+        removeStockOverrideFromHotelRoom(
+            hotelRoomId: $hotelRoomId
+            stockOverrideIds: $stockOverrideIds
+        ) {
+            message
+            action
+        }
+    }
+`;
+
+export const PLAN_AND_PLAN_OVERRIDE = gql`
+    query PlanById($planId:ID!, $hotelId:ID!){
+        packagePlanById(id:$planId){
+            ${PLAN_OBJECT}
+        }
+        priceOverridesByRoomPlanId(roomPlanId:$planId){
+            ${PRICE_OVERRIDE_OBJECT}
+        }
+        stockOverridesByPackagePlanId(packagePlanId: $planId){
+            ${STOCK_OVERRIDE_OBJECT}
+        }
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
+        }
+    }
+`;
+
+export const ADD_PLAN_PRICE_OVERRIDE = gql`
+    mutation AddPriceOverrideInRoomPlan($roomPlanId: ID!, $priceOverride: AddPriceOverrideInput!){
+        addPriceOverrideInRoomPlan(roomPlanId:$roomPlanId, priceOverride: $priceOverride){
+            message
+            priceOverride {
+                ${PRICE_OVERRIDE_OBJECT}
+            }
+        }
+    }
+`;
+
+export const REMOVE_PLAN_PRICE_OVERRIDE = gql`
+    mutation RemovePriceOverrideFromRoomPlan(
+        $roomPlanId: ID!
+        $priceOverrideIds: [ID]!
+    ) {
+        removePriceOverrideFromRoomPlan(
+            roomPlanId: $roomPlanId
+            priceOverrideIds: $priceOverrideIds
+        ) {
+            message
+            action
+        }
+    }
+`;
+
+export const ADD_PLAN_STOCK_OVERRIDE = gql`
+    mutation AddStockOverrideInPackagePlan($packagePlanId: ID!, $stockOverride: AddStockOverrideInput!){
+        addStockOverrideInPackagePlan(packagePlanId:$packagePlanId, stockOverride: $stockOverride){
+            message
+            stockOverride {
+                ${STOCK_OVERRIDE_OBJECT}
+            }
+        }
+    }
+`;
+
+export const REMOVE_PLAN_STOCK_OVERRIDE = gql`
+    mutation RemoveStockOverrideFromPackagePlan(
+        $packagePlanId: ID!
+        $stockOverrideIds: [ID]!
+    ) {
+        removeStockOverrideFromPackagePlan(
+            packagePlanId: $packagePlanId
+            stockOverrideIds: $stockOverrideIds
+        ) {
+            message
+            action
         }
     }
 `;
