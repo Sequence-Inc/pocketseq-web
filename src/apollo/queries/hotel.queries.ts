@@ -10,6 +10,7 @@ import {
     STOCK_OVERRIDE_OBJECT,
     PLAN_OBJECT,
     PACKAGE_PLAN,
+    HOTEL_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -250,14 +251,28 @@ export const REMOVE_ROOM_STOCK_OVERRIDE = gql`
 `;
 
 export const PLAN_AND_PLAN_OVERRIDE = gql`
-    query PlanById($planId:ID!, $hotelId:ID!){
-        packagePlanById(id:$planId){
+    query PlanById($roomPlanId:ID!, $packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
             ${PLAN_OBJECT}
         }
-        priceOverridesByRoomPlanId(roomPlanId:$planId){
+        priceOverridesByRoomPlanId(roomPlanId:$roomPlanId){
             ${PRICE_OVERRIDE_OBJECT}
         }
-        stockOverridesByPackagePlanId(packagePlanId: $planId){
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
+            ${STOCK_OVERRIDE_OBJECT}
+        }
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
+        }
+    }
+`;
+
+export const PLAN_AND_PLAN_STOCK_OVERRIDE = gql`
+    query PlanById($packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
+            ${PLAN_OBJECT}
+        }
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
             ${STOCK_OVERRIDE_OBJECT}
         }
         myPriceSchemes(hotelId:$hotelId){
@@ -370,11 +385,49 @@ export const ADD_HOTEL_PACKAGE_PLANS = gql`
 export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
         myPackagePlans {
-            id
-            name
+            ${PACKAGE_PLAN}
+        }
+    }
+`;
+
+export const GET_HOTEL_BY_ID = gql`
+    query HotelById($id: ID!) {
+        hotelById(id: $id){
+            ${HOTEL_OBJECT}
+        }
+    }
+`;
+
+export const CALCULATE_ROOM_PLAN_PRICE = gql`
+    query CalculateRoomPlanPrice($input: CalculateRoomPlanInput) {
+        calculateRoomPlanPrice(input: $input) {
+            totalAmount
+            appliedRoomPlanPriceSettings
+            appliedRoomPlanPriceOverrides
+        }
+    }
+`;
+
+export const ALL_PUBLISHED_HOTELS = gql`
+    query AllPublishedHotels {
+        allPublishedHotels {
+            ${HOTEL_OBJECT}
+        }
+    }
+`;
+
+export const RESERVE_HOTEL = gql`
+    mutation ReserveHotelRoom($input: ReserveHotelRoomInput) {
+        reserveHotelRoom(input: $input) {
+            amount
+            currency
             description
-            paymentTerm
-            stock
+            intentCode
+
+            intentId
+            paymentMethodTypes
+            reservationId
+            transactionId
         }
     }
 `;
