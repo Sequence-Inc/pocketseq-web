@@ -4,6 +4,7 @@ import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import { startOfDay } from "date-fns";
 
 const HotelCalendarView = ({
     priceScheme,
@@ -29,7 +30,6 @@ const HotelCalendarView = ({
     // Validate basicPriceSetting
     let hasNullPriceScheme = false;
     basicPriceSetting.map((scheme) => {
-        console.log(scheme);
         if (scheme.priceScheme === null) {
             hasNullPriceScheme = true;
         }
@@ -225,10 +225,10 @@ const HotelCalendarView = ({
             return;
         }
 
-        const startDate = moment(selectedDates[0]).valueOf();
-        const endDate = moment(
-            selectedDates[selectedDates.length - 1]
-        ).valueOf();
+        const startDate = moment(selectedDates[0]).startOf("day").valueOf();
+        const endDate = moment(selectedDates[selectedDates.length - 1])
+            .startOf("day")
+            .valueOf();
 
         addPriceOverride({
             startDate,

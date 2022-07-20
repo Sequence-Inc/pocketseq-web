@@ -90,12 +90,9 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
     const stockOverride = data?.stockOverridesByPackagePlanId;
     const priceScheme = data?.myPriceSchemes;
 
-    const basicPriceSetting = plan.roomTypes.map((_) => {
-        if (_.id === roomPlanId) {
-            return _.priceSettings;
-        }
-    })[0];
-
+    const basicPriceSetting = plan.roomTypes.filter(
+        (_) => _.id === roomPlanId
+    )[0].priceSettings;
     return (
         <HostLayout userSession={userSession}>
             <Head>
