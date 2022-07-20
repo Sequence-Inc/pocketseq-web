@@ -12,15 +12,29 @@ interface SwitchInputField {
     children?: React.ReactNode;
     singleRow?: boolean;
     className?: string;
+    defaultValue?: boolean;
+    disabled?: boolean;
 }
 
 const SwitchField = React.forwardRef<HTMLInputElement, SwitchInputField>(
     (props, ref) => {
-        const { singleRow = true, className, label, onChange } = props;
+        const {
+            singleRow = true,
+            className,
+            label,
+            onChange,
+            defaultValue,
+            disabled,
+        } = props;
         const [enabled, setEnabled] = useState(false);
         useEffect(() => {
             return onChange(enabled);
         }, [enabled]);
+        useEffect(() => {
+            if (defaultValue) {
+                setEnabled(true);
+            }
+        }, [defaultValue]);
         return (
             <Switch.Group>
                 <div
@@ -32,6 +46,7 @@ const SwitchField = React.forwardRef<HTMLInputElement, SwitchInputField>(
                     )}
                 >
                     <Switch
+                        disabled={disabled}
                         checked={enabled}
                         onChange={() => setEnabled((prev) => !prev)}
                         className={classNames(
