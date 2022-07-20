@@ -17,7 +17,6 @@ import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import ErrorModal from "src/elements/ErrorModal";
 import ConfirmModal from "./ConfirmModal";
-import { Controller } from "react-hook-form";
 
 type TColumns = {
     className?: string;
@@ -85,7 +84,8 @@ const TableRow = (props: TableRowProps) => {
         loading,
         getValues,
         dirtyFields,
-        control,
+        resetField,
+        onUpdate,
     } = useAddPriceScheme({
         hotelId: row?.hotelId,
         formProps: {
@@ -127,12 +127,22 @@ const TableRow = (props: TableRowProps) => {
 
     const onConFirm = useCallback(() => {
         confirmModal.current.close();
-        onSubmit();
-    }, []);
+        if (row?.isNew) {
+            return onSubmit();
+        }
+        console.log("run update");
+        return onUpdate();
+    }, [row]);
 
     const handleRemove = useCallback(() => {
-        handleRemoveRow(props.rowId);
-    }, []);
+        if (row?.isNew) {
+            return handleRemoveRow(props.rowId);
+        }
+
+        Object.keys(dirtyFields).forEach((element) => {
+            resetField(element);
+        });
+    }, [row, dirtyFields]);
 
     const handleBuildForm = useCallback(() => {
         const formFields: React.ReactElement[] = [];
@@ -164,13 +174,6 @@ const TableRow = (props: TableRowProps) => {
                         }
                         key={col.key}
                     >
-                        {/* <Controller
-                            name={`${col.key}`}
-                            render={
-                                ({field})=>
-                            }
-                        control={control}
-                        /> */}
                         <TextField
                             label=""
                             disabled={loading || !row?.isNew}
@@ -184,7 +187,6 @@ const TableRow = (props: TableRowProps) => {
                             })}
                             id={col.key}
                             type="number"
-                            step="0.01"
                             key={index}
                             error={errors[col.key] && true}
                             errorMessage={`Required`}
@@ -193,7 +195,30 @@ const TableRow = (props: TableRowProps) => {
                 );
             }
         });
-
+        formFields.push(
+            <td className="flex mt-3 ml-2  space-x-2 items-center  ">
+                {isDirty && (
+                    <>
+                        <Button
+                            onClick={handleSubmitForm}
+                            Icon={CheckIcon}
+                            className="text-green-400"
+                            loading={loading}
+                        >
+                            {" "}
+                        </Button>
+                        <Button
+                            onClick={handleRemove}
+                            Icon={XIcon}
+                            loading={loading}
+                            className="text-red-400"
+                        >
+                            {" "}
+                        </Button>
+                    </>
+                )}
+            </td>
+        );
         setContent(formFields);
     }, [row, columns, errors, loading]);
 
@@ -208,7 +233,7 @@ const TableRow = (props: TableRowProps) => {
             <tr>
                 {content}
 
-                {isDirty && row.isNew && (
+                {/* {isDirty && row.isNew && (
                     <td className="flex mt-3 ml-2  space-x-2 items-center absolute ">
                         <Button
                             onClick={handleSubmitForm}
@@ -240,7 +265,7 @@ const TableRow = (props: TableRowProps) => {
                             {" "}
                         </Button>
                     </td>
-                )}
+                )} */}
             </tr>
         </>
     );

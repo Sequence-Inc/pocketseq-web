@@ -11,6 +11,7 @@ import {
     PLAN_OBJECT,
     PACKAGE_PLAN,
     HOTEL_OBJECT,
+    BASIC_PRICE_SETTING_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -45,7 +46,7 @@ export const UPDATE_HOTEL_SPACE = gql`
 
 export const UPDATE_HOTEL_ADDRESS = gql`
     mutation UpdateHotel($input: UpdateAddressInput!) {
-        updateHotel(input: $input) {
+        updateHotelAddress(input: $input) {
             message
             address {
                 id
@@ -74,6 +75,23 @@ export const UPDATE_HOTEL_ROOMS = gql`
             message
             hotelRoom {
                 id
+            }
+        }
+    }
+`;
+
+export const UPDATE_HOTEL_ROOMS_PRICE_SETTINGS = gql`
+    mutation UpdateHotelRoomPriceSettings(
+        $hotelRoomId: ID!
+        $priceSettings: [UpdateBasicPriceSettingInput!]!
+    ) {
+        updateHotelRoomPriceSetting(
+            hotelRoomId: $hotelRoomId
+            priceSettings: $priceSettings
+        ) {
+            message
+            basicPriceSettings{
+                ${BASIC_PRICE_SETTING_OBJECT}
             }
         }
     }
@@ -161,6 +179,17 @@ export const ADD_PRICING_SCHEME = gql`
             message
             priceScheme{
                 ${PRICE_SCHEME_OBJECT}
+            }
+        }
+    }
+`;
+
+export const UPDATE_PRICING_SHCEME = gql`
+    mutation UpdatePricingScheme($input: UpdatePriceSchemeInput!) {
+        updatePriceScheme(input: $input) {
+            message
+            priceScheme {
+                id
             }
         }
     }
@@ -390,6 +419,16 @@ export const UPDATE_PACKAGE_PLAN = gql`
                 id
                 name
             }
+        }
+    }
+`;
+
+export const UPDATE_ROOM_TYPE_PACKAGE_PLAN = gql`
+    mutation UpdateRoomTypePackagePlan(
+        $input: UpdateRoomTypeOfPackagePlanInput!
+    ) {
+        updateRoomTypeOfPackagePlan(input: $input) {
+            message
         }
     }
 `;

@@ -71,7 +71,7 @@ const PAYMENT_TYPES = [
 
 const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, initialValue, packageLoading } = props;
-
+    console.log({ initialValue });
     const { addAlert } = useToast();
     const router = useRouter();
     const {
@@ -91,6 +91,7 @@ const Plans = (props: IPlanFormProps) => {
         handleRoomFieldUpdate,
         onSubmit,
         loading,
+        updateRoomPlan,
     } = useAddPlans({
         hotelId,
         addAlert,
@@ -399,32 +400,48 @@ const Plans = (props: IPlanFormProps) => {
                                         priceSettings =
                                             singleRoomType?.priceSettings;
                                     }
-                                    console.log({ singleRoomType });
-                                    // const priceSett;
+
+                                    let canBeUpdated = true;
+
+                                    if (initialValue) {
+                                        canBeUpdated =
+                                            !!initialValue.roomTypes.find(
+                                                (item) =>
+                                                    item.hotelRoom.id ===
+                                                    room.id
+                                            );
+                                    }
 
                                     return (
                                         <div className=" space-y-4" key={index}>
                                             <div className="flex w-full items-center space-x-3">
-                                                <input
-                                                    id="comments"
-                                                    aria-describedby="comments-description"
-                                                    name="comments"
-                                                    type="checkbox"
-                                                    defaultChecked={
-                                                        singleRoomType?.isSelected
-                                                    }
-                                                    disabled={loading}
-                                                    onChange={(e) =>
-                                                        handleRoomTypesChange(
-                                                            room.id,
-                                                            e.target.checked
-                                                        )
-                                                    }
-                                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                                                />
-                                                <p className="text-sm leading-4 font-medium">
-                                                    {room?.name}
-                                                </p>
+                                                {!initialValue && (
+                                                    <input
+                                                        id="comments"
+                                                        aria-describedby="comments-description"
+                                                        name="comments"
+                                                        type="checkbox"
+                                                        defaultChecked={
+                                                            singleRoomType?.isSelected
+                                                        }
+                                                        disabled={
+                                                            loading ||
+                                                            !!initialValue
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleRoomTypesChange(
+                                                                room.id,
+                                                                e.target.checked
+                                                            )
+                                                        }
+                                                        className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                    />
+                                                )}
+                                                {canBeUpdated && (
+                                                    <p className="text-sm leading-4 font-medium">
+                                                        {room?.name}
+                                                    </p>
+                                                )}
                                             </div>
                                             {fieldIndex >= 0 && (
                                                 <div className="w-full flex space-x-3 ">
@@ -503,6 +520,23 @@ const Plans = (props: IPlanFormProps) => {
                                                     )}
                                                 </div>
                                             )}
+
+                                            <div>
+                                                {singleRoomType?.isSelected &&
+                                                    singleRoomType?.roomPlanId && (
+                                                        <Button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                updateRoomPlan(
+                                                                    fieldIndex
+                                                                )
+                                                            }
+                                                            className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                                        >
+                                                            Update Plan
+                                                        </Button>
+                                                    )}
+                                            </div>
                                         </div>
                                     );
                                 }
