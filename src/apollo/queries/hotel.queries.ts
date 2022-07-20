@@ -380,8 +380,8 @@ export const UPDATE_PACKAGE_PLAN = gql`
 `;
 
 export const MY_PACKGAE_PLANS = gql`
-    query MyPackagePlans {
-        myPackagePlans {
+    query MyPackagePlans($hotelId: ID!) {
+        myPackagePlans(hotelId: $hotelId) {
             id
             name
             description

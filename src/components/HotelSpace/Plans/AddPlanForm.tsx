@@ -25,6 +25,7 @@ import { DAY_OF_WEEK } from "@config";
 import { ErrorMessage } from "@hookform/error-message";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
+import { useRouter } from "next/router";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -72,7 +73,7 @@ const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, initialValue, packageLoading } = props;
 
     const { addAlert } = useToast();
-
+    const router = useRouter();
     const {
         hotelRooms,
         refetchRooms,
@@ -409,6 +410,9 @@ const Plans = (props: IPlanFormProps) => {
                                                     aria-describedby="comments-description"
                                                     name="comments"
                                                     type="checkbox"
+                                                    defaultChecked={
+                                                        singleRoomType?.isSelected
+                                                    }
                                                     disabled={loading}
                                                     onChange={(e) =>
                                                         handleRoomTypesChange(
@@ -517,10 +521,22 @@ const Plans = (props: IPlanFormProps) => {
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
-                        <div className="pb-2">
+                        <div className="flex items-center justify-between  pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
                                 Stock
                             </h3>
+                            <Button
+                                type="button"
+                                onClick={
+                                    () => {}
+                                    // router.push(
+                                    //     `/host/hotel-space/edit/${hotelId}/stockoverride/plan/${initialValue?.id}`
+                                    // )
+                                }
+                                className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                            >
+                                Stock Overide
+                            </Button>
                         </div>
                         <TextField
                             disabled={loading}

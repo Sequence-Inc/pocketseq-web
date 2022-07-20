@@ -17,6 +17,7 @@ import {
     UPDATE_HOTEL_SPACE,
     UPDATE_HOTEL_ROOMS,
     UPDATE_PACKAGE_PLAN,
+    MY_PACKGAE_PLANS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -477,6 +478,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             hotelId,
         },
     });
+
     const {
         register,
         unregister,
@@ -495,9 +497,7 @@ export const useAddPlans = (props: AddPlansProps) => {
     const {
         fields,
         append,
-
         remove,
-
         update,
     }: UseFieldArrayReturn & { fields: any[] } = useFieldArray({
         name: "roomTypes",
@@ -536,6 +536,8 @@ export const useAddPlans = (props: AddPlansProps) => {
             }
             if (fieldIndex > 1 && checked) {
                 update(fieldIndex, {
+                    isSelected: true,
+
                     hotelRoomId,
                     priceSettings: DAY_OF_WEEK.map((day) => ({
                         dayOfWeek: day.value,
@@ -546,6 +548,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             }
             if (fieldIndex < 0 && checked) {
                 append({
+                    isSelected: true,
                     hotelRoomId,
                     priceSettings: DAY_OF_WEEK.map((day) => ({
                         dayOfWeek: day.value,
@@ -610,6 +613,7 @@ export const useAddPlans = (props: AddPlansProps) => {
 
     useEffect(() => {
         if (initialValue) {
+            console.log({ initialValue });
             setValue("name", initialValue.name);
             setValue("description", initialValue.description);
             setValue("paymentTerm", initialValue.paymentTerm);
@@ -617,6 +621,19 @@ export const useAddPlans = (props: AddPlansProps) => {
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }
+            // if (initialValue?.roomTypes?.length) {
+            //     initialValue?.roomTypes.forEach((element) => {
+            //         append({
+            //             hotelRoomId: element?.hotelRoom?.id,
+            //             priceSettings: element?.priceSettings?.map(
+            //                 (setting) => ({
+            //                     dayOfWeek: setting.dayOfWeek,
+            //                     priceSchemeId: setting.priceScheme.id,
+            //                 })
+            //             ),
+            //         });
+            //     });
+            // }
             setValue("startUsage", initialValue?.startUsage);
             setValue("endUsage", initialValue?.endUsage);
             setValue("startReservation", initialValue?.startReservation);
@@ -641,9 +658,64 @@ export const useAddPlans = (props: AddPlansProps) => {
         }
     }, [initialValue]);
 
-    const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS);
+    useEffect(() => {
+        if (
+            !hotelRooms?.myHotelRooms?.length ||
+            !initialValue?.roomTypes?.length
+        ) {
+            return;
+        }
 
-    const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN);
+        console.log({
+            hotelRooms: hotelRooms?.myHotelRooms,
+            initVal: initialValue,
+        });
+
+        hotelRooms.myHotelRooms.forEach((room, index) => {
+            const initValRoomIndex = initialValue.roomTypes.findIndex(
+                (roomType) => room.id === roomType.hotelRoom.id
+            );
+
+            if (initValRoomIndex !== -1) {
+                const { roomTypes } = initialValue;
+
+                roomTypes?.forEach((roomType) => {
+                    update(index, {
+                        isSelected: true,
+                        hotelRoomId: room.id,
+                        priceSettings: roomType?.priceSettings?.map(
+                            (setting) => ({
+                                dayOfWeek: setting.dayOfWeek,
+                                priceSchemeId: setting.priceScheme.id,
+                            })
+                        ),
+                    });
+                });
+            }
+        });
+    }, [hotelRooms, initialValue?.roomTypes]);
+
+    const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS, {
+        refetchQueries: [
+            {
+                query: MY_PACKGAE_PLANS,
+                variables: {
+                    hotelId,
+                },
+            },
+        ],
+    });
+
+    const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN, {
+        refetchQueries: [
+            {
+                query: MY_PACKGAE_PLANS,
+                variables: {
+                    hotelId,
+                },
+            },
+        ],
+    });
 
     const onCreate = useCallback(async (formData) => {
         const reducedFormData: any = useReduceObject(
@@ -761,6 +833,7 @@ export const useAddPlans = (props: AddPlansProps) => {
                 ...reducedFormData,
             };
 
+            // return;
             setLoading(true);
             const { data, errors } = await updatePackagePlanGeneral({
                 variables: { input: payload },

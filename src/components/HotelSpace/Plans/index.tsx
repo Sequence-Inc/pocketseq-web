@@ -15,6 +15,7 @@ interface IPlanFormProps extends TAddHotelProps {
 }
 const Plans = (props: IPlanFormProps) => {
     const { hotelId } = props;
+    console.log({ hotelId });
     const [showForm, setForm] = useState<boolean>(false);
     const [
         getPackagePlan,
@@ -23,7 +24,14 @@ const Plans = (props: IPlanFormProps) => {
         fetchPolicy: "network-only",
     });
 
+    const [initialValue, setInitialValue] = useState(null);
+
     const toggleForm = () => setForm((prev) => !prev);
+
+    const closeForm = () => {
+        setDefaultFormData(null);
+        toggleForm();
+    };
     const [defaultFormData, setDefaultFormData] = useState(null);
 
     const setFormData = (data) => {
@@ -46,10 +54,21 @@ const Plans = (props: IPlanFormProps) => {
                 },
             });
         }
+        if (!defaultFormData) {
+            setInitialValue(null);
+        }
     }, [defaultFormData]);
 
     useEffect(() => {
-        return () => setForm(false);
+        if (packagePlanData?.packagePlanById) {
+            setInitialValue(packagePlanData);
+        }
+    }, [packagePlanData]);
+
+    useEffect(() => {
+        return () => {
+            setForm(false);
+        };
     }, []);
 
     return (
@@ -78,8 +97,8 @@ const Plans = (props: IPlanFormProps) => {
             {showForm && (
                 <AddPlanForm
                     {...props}
-                    toggleForm={toggleForm}
-                    initialValue={packagePlanData?.packagePlanById}
+                    toggleForm={closeForm}
+                    initialValue={initialValue?.packagePlanById}
                     packageLoading={fetchingPlan}
                 />
             )}
