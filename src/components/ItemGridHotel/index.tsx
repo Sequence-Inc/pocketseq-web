@@ -1,22 +1,18 @@
-import React, { ReactComponentElement } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
     LocationMarkerIcon,
     StarIcon,
-    TagIcon,
-    UserGroupIcon,
-    HomeIcon,
     HeartIcon,
 } from "@heroicons/react/solid";
-import { Button, Price, Tag, Title } from "@element";
+import { Button, Tag } from "@element";
 import router from "next/router";
 
 import { IPhoto } from "../../types/timebookTypes";
-import { FormatPrice, FormatShortAddress, PriceFormatter } from "src/utils";
-import { BASICE_PRICE_SETTINGS } from "src/apollo/queries/core.queries";
+import { FormatShortAddress, PriceFormatter } from "src/utils";
 
-export interface ItemGridProps {
+export interface ItemGridHotelProps {
     data: any;
     activeIndex?: string | number;
     setActiveIndex?: any;
@@ -26,7 +22,7 @@ export const ItemGridHotel = ({
     data,
     activeIndex,
     setActiveIndex,
-}: ItemGridProps) => {
+}: ItemGridHotelProps) => {
     const { id, name, description, packagePlans, address, photos } = data;
 
     const location: string = FormatShortAddress(address);
@@ -38,11 +34,11 @@ export const ItemGridHotel = ({
     const getLowestPrice = () => {
         let lowest = 9999999999;
         packagePlans.map((plan) => {
-            plan.roomTypes.map(({ hotelRoom, priceSettings }) => {
-                const selector =
-                    hotelRoom.paymentTerms === "PER_PERSON"
-                        ? "oneAdultCharge"
-                        : "roomCharge";
+            const selector =
+                plan.paymentTerms === "PER_PERSON"
+                    ? "oneAdultCharge"
+                    : "roomCharge";
+            plan.roomTypes.map(({ priceSettings }) => {
                 priceSettings.map(({ priceScheme }) => {
                     if (priceScheme[selector] < lowest) {
                         lowest = priceScheme[selector];
@@ -72,18 +68,14 @@ export const ItemGridHotel = ({
             <div className="px-2 space-y-2">
                 {/* location and rating section */}
                 <div className="flex items-center justify-between">
-                    <Link href="/search">
-                        <a>
-                            <Tag
-                                Icon={LocationMarkerIcon}
-                                iconStyle="text-gray-300"
-                                textStyle="text-sm text-gray-500"
-                                numberOfLines={1}
-                            >
-                                {location}
-                            </Tag>
-                        </a>
-                    </Link>
+                    <Tag
+                        Icon={LocationMarkerIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                        numberOfLines={1}
+                    >
+                        {location}
+                    </Tag>
 
                     <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
                         <div className="text-sm font-semibold text-gray-600">
@@ -107,7 +99,7 @@ export const ItemGridHotel = ({
                 </Link>
                 {/* price section */}
                 <div className="text-xl font-bold">
-                    {PriceFormatter(getLowestPrice())}
+                    {PriceFormatter(getLowestPrice())}〜
                     <span className="font-normal"> /泊</span>
                 </div>
                 {/* action section */}

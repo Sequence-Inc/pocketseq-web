@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import { Container } from "@element";
-import { SearchBox } from "@comp";
+import { SearchBoxNew } from "@comp";
 import { InstantSearch } from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch";
 import { useRouter } from "next/router";
@@ -64,7 +64,7 @@ export const HeroSection = ({
                             「人×場所×体験」を繋げる
                             目的に合った場所を検索しよう
                         </p>
-                        <SearchBox
+                        <SearchBoxNew
                             onChange={() => {
                                 return null;
                             }}

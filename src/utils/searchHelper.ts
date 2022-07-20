@@ -8,6 +8,7 @@ export const algoliaClient: AlgoliaClient = algoliasearch(
 );
 
 export const spaceIndex = algoliaClient.initIndex(`space_dev`);
+export const hotelIndex = algoliaClient.initIndex(`hotel_dev`);
 
 type SpaceSearchFilterOptions = {
     spaceType?: string;
@@ -17,6 +18,17 @@ type SpaceSearchFilterOptions = {
         longitude: number;
         radius: number;
     };
+};
+
+export const searchPocketSeq = async (params) => {
+    // const {searchType, area, noOfAdults, noOfChild, }
+    let index = null;
+
+    if (params.searchType === "space") {
+        index = spaceIndex;
+    } else {
+        index = hotelIndex;
+    }
 };
 
 export const searchSpace = async (

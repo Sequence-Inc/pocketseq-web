@@ -64,18 +64,14 @@ export const ItemGrid = ({
             <div className="px-2 space-y-2">
                 {/* location and rating section */}
                 <div className="flex items-center justify-between">
-                    <Link href="/search">
-                        <a>
-                            <Tag
-                                Icon={LocationMarkerIcon}
-                                iconStyle="text-gray-300"
-                                textStyle="text-sm text-gray-500"
-                                numberOfLines={1}
-                            >
-                                {location}
-                            </Tag>
-                        </a>
-                    </Link>
+                    <Tag
+                        Icon={LocationMarkerIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                        numberOfLines={1}
+                    >
+                        {location}
+                    </Tag>
 
                     <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
                         <div className="text-sm font-semibold text-gray-600">
@@ -90,11 +86,16 @@ export const ItemGrid = ({
                 {/* title section */}
                 <Link href={`/space/${encodeURIComponent(id)}`}>
                     <a className="block">
-                        <Title numberOfLines={2}>{name}</Title>
+                        <h3 className="text-gray-800 line-clamp-1 text-lg font-bold">
+                            {name}
+                        </h3>
                     </a>
                 </Link>
                 {/* price section */}
-                <Price amount={FormatPrice("HOURLY", pricePlans, true, true)} />
+                <Price
+                    amount={FormatPrice("HOURLY", pricePlans, true, true)}
+                    amountStyle="font-bold"
+                />
 
                 {/* metadata section */}
                 <div className="flex justify-start space-x-4">

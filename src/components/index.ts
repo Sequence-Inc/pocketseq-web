@@ -6,6 +6,7 @@ export * from "./ReviewItem";
 export * from "./SingleReview";
 export * from "./HeroSection";
 export * from "./SearchBox";
+export * from "./SearchBoxNew";
 export * from "./RegisterCTA";
 export * from "./RegisterCTAGuest";
 export * from "./RegisterCTAHost";
