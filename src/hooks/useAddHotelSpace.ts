@@ -681,6 +681,7 @@ export const useAddPlans = (props: AddPlansProps) => {
 
                 roomTypes?.forEach((roomType) => {
                     update(index, {
+                        roomPlanId: roomType.id,
                         isSelected: true,
                         hotelRoomId: room.id,
                         priceSettings: roomType?.priceSettings?.map(

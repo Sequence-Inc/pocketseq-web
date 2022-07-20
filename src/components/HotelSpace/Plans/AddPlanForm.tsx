@@ -399,7 +399,7 @@ const Plans = (props: IPlanFormProps) => {
                                         priceSettings =
                                             singleRoomType?.priceSettings;
                                     }
-
+                                    console.log({ singleRoomType });
                                     // const priceSett;
 
                                     return (
@@ -427,7 +427,7 @@ const Plans = (props: IPlanFormProps) => {
                                                 </p>
                                             </div>
                                             {fieldIndex >= 0 && (
-                                                <div className="w-full">
+                                                <div className="w-full flex space-x-3 ">
                                                     {priceSchemes
                                                         ?.myPriceSchemes
                                                         ?.length > 0 && (
@@ -486,6 +486,20 @@ const Plans = (props: IPlanFormProps) => {
                                                                 )
                                                             )}
                                                         </div>
+                                                    )}
+                                                    {singleRoomType?.roomPlanId && (
+                                                        <Button
+                                                            type="button"
+                                                            // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/plan/[PACKAGE_PLAN_ID]/[ROOM_PLAN_ID]
+                                                            onClick={() =>
+                                                                router.push(
+                                                                    `/host/hotel-space/edit/${hotelId}/priceoverride/plan/${initialValue?.id}/${singleRoomType?.roomPlanId}`
+                                                                )
+                                                            }
+                                                            className="w-36 h-10 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                                        >
+                                                            Plan Overide
+                                                        </Button>
                                                     )}
                                                 </div>
                                             )}
