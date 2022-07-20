@@ -745,6 +745,12 @@ export const useAddPlans = (props: AddPlansProps) => {
 
             const payload = {
                 id: initialValue.id,
+                startUsage: formData?.startUsage || null,
+                endUsage: formData?.endUsage || null,
+                startReservation: formData?.startReservation || null,
+                endReservation: formData?.endReservation || null,
+                cutOffBeforeDays: formData?.cutOffBeforeDays || null,
+                cutOffTillTime: formData?.cutOffTillTime || null,
                 ...reducedFormData,
             };
 

@@ -19,7 +19,9 @@ const Plans = (props: IPlanFormProps) => {
     const [
         getPackagePlan,
         { loading: fetchingPlan, error: fetchPlanError, data: packagePlanData },
-    ] = useLazyQuery(PACKAGE_PLAN_BY_ID);
+    ] = useLazyQuery(PACKAGE_PLAN_BY_ID, {
+        fetchPolicy: "network-only",
+    });
 
     const toggleForm = () => setForm((prev) => !prev);
     const [defaultFormData, setDefaultFormData] = useState(null);
