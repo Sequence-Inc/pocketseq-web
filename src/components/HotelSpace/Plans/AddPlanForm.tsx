@@ -22,7 +22,6 @@ import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment from "moment";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { DAY_OF_WEEK } from "@config";
-import { ErrorMessage } from "@hookform/error-message";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";

@@ -68,7 +68,6 @@ export const HeroSection = ({
                             onChange={() => {
                                 return null;
                             }}
-                            availableSpaceTypes={availableSpaceTypes}
                         />
 
                         <p className="mt-10 text-center text-white text-md sm:text-xl">
