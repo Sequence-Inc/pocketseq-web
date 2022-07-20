@@ -46,7 +46,7 @@ export const UPDATE_HOTEL_SPACE = gql`
 
 export const UPDATE_HOTEL_ADDRESS = gql`
     mutation UpdateHotel($input: UpdateAddressInput!) {
-        updateHotel(input: $input) {
+        updateHotelAddress(input: $input) {
             message
             address {
                 id

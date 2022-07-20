@@ -22,6 +22,7 @@ import {
     PRICING_BY_HOTEL_ID,
     UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
     UPDATE_ROOM_TYPE_PACKAGE_PLAN,
+    UPDATE_HOTEL_ADDRESS,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -131,16 +132,9 @@ export const useAddGeneral = (fn, initialValue) => {
         },
     });
 
-    const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE, {
-        onCompleted: () => {
-            addAlert({ type: "success", message: "Update successful" });
-            setLoading(false);
-        },
-        onError: () => {
-            addAlert({ type: "error", message: "Could not update " });
-            setLoading(false);
-        },
-    });
+    const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
+
+    const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
 
     useEffect(() => {
         if (initialValue) {
@@ -169,9 +163,35 @@ export const useAddGeneral = (fn, initialValue) => {
                 checkOutTime: formData.checkOutTime,
             };
 
-            await updateHotelGeneral({
-                variables: { input: payload },
-            });
+            const addressPayload = {
+                id: initialValue.address.id,
+                postalCode: formData.zipCode,
+                prefectureId: formData.prefecture,
+                city: formData.city,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+            };
+
+            const updateMutations = [
+                updateHotelGeneral({
+                    variables: { input: payload },
+                }),
+
+                updateHotelAddress({
+                    variables: {
+                        input: addressPayload,
+                    },
+                }),
+            ];
+
+            try {
+                await Promise.all(updateMutations);
+                addAlert({ type: "success", message: "Update successful" });
+                setLoading(false);
+            } catch (err) {
+                addAlert({ type: "error", message: "Could not update " });
+                setLoading(false);
+            }
         },
         [initialValue]
     );
