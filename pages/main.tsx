@@ -5,6 +5,7 @@ import { Container, Tag } from "@element";
 import {
     CategoryItem,
     ItemGrid,
+    ItemGridHotel,
     IExploreItem,
     RegisterCTA,
     SingleExploreItem,
@@ -243,6 +244,32 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             {topPicks?.allSpaces?.data.map((item, index) => (
                                 <ItemGrid key={index} data={item} />
                             ))}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={StarIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                新着宿泊スペース
+                            </Tag>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                            {topPicks?.allPublishedHotels?.map(
+                                (item, index) => (
+                                    <ItemGridHotel key={index} data={item} />
+                                )
+                            )}
                         </div>
                     </div>
                     <RegisterCTA />

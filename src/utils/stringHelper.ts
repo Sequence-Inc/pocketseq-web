@@ -45,7 +45,7 @@ export const FormatPrice = (
     return list.map((pricePlan) => FormatPriceString(pricePlan, returnNumber));
 };
 
-const FormatPriceString = (
+export const FormatPriceString = (
     pricePlan: ISpacePricePlan,
     returnNumber: boolean = false
 ): string | number => {
