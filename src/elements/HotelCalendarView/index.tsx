@@ -3,6 +3,7 @@ import { Calendar } from "antd";
 import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
+import Link from "next/link";
 
 const HotelCalendarView = ({
     priceScheme,
@@ -10,6 +11,8 @@ const HotelCalendarView = ({
     priceOverride,
     addPriceOverride,
     deletePriceOverride,
+    hotelId,
+    type,
 }) => {
     const arr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
     const dow = [0, 1, 2, 3, 4, 5, 6];
@@ -23,10 +26,34 @@ const HotelCalendarView = ({
 
     const [selectedPriceScheme, setSelectedPriceScheme] = useState(null);
 
+    // Validate basicPriceSetting
+    let hasNullPriceScheme = false;
+    basicPriceSetting.map((scheme) => {
+        console.log(scheme);
+        if (scheme.priceScheme === null) {
+            hasNullPriceScheme = true;
+        }
+    });
+    if (hasNullPriceScheme) {
+        return (
+            <div>
+                <h3 className="text-lg">
+                    Error: The {type} does not have basic price scheme set
+                    properly. Please update the price scheme first.
+                </h3>
+                <Link href={`/host/hotel-space/edit/${hotelId}`}>
+                    <button className="font-bold text-lg bg-gray-100 border border-gray-300 shadow-sm py-1 px-4 mt-4 rounded">
+                        Go Back
+                    </button>
+                </Link>
+            </div>
+        );
+    }
+
     useEffect(() => {
         const basicPriceRanks = dow.map((day) => {
             const rank = getBasicPriceRank(day);
-            return rank.priceScheme.name;
+            return rank.priceScheme?.name;
         });
         setBasicPriceRank(basicPriceRanks);
         const mappedOverrides = priceOverride.map((override) => {

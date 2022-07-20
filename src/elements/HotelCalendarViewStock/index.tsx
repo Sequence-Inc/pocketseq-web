@@ -4,7 +4,7 @@ import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
 
-const HotelCalendarView = ({
+const HotelCalendarViewStock = ({
     defaultStock,
     stockOverride,
     addStockOverride,
@@ -335,4 +335,4 @@ const HotelCalendarView = ({
         </div>
     );
 };
-export default HotelCalendarView;
+export default HotelCalendarViewStock;

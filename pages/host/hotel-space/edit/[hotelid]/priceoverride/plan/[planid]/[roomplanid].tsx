@@ -111,11 +111,13 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
                         </h2>
 
                         <HotelCalendarView
+                            type="plan"
                             priceScheme={priceScheme}
                             basicPriceSetting={basicPriceSetting}
                             priceOverride={priceOverride}
                             addPriceOverride={addPriceOverride}
                             deletePriceOverride={deletePriceOverride}
+                            hotelId={hotelId}
                         />
                     </div>
                 </div>
