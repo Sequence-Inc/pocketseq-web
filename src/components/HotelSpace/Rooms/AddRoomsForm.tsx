@@ -23,6 +23,7 @@ import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
+import { useRouter } from "next/router";
 
 const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -46,7 +47,7 @@ const AddRoomForm = ({
     const { t } = useTranslation("adminhost");
 
     const { addAlert } = useToast();
-
+    const router = useRouter();
     const {
         onSubmit,
         loading,
@@ -255,15 +256,29 @@ const AddRoomForm = ({
                 </div>
             </div>
 
-            <div className="w-3/12 sm:w-20">
-                <div className="pb-2">
+            <div className="w-6/12">
+                <div className="w-full pb-2 flex items-center justify-between">
                     <p className="text-lg font-medium leading-6">Stock</p>
+
+                    <Button
+                        type="button"
+                        onClick={() =>
+                            router.push(
+                                `/host/hotel-space/edit/${hotelId}/stockoverride/room/${initialValue?.id}`
+                            )
+                        }
+                        // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
+                        className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                    >
+                        Stock Overrides
+                    </Button>
                 </div>
                 <TextField
                     label=""
                     {...register("stock", {
                         required: true,
                     })}
+                    className="w-3/12 "
                     errorMessage="Stock is required"
                     autoFocus
                     error={errors.stock && true}
@@ -278,6 +293,12 @@ const AddRoomForm = ({
                     </p>
                     <Button
                         type="button"
+                        onClick={() =>
+                            router.push(
+                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${initialValue?.id}`
+                            )
+                        }
+                        // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
                         className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                     >
                         Pricing Overrides

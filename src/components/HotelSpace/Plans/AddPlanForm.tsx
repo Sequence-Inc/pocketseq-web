@@ -12,16 +12,20 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
-import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
+import {
+    PACKAGE_PLAN_BY_ID,
+    PRICING_BY_HOTEL_ID,
+} from "src/apollo/queries/hotel.queries";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 import { useAddPlans } from "@hooks/useAddHotelSpace";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment from "moment";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { DAY_OF_WEEK } from "@config";
 import { ErrorMessage } from "@hookform/error-message";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
+import { useRouter } from "next/router";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -37,6 +41,8 @@ interface IFields extends FieldArrayWithId {
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
     toggleForm: any;
+    initialValue?: any;
+    packageLoading?: boolean;
 }
 
 const ROOM_TYPES = [
@@ -64,10 +70,10 @@ const PAYMENT_TYPES = [
 ];
 
 const Plans = (props: IPlanFormProps) => {
-    const { hotelId, toggleForm } = props;
+    const { hotelId, toggleForm, initialValue, packageLoading } = props;
 
     const { addAlert } = useToast();
-
+    const router = useRouter();
     const {
         hotelRooms,
         refetchRooms,
@@ -84,9 +90,11 @@ const Plans = (props: IPlanFormProps) => {
         fields: roomTypeFields,
         handleRoomFieldUpdate,
         onSubmit,
+        loading,
     } = useAddPlans({
         hotelId,
         addAlert,
+        initialValue,
     });
 
     const {
@@ -100,6 +108,9 @@ const Plans = (props: IPlanFormProps) => {
 
     const { t } = useTranslation("adminhost");
 
+    if (packageLoading)
+        return <LoadingSpinner loadingText="Loading Plans Data..." />;
+
     return (
         <>
             <form className="px-2" onSubmit={onSubmit}>
@@ -109,6 +120,7 @@ const Plans = (props: IPlanFormProps) => {
                             Plan Name
                         </p>
                         <TextField
+                            disabled={loading}
                             label={""}
                             errorMessage="Name is required"
                             autoFocus
@@ -123,6 +135,7 @@ const Plans = (props: IPlanFormProps) => {
                             Description
                         </p>
                         <TextArea
+                            disabled={loading}
                             label=""
                             errorMessage="Description is required"
                             autoFocus
@@ -136,6 +149,7 @@ const Plans = (props: IPlanFormProps) => {
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
+                            disabled={loading}
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
@@ -143,6 +157,7 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
+                            defaultValue={getValues("usagePeriod")}
                             onChange={(val) => setValue("usagePeriod", val)}
                         />
                         {watchShowUsage && (
@@ -160,22 +175,17 @@ const Plans = (props: IPlanFormProps) => {
                                     labelClassName=" ml-2 font-medium "
                                     value={
                                         getValues("startUsage") &&
-                                        moment(
-                                            getValues("startUsage"),
-                                            dateFormat
-                                        )
+                                        moment(getValues("startUsage"))
                                     }
                                 />
                                 <DatePickerField
+                                    disabled={loading}
                                     className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                     label="to"
                                     labelClassName=" ml-2 font-medium "
                                     value={
                                         getValues("endUsage") &&
-                                        moment(
-                                            getValues("endUsage"),
-                                            dateFormat
-                                        )
+                                        moment(getValues("endUsage"))
                                     }
                                     error={errors.endUsage && true}
                                     onChange={(val) => {
@@ -190,6 +200,7 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
+                            disabled={loading}
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
@@ -197,6 +208,7 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
+                            defaultValue={getValues("reservationPeriod")}
                             onChange={(val) =>
                                 setValue("reservationPeriod", val)
                             }
@@ -204,15 +216,13 @@ const Plans = (props: IPlanFormProps) => {
                         {watchShowReservation && (
                             <div className="flex space-x-2">
                                 <DatePickerField
+                                    disabled={loading}
                                     className="sm:space-x-0 flex items-center flex-row-reverse space-x-2 "
                                     label="from"
                                     labelClassName=" ml-2 font-medium "
                                     value={
                                         getValues("startReservation") &&
-                                        moment(
-                                            getValues("startReservation"),
-                                            dateFormat
-                                        )
+                                        moment(getValues("startReservation"))
                                     }
                                     error={errors.startReservation && true}
                                     onChange={(val) => {
@@ -223,12 +233,11 @@ const Plans = (props: IPlanFormProps) => {
                                     }}
                                 />
                                 <DatePickerField
+                                    disabled={loading}
                                     value={
                                         getValues("endReservation") &&
-                                        moment(
-                                            getValues("endReservation"),
-                                            dateFormat
-                                        )
+                                        moment(getValues("endReservation"))
+                                        // .format(dateFormat)
                                     }
                                     error={errors.endReservation && true}
                                     onChange={(val) => {
@@ -253,12 +262,14 @@ const Plans = (props: IPlanFormProps) => {
                                     </span>
                                 </>
                             }
+                            defaultValue={getValues("cutOffPeriod")}
                             onChange={(val) => setValue("cutOffPeriod", val)}
                         />
                         {watchShowCutOff && (
                             <div className="flex space-x-2">
                                 <div className="flex items-center  space-x-2 max-w-min">
                                     <TextField
+                                        disabled={loading}
                                         className="flex items-center space-x-2 w-14"
                                         label=""
                                         {...register("cutOffBeforeDays", {
@@ -279,6 +290,7 @@ const Plans = (props: IPlanFormProps) => {
                                         name="cutOffTillTime"
                                         render={({ field: { onChange } }) => (
                                             <TimePickerField
+                                                disabled={loading}
                                                 label=""
                                                 onChange={(e) => {
                                                     onChange(
@@ -293,6 +305,9 @@ const Plans = (props: IPlanFormProps) => {
                                                 errorMessage="Cut Off time is required"
                                                 format={timeFormat}
                                                 use12Hours={true}
+                                                value={getValues(
+                                                    "cutOffTillTime"
+                                                )}
                                             />
                                         )}
                                     />
@@ -321,12 +336,14 @@ const Plans = (props: IPlanFormProps) => {
                             name="photos"
                             render={({ field: { onChange } }) => (
                                 <FileUpload
+                                    disabled={loading}
                                     key="plan_form"
                                     id="plan_form"
                                     hideLabel
                                     className="w-full"
                                     label=""
                                     error={errors.photos && true}
+                                    defaultPhotos={initialValue?.photos}
                                     errorMessage="Photos are required"
                                     onChange={(e) => onChange(e)}
                                 />
@@ -382,7 +399,7 @@ const Plans = (props: IPlanFormProps) => {
                                         priceSettings =
                                             singleRoomType?.priceSettings;
                                     }
-
+                                    console.log({ singleRoomType });
                                     // const priceSett;
 
                                     return (
@@ -393,6 +410,10 @@ const Plans = (props: IPlanFormProps) => {
                                                     aria-describedby="comments-description"
                                                     name="comments"
                                                     type="checkbox"
+                                                    defaultChecked={
+                                                        singleRoomType?.isSelected
+                                                    }
+                                                    disabled={loading}
                                                     onChange={(e) =>
                                                         handleRoomTypesChange(
                                                             room.id,
@@ -406,7 +427,7 @@ const Plans = (props: IPlanFormProps) => {
                                                 </p>
                                             </div>
                                             {fieldIndex >= 0 && (
-                                                <div className="w-full">
+                                                <div className="w-full flex space-x-3 ">
                                                     {priceSchemes
                                                         ?.myPriceSchemes
                                                         ?.length > 0 && (
@@ -428,6 +449,9 @@ const Plans = (props: IPlanFormProps) => {
                                                                             }
                                                                         </p>
                                                                         <Select
+                                                                            disabled={
+                                                                                loading
+                                                                            }
                                                                             hidePlaceholder
                                                                             label={
                                                                                 ""
@@ -463,6 +487,20 @@ const Plans = (props: IPlanFormProps) => {
                                                             )}
                                                         </div>
                                                     )}
+                                                    {singleRoomType?.roomPlanId && (
+                                                        <Button
+                                                            type="button"
+                                                            // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/plan/[PACKAGE_PLAN_ID]/[ROOM_PLAN_ID]
+                                                            onClick={() =>
+                                                                router.push(
+                                                                    `/host/hotel-space/edit/${hotelId}/priceoverride/plan/${initialValue?.id}/${singleRoomType?.roomPlanId}`
+                                                                )
+                                                            }
+                                                            className="w-36 h-10 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                                        >
+                                                            Plan Overide
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -485,29 +523,46 @@ const Plans = (props: IPlanFormProps) => {
                             name="paymentTerm"
                             render={({ field: { onChange } }) => (
                                 <RadioField
+                                    disabled={loading}
                                     label=""
                                     onChange={(e) => onChange(e)}
                                     error={errors?.paymentTerm && true}
                                     errorMessage="Payment Term is required"
                                     options={PAYMENT_TYPES}
+                                    defaultValue={getValues("paymentTerm")}
                                 />
                             )}
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
-                        <div className="pb-2">
+                        <div className="flex items-center justify-between  pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
                                 Stock
                             </h3>
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    router.push(
+                                        `/host/hotel-space/edit/${hotelId}/stockoverride/plan/${initialValue?.id}`
+                                    )
+                                }
+                                className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                            >
+                                Stock Overide
+                            </Button>
                         </div>
                         <TextField
+                            disabled={loading}
                             className="w-20"
                             label=""
                             {...register("stock", {
                                 required: true,
+                                valueAsNumber: true,
+                                min: 0,
                             })}
                             errorMessage="Stock is required"
                             autoFocus
+                            type="number"
                             error={errors.stock && true}
                         />
                     </div>
@@ -538,6 +593,7 @@ const Plans = (props: IPlanFormProps) => {
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-300"
                             type="submit"
+                            disabled={loading}
                         >
                             Save
                         </Button>
@@ -545,6 +601,7 @@ const Plans = (props: IPlanFormProps) => {
                             variant="secondary"
                             className="w-16"
                             type="button"
+                            disabled={loading}
                             onClick={toggleForm}
                         >
                             Cancel

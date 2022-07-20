@@ -95,7 +95,6 @@ const General = ({
         watch().zipCode && api();
     }, [watch().zipCode]);
 
-    console.log({ initialValue });
     return (
         <>
             <form onSubmit={onSubmit} id="add-hotel-space">
