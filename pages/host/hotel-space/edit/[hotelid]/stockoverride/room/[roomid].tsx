@@ -22,8 +22,20 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
         nextFetchPolicy: "network-only",
     });
 
-    const [addRoomStockOverride] = useMutation(ADD_ROOM_STOCK_OVERRIDE);
-    const [removeRoomStockOverride] = useMutation(REMOVE_ROOM_STOCK_OVERRIDE);
+    const [addRoomStockOverride] = useMutation(ADD_ROOM_STOCK_OVERRIDE, {
+        onCompleted(data) {
+            alert("Stock override successfully added.");
+            location.reload();
+            return false;
+        },
+    });
+    const [removeRoomStockOverride] = useMutation(REMOVE_ROOM_STOCK_OVERRIDE, {
+        onCompleted(data) {
+            alert("Stock override successfully deleted.");
+            location.reload();
+            return false;
+        },
+    });
 
     if (loading) {
         return <LoadingSpinner />;
@@ -40,7 +52,9 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                     stockOverride: overrideData,
                 },
             });
-            alert("Override added successfully.");
+            // alert("Override added successfully.");
+            // location.reload();
+            return false;
         } catch (error) {
             console.log(error);
             alert("Error: " + error.message);
@@ -57,10 +71,9 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                 removeRoomStockOverride({
                     variables: {
                         hotelRoomId: data?.hotelRoomById.id,
-                        priceOverrideIds: [overrideId],
+                        stockOverrideIds: [overrideId],
                     },
                 });
-                alert("Override removed successfully.");
             } catch (error) {
                 console.log(error);
                 alert("Error: " + error.message);

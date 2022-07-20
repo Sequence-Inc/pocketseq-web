@@ -10,6 +10,7 @@ import {
     STOCK_OVERRIDE_OBJECT,
     PLAN_OBJECT,
     PACKAGE_PLAN,
+    HOTEL_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -250,14 +251,28 @@ export const REMOVE_ROOM_STOCK_OVERRIDE = gql`
 `;
 
 export const PLAN_AND_PLAN_OVERRIDE = gql`
-    query PlanById($planId:ID!, $hotelId:ID!){
-        packagePlanById(id:$planId){
+    query PlanById($roomPlanId:ID!, $packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
             ${PLAN_OBJECT}
         }
-        priceOverridesByRoomPlanId(roomPlanId:$planId){
+        priceOverridesByRoomPlanId(roomPlanId:$roomPlanId){
             ${PRICE_OVERRIDE_OBJECT}
         }
-        stockOverridesByPackagePlanId(packagePlanId: $planId){
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
+            ${STOCK_OVERRIDE_OBJECT}
+        }
+        myPriceSchemes(hotelId:$hotelId){
+            ${PRICE_SCHEME_OBJECT}
+        }
+    }
+`;
+
+export const PLAN_AND_PLAN_STOCK_OVERRIDE = gql`
+    query PlanById($packagePlanId: ID! $hotelId:ID!){
+        packagePlanById(id: $packagePlanId){
+            ${PLAN_OBJECT}
+        }
+        stockOverridesByPackagePlanId(packagePlanId: $packagePlanId){
             ${STOCK_OVERRIDE_OBJECT}
         }
         myPriceSchemes(hotelId:$hotelId){
@@ -380,7 +395,15 @@ export const UPDATE_PACKAGE_PLAN = gql`
 `;
 
 export const MY_PACKGAE_PLANS = gql`
-    query MyPackagePlans($hotelId: ID!) {
+    query MyPackagePlans {
+        myPackagePlans {
+            ${PACKAGE_PLAN}
+        }
+    }
+`;
+
+export const PACKAGE_PLAN_BY_HOTEL = gql`
+    query PackagePlanByHotel($hotelId: ID!) {
         myPackagePlans(hotelId: $hotelId) {
             id
             name
@@ -425,6 +448,22 @@ export const PACKAGE_PLAN_BY_ID = gql`
                         updatedAt
                     }
             }
+        }}`;
+
+export const GET_HOTEL_BY_ID = gql`
+    query HotelById($id: ID!) {
+        hotelById(id: $id){
+            ${HOTEL_OBJECT}
+        }
+    }
+`;
+
+export const CALCULATE_ROOM_PLAN_PRICE = gql`
+    query CalculateRoomPlanPrice($input: CalculateRoomPlanInput) {
+        calculateRoomPlanPrice(input: $input) {
+            totalAmount
+            appliedRoomPlanPriceSettings
+            appliedRoomPlanPriceOverrides
         }
     }
 `;

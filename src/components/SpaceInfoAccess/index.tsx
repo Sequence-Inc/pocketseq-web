@@ -17,8 +17,13 @@ export const SpaceInfoAccess = ({
     const fullAddress = `${prefecture.name}${city}${addressLine1}${addressLine2}`;
 
     const renderNearestStation = (station: INearestStation): string => {
-        return `${station.station.stationName}より${station.via}${station.time}分`;
+        return `${station.station.stationName}より${
+            station.via || station.accessType
+        }${station.time}分`;
     };
+
+    console.log(address);
+
     return (
         <div>
             <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>

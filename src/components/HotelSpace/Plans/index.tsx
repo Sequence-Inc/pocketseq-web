@@ -6,7 +6,7 @@ import PlanList from "./PlanList";
 import { Button, Container } from "@element";
 import { useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
 import {
-    MY_PACKGAE_PLANS,
+    PACKAGE_PLAN_BY_HOTEL,
     PACKAGE_PLAN_BY_ID,
 } from "src/apollo/queries/hotel.queries";
 
@@ -39,12 +39,15 @@ const Plans = (props: IPlanFormProps) => {
         toggleForm();
     };
 
-    const { data, loading, error, networkStatus } = useQuery(MY_PACKGAE_PLANS, {
-        variables: {
-            hotelId,
-        },
-        skip: !hotelId,
-    });
+    const { data, loading, error, networkStatus } = useQuery(
+        PACKAGE_PLAN_BY_HOTEL,
+        {
+            variables: {
+                hotelId,
+            },
+            skip: !hotelId,
+        }
+    );
 
     useEffect(() => {
         if (defaultFormData?.id) {

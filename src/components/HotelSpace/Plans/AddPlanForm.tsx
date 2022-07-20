@@ -527,11 +527,10 @@ const Plans = (props: IPlanFormProps) => {
                             </h3>
                             <Button
                                 type="button"
-                                onClick={
-                                    () => {}
-                                    // router.push(
-                                    //     `/host/hotel-space/edit/${hotelId}/stockoverride/plan/${initialValue?.id}`
-                                    // )
+                                onClick={() =>
+                                    router.push(
+                                        `/host/hotel-space/edit/${hotelId}/stockoverride/plan/${initialValue?.id}`
+                                    )
                                 }
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >

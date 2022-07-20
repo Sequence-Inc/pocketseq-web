@@ -17,7 +17,7 @@ import {
     UPDATE_HOTEL_SPACE,
     UPDATE_HOTEL_ROOMS,
     UPDATE_PACKAGE_PLAN,
-    MY_PACKGAE_PLANS,
+    PACKAGE_PLAN_BY_HOTEL,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -698,7 +698,7 @@ export const useAddPlans = (props: AddPlansProps) => {
     const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS, {
         refetchQueries: [
             {
-                query: MY_PACKGAE_PLANS,
+                query: PACKAGE_PLAN_BY_HOTEL,
                 variables: {
                     hotelId,
                 },
@@ -709,7 +709,7 @@ export const useAddPlans = (props: AddPlansProps) => {
     const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN, {
         refetchQueries: [
             {
-                query: MY_PACKGAE_PLANS,
+                query: PACKAGE_PLAN_BY_HOTEL,
                 variables: {
                     hotelId,
                 },

@@ -45,7 +45,8 @@ export interface IPrefecture {
 export interface INearestStation {
     station: IStation;
     time: number;
-    via: string;
+    via?: string;
+    accessType?: string;
 }
 
 export interface IStation {
