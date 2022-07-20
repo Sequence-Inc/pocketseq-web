@@ -10,6 +10,7 @@ import {
     STOCK_OVERRIDE_OBJECT,
     PLAN_OBJECT,
     PACKAGE_PLAN,
+    HOTEL_OBJECT,
 } from "./core.queries";
 
 export const ADD_HOTEL_SPACE = gql`
@@ -322,6 +323,24 @@ export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
         myPackagePlans {
             ${PACKAGE_PLAN}
+        }
+    }
+`;
+
+export const GET_HOTEL_BY_ID = gql`
+    query HotelById($id: ID!) {
+        hotelById(id: $id){
+            ${HOTEL_OBJECT}
+        }
+    }
+`;
+
+export const CALCULATE_ROOM_PLAN_PRICE = gql`
+    query CalculateRoomPlanPrice($input: CalculateRoomPlanInput) {
+        calculateRoomPlanPrice(input: $input) {
+            totalAmount
+            appliedRoomPlanPriceSettings
+            appliedRoomPlanPriceOverrides
         }
     }
 `;

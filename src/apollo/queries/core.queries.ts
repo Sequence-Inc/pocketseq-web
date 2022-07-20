@@ -350,7 +350,7 @@ hotelRoomId
 createdAt
 updatedAt`;
 
-// Todo add    packagePlanId in basicPriceSettings later
+// Todo add packagePlanId in basicPriceSettings later
 export const HOTLE_ROOM = `
     id
     name
@@ -442,6 +442,37 @@ photos {
 }
 roomTypes  {
     ${PACKAGE_ROOM_TYPE_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const HOTEL_OBJECT = `
+id
+name
+description
+checkInTime
+checkOutTime
+status
+address {
+    ${ADDRESS}
+}
+nearestStations {
+    station {
+        id
+        stationName
+    }
+    time
+    accessType
+}
+photos {
+    ${PHOTO}
+}
+rooms {
+    ${HOTLE_ROOM}
+}
+packagePlans {
+    ${PLAN_OBJECT}
 }
 createdAt
 updatedAt
