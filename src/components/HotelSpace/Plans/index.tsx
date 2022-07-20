@@ -15,7 +15,6 @@ interface IPlanFormProps extends TAddHotelProps {
 }
 const Plans = (props: IPlanFormProps) => {
     const { hotelId } = props;
-    console.log({ hotelId });
     const [showForm, setForm] = useState<boolean>(false);
     const [
         getPackagePlan,

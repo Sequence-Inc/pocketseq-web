@@ -423,6 +423,16 @@ export const UPDATE_PACKAGE_PLAN = gql`
     }
 `;
 
+export const UPDATE_ROOM_TYPE_PACKAGE_PLAN = gql`
+    mutation UpdateRoomTypePackagePlan(
+        $input: UpdateRoomTypeOfPackagePlanInput!
+    ) {
+        updateRoomTypeOfPackagePlan(input: $input) {
+            message
+        }
+    }
+`;
+
 export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
         myPackagePlans {
