@@ -42,6 +42,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const handleCreateTable = useCallback(() => {
+        if (pricingLoading) return setTableData([]);
         if (!hotelRooms?.myHotelRooms?.length) {
             return;
         }
@@ -85,7 +86,11 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         setLoadComplete(true);
 
         return () => {};
-    }, [hotelRooms?.myHotelRooms, pricingDatas?.myPriceSchemes]);
+    }, [
+        hotelRooms?.myHotelRooms,
+        pricingDatas?.myPriceSchemes,
+        pricingLoading,
+    ]);
 
     const handleRemoveRow = useCallback(
         (rowId: number) => {

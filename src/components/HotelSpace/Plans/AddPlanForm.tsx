@@ -399,8 +399,6 @@ const Plans = (props: IPlanFormProps) => {
                                         priceSettings =
                                             singleRoomType?.priceSettings;
                                     }
-                                    console.log({ singleRoomType });
-                                    // const priceSett;
 
                                     return (
                                         <div className=" space-y-4" key={index}>

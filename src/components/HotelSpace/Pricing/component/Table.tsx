@@ -4,11 +4,7 @@ import { useMemo } from "react";
 import { useTable } from "react-table";
 import TableRow from "./TableRow";
 import useTranslation from "next-translate/useTranslation";
-import {
-    THotelRoom,
-    TTableKey,
-    THotelPriceScheme,
-} from "@appTypes/timebookTypes";
+import { TTableKey } from "@appTypes/timebookTypes";
 
 export interface IColumns {
     Header: string;
@@ -67,18 +63,31 @@ const Table = ({ columns, data, ...rest }: ITableProps) => {
                                             {col?.name}
                                         </th>
                                     ))}
+                                    <th
+                                        key="action"
+                                        scope="col"
+                                        className={`px-4 py-3 font-bold text-sm tracking-wider uppercase`}
+                                    >
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                                {data?.map((row, index) => (
-                                    <TableRow
-                                        row={row}
-                                        rowId={index}
-                                        key={index}
-                                        columns={headers}
-                                        {...rest}
-                                    />
-                                ))}
+                                {[...data]
+                                    ?.sort((a, b) => {
+                                        if (!a?.createdAt) return 1;
+                                        if (!b?.createdAt) return -1;
+                                        return a.createdAt - b.createdAt;
+                                    })
+                                    ?.map((row, index) => (
+                                        <TableRow
+                                            row={row}
+                                            rowId={index}
+                                            key={index}
+                                            columns={headers}
+                                            {...rest}
+                                        />
+                                    ))}
                             </tbody>
                         </table>
                     </div>
