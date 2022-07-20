@@ -27,7 +27,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 
-export const FloatingPriceThree = ({ plans, currentPlan }) => {
+export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
     const [startDate, setStartDate] = useState<Moment>();
     const [endDate, setEndDate] = useState<Moment>();
     const [selectedPlan, setSelectedPlan] = useState(plans[0]);
@@ -38,12 +38,12 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
     const [guestPanelOpen, setGuestPanelOpen] = useState(false);
 
     const [price, setPrice] = useState(null);
+    const [noOfNight, setNoOfNight] = useState(null);
 
     const [loading, setLoading] = useState(false);
 
     const [calculatePrice] = useLazyQuery(CALCULATE_ROOM_PLAN_PRICE, {
         onCompleted(data) {
-            console.log(data);
             setPrice(data?.calculateRoomPlanPrice?.totalAmount);
             setLoading(false);
         },
@@ -63,6 +63,13 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
     }, [currentPlan]);
 
     useEffect(() => {
+        if (startDate && endDate) {
+            const noOfNights = endDate.diff(startDate, "days");
+            setNoOfNight(noOfNights);
+        }
+    }, [startDate, endDate]);
+
+    useEffect(() => {
         // get price
         if (
             startDate &&
@@ -72,7 +79,6 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
             noOfAdults >= 1 &&
             noOfChild >= 0
         ) {
-            console.log(startDate, endDate, selectedPlan, selectedRoom);
             calculatePrice({
                 variables: {
                     input: {
@@ -87,6 +93,30 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
             setLoading(true);
         }
     }, [selectedRoom, startDate, endDate, noOfAdults, noOfChild]);
+
+    const makeReservation = () => {
+        if (
+            startDate &&
+            endDate &&
+            noOfAdults &&
+            selectedRoom &&
+            selectedPlan &&
+            price &&
+            noOfNight
+        ) {
+            reserve({
+                startDate,
+                endDate,
+                noOfAdults,
+                noOfChild: noOfChild || 0,
+                roomPlanId: selectedRoom.id,
+                room: selectedRoom,
+                plan: selectedPlan,
+                price,
+                noOfNight,
+            });
+        }
+    };
 
     return (
         <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky lg:w-96 md:top-20">
@@ -512,7 +542,14 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
                 </div>
 
                 {/* button row */}
-                <Button variant="primary">予約可能状況を確認する</Button>
+                <button
+                    className="bg-primary hover:bg-primaryHover text-white font-bold w-full py-2 px-4 rounded"
+                    onClick={() => {
+                        makeReservation();
+                    }}
+                >
+                    予約可能状況を確認する
+                </button>
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
                     <p className="text-gray-600">48時間キャンセル無料</p>
@@ -522,7 +559,32 @@ export const FloatingPriceThree = ({ plans, currentPlan }) => {
                     {loading ? (
                         <LoadingSpinner />
                     ) : (
-                        <>{price && <div>{price}</div>}</>
+                        <div className="space-y-3 text-lg">
+                            {noOfNight && (
+                                <>
+                                    <div className="flex items-center justify-between ">
+                                        <div>
+                                            大人{noOfAdults}
+                                            {noOfChild > 0 && (
+                                                <>・子供{noOfChild}</>
+                                            )}{" "}
+                                            x {noOfNight}泊
+                                        </div>
+                                        <div>
+                                            {price && <div>￥ {price}</div>}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div>税金</div>
+                                        <div>￥ {price * 0.1}</div>
+                                    </div>
+                                    <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
+                                        <div>合計（税込）</div>
+                                        <div>￥ {price * 0.1 + price}</div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>

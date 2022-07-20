@@ -22,8 +22,6 @@ export const SpaceInfoAccess = ({
         }${station.time}分`;
     };
 
-    console.log(address);
-
     return (
         <div>
             <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>

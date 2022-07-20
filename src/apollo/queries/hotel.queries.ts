@@ -344,3 +344,27 @@ export const CALCULATE_ROOM_PLAN_PRICE = gql`
         }
     }
 `;
+
+export const ALL_PUBLISHED_HOTELS = gql`
+    query AllPublishedHotels {
+        allPublishedHotels {
+            ${HOTEL_OBJECT}
+        }
+    }
+`;
+
+export const RESERVE_HOTEL = gql`
+    mutation ReserveHotelRoom($input: ReserveHotelRoomInput) {
+        reserveHotelRoom(input: $input) {
+            amount
+            currency
+            description
+            intentCode
+
+            intentId
+            paymentMethodTypes
+            reservationId
+            transactionId
+        }
+    }
+`;
