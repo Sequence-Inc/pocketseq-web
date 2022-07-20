@@ -498,7 +498,7 @@ export const GET_HOTEL_BY_ID = gql`
 `;
 
 export const CALCULATE_ROOM_PLAN_PRICE = gql`
-    query CalculateRoomPlanPrice($input: CalculateRoomPlanInput) {
+    query CalculateRoomPlanPrice($input: CalculateRoomPlanInput!) {
         calculateRoomPlanPrice(input: $input) {
             totalAmount
             appliedRoomPlanPriceSettings
@@ -532,8 +532,8 @@ export const RESERVE_HOTEL = gql`
 `;
 
 export const PUBLISH_HOTEL = gql`
-    mutation PublishHotel($id: ID!) {
-        publishHotel(id: $id) {
+    mutation PublishHotel($id: ID!, $publish: Boolean!) {
+        publishHotel(id: $id, publish: $publish) {
             message
             action
         }
