@@ -367,6 +367,18 @@ export const ADD_HOTEL_PACKAGE_PLANS = gql`
     }
 `;
 
+export const UPDATE_PACKAGE_PLAN = gql`
+    mutation UpdatePackagePlan($input: UpdatePackagePlanInput!) {
+        updatePackagePlan(input: $input) {
+            message
+            packagePlan {
+                id
+                name
+            }
+        }
+    }
+`;
+
 export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
         myPackagePlans {
@@ -375,6 +387,44 @@ export const MY_PACKGAE_PLANS = gql`
             description
             paymentTerm
             stock
+        }
+    }
+`;
+
+export const PACKAGE_PLAN_BY_ID = gql`
+    query PackagePlanById($id: ID!) {
+        packagePlanById(id: $id) {
+            id
+            name
+            description
+            paymentTerm
+            stock
+            startUsage
+            endUsage
+            startReservation
+            endReservation
+            cutOffBeforeDays
+            cutOffTillTime
+            photos{
+                    ${PHOTO}
+                   }
+            roomTypes {
+                id
+                hotelRoom {
+                    id
+                    name
+                }
+                priceSettings{
+                        id
+                        dayOfWeek
+                        priceScheme{
+                            ${PRICE_SCHEME_OBJECT}
+                        }
+                        hotelRoomId
+                        createdAt
+                        updatedAt
+                    }
+            }
         }
     }
 `;

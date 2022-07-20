@@ -16,6 +16,7 @@ import {
     ADD_HOTEL_PACKAGE_PLANS,
     UPDATE_HOTEL_SPACE,
     UPDATE_HOTEL_ROOMS,
+    UPDATE_PACKAGE_PLAN,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -23,6 +24,7 @@ import {
     PRICE_SCHEME_ADULTS,
     PRICE_SCHEME_CHILD,
 } from "src/config";
+import { Description } from "@headlessui/react/dist/components/description/description";
 
 const noOp = () => {};
 
@@ -49,6 +51,20 @@ const ADD_PLAN_INPUT_KEYS = [
     "photos",
 ];
 
+const UPDATE_PLAN_KEYS = [
+    "id",
+    "name",
+    "description",
+    "paymentTerm",
+    "stock",
+    "startUsage",
+    "endUsage",
+    "startReservation",
+    "endReservation",
+    "cutOffBeforeDays",
+    "cutOffTillTime",
+];
+
 type TOptions = {
     onCompleted?: Function;
     onError?: Function;
@@ -64,6 +80,7 @@ type AddPriceShcemaProps = {
 type AddPlansProps = {
     hotelId: string;
     addAlert: any;
+    initialValue?: any;
 };
 
 // const addGeneralDefault = {
@@ -303,7 +320,7 @@ export const useAddRooms = (
                     input: payload,
                 },
             });
-            console.log({ data });
+
             if (data) {
                 addAlert({ type: "success", message: "Update successful" });
             }
@@ -330,7 +347,6 @@ export const useAddRooms = (
 
     useEffect(() => {
         if (initialValue) {
-            console.log("add rooms initialValue", { initialValue });
             setValue("name", initialValue.name);
             setValue("description", initialValue.description);
             setValue("photos", initialValue.photos);
@@ -443,7 +459,7 @@ interface IFields extends FieldArrayWithId {
 }
 
 export const useAddPlans = (props: AddPlansProps) => {
-    const { hotelId, addAlert } = props;
+    const { hotelId, addAlert, initialValue = null } = props;
     const [loading, setLoading] = useState(false);
     const {
         data: hotelRooms,
@@ -585,8 +601,44 @@ export const useAddPlans = (props: AddPlansProps) => {
         }
     }, [watchShowCutOff]);
 
+    useEffect(() => {
+        if (initialValue) {
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            setValue("paymentTerm", initialValue.paymentTerm);
+            setValue("stock", initialValue.stock);
+            if (initialValue?.startUsage || initialValue?.endUsage) {
+                setValue("usagePeriod", true);
+            }
+            setValue("startUsage", initialValue?.startUsage);
+            setValue("endUsage", initialValue?.endUsage);
+            setValue("startReservation", initialValue?.startReservation);
+            setValue("endReservation", initialValue?.endReservation);
+            setValue("photos", initialValue?.photos);
+
+            if (
+                initialValue?.startReservation ||
+                initialValue?.endReservation
+            ) {
+                setValue("reservationPeriod", true);
+            }
+            setValue("cutOffBeforeDays", initialValue?.cutOffBeforeDays);
+            setValue("cutOffTillTime", initialValue?.cutOffTillTime);
+
+            if (
+                initialValue?.cutOffBeforeDays ||
+                initialValue?.cutOffTillTime
+            ) {
+                setValue("cutOffPeriod", true);
+            }
+        }
+    }, [initialValue]);
+
     const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS);
-    const onSubmit = handleSubmit(async (formData) => {
+
+    const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN);
+
+    const onCreate = useCallback(async (formData) => {
         const reducedFormData: any = useReduceObject(
             formData,
             ADD_PLAN_INPUT_KEYS
@@ -643,7 +695,6 @@ export const useAddPlans = (props: AddPlansProps) => {
             stock: parseInt(reducedFormData.stock, 10),
         };
 
-        console.log({ payload });
         setLoading(true);
 
         const { data, errors } = await mutate({
@@ -670,6 +721,8 @@ export const useAddPlans = (props: AddPlansProps) => {
                     data.addPackagePlan.uploadRes,
                     formData.photos
                 );
+                setLoading(false);
+
                 addAlert({
                     type: "success",
                     message: "Uploaded Photos for plan",
@@ -679,11 +732,48 @@ export const useAddPlans = (props: AddPlansProps) => {
                     type: "error",
                     message: "Could not upload photos for plan",
                 });
-
-                console.log(err);
             }
         }
-        setLoading(false);
+    }, []);
+
+    const onUpdate = useCallback(
+        async (formData) => {
+            const reducedFormData: any = useReduceObject(
+                formData,
+                UPDATE_PLAN_KEYS
+            );
+
+            const payload = {
+                id: initialValue.id,
+                ...reducedFormData,
+            };
+
+            setLoading(true);
+            const { data, errors } = await updatePackagePlanGeneral({
+                variables: { input: payload },
+            });
+
+            if (data) {
+                addAlert({
+                    type: "success",
+                    message: "Succesfully updated plan",
+                });
+            }
+            if (errors) {
+                addAlert({ type: "error", message: "Could not update plan" });
+            }
+
+            setLoading(false);
+        },
+        [initialValue]
+    );
+    const onSubmit = handleSubmit(async (formData) => {
+        if (!initialValue) {
+            return onCreate(formData);
+        }
+        if (initialValue) {
+            onUpdate(formData);
+        }
     });
 
     return {

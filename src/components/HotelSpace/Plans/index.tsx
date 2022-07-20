@@ -4,8 +4,11 @@ import { TAddHotelProps } from "@appTypes/timebookTypes";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import PlanList from "./PlanList";
 import { Button, Container } from "@element";
-import { useQuery, NetworkStatus } from "@apollo/client";
-import { MY_PACKGAE_PLANS } from "src/apollo/queries/hotel.queries";
+import { useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
+import {
+    MY_PACKGAE_PLANS,
+    PACKAGE_PLAN_BY_ID,
+} from "src/apollo/queries/hotel.queries";
 
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
@@ -13,8 +16,18 @@ interface IPlanFormProps extends TAddHotelProps {
 const Plans = (props: IPlanFormProps) => {
     const { hotelId } = props;
     const [showForm, setForm] = useState<boolean>(false);
+    const [
+        getPackagePlan,
+        { loading: fetchingPlan, error: fetchPlanError, data: packagePlanData },
+    ] = useLazyQuery(PACKAGE_PLAN_BY_ID);
 
     const toggleForm = () => setForm((prev) => !prev);
+    const [defaultFormData, setDefaultFormData] = useState(null);
+
+    const setFormData = (data) => {
+        setDefaultFormData(data);
+        toggleForm();
+    };
 
     const { data, loading, error, networkStatus } = useQuery(MY_PACKGAE_PLANS, {
         variables: {
@@ -24,8 +37,19 @@ const Plans = (props: IPlanFormProps) => {
     });
 
     useEffect(() => {
+        if (defaultFormData?.id) {
+            getPackagePlan({
+                variables: {
+                    id: defaultFormData.id,
+                },
+            });
+        }
+    }, [defaultFormData]);
+
+    useEffect(() => {
         return () => setForm(false);
     }, []);
+
     return (
         <div>
             <div className="flex md:justify-end">
@@ -46,9 +70,17 @@ const Plans = (props: IPlanFormProps) => {
                     data={data?.myPackagePlans}
                     loading={loading}
                     refetching={networkStatus === NetworkStatus.refetch}
+                    setFormData={setFormData}
                 />
             )}
-            {showForm && <AddPlanForm {...props} toggleForm={toggleForm} />}
+            {showForm && (
+                <AddPlanForm
+                    {...props}
+                    toggleForm={toggleForm}
+                    initialValue={packagePlanData?.packagePlanById}
+                    packageLoading={fetchingPlan}
+                />
+            )}
         </div>
     );
 };
