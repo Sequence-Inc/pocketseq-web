@@ -491,3 +491,12 @@ export const RESERVE_HOTEL = gql`
         }
     }
 `;
+
+export const PUBLISH_HOTEL = gql`
+    mutation PublishHotel($id: ID!) {
+        publishHotel(id: $id) {
+            message
+            action
+        }
+    }
+`;
