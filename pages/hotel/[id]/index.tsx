@@ -74,6 +74,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         onCompleted(data) {
             alert("Reservation successful.");
             setResult(data?.reserveHotelroom);
+            setShowModal(false);
         },
     });
 
@@ -161,12 +162,14 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const handleReservation = () => {
         reserveHotel({
             variables: {
-                paymentSourceId: selectedPaymentMethod,
-                roomPlanId: reservationData?.roomPlanId,
-                checkInDate: reservationData?.startDate.valueOf(),
-                checkOutDate: reservationData?.endDate.valueOf(),
-                nAdult: reservationData?.noOfAdults,
-                nChild: reservationData?.noOfChild,
+                input: {
+                    paymentSourceId: selectedPaymentMethod,
+                    roomPlanId: reservationData?.roomPlanId,
+                    checkInDate: reservationData?.startDate.valueOf(),
+                    checkOutDate: reservationData?.endDate.valueOf(),
+                    nAdult: reservationData?.noOfAdults,
+                    nChild: reservationData?.noOfChild,
+                },
             },
         });
     };
