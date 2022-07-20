@@ -25,6 +25,8 @@ import {
     PRICE_SCHEME_CHILD,
 } from "src/config";
 import { Description } from "@headlessui/react/dist/components/description/description";
+import { useToast } from "./useToasts";
+import { onError } from "apollo-link-error";
 
 const noOp = () => {};
 
@@ -98,6 +100,7 @@ type AddPlansProps = {
 // };
 
 export const useAddGeneral = (fn, initialValue) => {
+    const { addAlert } = useToast();
     const [zipCode, setZipCode] = useState("");
     const [cache, setCache] = useState({});
     const [loading, setLoading] = useState(false);
@@ -123,7 +126,16 @@ export const useAddGeneral = (fn, initialValue) => {
         },
     });
 
-    const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
+    const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE, {
+        onCompleted: () => {
+            addAlert({ type: "success", message: "Update successful" });
+            setLoading(false);
+        },
+        onError: () => {
+            addAlert({ type: "error", message: "Could not update " });
+            setLoading(false);
+        },
+    });
 
     useEffect(() => {
         if (initialValue) {
@@ -152,14 +164,9 @@ export const useAddGeneral = (fn, initialValue) => {
                 checkOutTime: formData.checkOutTime,
             };
 
-            const { data: updatedHotelGeneral, errors: updateGeneralError } =
-                await updateHotelGeneral({
-                    variables: { input: payload },
-                });
-            if (updateGeneralError) {
-                console.log({ updateGeneralError });
-            }
-            setLoading(false);
+            await updateHotelGeneral({
+                variables: { input: payload },
+            });
         },
         [initialValue]
     );

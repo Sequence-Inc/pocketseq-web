@@ -175,10 +175,7 @@ const TableRow = (props: TableRowProps) => {
                             label=""
                             disabled={loading || !row?.isNew}
                             {...register(`${col.key}`, {
-                                required: !!(
-                                    col.key === "roomCharge" ||
-                                    col.key === "oneAdultCharge"
-                                ),
+                                required: true,
                                 min: {
                                     value: 0,
                                     message: "Must be greater than 0",
