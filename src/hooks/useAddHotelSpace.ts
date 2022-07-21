@@ -23,6 +23,7 @@ import {
     UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
     UPDATE_ROOM_TYPE_PACKAGE_PLAN,
     UPDATE_HOTEL_ADDRESS,
+    ADD_HOTEL_NEAREST_STATION,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -89,6 +90,7 @@ type AddPlansProps = {
     hotelId: string;
     addAlert: any;
     initialValue?: any;
+    onCompleted?: any;
 };
 
 // const addGeneralDefault = {
@@ -135,6 +137,7 @@ export const useAddGeneral = (fn, initialValue) => {
     const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
 
     const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
+    const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION);
 
     useEffect(() => {
         if (initialValue) {
@@ -172,6 +175,8 @@ export const useAddGeneral = (fn, initialValue) => {
                 addressLine2: formData.addressLine2,
             };
 
+            // const nearestStationPayload = formData.nearestStations;
+
             const updateMutations = [
                 updateHotelGeneral({
                     variables: { input: payload },
@@ -182,6 +187,11 @@ export const useAddGeneral = (fn, initialValue) => {
                         input: addressPayload,
                     },
                 }),
+                // updateHotelNearestStation({
+                //     variables: {
+                //         input: nearestStationPayload,
+                //     },
+                // }),
             ];
 
             try {
@@ -195,6 +205,17 @@ export const useAddGeneral = (fn, initialValue) => {
         },
         [initialValue]
     );
+
+    const onAddHotelStation = useCallback(async (newStation) => {
+        console.log({ newStation });
+        addHotelNearestStation({
+            variables: {
+                hotelId: initialValue.id,
+                stations: [newStation],
+            },
+        });
+    }, []);
+
     const onCreate = useCallback(async (formData) => {
         const payloadPhotos = formData.photos.map((res) => ({
             mime: res.type,
@@ -261,6 +282,7 @@ export const useAddGeneral = (fn, initialValue) => {
         cache,
         setCache,
         prefectures,
+        onAddHotelStation,
     };
 };
 
@@ -612,7 +634,7 @@ interface IFields extends FieldArrayWithId {
 }
 
 export const useAddPlans = (props: AddPlansProps) => {
-    const { hotelId, addAlert, initialValue = null } = props;
+    const { hotelId, addAlert, initialValue = null, onCompleted } = props;
     const [loading, setLoading] = useState(false);
     const {
         data: hotelRooms,
@@ -852,6 +874,9 @@ export const useAddPlans = (props: AddPlansProps) => {
                 },
             },
         ],
+        onCompleted: () => {
+            onCompleted && onCompleted();
+        },
     });
 
     const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN, {
@@ -1067,7 +1092,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             return onCreate(formData);
         }
         if (initialValue) {
-            onUpdate(formData);
+            return onUpdate(formData);
         }
     });
 
