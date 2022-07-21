@@ -43,6 +43,7 @@ const General = ({
             variables: { id: initialValue?.id },
             skip: !initialValue?.id,
         });
+
     const {
         onSubmit,
         errors,
@@ -347,7 +348,8 @@ const General = ({
                                     onChange={onChange}
                                     onAddHotelStation={onAddHotelStation}
                                     defaultValues={
-                                        initialValue?.nearestStations || []
+                                        defaultHotelValue?.hotelById
+                                            ?.nearestStations || []
                                     }
                                     onRemoveStation={onRemoveStation}
                                 />
