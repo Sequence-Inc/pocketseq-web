@@ -69,7 +69,7 @@ export const GridViewSearch = ({
                             </div>
                             <h3 className="text-gray-800 line-clamp-1 text-lg font-bold pt-2">
                                 <Link href={link}>
-                                    <a className="hover:text-gray-900">
+                                    <a className="text-gray-700 hover:text-gray-900">
                                         {name}
                                     </a>
                                 </Link>

@@ -78,10 +78,10 @@ const MyMarker = ({
                                     </span>
                                 </div>
                             </Tag> */}
-                            <h3 className="text-lg font-bold leading-4">
+                            <h3 className="text-lg font-bold leading-4 line-clamp1 text-gray-700">
                                 {marker.name}
                             </h3>
-                            <div className="text-xl leading-4 font-bold">
+                            <div className="text-xl leading-4 font-bold text-gray-700">
                                 {marker.priceText}
                             </div>
                         </div>
