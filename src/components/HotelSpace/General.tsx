@@ -61,6 +61,7 @@ const General = ({
         onAddHotelStation,
         onRemoveStation,
         onRemoveHotelPhoto,
+        onAddHotelPhotos,
     } = useAddGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
@@ -226,6 +227,7 @@ const General = ({
                                     }}
                                     defaultPhotos={initialValue?.photos}
                                     onRemove={onRemoveHotelPhoto}
+                                    onUpload={onAddHotelPhotos}
                                 />
                             )}
                         />

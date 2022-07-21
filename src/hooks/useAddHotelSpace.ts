@@ -142,12 +142,64 @@ export const useAddGeneral = (fn, initialValue) => {
     const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
 
     const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
+
+    // ADD HOTEL NEAREST STATION STARTS HERE
     const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION, {
         refetchQueries: [
             { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
         ],
     });
 
+    const onAddHotelStation = useCallback(
+        async (newStation) => {
+            if (!initialValue) return;
+            addHotelNearestStation({
+                variables: {
+                    hotelId: initialValue.id,
+                    stations: [newStation],
+                },
+            });
+        },
+        [initialValue]
+    );
+    // ADD HOTEL NEAREST STATION ENDS HERE
+
+    const [addHotelPhotos] = useMutation(GeneralQueries.ADD_HOTEL_PHOTOS, {
+        refetchQueries: [
+            { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+        ],
+    });
+
+    const onAddHotelPhotos = useCallback(
+        async (photos) => {
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addHotelPhotos({
+                variables: {
+                    hotelId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(data.addHotelPhotos.uploadRes, photos);
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
+    );
+
+    // Remove Nearest Station Begins here
     const [removeHotelNearestStation] = useMutation(
         REMOVE_HOTEL_NEAREST_STATION,
         {
@@ -157,11 +209,37 @@ export const useAddGeneral = (fn, initialValue) => {
         }
     );
 
+    const onRemoveStation = useCallback(
+        (station) => {
+            return removeHotelNearestStation({
+                variables: {
+                    hotelId: initialValue?.id,
+                    stationIds: [station.stationId],
+                },
+            });
+        },
+        [initialValue]
+    );
+    // Remove Nearest Station Ends here
+
+    // Remove Photos Mutation START
     const [removeHotelPhoto] = useMutation(GeneralQueries.REMOVE_HOTEL_PHOTO, {
         refetchQueries: [
             { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
         ],
     });
+
+    const onRemoveHotelPhoto = useCallback(
+        async (photo) => {
+            await removeHotelPhoto({
+                variables: {
+                    photoId: photo?.id,
+                },
+            });
+        },
+        [initialValue]
+    );
+    // Remove Photos Mutation ENDS
 
     useEffect(() => {
         if (initialValue) {
@@ -179,29 +257,6 @@ export const useAddGeneral = (fn, initialValue) => {
             // setValue("address", initialValue.address);
         }
     }, [initialValue]);
-
-    const onRemoveStation = useCallback(
-        (station) => {
-            return removeHotelNearestStation({
-                variables: {
-                    hotelId: initialValue?.id,
-                    stationIds: [station.stationId],
-                },
-            });
-        },
-        [initialValue]
-    );
-
-    const onRemoveHotelPhoto = useCallback(
-        async (photo) => {
-            await removeHotelPhoto({
-                variables: {
-                    photoId: photo?.id,
-                },
-            });
-        },
-        [initialValue]
-    );
 
     const onUpdate = useCallback(
         async (formData) => {
@@ -222,8 +277,6 @@ export const useAddGeneral = (fn, initialValue) => {
                 addressLine2: formData.addressLine2,
             };
 
-            // const nearestStationPayload = formData.nearestStations;
-
             const updateMutations = [
                 updateHotelGeneral({
                     variables: { input: payload },
@@ -234,11 +287,6 @@ export const useAddGeneral = (fn, initialValue) => {
                         input: addressPayload,
                     },
                 }),
-                // updateHotelNearestStation({
-                //     variables: {
-                //         input: nearestStationPayload,
-                //     },
-                // }),
             ];
 
             try {
@@ -249,19 +297,6 @@ export const useAddGeneral = (fn, initialValue) => {
                 addAlert({ type: "error", message: "Could not update " });
                 setLoading(false);
             }
-        },
-        [initialValue]
-    );
-
-    const onAddHotelStation = useCallback(
-        async (newStation) => {
-            if (!initialValue) return;
-            addHotelNearestStation({
-                variables: {
-                    hotelId: initialValue.id,
-                    stations: [newStation],
-                },
-            });
         },
         [initialValue]
     );
@@ -335,6 +370,7 @@ export const useAddGeneral = (fn, initialValue) => {
         onAddHotelStation,
         onRemoveStation,
         onRemoveHotelPhoto,
+        onAddHotelPhotos,
     };
 };
 

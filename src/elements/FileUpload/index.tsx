@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import useTranslation from "next-translate/useTranslation";
 
@@ -22,6 +22,7 @@ interface PhotoUploadFieldProps {
     hideLabel?: boolean;
     defaultPhotos?: any;
     onRemove?: any;
+    onUpload?: any;
 }
 
 const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
@@ -38,6 +39,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
             hideLabel,
             defaultPhotos,
             onRemove,
+            onUpload,
             ...rest
         } = props;
         const [photos, setPhotos] = useState([]);
@@ -47,10 +49,22 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
             const newPhotos = photos.filter((_, idx) => idx !== index);
             setPhotos(newPhotos);
         };
+
         const { t } = useTranslation("adminhost");
+
+        const handleUploadPhoto = useCallback(
+            async (files: File[]) => {
+                await onUpload(files);
+            },
+            [onUpload]
+        );
+
         const handleSelectPhoto = (event) => {
             setPhotos([...photos, ...event.target.files]);
+
+            handleUploadPhoto(event.target.files);
         };
+
         const handleDeleteDefaultPhoto = async (photo) => {
             setMutatingPhoto(photo?.id);
             onRemove && (await onRemove(photo));
@@ -69,6 +83,13 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                 setMutatingPhoto(null);
             };
         }, [photos]);
+
+        useEffect(() => {
+            if (defaultPhotos?.length) {
+                setPhotos([]);
+            }
+        }, [defaultPhotos?.length]);
+
         return (
             <div
                 className={clsx(
@@ -169,10 +190,10 @@ const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
         <div className="grid grid-cols-3 gap-3">
             {photos.map((photo, index) => {
                 return (
-                    <div key={index} className="relative">
+                    <div key={index} className="relative flex justify-center">
                         <img
                             src={photo?.medium?.url}
-                            className="object-cover rounded-lg w-36 h-36"
+                            className="object-cover rounded-lg w-36 h-36 border-2 border-green-200"
                         />
 
                         {photo?.id === mutatingPhoto && (
@@ -199,6 +220,10 @@ const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
     );
 };
 
+// const Photo=()=>{
+
+// }
+
 const SelectedPhotos = ({ photos, deletePhoto }) => {
     if (photos.length === 0) return null;
 
@@ -219,6 +244,7 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                                 }
                                 className="object-cover rounded-lg w-36 h-36"
                             />
+
                             {typeof photo === "object" ? (
                                 <button
                                     type="button"

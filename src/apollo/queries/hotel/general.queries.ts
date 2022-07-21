@@ -21,3 +21,14 @@ export const REMOVE_HOTEL_PHOTO = gql`
         }
     }
 `;
+
+export const ADD_HOTEL_PHOTOS = gql`
+    mutation AddHotelPhotos($hotelId:ID!, $photos:[ImageUploadInput!]!){
+        addHotelPhotos(hotelId:$hotelId,photos:$photos) { 
+            message
+            uploadRes{
+                ${IMAGE_UPLOAD_RESULT}
+            }
+        }
+    }
+`;
