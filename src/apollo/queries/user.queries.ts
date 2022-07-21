@@ -72,10 +72,12 @@ export const RESERVE_SPACE = gql`
 
 export const MY_RESERVATION = gql`
     query MyReservations(
-        $paginate: PaginationOption
-        $filter: MyReservationFilter
+        $spacePaginate: PaginationOption
+        $spaceFilter: MyReservationFilter
+        $hotelPaginate: PaginationOption
+        $hotelFilter: MyHotelRoomReservationFilter
     ) {
-        myReservations(paginate: $paginate, filter: $filter) {
+        myReservations(paginate: $spacePaginate, filter: $spaceFilter) {
             data {
                 id
                 fromDateTime
@@ -88,6 +90,52 @@ export const MY_RESERVATION = gql`
                 space {
                     id
                     name
+                }
+            }
+            paginationInfo {
+                hasNext
+                hasPrevious
+                nextCursor
+            }
+        }
+
+        myHotelRoomReservation (paginate: $hotelPaginate, filter: $hotelFilter) {
+            data {
+                id
+                reservationId
+                fromDateTime
+                toDateTime
+                status
+                createdAt
+                updatedAt
+                approved
+                approvedOn
+                hotelRoom{
+                    id
+                    name
+                    description
+                }
+                packagePlan{
+                    id
+                    name
+                    description
+                }
+                reservee {
+                    ${USER_ACCOUNT}
+                    ${COMPANY_ACCOUNT}
+                }
+                transaction {
+                    id
+                    amount
+                    currency
+                    status
+                    paymentMethodInfo {
+                        brand
+                        last4
+                        country
+                        expYear
+                        expMonth
+                    }
                 }
             }
             paginationInfo {
