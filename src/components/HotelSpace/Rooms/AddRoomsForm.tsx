@@ -18,14 +18,10 @@ import {
     FieldArrayWithId,
 } from "react-hook-form";
 import { useAddRooms } from "@hooks/useAddHotelSpace";
-import { useQuery } from "@apollo/client";
-import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
-
-const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface IAddRoomFormProps {
     hotelId: string;
@@ -56,34 +52,12 @@ const AddRoomForm = ({
         control,
         register,
         getValues,
-    } = useAddRooms(hotelId, { fn: handleSubmit, initialValue, addAlert });
-
-    const {
         fields,
         append,
-        insert,
         update,
-    }: UseFieldArrayReturn & {
-        fields: IFields[];
-    } = useFieldArray({
-        name: "basicPriceSettings",
-        control,
-    });
-
-    useEffect(() => {
-        DAY_OF_WEEK.map((day) =>
-            append({ dayOfWeek: day.value, priceSchemeId: null })
-        );
-    }, []);
-
-    const {
-        data: priceSchemes,
-        loading: priceSchemeLoading,
-        error: priceSchemeError,
-    } = useQuery(PRICING_BY_HOTEL_ID, {
-        skip: !hotelId,
-        variables: { hotelId },
-    });
+        priceSchemes,
+        priceSchemeLoading,
+    } = useAddRooms(hotelId, { fn: handleSubmit, initialValue, addAlert });
 
     return (
         <form
@@ -327,8 +301,7 @@ const AddRoomForm = ({
                                     render={({ field }) => {
                                         return (
                                             <Select
-                                                // {...field}
-
+                                                {...field}
                                                 hidePlaceholder
                                                 label={""}
                                                 className="lg:w-16"
@@ -340,23 +313,20 @@ const AddRoomForm = ({
                                                     errors?.prefecture && true
                                                 }
                                                 onChange={(event) => {
-                                                    field.onChange({
-                                                        dayOfWeek:
-                                                            pricing.value,
-                                                        priceSchemeId: event,
-                                                    });
                                                     update(index, {
-                                                        dayOfWeek:
-                                                            pricing.value,
+                                                        ...fields[index],
                                                         priceSchemeId: event,
                                                     });
                                                 }}
-                                                value={
-                                                    fields[index]?.priceSchemeId
-                                                }
-                                                errorMessage="Pricing is required"
                                                 labelKey="name"
                                                 valueKey="id"
+                                                value={
+                                                    fields?.length > 0
+                                                        ? fields[index]
+                                                              ?.priceSchemeId
+                                                        : ""
+                                                }
+                                                errorMessage="Pricing is required"
                                                 disabled={
                                                     loading ||
                                                     priceSchemeLoading ||

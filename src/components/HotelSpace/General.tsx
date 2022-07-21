@@ -16,7 +16,9 @@ import { useAddGeneral } from "@hooks/useAddHotelSpace";
 import { useRouter } from "next/router";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
-import { getVariableValues } from "graphql/execution/values";
+
+import { useQuery } from "@apollo/client";
+import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
 
 const format = "HH:mm a";
 
@@ -35,6 +37,13 @@ const General = ({
 }: IGeneralFormProps) => {
     const { t } = useTranslation("adminhost");
     const router = useRouter();
+
+    const { data: defaultHotelValue, loading: fetchingDefaultHotelValue } =
+        useQuery(HOTEL_BY_ID, {
+            variables: { id: initialValue?.id },
+            skip: !initialValue?.id,
+        });
+
     const {
         onSubmit,
         errors,
@@ -49,7 +58,9 @@ const General = ({
         setCache,
         prefectures,
         getValues,
-    } = useAddGeneral(handleNext, initialValue);
+        onAddHotelStation,
+        onRemoveStation,
+    } = useAddGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
         setHotelId(id);
@@ -335,9 +346,12 @@ const General = ({
                             render={({ field: { onChange } }) => (
                                 <HotelNearestStation
                                     onChange={onChange}
+                                    onAddHotelStation={onAddHotelStation}
                                     defaultValues={
-                                        initialValue?.nearestStations || []
+                                        defaultHotelValue?.hotelById
+                                            ?.nearestStations || []
                                     }
+                                    onRemoveStation={onRemoveStation}
                                 />
                             )}
                         />
