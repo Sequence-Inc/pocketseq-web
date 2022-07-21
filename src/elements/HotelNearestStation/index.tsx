@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import StationItem from "./StationItem";
 import AddStationForm from "./AddStationForm";
 import TextField from "../TextField";
 import Button from "../Button";
 import { TStationTypes } from "@appTypes/timebookTypes";
+isFinite;
 
 interface IHotelNearestStation {
     onChange: any;
     defaultValues?: any;
     onAddHotelStation?: any;
+    onRemoveStation?: any;
 }
 
 export const HotelNearestStation = React.forwardRef<
     HTMLInputElement,
     IHotelNearestStation
 >((props, ref) => {
-    const { onChange, defaultValues, onAddHotelStation } = props;
+    const { onChange, defaultValues, onAddHotelStation, onRemoveStation } =
+        props;
     const [stations, setStations] = useState<TStationTypes[]>([]);
     const [toggleForm, setToggleForm] = useState(false);
-
+    console.log({ defaultValues });
     const showForm = () => {
         setToggleForm(true);
     };
@@ -36,31 +39,42 @@ export const HotelNearestStation = React.forwardRef<
             { stationId, accessType, time: parseInt(time) },
         ]);
 
-        if (defaultValues?.length) {
-            console.log("has default values");
-            await onAddHotelStation({
-                stationId,
-                accessType,
-                time: parseInt(time),
-            });
-        }
+        await onAddHotelStation({
+            stationId,
+            accessType,
+            time: parseInt(time),
+        });
     };
 
+    const onRemove = useCallback(
+        (station) => {
+            onRemoveStation(station);
+        },
+        [onRemoveStation]
+    );
     useEffect(() => {
         if (defaultValues?.length > 0) {
             const defVals = defaultValues.map((item) => ({
+                isDefault: true,
                 stationId: item.station.id,
                 accessType: item.accessType,
                 time: item.time,
+                ...item,
             }));
             setStations(defVals);
         }
     }, [defaultValues]);
     return (
         <div className="w-full">
-            <div className="mb-3">
+            <div className="mb-3 w-full">
                 {stations?.map((station, index) => {
-                    return <StationItem key={index} station={station} />;
+                    return (
+                        <StationItem
+                            key={index}
+                            station={station}
+                            onRemoveStation={onRemove}
+                        />
+                    );
                 })}
                 {!toggleForm && stations?.length < 1 ? (
                     <p className="text-sm text-center text-gray-800">

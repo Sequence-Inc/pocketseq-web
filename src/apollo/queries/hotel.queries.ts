@@ -61,6 +61,17 @@ export const ADD_HOTEL_NEAREST_STATION = gql`
     ) {
         addHotelNearestStations(hotelId: $hotelId, stations: $stations) {
             message
+            nearestStations {
+                time
+            }
+        }
+    }
+`;
+
+export const REMOVE_HOTEL_NEAREST_STATION = gql`
+    mutation RemoveHotelStation($hotelId: ID!, $stationIds: [IntID]) {
+        removeHotelNearestStation(hotelId: $hotelId, stationIds: $stationIds) {
+            message
         }
     }
 `;

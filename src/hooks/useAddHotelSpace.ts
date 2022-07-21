@@ -24,6 +24,8 @@ import {
     UPDATE_ROOM_TYPE_PACKAGE_PLAN,
     UPDATE_HOTEL_ADDRESS,
     ADD_HOTEL_NEAREST_STATION,
+    REMOVE_HOTEL_NEAREST_STATION,
+    HOTEL_BY_ID,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -137,7 +139,20 @@ export const useAddGeneral = (fn, initialValue) => {
     const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
 
     const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
-    const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION);
+    const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION, {
+        refetchQueries: [
+            { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+        ],
+    });
+
+    const [removeHotelNearestStation] = useMutation(
+        REMOVE_HOTEL_NEAREST_STATION,
+        {
+            refetchQueries: [
+                { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+            ],
+        }
+    );
 
     useEffect(() => {
         if (initialValue) {
@@ -156,8 +171,22 @@ export const useAddGeneral = (fn, initialValue) => {
         }
     }, [initialValue]);
 
+    const onRemoveStation = useCallback(
+        (station) => {
+            console.log("onRemove", { station, initialValue });
+
+            return removeHotelNearestStation({
+                variables: {
+                    hotelId: initialValue?.id,
+                    stationIds: [station.stationId],
+                },
+            });
+        },
+        [initialValue]
+    );
     const onUpdate = useCallback(
         async (formData) => {
+            console.log("update general", initialValue);
             const payload = {
                 id: initialValue.id,
                 name: formData.name,
@@ -206,15 +235,18 @@ export const useAddGeneral = (fn, initialValue) => {
         [initialValue]
     );
 
-    const onAddHotelStation = useCallback(async (newStation) => {
-        console.log({ newStation });
-        addHotelNearestStation({
-            variables: {
-                hotelId: initialValue.id,
-                stations: [newStation],
-            },
-        });
-    }, []);
+    const onAddHotelStation = useCallback(
+        async (newStation) => {
+            if (!initialValue) return;
+            addHotelNearestStation({
+                variables: {
+                    hotelId: initialValue.id,
+                    stations: [newStation],
+                },
+            });
+        },
+        [initialValue]
+    );
 
     const onCreate = useCallback(async (formData) => {
         const payloadPhotos = formData.photos.map((res) => ({
@@ -283,6 +315,7 @@ export const useAddGeneral = (fn, initialValue) => {
         setCache,
         prefectures,
         onAddHotelStation,
+        onRemoveStation,
     };
 };
 
