@@ -54,6 +54,16 @@ export const UPDATE_HOTEL_ADDRESS = gql`
         }
     }
 `;
+export const ADD_HOTEL_NEAREST_STATION = gql`
+    mutation AddHotelStation(
+        $hotelId: ID!
+        $stations: [AddHotelNearestStationInput!]!
+    ) {
+        addHotelNearestStations(hotelId: $hotelId, stations: $stations) {
+            message
+        }
+    }
+`;
 
 export const ADD_HOTEL_ROOMS = gql`
     mutation AddHotelRoom($hotelId:ID!,  $input: AddHotelRoomInput!){

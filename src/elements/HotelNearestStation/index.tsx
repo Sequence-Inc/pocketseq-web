@@ -8,14 +8,15 @@ import { TStationTypes } from "@appTypes/timebookTypes";
 
 interface IHotelNearestStation {
     onChange: any;
-    defaultValues: any;
+    defaultValues?: any;
+    onAddHotelStation?: any;
 }
 
 export const HotelNearestStation = React.forwardRef<
     HTMLInputElement,
     IHotelNearestStation
 >((props, ref) => {
-    const { onChange, defaultValues } = props;
+    const { onChange, defaultValues, onAddHotelStation } = props;
     const [stations, setStations] = useState<TStationTypes[]>([]);
     const [toggleForm, setToggleForm] = useState(false);
 
@@ -34,6 +35,15 @@ export const HotelNearestStation = React.forwardRef<
             ...stations,
             { stationId, accessType, time: parseInt(time) },
         ]);
+
+        if (defaultValues?.length) {
+            console.log("has default values");
+            await onAddHotelStation({
+                stationId,
+                accessType,
+                time: parseInt(time),
+            });
+        }
     };
 
     useEffect(() => {

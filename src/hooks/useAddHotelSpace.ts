@@ -23,6 +23,7 @@ import {
     UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
     UPDATE_ROOM_TYPE_PACKAGE_PLAN,
     UPDATE_HOTEL_ADDRESS,
+    ADD_HOTEL_NEAREST_STATION,
 } from "src/apollo/queries/hotel.queries";
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -135,6 +136,7 @@ export const useAddGeneral = (fn, initialValue) => {
     const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
 
     const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
+    const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION);
 
     useEffect(() => {
         if (initialValue) {
@@ -172,6 +174,8 @@ export const useAddGeneral = (fn, initialValue) => {
                 addressLine2: formData.addressLine2,
             };
 
+            // const nearestStationPayload = formData.nearestStations;
+
             const updateMutations = [
                 updateHotelGeneral({
                     variables: { input: payload },
@@ -182,6 +186,11 @@ export const useAddGeneral = (fn, initialValue) => {
                         input: addressPayload,
                     },
                 }),
+                // updateHotelNearestStation({
+                //     variables: {
+                //         input: nearestStationPayload,
+                //     },
+                // }),
             ];
 
             try {
@@ -195,6 +204,17 @@ export const useAddGeneral = (fn, initialValue) => {
         },
         [initialValue]
     );
+
+    const onAddHotelStation = useCallback(async (newStation) => {
+        console.log({ newStation });
+        addHotelNearestStation({
+            variables: {
+                hotelId: initialValue.id,
+                stations: [newStation],
+            },
+        });
+    }, []);
+
     const onCreate = useCallback(async (formData) => {
         const payloadPhotos = formData.photos.map((res) => ({
             mime: res.type,
@@ -261,6 +281,7 @@ export const useAddGeneral = (fn, initialValue) => {
         cache,
         setCache,
         prefectures,
+        onAddHotelStation,
     };
 };
 

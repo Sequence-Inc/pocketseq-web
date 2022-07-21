@@ -49,6 +49,7 @@ const General = ({
         setCache,
         prefectures,
         getValues,
+        onAddHotelStation,
     } = useAddGeneral(handleNext, initialValue);
 
     function handleNext(id): void {
@@ -335,6 +336,7 @@ const General = ({
                             render={({ field: { onChange } }) => (
                                 <HotelNearestStation
                                     onChange={onChange}
+                                    onAddHotelStation={onAddHotelStation}
                                     defaultValues={
                                         initialValue?.nearestStations || []
                                     }
