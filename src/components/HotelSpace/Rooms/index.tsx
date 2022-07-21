@@ -29,6 +29,11 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
 
     const [defaultFormData, setDefaultFormData] = useState(null);
 
+    const closeForm = () => {
+        toggleForm();
+        setDefaultFormData(null);
+    };
+
     const setFormData = (data) => {
         setDefaultFormData(data);
         toggleForm();
@@ -82,7 +87,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                 <AddRoomForm
                     hotelId={hotelId}
                     handleSubmit={handleSubmit}
-                    toggleForm={toggleForm}
+                    toggleForm={closeForm}
                     initialValue={defaultFormData}
                 />
             )}
