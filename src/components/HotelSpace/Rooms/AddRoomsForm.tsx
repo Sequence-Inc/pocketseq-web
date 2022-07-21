@@ -18,14 +18,10 @@ import {
     FieldArrayWithId,
 } from "react-hook-form";
 import { useAddRooms } from "@hooks/useAddHotelSpace";
-import { useQuery } from "@apollo/client";
-import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
 
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
-
-const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface IAddRoomFormProps {
     hotelId: string;
