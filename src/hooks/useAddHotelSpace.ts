@@ -173,8 +173,6 @@ export const useAddGeneral = (fn, initialValue) => {
 
     const onRemoveStation = useCallback(
         (station) => {
-            console.log("onRemove", { station, initialValue });
-
             return removeHotelNearestStation({
                 variables: {
                     hotelId: initialValue?.id,
@@ -186,7 +184,6 @@ export const useAddGeneral = (fn, initialValue) => {
     );
     const onUpdate = useCallback(
         async (formData) => {
-            console.log("update general", initialValue);
             const payload = {
                 id: initialValue.id,
                 name: formData.name,

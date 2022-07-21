@@ -22,7 +22,6 @@ export const HotelNearestStation = React.forwardRef<
         props;
     const [stations, setStations] = useState<TStationTypes[]>([]);
     const [toggleForm, setToggleForm] = useState(false);
-    console.log({ defaultValues });
     const showForm = () => {
         setToggleForm(true);
     };
@@ -62,8 +61,10 @@ export const HotelNearestStation = React.forwardRef<
                 ...item,
             }));
             setStations(defVals);
+            return;
         }
-    }, [defaultValues]);
+        setStations([]);
+    }, [defaultValues?.length]);
     return (
         <div className="w-full">
             <div className="mb-3 w-full">
