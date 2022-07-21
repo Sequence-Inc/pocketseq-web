@@ -112,7 +112,7 @@ const Header = ({ userSession }) => {
     return (
         <Disclosure
             as="nav"
-            className="fixed top-0 left-0 z-20 w-full bg-primary"
+            className="fixed top-0 left-0 z-50 w-full bg-primary"
         >
             {({ open }) => (
                 <>

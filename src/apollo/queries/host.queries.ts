@@ -31,10 +31,17 @@ export const ADD_PHOTO_ID = gql`
 export const RESERVATIONS = gql`
     query Reservations(
         $spaceId: ID
-        $paginate: PaginationOption
-        $filter: ReservationsFilter
+        $spacePaginate: PaginationOption
+        $spaceFilter: ReservationsFilter
+        $hotelId: ID
+        $hotelPaginate: PaginationOption
+        $hotelFilter: HotelRoomReservationsFilter
     ) {
-        reservations(spaceId: $spaceId, paginate: $paginate, filter: $filter) {
+        reservations(
+            spaceId: $spaceId
+            paginate: $spacePaginate
+            filter: $spaceFilter
+        ) {
             data {
                 id
                 fromDateTime
@@ -47,6 +54,63 @@ export const RESERVATIONS = gql`
                 space {
                     id
                     name
+                }
+            }
+            paginationInfo {
+                hasNext
+                hasPrevious
+                nextCursor
+            }
+        }
+
+        hotelRoomReservations(
+            hotelId: $hotelId
+            paginate: $hotelPaginate
+            filter: $hotelFilter
+        ) {
+            data {
+                id
+                reservationId
+                fromDateTime
+                toDateTime
+                status
+                createdAt
+                updatedAt
+                approved
+                approvedOn
+                hotelRoom {
+                    id
+                    name
+                    description
+                    photos {
+                        medium {
+                            url
+                        }
+                    }
+                }
+                packagePlan {
+                    id
+                    name
+                    description
+                }
+                reservee {
+                    ... on UserProfile {
+                        id
+                        firstName
+                        lastName
+                        firstNameKana
+                        lastNameKana
+                    }
+                    ... on CompanyProfile {
+                        id
+                        name
+                        nameKana
+                    }
+                }
+                transaction {
+                    id
+                    amount
+                    currency
                 }
             }
             paginationInfo {

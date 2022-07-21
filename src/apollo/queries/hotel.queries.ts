@@ -11,6 +11,8 @@ import {
     PLAN_OBJECT,
     PACKAGE_PLAN,
     HOTEL_OBJECT,
+    USER_ACCOUNT,
+    COMPANY_ACCOUNT,
     BASIC_PRICE_SETTING_OBJECT,
 } from "./core.queries";
 
@@ -537,7 +539,7 @@ export const ALL_PUBLISHED_HOTELS = gql`
 `;
 
 export const RESERVE_HOTEL = gql`
-    mutation ReserveHotelRoom($input: ReserveHotelRoomInput) {
+    mutation ReserveHotelRoom($input: ReserveHotelRoomInput!) {
         reserveHotelRoom(input: $input) {
             amount
             currency
@@ -555,6 +557,67 @@ export const RESERVE_HOTEL = gql`
 export const PUBLISH_HOTEL = gql`
     mutation PublishHotel($id: ID!, $publish: Boolean!) {
         publishHotel(id: $id, publish: $publish) {
+            message
+            action
+        }
+    }
+`;
+
+export const HOTEL_ROOM_RESERVATION_BY_ID = gql`
+    query HotelRoomReservationById($id: ID!) {
+        hotelRoomReservationById(id: $id) {
+            id
+            reservationId
+            fromDateTime
+            toDateTime
+            status
+            createdAt
+            updatedAt
+            approved
+            approvedOn
+            hotelRoom{
+                id
+                name
+                description
+            }
+            packagePlan{
+                id
+                name
+                description
+            }
+            reservee {
+                ${USER_ACCOUNT}
+                ${COMPANY_ACCOUNT}
+            }
+            transaction {
+                id
+                amount
+                currency
+                status
+                paymentMethodInfo {
+                    brand
+                    last4
+                    country
+                    expYear
+                    expMonth
+                }
+            }
+        }
+    }
+`;
+
+export const APPROVE_HOTEL_ROOM_RESERVATION = gql`
+    mutation ApproveRoomReservation($reservationId: ID!) {
+        approveRoomReservation(reservationId: $reservationId) {
+            message
+            action
+        }
+    }
+`;
+
+export const DENY_HOTEL_ROOM_RESERVATION = gql`
+    mutation DenyRoomReservation($reservationId: ID!) {
+        denyRoomReservation(reservationId: $reservationId) {
             message
             action
         }

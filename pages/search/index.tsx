@@ -3,9 +3,17 @@ import {
     GridViewSearch,
     ListViewSearch,
     LoadingSpinner,
-    SearchBox,
+    SearchBoxNew,
+    SearchResult,
 } from "@comp";
-import { Alert, GoogleMap, Pagination, Pill, Select } from "@element";
+import {
+    Alert,
+    Container,
+    GoogleMap,
+    Pagination,
+    Pill,
+    Select,
+} from "@element";
 import {
     LightBulbIcon,
     SpeakerphoneIcon,
@@ -16,111 +24,165 @@ import { MainLayout } from "@layout";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import createApolloClient from "src/apollo/apolloClient";
-import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
+import {
+    GET_AVAILABLE_SPACE_TYPES,
+    GET_TOP_PICK_SPACES,
+} from "src/apollo/queries/space.queries";
 import {
     ILocationMarker,
     IPhoto,
     IRating,
     ISpace,
 } from "src/types/timebookTypes";
-import { config, FormatPrice, searchSpace } from "src/utils";
+import { config, FormatPrice, searchHotel, searchSpace } from "src/utils";
 
-const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
+type SearchParams = {
+    area?: string;
+    noOfAdults: number;
+    noOfChild: number;
+    searchType: "hotel" | "space";
+    checkInDate: string;
+    checkOutDate?: string;
+};
+
+const Secondary = ({ userSession, availableSpaceTypes }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
-    const [sort, setSort] = useState<"list" | "grid">("list");
+    const [sort, setSort] = useState<"grid">("grid");
     const [page, setPage] = useState<number>(1);
     const [activeIndex, setActiveIndex] = useState<string | number>(-1);
 
-    const [area, setArea] = useState(null);
-    const [spaceTypes, setSpaceTypes] = useState(null);
+    const [searchParams, setSearchParams] = useState(null);
 
     const [searchDataReceived, setSearchDataReceived] = useState(false);
-    const [algoliaSearchResults, setAlgoliaSearchResults] = useState([]);
+    const [algoliaSearchResults, setAlgoliaSearchResults] = useState<
+        SearchResult[]
+    >([]);
+
+    const router = useRouter();
+    const params = router.query;
 
     useEffect(() => {
-        searchSpace("", {
-            city: area,
-            spaceType: spaceTypes,
-        })
-            .then((data) => {
-                if (data.nbHits > 0) {
-                    console.log(data);
-                    setAlgoliaSearchResults(
-                        data.hits.map((result: any) => {
-                            return {
-                                id: result.objectID,
-                                name: result.name,
-                                maximumCapacity: result.maximumCapacity,
-                                numberOfSeats: result.numberOfSeats,
-                                spaceTypes: result.spaceTypes.map((type) => ({
-                                    title: type,
-                                })),
-                                spaceSize: result.spaceSize,
-                                spacePricePlans: result.price,
-                                address: {
-                                    prefecture: { name: result.prefecture },
-                                    city: result.city,
-                                    latitude: result._geoloc?.lat,
-                                    longitude: result._geoloc?.lng,
-                                },
-                                photos: [
-                                    {
-                                        medium: {
-                                            url: result.thumbnail,
-                                        },
-                                    },
-                                ],
-                            };
-                        })
-                    );
+        setSearchParams(params);
+    }, []);
+
+    useEffect(() => {
+        const area: string = searchParams?.area as string;
+        const type = searchParams?.searchType;
+        const adult = parseInt(searchParams?.noOfAdults as string, 10);
+        const child = parseInt(searchParams?.noOfChild as string, 10);
+        console.log(adult, child);
+        if (type === "space") {
+            const filters = {};
+            if (area) {
+                filters["city"] = area;
+            }
+            if (adult) {
+                if (child && child > 0) {
+                    filters["max"] = adult + child;
                 } else {
-                    setAlgoliaSearchResults([]);
+                    filters["max"] = adult;
                 }
-            })
-            .finally(() => {
-                setSearchDataReceived(true);
-            });
-    }, [area, spaceTypes]);
+            }
+            searchSpace("", filters)
+                .then((data) => {
+                    if (data.nbHits > 0) {
+                        setAlgoliaSearchResults(
+                            prepareSearchResult("space", data.hits)
+                        );
+                    } else {
+                        setAlgoliaSearchResults([]);
+                    }
+                })
+                .finally(() => {
+                    setSearchDataReceived(true);
+                });
+        } else {
+            const filters = {};
+            if (area) {
+                filters["city"] = area;
+            }
+            if (adult) {
+                filters["adult"] = adult;
+            }
+            if (child && child > 0) {
+                filters["child"] = child;
+            }
+            searchHotel("", filters)
+                .then((data) => {
+                    if (data.nbHits > 0) {
+                        setAlgoliaSearchResults(
+                            prepareSearchResult("hotel", data.hits)
+                        );
+                    } else {
+                        setAlgoliaSearchResults([]);
+                    }
+                })
+                .finally(() => {
+                    setSearchDataReceived(true);
+                });
+        }
+    }, [searchParams]);
 
-    // const { data, loading, error } = useQuery(GET_TOP_PICK_SPACES, {
-    //     variables: {
-    //         paginationInfo: {
-    //             take: 4,
-    //             skip: 0,
-    //         },
-    //     },
-    //     fetchPolicy: "network-only",
-    // });
-
-    // if (error) {
-    //     return <h3>Error occurred: {error.message}</h3>;
-    // }
-
-    // if (loading) {
-    //     return <h3>Loading...</h3>;
-    // }
+    const prepareSearchResult = (
+        type: "hotel" | "space",
+        results
+    ): SearchResult[] => {
+        return results.map((result: any) => {
+            if (type === "space") {
+                return {
+                    id: result.objectID,
+                    name: result.name,
+                    maxAdult: result.maximumCapacity,
+                    maxChild: 0,
+                    price: FormatPrice("HOURLY", result.price, true, true),
+                    lat: result._geoloc?.lat,
+                    lng: result._geoloc?.lng,
+                    thumbnail: result.thumbnail,
+                    type,
+                };
+            } else {
+                return {
+                    id: result.objectID,
+                    name: result.name,
+                    maxAdult: result.maxAdult,
+                    maxChild: result.maxChild,
+                    price: result.lowestPrice,
+                    lat: result._geoloc?.lat,
+                    lng: result._geoloc?.lng,
+                    thumbnail: result.thumbnail,
+                    type,
+                };
+            }
+        });
+    };
 
     if (!searchDataReceived) {
         return <LoadingSpinner />;
     }
 
-    // const searchResults: ISpace[] = data.allSpaces.data;
-    const searchResults: ISpace[] = algoliaSearchResults;
-    console.log(searchResults);
-    const locationMarkers: ILocationMarker[] = searchResults.map(
-        (space: ISpace) => {
+    const locationMarkers: ILocationMarker[] = algoliaSearchResults.map(
+        (result) => {
+            const { id, lat, lng, name, price, thumbnail, type } = result;
+            let priceText = "";
+            if (searchParams.searchType === "space") {
+                priceText = `￥ ${price} /時間`;
+            } else {
+                priceText = `￥ ${price} /泊`;
+            }
             return {
-                id: space.id,
+                id,
                 coords: {
-                    lat: space.address.latitude,
-                    lng: space.address.longitude,
+                    lat,
+                    lng,
                 },
-                name: space.name,
-                price: FormatPrice("HOURLY", space.spacePricePlans, true, true),
-                photo: space.photos[0],
+                name,
+                price,
+                priceText,
+                photo: thumbnail,
                 rating: {
                     reviews: 1,
                     points: 5,
@@ -129,9 +191,9 @@ const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
         }
     );
 
-    const handleFilterChange = ({ area, purpose }) => {
-        setArea(area);
-        setSpaceTypes(purpose);
+    const onHandleSearchDataChange = (searchParams) => {
+        console.log("searchAgain");
+        setSearchParams(searchParams);
     };
 
     return (
@@ -139,73 +201,61 @@ const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
             <Head>
                 <title>Search | {config.appName}</title>
             </Head>
-            <div className="relative grid grid-cols-1 lg:grid-cols-9">
-                <div className="px-6 py-10 mt-16 lg:col-span-5">
+            <div className="relative">
+                <div className="px-6 py-10 mt-16 w-full bg-gray-100">
                     <div className="flex justify-center">
-                        <SearchBox
-                            onChange={handleFilterChange}
-                            availableSpaceTypes={availableSpaceTypes}
+                        <SearchBoxNew
+                            defaultValue={searchParams}
+                            onChange={onHandleSearchDataChange}
                         />
                     </div>
-                    <div className="pt-10">
-                        <p className="text-gray-500">300+ 件</p>
-                        <h1 className="mb-6 text-3xl font-bold text-gray-700">
-                            新宿駅近くのレンタルスペース
-                        </h1>
-                        <div className="space-y-8">
-                            <div className="space-x-2">
+                </div>
+                <Container className="relative py-12 space-y-12 grid grid-cols-1 lg:grid-cols-9">
+                    <div className="px-6 py-10 col-span-9 lg:col-span-5">
+                        <div>
+                            <h1 className="mb-6 text-3xl font-bold text-gray-700">
+                                {algoliaSearchResults?.length}
+                                件を超える
+                                {searchParams.searchType === "hotel"
+                                    ? "宿泊先"
+                                    : "スペース"}
+                            </h1>
+                            <div className="space-y-8">
+                                {/* <div className="space-x-2">
                                 <Pill>料金</Pill>
                                 <Pill>会場タイプ</Pill>
                                 <Pill>人数</Pill>
                                 <Pill>詳細条件</Pill>
-                            </div>
+                            </div> */}
 
-                            {/* alert section */}
-                            <div className="space-y-4">
-                                <Alert Icon={SpeakerphoneIcon}>
-                                    <p>
-                                        We are currently suspending all new
-                                        bookings for the Go To Travel Campaign.
-                                        We will update the details on our FAQ
-                                        page as needed.
-                                        <Link href="/">
-                                            <a className="font-medium">
-                                                {" "}
-                                                Go To Travel Campaign FAQ
-                                            </a>
-                                        </Link>
-                                    </p>
-                                </Alert>
-                                <Alert Icon={LightBulbIcon}>
-                                    <p className="font-medium">
-                                        正確な料金を表示するために
-                                    </p>
-                                    <p className="text-sm">
-                                        利用日と時間を設定すると、正確な合計金額が表示されます。
-                                    </p>
-                                </Alert>
-                            </div>
-
-                            {/* view changer button */}
-                            <div className="flex justify-between">
-                                <div className="flex border border-gray-200 rounded-md">
-                                    <button
-                                        className="p-2.5 border-r border-gray-200 focus:outline-none"
-                                        onClick={() => {
-                                            setSort("list");
-                                        }}
-                                    >
-                                        <ViewListIcon className="w-5 h-5 text-gray-400" />
-                                    </button>
-                                    <button
-                                        className="p-2.5"
-                                        onClick={() => {
-                                            setSort("grid");
-                                        }}
-                                    >
-                                        <ViewGridAddIcon className="w-5 h-5 text-gray-400 focus:outline-none" />
-                                    </button>
+                                {/* alert section */}
+                                <div className="space-y-4">
+                                    <Alert Icon={SpeakerphoneIcon}>
+                                        <p>
+                                            We are currently suspending all new
+                                            bookings for the Go To Travel
+                                            Campaign. We will update the details
+                                            on our FAQ page as needed.
+                                            <Link href="/">
+                                                <a className="font-medium">
+                                                    {" "}
+                                                    Go To Travel Campaign FAQ
+                                                </a>
+                                            </Link>
+                                        </p>
+                                    </Alert>
+                                    <Alert Icon={LightBulbIcon}>
+                                        <p className="font-medium">
+                                            正確な料金を表示するために
+                                        </p>
+                                        <p className="text-sm">
+                                            利用日と時間を設定すると、正確な合計金額が表示されます。
+                                        </p>
+                                    </Alert>
                                 </div>
+
+                                {/* view changer button */}
+                                {/* <div className="flex justify-between">
                                 <div className="w-32">
                                     <Select
                                         options={["おすすめ", "New"]}
@@ -215,44 +265,36 @@ const Secondary = ({ resetToStartObj, userSession, availableSpaceTypes }) => {
                                         }
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
-                            {/* lists section */}
-                            <div>
-                                {sort === "list" ? (
-                                    <div className="divide-y divide-gray-100">
-                                        <ListViewSearch
-                                            lists={searchResults}
-                                            activeIndex={activeIndex}
-                                            setActiveIndex={setActiveIndex}
-                                        />
-                                    </div>
-                                ) : sort === "grid" ? (
+                                {/* lists section */}
+                                <div>
                                     <GridViewSearch
-                                        lists={searchResults}
+                                        lists={algoliaSearchResults}
                                         activeIndex={activeIndex}
                                         setActiveIndex={setActiveIndex}
                                     />
-                                ) : null}
-                                <Pagination
+                                    {/* <Pagination
                                     currentPage={page}
                                     totalPages={9}
                                     changePage={(pageNumber: number) =>
                                         setPage(pageNumber)
                                     }
-                                />
+                                /> */}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="sticky top-0 right-0 hidden w-full h-screen col-span-4 pt-16 lg:block">
-                    <GoogleMap
-                        markers={locationMarkers}
-                        type="multi"
-                        activeIndex={activeIndex}
-                        setActiveIndex={setActiveIndex}
-                    />
-                </div>
+                    <div className="sticky top-0 right-0 hidden lg:block w-full h-screen col-span-4 rounded-lg shadow overflow-hidden">
+                        <GoogleMap
+                            markers={locationMarkers}
+                            type="multi"
+                            activeIndex={activeIndex}
+                            setActiveIndex={setActiveIndex}
+                            zoom={5}
+                        />
+                    </div>
+                </Container>
             </div>
         </MainLayout>
     );
