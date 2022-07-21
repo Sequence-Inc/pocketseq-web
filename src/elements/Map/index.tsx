@@ -45,6 +45,8 @@ const apiIsLoaded = (map, maps, markers) => {
     bindResizeListener(map, maps, bounds);
 };
 
+const defaultZoom = 5;
+
 const GoogleMap = ({
     markers,
     mark,
@@ -91,7 +93,7 @@ const GoogleMap = ({
                         language: "ja",
                         region: "JP",
                     }}
-                    defaultZoom={10}
+                    defaultZoom={defaultZoom}
                     defaultCenter={JAPAN_CENTER_COORDS}
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) =>
@@ -125,7 +127,7 @@ const GoogleMap = ({
                         region: "JP",
                     }}
                     onClick={changeMarks}
-                    defaultZoom={10}
+                    defaultZoom={defaultZoom}
                     defaultCenter={mark || JAPAN_CENTER_COORDS}
                     zoom={zoom}
                 >

@@ -92,9 +92,9 @@ export const ItemGridHotel = ({
                         <h3 className="text-gray-800 line-clamp-1 text-lg font-bold">
                             {name}
                         </h3>
-                        <p className="line-clamp-1 text-base text-gray-600">
+                        <div className="line-clamp-1 text-base text-gray-600">
                             {description}
-                        </p>
+                        </div>
                     </a>
                 </Link>
                 {/* price section */}

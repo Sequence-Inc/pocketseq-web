@@ -50,7 +50,7 @@ const MyMarker = ({
                         "bg-white text-gray-800": activeIndex !== marker.id,
                     }
                 )}
-                onClick={handleClick}
+                onMouseEnter={handleClick}
             >
                 <span className="text-center" title={marker.name}>
                     {`${PriceFormatter(marker.price)}`}
@@ -63,13 +63,10 @@ const MyMarker = ({
                         className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8"
                     >
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
-                            <Image
-                                src={marker.photo.medium.url}
-                                layout="fill"
-                            />
+                            <Image src={marker.photo} layout="fill" />
                         </div>
-                        <div className="p-1.5 space-y-1.5">
-                            <Tag
+                        <div className="py-2 px-3 space-y-1.5">
+                            {/* <Tag
                                 Icon={StarIcon}
                                 iconSize={4}
                                 iconStyle="text-yellow-400 text-xs"
@@ -80,10 +77,12 @@ const MyMarker = ({
                                         ({marker.rating.reviews}件)
                                     </span>
                                 </div>
-                            </Tag>
-                            <Title numberOfLines={2}>{marker.name}</Title>
-                            <div className="mt-1">
-                                <Price amount={marker.price} />
+                            </Tag> */}
+                            <h3 className="text-lg font-bold leading-4">
+                                {marker.name}
+                            </h3>
+                            <div className="text-xl leading-4 font-bold">
+                                {marker.priceText}
                             </div>
                         </div>
                     </a>
