@@ -28,7 +28,7 @@ import {
     HOTEL_BY_ID,
 } from "src/apollo/queries/hotel.queries";
 
-import { GeneralQueries } from "src/apollo/queries/hotel";
+import { GeneralQueries, RoomQueries } from "src/apollo/queries/hotel";
 
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -422,6 +422,65 @@ export const useAddRooms = (
         refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
     });
 
+    // ADD HOTEL NEAREST STATION ENDS HERE
+
+    const [addHotelRoomPhotos] = useMutation(
+        RoomQueries.ADD_HOTEL_ROOM_PHOTOS,
+        {
+            refetchQueries: [
+                { query: ROOMS_BY_HOTEL_ID, variables: { hotelId } },
+            ],
+        }
+    );
+
+    const onAddHotelRoomPhotos = useCallback(
+        async (photos) => {
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addHotelRoomPhotos({
+                variables: {
+                    hotelRoomId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(
+                        data.addHotelRoomPhotos.uploadRes,
+                        photos
+                    );
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
+    );
+
+    // Remove Nearest Station Begins here
+
+    // Remove Photos Mutation START
+    const [removeRoomPhoto] = useMutation(RoomQueries.REMOVE_HOTEL_ROOM_PHOTO, {
+        refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
+    });
+
+    const onRemoveRoomPhoto = useCallback(async (photo) => {
+        await removeRoomPhoto({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+    // Remove Photos Mutation ENDS
+
     const [updateHotelRoomPrice] = useMutation(
         UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
         {
@@ -590,6 +649,8 @@ export const useAddRooms = (
         update,
         priceSchemes,
         priceSchemeLoading,
+        onRemoveRoomPhoto,
+        onAddHotelRoomPhotos,
     };
 };
 
