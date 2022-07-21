@@ -27,6 +27,9 @@ import {
     REMOVE_HOTEL_NEAREST_STATION,
     HOTEL_BY_ID,
 } from "src/apollo/queries/hotel.queries";
+
+import { GeneralQueries } from "src/apollo/queries/hotel";
+
 import handleUpload from "src/utils/uploadImages";
 import {
     DAY_OF_WEEK,
@@ -154,6 +157,12 @@ export const useAddGeneral = (fn, initialValue) => {
         }
     );
 
+    const [removeHotelPhoto] = useMutation(GeneralQueries.REMOVE_HOTEL_PHOTO, {
+        refetchQueries: [
+            { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+        ],
+    });
+
     useEffect(() => {
         if (initialValue) {
             setValue("name", initialValue.name);
@@ -182,6 +191,18 @@ export const useAddGeneral = (fn, initialValue) => {
         },
         [initialValue]
     );
+
+    const onRemoveHotelPhoto = useCallback(
+        async (photo) => {
+            await removeHotelPhoto({
+                variables: {
+                    photoId: photo?.id,
+                },
+            });
+        },
+        [initialValue]
+    );
+
     const onUpdate = useCallback(
         async (formData) => {
             const payload = {
@@ -313,6 +334,7 @@ export const useAddGeneral = (fn, initialValue) => {
         prefectures,
         onAddHotelStation,
         onRemoveStation,
+        onRemoveHotelPhoto,
     };
 };
 
