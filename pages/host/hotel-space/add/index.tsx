@@ -21,16 +21,6 @@ function AddHotelSpace({ userSession }) {
             <Head>
                 <title>Hotel Space</title>
             </Head>
-            <div className="bg-white shadow p-6 mb-3 sm:mb-5">
-                HOTEL ID FOR TEST PURPOSE ONLY:{" "}
-                <input
-                    type="text"
-                    value={hotelId}
-                    onChange={(event) => {
-                        setHotelId(event.target.value);
-                    }}
-                />
-            </div>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
                     <div className="py-8 md:flex md:items-center md:justify-between">

@@ -11,6 +11,7 @@ import {
     SPACE_SETTING,
     USER_ACCOUNT,
     COMPANY_ACCOUNT,
+    HOTEL_OBJECT,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -359,6 +360,9 @@ export const GET_TOP_PICK_SPACES = gql`
                 ${SPACE}
             }
             ${PAGINATION} 
+        }
+        allPublishedHotels {
+            ${HOTEL_OBJECT}
         }
     }
 `;

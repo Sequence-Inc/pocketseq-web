@@ -50,6 +50,7 @@ export const SpaceInfoAccess = ({
                     <GoogleMap
                         mark={{ lat: address.latitude, lng: address.longitude }}
                         zoom={15}
+                        setFreeCoords={() => {}}
                     />
                 </div>
             </div>

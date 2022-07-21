@@ -1,49 +1,53 @@
-import React, { ReactComponentElement } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
     LocationMarkerIcon,
     StarIcon,
-    TagIcon,
-    UserGroupIcon,
-    HomeIcon,
     HeartIcon,
 } from "@heroicons/react/solid";
-import { Button, Price, Tag, Title } from "@element";
+import { Button, Tag } from "@element";
 import router from "next/router";
 
-import { IPhoto, ISpace } from "../../types/timebookTypes";
-import { FormatPrice, FormatShortAddress } from "src/utils";
+import { IPhoto } from "../../types/timebookTypes";
+import { FormatShortAddress, PriceFormatter } from "src/utils";
 
-export interface ItemGridProps {
-    data: ISpace;
+export interface ItemGridHotelProps {
+    data: any;
     activeIndex?: string | number;
     setActiveIndex?: any;
 }
 
-export const ItemGrid = ({
+export const ItemGridHotel = ({
     data,
     activeIndex,
     setActiveIndex,
-}: ItemGridProps) => {
-    const {
-        id,
-        name,
-        description,
-        maximumCapacity,
-        spaceSize,
-        spaceTypes,
-        pricePlans,
-        address,
-        photos,
-    } = data;
+}: ItemGridHotelProps) => {
+    const { id, name, description, packagePlans, address, photos } = data;
 
     const location: string = FormatShortAddress(address);
-    const spaceType = spaceTypes[0]; // Todo: implement multiple space types later
 
     const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
 
     const photo: IPhoto = photos[0];
+
+    const getLowestPrice = () => {
+        let lowest = 9999999999;
+        packagePlans.map((plan) => {
+            const selector =
+                plan.paymentTerms === "PER_PERSON"
+                    ? "oneAdultCharge"
+                    : "roomCharge";
+            plan.roomTypes.map(({ priceSettings }) => {
+                priceSettings.map(({ priceScheme }) => {
+                    if (priceScheme[selector] < lowest) {
+                        lowest = priceScheme[selector];
+                    }
+                });
+            });
+        });
+        return lowest;
+    };
 
     return (
         <div
@@ -82,50 +86,27 @@ export const ItemGrid = ({
                         </div>
                     </Tag>
                 </div>
-
                 {/* title section */}
-                <Link href={`/space/${encodeURIComponent(id)}`}>
+                <Link href={`/hotel/${encodeURIComponent(id)}`}>
                     <a className="block">
                         <h3 className="text-gray-800 line-clamp-1 text-lg font-bold">
                             {name}
                         </h3>
+                        <p className="line-clamp-1 text-base text-gray-600">
+                            {description}
+                        </p>
                     </a>
                 </Link>
                 {/* price section */}
-                <Price
-                    amount={FormatPrice("HOURLY", pricePlans, true, true)}
-                    amountStyle="font-bold"
-                />
-
-                {/* metadata section */}
-                <div className="flex justify-start space-x-4">
-                    <Tag
-                        Icon={UserGroupIcon}
-                        textStyle="text-sm text-gray-500"
-                        iconStyle="text-gray-300"
-                    >{`〜${maximumCapacity}人`}</Tag>
-                    <Tag
-                        Icon={HomeIcon}
-                        textStyle="text-sm text-gray-500"
-                        iconStyle="text-gray-300"
-                    >
-                        {spaceSize}m²
-                    </Tag>
-                    <Tag
-                        Icon={TagIcon}
-                        textStyle="text-sm text-gray-500"
-                        iconStyle="text-gray-300"
-                        numberOfLines={1}
-                    >
-                        {spaceType.title}
-                    </Tag>
+                <div className="text-xl font-bold">
+                    {PriceFormatter(getLowestPrice())}〜
+                    <span className="font-normal"> /泊</span>
                 </div>
-
                 {/* action section */}
                 <div className="flex justify-between py-2 space-x-4">
                     <Button
                         variant="primary"
-                        onClick={() => router.push(`/space/${data?.id}`)}
+                        onClick={() => router.push(`/hotel/${id}`)}
                     >
                         もっと見る
                     </Button>

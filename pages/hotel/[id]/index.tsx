@@ -515,7 +515,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 <div className="flex space-x-3 items-center">
                                     <Rating />
                                     <div className="text-sm">
-                                        <p className="inline-block font-bold text-lg text-gray-600">
+                                        <p className="inline-block font-bold text-lg text-gray-600 mb-0">
                                             {rating.points}
                                         </p>
                                         <span className="text-gray-500 text-lg">

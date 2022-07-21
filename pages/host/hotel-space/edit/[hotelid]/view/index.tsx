@@ -33,14 +33,12 @@ const DayOverride = ({ userSession, hotel }) => {
         updatedAt,
     } = hotel;
 
-    console.log(status);
     const [isPublished, setIsPublished] = useState(
         status === "PUBLISHED" ? true : false
     );
     const [loading, setLoading] = useState(false);
 
     const [publishHotel] = useMutation(PUBLISH_HOTEL);
-    // const [unpublishSpace] = useMutation(PUBLISH_SPACE);
 
     const handlePublishUnpublish = async () => {
         setLoading(true);
@@ -51,7 +49,19 @@ const DayOverride = ({ userSession, hotel }) => {
                         `Are you sure you want to unpublish hotel "${name}"`
                     )
                 ) {
-                    setIsPublished(false);
+                    await publishHotel({
+                        variables: {
+                            id,
+                            publish: false,
+                        },
+                        onCompleted(data) {
+                            alert(data.publishHotel.message);
+                            setIsPublished(false);
+                        },
+                        onError(error) {
+                            alert(`Error: ${error.message}`);
+                        },
+                    });
                 }
             } else {
                 if (
@@ -60,6 +70,7 @@ const DayOverride = ({ userSession, hotel }) => {
                     await publishHotel({
                         variables: {
                             id,
+                            publish: true,
                         },
                         onCompleted(data) {
                             alert(data.publishHotel.message);
@@ -67,7 +78,6 @@ const DayOverride = ({ userSession, hotel }) => {
                         },
                         onError(error) {
                             alert(`Error: ${error.message}`);
-                            setIsPublished(false);
                         },
                     });
                 }
@@ -137,7 +147,7 @@ const DayOverride = ({ userSession, hotel }) => {
                                 {name}
                             </h2>
                             <div className="space-x-4">
-                                <Link href={`/host/my-space/edit/${id}`}>
+                                <Link href={`/host/hotel-space/edit/${id}`}>
                                     <a className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
                                         編集
                                     </a>
@@ -190,18 +200,6 @@ const DayOverride = ({ userSession, hotel }) => {
 
                                 <div className="">
                                     <dt className=" text-lg font-bold text-gray-500">
-                                        住所
-                                    </dt>
-                                    <dd className="mt-1 text-base text-gray-700">
-                                        〒{address.postalCode}
-                                        {address.prefecture.name}
-                                        {address.addressLine1}
-                                        {address.addressLine2}
-                                    </dd>
-                                </div>
-
-                                <div className="">
-                                    <dt className=" text-lg font-bold text-gray-500">
                                         最寄り駅
                                     </dt>
                                     <dd className="mt-1 text-base text-gray-700">
@@ -222,6 +220,19 @@ const DayOverride = ({ userSession, hotel }) => {
 
                                 <div className="">
                                     <dt className=" text-lg font-bold text-gray-500">
+                                        住所
+                                    </dt>
+                                    <dd className="mt-1 text-base text-gray-700">
+                                        〒{address.postalCode}
+                                        {address.prefecture.name}
+                                        {address.city}
+                                        {address.addressLine1}
+                                        {address.addressLine2}
+                                    </dd>
+                                </div>
+
+                                <div className="">
+                                    <dt className=" text-lg font-bold text-gray-500">
                                         地図
                                     </dt>
                                     <dd className="mt-2 w-full h-96 text-base text-gray-700 rounded-lg overflow-hidden shadow">
@@ -232,6 +243,7 @@ const DayOverride = ({ userSession, hotel }) => {
                                             }}
                                             zoom={16}
                                             type="single"
+                                            setFreeCoords={() => {}}
                                         />
                                     </dd>
                                 </div>
