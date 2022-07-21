@@ -13,6 +13,17 @@ export const hotelIndex = algoliaClient.initIndex(`hotel_dev`);
 type SpaceSearchFilterOptions = {
     spaceType?: string;
     city?: string;
+    max?: number;
+    geoloc?: {
+        latitude: number;
+        longitude: number;
+        radius: number;
+    };
+};
+type HotelSearchFilterOptions = {
+    city?: string;
+    adult?: number;
+    child?: number;
     geoloc?: {
         latitude: number;
         longitude: number;
@@ -20,24 +31,12 @@ type SpaceSearchFilterOptions = {
     };
 };
 
-export const searchPocketSeq = async (params) => {
-    // const {searchType, area, noOfAdults, noOfChild, }
-    let index = null;
-
-    if (params.searchType === "space") {
-        index = spaceIndex;
-    } else {
-        index = hotelIndex;
-    }
-};
-
 export const searchSpace = async (
     searchText: string,
     filterOptions?: SpaceSearchFilterOptions
 ) => {
     if (!filterOptions) return spaceIndex.search(searchText);
-
-    const { spaceType, geoloc, city } = filterOptions;
+    const { spaceType, geoloc, city, max } = filterOptions;
 
     let filters: string = "";
     if (spaceType)
@@ -49,6 +48,53 @@ export const searchSpace = async (
     if (city)
         filters =
             filters === "" ? `city:${city}` : `${filters} AND city:${city}`;
+    if (max)
+        filters =
+            filters === ""
+                ? `maximumCapacity > ${max}`
+                : `${filters} AND maximumCapacity > ${max}`;
+
+    let aroundLatLng: string;
+    let aroundRadius: number;
+
+    if (geoloc) {
+        const { latitude, longitude, radius } = geoloc;
+        aroundLatLng = `${latitude}, ${longitude}`;
+        aroundRadius = radius;
+    }
+
+    return await spaceIndex.search(searchText, {
+        filters,
+        aroundLatLng,
+        aroundRadius,
+    });
+};
+
+export const searchHotel = async (
+    searchText: string,
+    filterOptions?: HotelSearchFilterOptions
+) => {
+    if (!filterOptions) return hotelIndex.search(searchText);
+    console.log("searching hotel...", filterOptions);
+    const { geoloc, city, adult, child } = filterOptions;
+
+    let filters: string = "";
+
+    if (city)
+        filters =
+            filters === "" ? `city:${city}` : `${filters} AND city:${city}`;
+
+    if (adult)
+        filters =
+            filters === ""
+                ? `maxAdult >= ${adult}`
+                : `${filters} AND maxAdult >= ${adult}`;
+
+    if (child)
+        filters =
+            filters === ""
+                ? `maxChild >= ${child}`
+                : `${filters} AND maxChild >= ${child}`;
 
     let aroundLatLng: string;
     let aroundRadius: number;
@@ -58,7 +104,7 @@ export const searchSpace = async (
         aroundRadius = radius;
     }
 
-    return await spaceIndex.search(searchText, {
+    return await hotelIndex.search(searchText, {
         filters,
         aroundLatLng,
         aroundRadius,

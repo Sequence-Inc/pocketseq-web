@@ -101,8 +101,9 @@ export interface ILocationMarker {
     };
     name: string;
     price: number;
+    priceText: string;
     rating: IRating;
-    photo: IPhoto;
+    photo: string;
 }
 
 export interface IPaymentMethod {

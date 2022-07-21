@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, DatePicker } from "antd";
 import { Button, Tag } from "@element";
 import {
@@ -11,8 +11,6 @@ import {
 import { Popover } from "@element";
 import moment from "moment";
 import { useRouter } from "next/router";
-
-const { RangePicker } = DatePicker;
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
@@ -43,20 +41,49 @@ const areaList = [
     "江戸川区",
 ];
 
-export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
+const maxSpacePeople = 1000;
+const maxHotelPeople = 10;
+
+export const SearchBoxNew = ({
+    defaultValue,
+    onChange,
+}: {
+    defaultValue?: any;
+    onChange?: any;
+}) => {
     const [area, setArea] = useState<string>("");
     const [searchType, setSearchType] = useState<"space" | "hotel">("space");
     const [checkInDate, setCheckInDate] = useState(null);
     const [checkOutDate, setCheckOutDate] = useState(null);
     const [noOfAdults, setNoOfAdults] = useState(1);
     const [noOfChild, setNoOfChild] = useState(0);
-    const [error, setError] = useState([]);
 
     const router = useRouter();
 
-    const onPanelChange = (value, mode) => {
-        console.log(value.format("YYYY-MM-DD"));
-    };
+    useEffect(() => {
+        if (defaultValue) {
+            setArea(defaultValue.area || null);
+            setSearchType(defaultValue.searchType || "space");
+            setCheckInDate(
+                defaultValue.checkInDate
+                    ? moment(defaultValue.checkInDate)
+                    : null
+            );
+            setCheckOutDate(
+                defaultValue.checkOutDate
+                    ? moment(defaultValue.checkOutDate)
+                    : null
+            );
+            setNoOfAdults(defaultValue.noOfAdults || 1);
+            setNoOfChild(defaultValue.noOfChild || 0);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (searchType === "hotel" && noOfAdults > maxHotelPeople) {
+            setNoOfAdults(10);
+        }
+    }, [searchType]);
 
     const disabledDate = (current) => {
         // Can not select days before today and today
@@ -99,17 +126,60 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
             if (area !== "") {
                 searchData["area"] = area;
             }
+
             router.push({
-                pathname: "/search/latest",
+                pathname: "/search",
                 query: searchData,
             });
+            if (onChange) {
+                onChange(searchData);
+            }
         } else {
             alert(errorList.map((error) => `${error}\n`));
         }
     };
 
+    const changeNoOfPax = (
+        incrementDecrement: "increment" | "decrement",
+        adultChild: "adult" | "child"
+    ) => {
+        let max = 0;
+        let min = 0;
+        let currentValue = null;
+        let updater = null;
+        if (searchType === "space") {
+            max = maxSpacePeople;
+        } else {
+            max = maxHotelPeople;
+        }
+
+        if (adultChild === "adult") {
+            min = 1;
+            currentValue = noOfAdults;
+            updater = setNoOfAdults;
+        } else {
+            min = 0;
+            currentValue = noOfChild;
+            updater = setNoOfChild;
+        }
+
+        if (incrementDecrement === "increment") {
+            if (currentValue < max) {
+                updater(parseInt(currentValue, 10) + 1);
+            }
+        } else {
+            if (currentValue > min) {
+                updater(parseInt(currentValue, 10) - 1);
+            }
+        }
+    };
+
+    const addPax = (adult: number, child: number) => {
+        return parseInt(`${adult}`, 10) + parseInt(`${child}`, 10);
+    };
+
     return (
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 z-40">
             <div className="relative z-0 inline-flex rounded-full shadow-sm">
                 {/* area search box */}
                 <Popover
@@ -287,7 +357,7 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
                         >
                             <span className="text-gray-600 ">
                                 <p className="font-bold">旅行者</p>
-                                ゲスト{noOfAdults + noOfChild}名
+                                ゲスト{`${addPax(noOfAdults, noOfChild)}`}名
                             </span>
                         </Tag>
                     }
@@ -306,9 +376,10 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
                                     <button
                                         className="text-gray-400 hover:text-gray-500"
                                         onClick={() => {
-                                            if (noOfAdults > 1) {
-                                                setNoOfAdults(noOfAdults - 1);
-                                            }
+                                            // if (noOfAdults > 1) {
+                                            //     setNoOfAdults(noOfAdults - 1);
+                                            // }
+                                            changeNoOfPax("decrement", "adult");
                                         }}
                                     >
                                         <svg
@@ -329,14 +400,30 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
                                     <input
                                         type="number"
                                         value={noOfAdults}
-                                        className="w-16 px-3 h-8 rounded border border-gray-300 shadow-sm"
+                                        onChange={(event) => {
+                                            const value = parseInt(
+                                                event.target.value,
+                                                10
+                                            );
+                                            let max = null;
+                                            if (searchType === "hotel") {
+                                                max = maxHotelPeople;
+                                            } else {
+                                                max = maxSpacePeople;
+                                            }
+                                            if (value >= 1 && value <= max) {
+                                                setNoOfAdults(value);
+                                            }
+                                        }}
+                                        className="px-3 w-20 h-8 rounded border border-gray-300 shadow-sm"
                                     />
                                     <button
                                         className="text-gray-400 hover:text-gray-500"
                                         onClick={() => {
-                                            if (noOfAdults < 10) {
-                                                setNoOfAdults(noOfAdults + 1);
-                                            }
+                                            // if (noOfAdults < 10) {
+                                            //     setNoOfAdults(noOfAdults + 1);
+                                            // }
+                                            changeNoOfPax("increment", "adult");
                                         }}
                                     >
                                         <svg
@@ -364,9 +451,10 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
                                     <button
                                         className="text-gray-400 hover:text-gray-500"
                                         onClick={() => {
-                                            if (noOfChild > 0) {
-                                                setNoOfChild(noOfChild - 1);
-                                            }
+                                            // if (noOfChild > 0) {
+                                            //     setNoOfChild(noOfChild - 1);
+                                            // }
+                                            changeNoOfPax("decrement", "child");
                                         }}
                                     >
                                         <svg
@@ -387,14 +475,30 @@ export const SearchBoxNew = ({ onChange }: { onChange: any }) => {
                                     <input
                                         type="number"
                                         value={noOfChild}
-                                        className="w-16 px-3 h-8 rounded border border-gray-300 shadow-sm"
+                                        onChange={(event) => {
+                                            const value = parseInt(
+                                                event.target.value,
+                                                10
+                                            );
+                                            let max = null;
+                                            if (searchType === "hotel") {
+                                                max = maxHotelPeople;
+                                            } else {
+                                                max = maxSpacePeople;
+                                            }
+                                            if (value >= 0 && value <= max) {
+                                                setNoOfChild(value);
+                                            }
+                                        }}
+                                        className="w-20 px-3 h-8 rounded border border-gray-300 shadow-sm"
                                     />
                                     <button
                                         className="text-gray-400 hover:text-gray-500"
                                         onClick={() => {
-                                            if (noOfChild < 10) {
-                                                setNoOfChild(noOfChild + 1);
-                                            }
+                                            // if (noOfChild < 10) {
+                                            //     setNoOfChild(noOfChild + 1);
+                                            // }
+                                            changeNoOfPax("increment", "child");
                                         }}
                                     >
                                         <svg
