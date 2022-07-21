@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
     FileUpload,
     TextArea,
@@ -71,9 +71,14 @@ const PAYMENT_TYPES = [
 
 const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, initialValue, packageLoading } = props;
-    console.log({ initialValue });
     const { addAlert } = useToast();
     const router = useRouter();
+
+    const onCompleted = useCallback(() => {
+        if (!initialValue) {
+            toggleForm();
+        }
+    }, [initialValue]);
     const {
         hotelRooms,
         refetchRooms,
@@ -96,6 +101,7 @@ const Plans = (props: IPlanFormProps) => {
         hotelId,
         addAlert,
         initialValue,
+        onCompleted,
     });
 
     const {

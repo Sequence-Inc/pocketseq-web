@@ -90,6 +90,7 @@ type AddPlansProps = {
     hotelId: string;
     addAlert: any;
     initialValue?: any;
+    onCompleted?: any;
 };
 
 // const addGeneralDefault = {
@@ -633,7 +634,7 @@ interface IFields extends FieldArrayWithId {
 }
 
 export const useAddPlans = (props: AddPlansProps) => {
-    const { hotelId, addAlert, initialValue = null } = props;
+    const { hotelId, addAlert, initialValue = null, onCompleted } = props;
     const [loading, setLoading] = useState(false);
     const {
         data: hotelRooms,
@@ -873,6 +874,9 @@ export const useAddPlans = (props: AddPlansProps) => {
                 },
             },
         ],
+        onCompleted: () => {
+            onCompleted && onCompleted();
+        },
     });
 
     const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN, {
@@ -1088,7 +1092,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             return onCreate(formData);
         }
         if (initialValue) {
-            onUpdate(formData);
+            return onUpdate(formData);
         }
     });
 
