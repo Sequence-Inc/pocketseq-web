@@ -193,7 +193,7 @@ export const SearchBoxNew = ({
                             numberOfLines={2}
                         >
                             <div className="text-gray-600">
-                                <p className="font-bold">エリア</p>
+                                <p className="font-bold mb-0">エリア</p>
                                 {area || "エリアを選択"}
                             </div>
                         </Tag>
@@ -235,7 +235,7 @@ export const SearchBoxNew = ({
                             numberOfLines={2}
                         >
                             <span className="text-gray-600 ">
-                                <p className="font-bold">チェックイン</p>
+                                <p className="font-bold mb-0">チェックイン</p>
                                 {checkInDate
                                     ? checkInDate.format("YYYY年MM月DD日")
                                     : "-"}
@@ -294,7 +294,7 @@ export const SearchBoxNew = ({
                             numberOfLines={2}
                         >
                             <span className="text-gray-600 ">
-                                <p className="font-bold">チェックアウト</p>
+                                <p className="font-bold mb-0">チェックアウト</p>
                                 {checkOutDate
                                     ? checkOutDate.format("YYYY年MM月DD日")
                                     : "-"}
@@ -356,7 +356,7 @@ export const SearchBoxNew = ({
                             numberOfLines={2}
                         >
                             <span className="text-gray-600 ">
-                                <p className="font-bold">旅行者</p>
+                                <p className="font-bold mb-0">旅行者</p>
                                 ゲスト{`${addPax(noOfAdults, noOfChild)}`}名
                             </span>
                         </Tag>
