@@ -17,8 +17,8 @@ import {
     UseFieldArrayReturn,
     FieldArrayWithId,
 } from "react-hook-form";
-import { useAddRooms } from "@hooks/useAddHotelSpace";
 
+import { useRooms } from "@hooks/host-hotel";
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
@@ -69,7 +69,7 @@ const AddRoomForm = ({
         priceSchemeLoading,
         onRemoveRoomPhoto,
         onAddHotelRoomPhotos,
-    } = useAddRooms(hotelId, {
+    } = useRooms(hotelId, {
         fn: handleSubmit,
         initialValue: defaultRoomValue?.hotelRoomById,
         addAlert,
