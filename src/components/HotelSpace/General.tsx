@@ -20,6 +20,8 @@ import { TAddHotelProps } from "@appTypes/timebookTypes";
 import { useQuery } from "@apollo/client";
 import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
 
+import { useGeneral } from "@hooks/host-hotel";
+
 const format = "HH:mm a";
 
 interface IGeneralFormProps extends TAddHotelProps {
@@ -62,7 +64,7 @@ const General = ({
         onRemoveStation,
         onRemoveHotelPhoto,
         onAddHotelPhotos,
-    } = useAddGeneral(handleNext, defaultHotelValue?.hotelById);
+    } = useGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
         setHotelId(id);
