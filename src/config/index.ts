@@ -33,3 +33,14 @@ export const DAY_OF_WEEK = [
     { name: "Fri", value: 5 },
     { name: "Sat", value: 6 },
 ];
+
+export const PAYMENT_TYPES = [
+    {
+        value: "PER_ROOM",
+        label: "Per Room Basis",
+    },
+    {
+        value: "PER_PERSON",
+        label: "Per Person Basis",
+    },
+];

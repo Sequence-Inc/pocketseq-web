@@ -26,7 +26,15 @@ import {
     ADD_HOTEL_NEAREST_STATION,
     REMOVE_HOTEL_NEAREST_STATION,
     HOTEL_BY_ID,
+    PACKAGE_PLAN_BY_ID,
 } from "src/apollo/queries/hotel.queries";
+
+import {
+    GeneralQueries,
+    RoomQueries,
+    PlanQueries,
+} from "src/apollo/queries/hotel";
+
 import handleUpload from "src/utils/uploadImages";
 import {
     DAY_OF_WEEK,
@@ -139,12 +147,64 @@ export const useAddGeneral = (fn, initialValue) => {
     const [updateHotelGeneral] = useMutation(UPDATE_HOTEL_SPACE);
 
     const [updateHotelAddress] = useMutation(UPDATE_HOTEL_ADDRESS);
+
+    // ADD HOTEL NEAREST STATION STARTS HERE
     const [addHotelNearestStation] = useMutation(ADD_HOTEL_NEAREST_STATION, {
         refetchQueries: [
             { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
         ],
     });
 
+    const onAddHotelStation = useCallback(
+        async (newStation) => {
+            if (!initialValue) return;
+            addHotelNearestStation({
+                variables: {
+                    hotelId: initialValue.id,
+                    stations: [newStation],
+                },
+            });
+        },
+        [initialValue]
+    );
+    // ADD HOTEL NEAREST STATION ENDS HERE
+
+    const [addHotelPhotos] = useMutation(GeneralQueries.ADD_HOTEL_PHOTOS, {
+        refetchQueries: [
+            { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+        ],
+    });
+
+    const onAddHotelPhotos = useCallback(
+        async (photos) => {
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addHotelPhotos({
+                variables: {
+                    hotelId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(data.addHotelPhotos.uploadRes, photos);
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
+    );
+
+    // Remove Nearest Station Begins here
     const [removeHotelNearestStation] = useMutation(
         REMOVE_HOTEL_NEAREST_STATION,
         {
@@ -153,6 +213,38 @@ export const useAddGeneral = (fn, initialValue) => {
             ],
         }
     );
+
+    const onRemoveStation = useCallback(
+        (station) => {
+            return removeHotelNearestStation({
+                variables: {
+                    hotelId: initialValue?.id,
+                    stationIds: [station.stationId],
+                },
+            });
+        },
+        [initialValue]
+    );
+    // Remove Nearest Station Ends here
+
+    // Remove Photos Mutation START
+    const [removeHotelPhoto] = useMutation(GeneralQueries.REMOVE_HOTEL_PHOTO, {
+        refetchQueries: [
+            { query: HOTEL_BY_ID, variables: { id: initialValue?.id } },
+        ],
+    });
+
+    const onRemoveHotelPhoto = useCallback(
+        async (photo) => {
+            await removeHotelPhoto({
+                variables: {
+                    photoId: photo?.id,
+                },
+            });
+        },
+        [initialValue]
+    );
+    // Remove Photos Mutation ENDS
 
     useEffect(() => {
         if (initialValue) {
@@ -171,17 +263,6 @@ export const useAddGeneral = (fn, initialValue) => {
         }
     }, [initialValue]);
 
-    const onRemoveStation = useCallback(
-        (station) => {
-            return removeHotelNearestStation({
-                variables: {
-                    hotelId: initialValue?.id,
-                    stationIds: [station.stationId],
-                },
-            });
-        },
-        [initialValue]
-    );
     const onUpdate = useCallback(
         async (formData) => {
             const payload = {
@@ -201,8 +282,6 @@ export const useAddGeneral = (fn, initialValue) => {
                 addressLine2: formData.addressLine2,
             };
 
-            // const nearestStationPayload = formData.nearestStations;
-
             const updateMutations = [
                 updateHotelGeneral({
                     variables: { input: payload },
@@ -213,11 +292,6 @@ export const useAddGeneral = (fn, initialValue) => {
                         input: addressPayload,
                     },
                 }),
-                // updateHotelNearestStation({
-                //     variables: {
-                //         input: nearestStationPayload,
-                //     },
-                // }),
             ];
 
             try {
@@ -228,19 +302,6 @@ export const useAddGeneral = (fn, initialValue) => {
                 addAlert({ type: "error", message: "Could not update " });
                 setLoading(false);
             }
-        },
-        [initialValue]
-    );
-
-    const onAddHotelStation = useCallback(
-        async (newStation) => {
-            if (!initialValue) return;
-            addHotelNearestStation({
-                variables: {
-                    hotelId: initialValue.id,
-                    stations: [newStation],
-                },
-            });
         },
         [initialValue]
     );
@@ -313,6 +374,8 @@ export const useAddGeneral = (fn, initialValue) => {
         prefectures,
         onAddHotelStation,
         onRemoveStation,
+        onRemoveHotelPhoto,
+        onAddHotelPhotos,
     };
 };
 
@@ -363,6 +426,65 @@ export const useAddRooms = (
     const [updateHotelRoomGeneral] = useMutation(UPDATE_HOTEL_ROOMS, {
         refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
     });
+
+    // ADD HOTEL NEAREST STATION ENDS HERE
+
+    const [addHotelRoomPhotos] = useMutation(
+        RoomQueries.ADD_HOTEL_ROOM_PHOTOS,
+        {
+            refetchQueries: [
+                { query: ROOMS_BY_HOTEL_ID, variables: { hotelId } },
+            ],
+        }
+    );
+
+    const onAddHotelRoomPhotos = useCallback(
+        async (photos) => {
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addHotelRoomPhotos({
+                variables: {
+                    hotelRoomId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(
+                        data.addHotelRoomPhotos.uploadRes,
+                        photos
+                    );
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
+    );
+
+    // Remove Nearest Station Begins here
+
+    // Remove Photos Mutation START
+    const [removeRoomPhoto] = useMutation(RoomQueries.REMOVE_HOTEL_ROOM_PHOTO, {
+        refetchQueries: [{ query: ROOMS_BY_HOTEL_ID, variables: { hotelId } }],
+    });
+
+    const onRemoveRoomPhoto = useCallback(async (photo) => {
+        await removeRoomPhoto({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+    // Remove Photos Mutation ENDS
 
     const [updateHotelRoomPrice] = useMutation(
         UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
@@ -532,6 +654,8 @@ export const useAddRooms = (
         update,
         priceSchemes,
         priceSchemeLoading,
+        onRemoveRoomPhoto,
+        onAddHotelRoomPhotos,
     };
 };
 
@@ -821,19 +945,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }
-            // if (initialValue?.roomTypes?.length) {
-            //     initialValue?.roomTypes.forEach((element) => {
-            //         append({
-            //             hotelRoomId: element?.hotelRoom?.id,
-            //             priceSettings: element?.priceSettings?.map(
-            //                 (setting) => ({
-            //                     dayOfWeek: setting.dayOfWeek,
-            //                     priceSchemeId: setting.priceScheme.id,
-            //                 })
-            //             ),
-            //         });
-            //     });
-            // }
+
             setValue("startUsage", initialValue?.startUsage);
             setValue("endUsage", initialValue?.endUsage);
             setValue("startReservation", initialValue?.startReservation);
@@ -859,7 +971,6 @@ export const useAddPlans = (props: AddPlansProps) => {
     }, [initialValue]);
 
     useEffect(() => {
-        // console.log({ initialValue });
         if (
             !hotelRooms?.myHotelRooms?.length ||
             !initialValue?.roomTypes?.length
@@ -880,7 +991,7 @@ export const useAddPlans = (props: AddPlansProps) => {
                         roomPlanId: roomType.id,
                         isSelected: true,
                         hotelRoomId: room.id,
-                        priceSettings: roomType?.priceSettings
+                        priceSettings: [...roomType?.priceSettings]
                             ?.sort((a, b) => {
                                 return a.dayOfWeek - b.dayOfWeek;
                             })
@@ -943,6 +1054,76 @@ export const useAddPlans = (props: AddPlansProps) => {
                     message: "Could not update room type plan",
                 }),
         }
+    );
+
+    const [removePackagePhotos] = useMutation(PlanQueries.REMOVE_HOTEL_PHOTO, {
+        refetchQueries: [
+            {
+                query: PACKAGE_PLAN_BY_ID,
+                variables: {
+                    id: initialValue?.id,
+                },
+            },
+        ],
+        onCompleted: () =>
+            addAlert({ type: "success", message: "Removed photo " }),
+        onError: () =>
+            addAlert({ type: "error", message: "Could not removed photo " }),
+    });
+
+    const onRemovePackagePhotos = useCallback(async (photo) => {
+        await removePackagePhotos({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+
+    const [addPackagePhotos] = useMutation(
+        PlanQueries.ADD_PACKAGE_PLAN_PHOTOS,
+        {
+            refetchQueries: [
+                {
+                    query: PACKAGE_PLAN_BY_ID,
+                    variables: {
+                        id: initialValue?.id,
+                    },
+                },
+            ],
+        }
+    );
+
+    const onAddHotelRoomPhotos = useCallback(
+        async (photos) => {
+            console.log({ photos });
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addPackagePhotos({
+                variables: {
+                    packagePlanId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(
+                        data.addPackagePlanPhotos.uploadRes,
+                        photos
+                    );
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
     );
 
     const onCreate = useCallback(async (formData) => {
@@ -1148,5 +1329,7 @@ export const useAddPlans = (props: AddPlansProps) => {
         fields,
         handleRoomFieldUpdate,
         updateRoomPlan,
+        onRemovePackagePhotos,
+        onAddHotelRoomPhotos,
     };
 };

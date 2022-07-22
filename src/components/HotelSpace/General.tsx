@@ -60,6 +60,8 @@ const General = ({
         getValues,
         onAddHotelStation,
         onRemoveStation,
+        onRemoveHotelPhoto,
+        onAddHotelPhotos,
     } = useAddGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
@@ -208,7 +210,11 @@ const General = ({
                         </p>
 
                         <Controller
-                            rules={{ required: true }}
+                            rules={{
+                                required:
+                                    !defaultHotelValue?.hotelById?.photos
+                                        ?.length,
+                            }}
                             control={control}
                             name="photos"
                             render={({ field: { onChange } }) => (
@@ -224,6 +230,8 @@ const General = ({
                                         onChange(e);
                                     }}
                                     defaultPhotos={initialValue?.photos}
+                                    onRemove={onRemoveHotelPhoto}
+                                    onUpload={onAddHotelPhotos}
                                 />
                             )}
                         />
