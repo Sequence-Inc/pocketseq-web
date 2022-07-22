@@ -156,7 +156,6 @@ const Plans = (props: IPlanFormProps) => {
                             disabled={loading}
                             label=""
                             errorMessage="Description is required"
-                            autoFocus
                             rows={3}
                             error={errors.description && true}
                             {...register("description", {
@@ -614,7 +613,6 @@ const Plans = (props: IPlanFormProps) => {
                                 min: 0,
                             })}
                             errorMessage="Stock is required"
-                            autoFocus
                             type="number"
                             error={errors.stock && true}
                         />

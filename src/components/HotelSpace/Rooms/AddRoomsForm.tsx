@@ -102,7 +102,6 @@ const AddRoomForm = ({
                         required: true,
                     })}
                     errorMessage="Description is required"
-                    autoFocus
                     error={errors.description && true}
                     rows={3}
                     disabled={loading}
@@ -277,7 +276,6 @@ const AddRoomForm = ({
                     })}
                     className="w-3/12 "
                     errorMessage="Stock is required"
-                    autoFocus
                     error={errors.stock && true}
                     type="number"
                     disabled={loading}

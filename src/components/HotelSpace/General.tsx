@@ -140,7 +140,6 @@ const General = ({
                                 required: true,
                             })}
                             errorMessage="Description is required"
-                            autoFocus
                             error={errors.description && true}
                             rows={3}
                             defaultValue={initialValue?.description}
