@@ -12,7 +12,7 @@ import useTranslation from "next-translate/useTranslation";
 import axios from "axios";
 import { Controller } from "react-hook-form";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
-import { useAddGeneral } from "@hooks/useAddHotelSpace";
+
 import { useRouter } from "next/router";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
