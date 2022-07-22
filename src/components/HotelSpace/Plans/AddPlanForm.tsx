@@ -349,7 +349,7 @@ const Plans = (props: IPlanFormProps) => {
                             Upload Photos
                         </p>
                         <Controller
-                            rules={{ required: true }}
+                            rules={{ required: !initialValue?.photos?.length }}
                             control={control}
                             name="photos"
                             render={({ field: { onChange } }) => (
