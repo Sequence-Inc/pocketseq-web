@@ -23,8 +23,6 @@ const Plans = (props: IPlanFormProps) => {
         fetchPolicy: "network-only",
     });
 
-    const [initialValue, setInitialValue] = useState(null);
-
     const toggleForm = () => setForm((prev) => !prev);
 
     const closeForm = () => {
@@ -47,25 +45,6 @@ const Plans = (props: IPlanFormProps) => {
             skip: !hotelId,
         }
     );
-
-    useEffect(() => {
-        if (defaultFormData?.id) {
-            getPackagePlan({
-                variables: {
-                    id: defaultFormData.id,
-                },
-            });
-        }
-        if (!defaultFormData) {
-            setInitialValue(null);
-        }
-    }, [defaultFormData]);
-
-    useEffect(() => {
-        if (packagePlanData?.packagePlanById) {
-            setInitialValue(packagePlanData);
-        }
-    }, [packagePlanData]);
 
     useEffect(() => {
         return () => {
@@ -100,7 +79,7 @@ const Plans = (props: IPlanFormProps) => {
                 <AddPlanForm
                     {...props}
                     toggleForm={closeForm}
-                    initialValue={initialValue?.packagePlanById}
+                    selectedPlan={defaultFormData}
                     packageLoading={fetchingPlan}
                 />
             )}

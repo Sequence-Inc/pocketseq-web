@@ -26,9 +26,14 @@ import {
     ADD_HOTEL_NEAREST_STATION,
     REMOVE_HOTEL_NEAREST_STATION,
     HOTEL_BY_ID,
+    PACKAGE_PLAN_BY_ID,
 } from "src/apollo/queries/hotel.queries";
 
-import { GeneralQueries, RoomQueries } from "src/apollo/queries/hotel";
+import {
+    GeneralQueries,
+    RoomQueries,
+    PlanQueries,
+} from "src/apollo/queries/hotel";
 
 import handleUpload from "src/utils/uploadImages";
 import {
@@ -940,19 +945,7 @@ export const useAddPlans = (props: AddPlansProps) => {
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }
-            // if (initialValue?.roomTypes?.length) {
-            //     initialValue?.roomTypes.forEach((element) => {
-            //         append({
-            //             hotelRoomId: element?.hotelRoom?.id,
-            //             priceSettings: element?.priceSettings?.map(
-            //                 (setting) => ({
-            //                     dayOfWeek: setting.dayOfWeek,
-            //                     priceSchemeId: setting.priceScheme.id,
-            //                 })
-            //             ),
-            //         });
-            //     });
-            // }
+
             setValue("startUsage", initialValue?.startUsage);
             setValue("endUsage", initialValue?.endUsage);
             setValue("startReservation", initialValue?.startReservation);
@@ -978,7 +971,6 @@ export const useAddPlans = (props: AddPlansProps) => {
     }, [initialValue]);
 
     useEffect(() => {
-        // console.log({ initialValue });
         if (
             !hotelRooms?.myHotelRooms?.length ||
             !initialValue?.roomTypes?.length
@@ -999,7 +991,7 @@ export const useAddPlans = (props: AddPlansProps) => {
                         roomPlanId: roomType.id,
                         isSelected: true,
                         hotelRoomId: room.id,
-                        priceSettings: roomType?.priceSettings
+                        priceSettings: [...roomType?.priceSettings]
                             ?.sort((a, b) => {
                                 return a.dayOfWeek - b.dayOfWeek;
                             })
@@ -1062,6 +1054,76 @@ export const useAddPlans = (props: AddPlansProps) => {
                     message: "Could not update room type plan",
                 }),
         }
+    );
+
+    const [removePackagePhotos] = useMutation(PlanQueries.REMOVE_HOTEL_PHOTO, {
+        refetchQueries: [
+            {
+                query: PACKAGE_PLAN_BY_ID,
+                variables: {
+                    id: initialValue?.id,
+                },
+            },
+        ],
+        onCompleted: () =>
+            addAlert({ type: "success", message: "Removed photo " }),
+        onError: () =>
+            addAlert({ type: "error", message: "Could not removed photo " }),
+    });
+
+    const onRemovePackagePhotos = useCallback(async (photo) => {
+        await removePackagePhotos({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+
+    const [addPackagePhotos] = useMutation(
+        PlanQueries.ADD_PACKAGE_PLAN_PHOTOS,
+        {
+            refetchQueries: [
+                {
+                    query: PACKAGE_PLAN_BY_ID,
+                    variables: {
+                        id: initialValue?.id,
+                    },
+                },
+            ],
+        }
+    );
+
+    const onAddHotelRoomPhotos = useCallback(
+        async (photos) => {
+            console.log({ photos });
+            if (!initialValue) return;
+            const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+                mime: res.type,
+            }));
+            const { data, errors } = await addPackagePhotos({
+                variables: {
+                    packagePlanId: initialValue?.id,
+                    photos: payloadPhotos,
+                },
+            });
+
+            if (data) {
+                try {
+                    await handleUpload(
+                        data.addPackagePlanPhotos.uploadRes,
+                        photos
+                    );
+                    addAlert({ type: "success", message: "Added photos" });
+                } catch (err) {
+                    addAlert({
+                        type: "error",
+                        message: "Could not upload all photos",
+                    });
+                    console.log(err);
+                }
+            }
+        },
+        [initialValue]
     );
 
     const onCreate = useCallback(async (formData) => {
@@ -1267,5 +1329,7 @@ export const useAddPlans = (props: AddPlansProps) => {
         fields,
         handleRoomFieldUpdate,
         updateRoomPlan,
+        onRemovePackagePhotos,
+        onAddHotelRoomPhotos,
     };
 };
