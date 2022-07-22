@@ -122,7 +122,10 @@ const AddRoomForm = ({
                 </p>
 
                 <Controller
-                    rules={{ required: true }}
+                    rules={{
+                        required:
+                            !defaultRoomValue?.hotelRoomById?.photos?.length,
+                    }}
                     control={control}
                     name="photos"
                     render={({ field: { onChange } }) => (

@@ -210,7 +210,11 @@ const General = ({
                         </p>
 
                         <Controller
-                            rules={{ required: true }}
+                            rules={{
+                                required:
+                                    !defaultHotelValue?.hotelById?.photos
+                                        ?.length,
+                            }}
                             control={control}
                             name="photos"
                             render={({ field: { onChange } }) => (
