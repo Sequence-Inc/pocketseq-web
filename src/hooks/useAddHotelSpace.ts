@@ -125,6 +125,7 @@ export const useReduceObject = (obj: Object, filterKeys: string[]) => {
 
 export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
     const { hotelId, formProps, options } = props;
+    console.log({ props });
     const [loading, setLoading] = useState<boolean>(false);
     const {
         register,
@@ -183,6 +184,7 @@ export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
             )
         ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
 
+        console.log({ hotelId });
         return mutate({
             variables: { hotelId, input: payload },
         });
