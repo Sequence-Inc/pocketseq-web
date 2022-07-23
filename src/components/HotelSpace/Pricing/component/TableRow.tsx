@@ -73,8 +73,8 @@ const ModalBody = ({ getValues, dirtyFields }) => {
     );
 };
 
-const NewTableRow = (props: TableRowProps) => {
-    const { row, columns, handleRemoveRow, refetchPricings } = props;
+const TableRow = (props: TableRowProps) => {
+    const { row, columns, handleRemoveRow } = props;
     const errorModal = useRef(null);
     const confirmModal = useRef(null);
     const [priceId, setPriceId] = useState(null);
@@ -85,7 +85,6 @@ const NewTableRow = (props: TableRowProps) => {
         data: priceScheme,
         loading: priceSchemeLoading,
         error: priceFetchError,
-        refetch,
     } = useQuery(PRICE_SCHEME_BY_ID, {
         skip: !priceId,
         variables: {
@@ -109,6 +108,7 @@ const NewTableRow = (props: TableRowProps) => {
         initialValue: defaultValue,
         options: {
             onCompleted: (data) => {
+                setPriceId(data?.addPriceScheme?.priceScheme?.id);
                 setDefaultValue(data?.addPriceScheme?.priceScheme);
             },
         },
@@ -151,7 +151,7 @@ const NewTableRow = (props: TableRowProps) => {
                 formFields.push(
                     <td
                         className={
-                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap  border-l-0 border-b-0 " +
+                            "px-4 py-3.5 text-base text-gray-700 whitespace-nowrap  border-l-0 border-b-0 " +
                             `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
@@ -171,7 +171,7 @@ const NewTableRow = (props: TableRowProps) => {
                 formFields.push(
                     <td
                         className={
-                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
+                            "px-4 py-3.5 text-base text-gray-700  whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
                             `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
@@ -189,6 +189,7 @@ const NewTableRow = (props: TableRowProps) => {
                                 },
                                 valueAsNumber: true,
                             })}
+                            className="min-w-max"
                             id={col.key}
                             type="number"
                             key={index}
@@ -260,4 +261,4 @@ const NewTableRow = (props: TableRowProps) => {
     );
 };
 
-export default NewTableRow;
+export default TableRow;

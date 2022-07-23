@@ -59,7 +59,7 @@ const Table = ({ columns, data, refetchPricings, ...rest }: ITableProps) => {
                                         <th
                                             key={index}
                                             scope="col"
-                                            className={`px-4 py-3 font-bold text-sm tracking-wider uppercase  ${col.className}`}
+                                            className={`px-4 py-3 font-bold text-sm tracking-wider uppercase ${col.className}`}
                                         >
                                             {col?.name}
                                         </th>
