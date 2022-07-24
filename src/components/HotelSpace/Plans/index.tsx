@@ -5,11 +5,10 @@ import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import PlanList from "./PlanList";
 import { Button, Container } from "@element";
 import { useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
-import {
-    PACKAGE_PLAN_BY_HOTEL,
-    PACKAGE_PLAN_BY_ID,
-} from "src/apollo/queries/hotel.queries";
 
+import { Plans as PlanQueries } from "src/apollo/queries/hotel";
+
+const { queries: planQueries } = PlanQueries;
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
 }
@@ -19,7 +18,7 @@ const Plans = (props: IPlanFormProps) => {
     const [
         getPackagePlan,
         { loading: fetchingPlan, error: fetchPlanError, data: packagePlanData },
-    ] = useLazyQuery(PACKAGE_PLAN_BY_ID, {
+    ] = useLazyQuery(planQueries.PACKAGE_PLAN_BY_ID, {
         fetchPolicy: "network-only",
     });
 
@@ -37,7 +36,7 @@ const Plans = (props: IPlanFormProps) => {
     };
 
     const { data, loading, error, networkStatus } = useQuery(
-        PACKAGE_PLAN_BY_HOTEL,
+        planQueries.PACKAGE_PLAN_BY_HOTEL,
         {
             variables: {
                 hotelId,

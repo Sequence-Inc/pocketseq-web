@@ -9,23 +9,17 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 
-import { TAddHotelProps } from "@appTypes/timebookTypes";
-
-import {
-    Controller,
-    useFieldArray,
-    UseFieldArrayReturn,
-    FieldArrayWithId,
-} from "react-hook-form";
+import { Controller, FieldArrayWithId } from "react-hook-form";
 
 import { useRooms } from "@hooks/host-hotel";
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
-import { HOTLE_ROOM } from "src/apollo/queries/core.queries";
-import { ROOMS_BY_ID } from "src/apollo/queries/hotel.queries";
 
+import { Room as RoomQueires } from "src/apollo/queries/hotel";
+
+const { queries: roomQueries } = RoomQueires;
 interface IAddRoomFormProps {
     hotelId: string;
     handleSubmit?: any;
@@ -46,7 +40,7 @@ const AddRoomForm = ({
     const { t } = useTranslation("adminhost");
 
     const { data: defaultRoomValue, loading: fetchingDefaultValue } = useQuery(
-        ROOMS_BY_ID,
+        roomQueries.ROOMS_BY_ID,
         {
             variables: { roomId: initialValue?.id },
             skip: !initialValue?.id,

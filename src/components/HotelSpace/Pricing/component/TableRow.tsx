@@ -1,6 +1,5 @@
 import { Button, TextField } from "@element";
-import { useAddPriceScheme, useReduceObject } from "@hooks/useAddHotelSpace";
-
+import useReduceObject from "@hooks/useFilterObject";
 import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "src/config";
 
 import React, {
@@ -11,8 +10,6 @@ import React, {
     useState,
 } from "react";
 import { THotelPriceScheme } from "@appTypes/timebookTypes";
-import { PRICING_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
-import { useToast } from "@hooks/useToasts";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import ErrorModal from "src/elements/ErrorModal";

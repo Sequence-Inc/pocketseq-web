@@ -1,7 +1,5 @@
-import { CashIcon, ChevronRightIcon } from "@heroicons/react/outline";
-import React, { useState } from "react";
+import React from "react";
 import { useMemo } from "react";
-import { useTable } from "react-table";
 import TableRow from "./TableRow";
 import useTranslation from "next-translate/useTranslation";
 import { TTableKey } from "@appTypes/timebookTypes";

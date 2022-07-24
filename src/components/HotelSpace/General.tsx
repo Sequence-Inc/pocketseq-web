@@ -18,12 +18,13 @@ import { useRouter } from "next/router";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { useQuery } from "@apollo/client";
-import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
 
+import { General as GeneralQueries } from "src/apollo/queries/hotel";
 import { useGeneral } from "@hooks/host-hotel";
 
 const format = "HH:mm a";
 
+const { query: generalQueries } = GeneralQueries;
 interface IGeneralFormProps extends TAddHotelProps {
     setHotelId: any;
     initialValue?: any;
@@ -41,7 +42,7 @@ const General = ({
     const router = useRouter();
 
     const { data: defaultHotelValue, loading: fetchingDefaultHotelValue } =
-        useQuery(HOTEL_BY_ID, {
+        useQuery(generalQueries.HOTEL_BY_ID, {
             variables: { id: initialValue?.id },
             skip: !initialValue?.id,
         });
