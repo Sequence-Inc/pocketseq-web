@@ -375,22 +375,11 @@ const useAddPlans = (props: AddPlansProps) => {
     }, []);
 
     const [addPackagePhotos] = useMutation(
-        planMutations.ADD_PACKAGE_PLAN_PHOTOS,
-        {
-            refetchQueries: [
-                {
-                    query: planQueries.PACKAGE_PLAN_BY_ID,
-                    variables: {
-                        id: initialValue?.id,
-                    },
-                },
-            ],
-        }
+        planMutations.ADD_PACKAGE_PLAN_PHOTOS
     );
 
     const onAddHotelRoomPhotos = useCallback(
         async (photos) => {
-            console.log({ photos });
             if (!initialValue) return;
             const payloadPhotos = Array.from(photos)?.map((res: File) => ({
                 mime: res.type,
@@ -408,14 +397,13 @@ const useAddPlans = (props: AddPlansProps) => {
                         data.addPackagePlanPhotos.uploadRes,
                         photos
                     );
-                    addAlert({ type: "success", message: "Added photos" });
+                    return true;
                 } catch (err) {
-                    addAlert({
-                        type: "error",
-                        message: "Could not upload all photos",
-                    });
-                    console.log(err);
+                    throw err;
                 }
+            }
+            if (errors) {
+                throw errors;
             }
         },
         [initialValue]

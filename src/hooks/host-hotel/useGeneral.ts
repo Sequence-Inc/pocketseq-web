@@ -95,16 +95,14 @@ const useAddGeneral = (fn, initialValue) => {
             if (data) {
                 try {
                     await handleUpload(data.addHotelPhotos.uploadRes, photos);
-                    addAlert({ type: "success", message: "Added photos" });
+                    return true;
                 } catch (err) {
-                    addAlert({
-                        type: "error",
-                        message: "Could not upload all photos",
-                    });
-                    console.log(err);
+                    throw err;
                 }
             }
-            return true;
+            if (errors) {
+                throw errors;
+            }
         },
         [initialValue]
     );

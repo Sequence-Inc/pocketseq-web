@@ -21,6 +21,7 @@ import { useQuery } from "@apollo/client";
 
 import { General as GeneralQueries } from "src/apollo/queries/hotel";
 import { useGeneral } from "@hooks/host-hotel";
+import { useToast } from "@hooks/useToasts";
 
 const format = "HH:mm a";
 
@@ -49,7 +50,7 @@ const General = ({
         variables: { id: initialValue?.id },
         skip: !initialValue?.id,
     });
-
+    const { addAlert } = useToast();
     const {
         onSubmit,
         errors,
@@ -78,9 +79,21 @@ const General = ({
         async (photo) => {
             onAddHotelPhotos(photo)
                 .then((data) => {
-                    return refetch();
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
                 })
-                .catch((err) => console.log({ err }));
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
         },
         [onAddHotelPhotos, refetch]
     );

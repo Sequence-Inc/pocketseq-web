@@ -54,6 +54,7 @@ const Plans = (props: IPlanFormProps) => {
         loading: packageLoading,
         data: packageDetails,
         error: fetchDetailError,
+        refetch,
     } = useQuery(planQueries.PACKAGE_PLAN_BY_ID, {
         variables: {
             id: selectedPlan?.id,
@@ -94,6 +95,29 @@ const Plans = (props: IPlanFormProps) => {
         initialValue,
         onCompleted,
     });
+
+    const handleUpload = useCallback(
+        async (photo) => {
+            onAddHotelRoomPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddHotelRoomPhotos, refetch]
+    );
 
     const {
         data: priceSchemes,
@@ -366,7 +390,7 @@ const Plans = (props: IPlanFormProps) => {
                                     errorMessage="Photos are required"
                                     onChange={(e) => onChange(e)}
                                     onRemove={onRemovePackagePhotos}
-                                    onUpload={onAddHotelRoomPhotos}
+                                    onUpload={handleUpload}
                                 />
                             )}
                         />

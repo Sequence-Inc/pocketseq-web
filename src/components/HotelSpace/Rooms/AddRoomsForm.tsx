@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
     FileUpload,
     TextArea,
@@ -39,13 +39,15 @@ const AddRoomForm = ({
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
 
-    const { data: defaultRoomValue, loading: fetchingDefaultValue } = useQuery(
-        roomQueries.ROOMS_BY_ID,
-        {
-            variables: { roomId: initialValue?.id },
-            skip: !initialValue?.id,
-        }
-    );
+    const {
+        data: defaultRoomValue,
+        loading: fetchingDefaultValue,
+        refetch,
+    } = useQuery(roomQueries.ROOMS_BY_ID, {
+        variables: { roomId: initialValue?.id },
+        skip: !initialValue?.id,
+        fetchPolicy: "network-only",
+    });
     const { addAlert } = useToast();
     const router = useRouter();
     const {
@@ -68,6 +70,29 @@ const AddRoomForm = ({
         initialValue: defaultRoomValue?.hotelRoomById,
         addAlert,
     });
+
+    const handleUpload = useCallback(
+        async (photo) => {
+            onAddHotelRoomPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddHotelRoomPhotos, refetch]
+    );
 
     return (
         <form
@@ -134,7 +159,7 @@ const AddRoomForm = ({
                                 defaultRoomValue?.hotelRoomById?.photos
                             }
                             onRemove={onRemoveRoomPhoto}
-                            onUpload={onAddHotelRoomPhotos}
+                            onUpload={handleUpload}
                         />
                     )}
                 />
