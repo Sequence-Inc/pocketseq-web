@@ -50,7 +50,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
         addAlert({ type: "success", message: "Successfully added hotel room" });
     };
     return (
-        <>
+        <div className="overflow-auto">
             <div className="flex md:justify-end">
                 <div className="flex px-6 mt-6 space-x-3 md:mt-0 md:ml-4">
                     {!formVisible && (
@@ -94,7 +94,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                     initialValue={defaultFormData}
                 />
             )}
-        </>
+        </div>
     );
 };
 

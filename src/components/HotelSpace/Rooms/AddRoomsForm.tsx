@@ -319,7 +319,7 @@ const AddRoomForm = ({
                                                 {...field}
                                                 hidePlaceholder
                                                 label={""}
-                                                className="lg:w-16"
+                                                className="lg:w-16 "
                                                 options={
                                                     priceSchemes?.myPriceSchemes ||
                                                     []

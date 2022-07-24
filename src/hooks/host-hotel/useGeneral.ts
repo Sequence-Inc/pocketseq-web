@@ -71,12 +71,12 @@ const useAddGeneral = (fn, initialValue) => {
     // ADD HOTEL NEAREST STATION ENDS HERE
 
     const [addHotelPhotos] = useMutation(generalMutations.ADD_HOTEL_PHOTOS, {
-        refetchQueries: [
-            {
-                query: generalQuery.HOTEL_BY_ID,
-                variables: { id: initialValue?.id },
-            },
-        ],
+        // refetchQueries: [
+        //     {
+        //         query: generalQuery.HOTEL_BY_ID,
+        //         variables: { id: initialValue?.id },
+        //     },
+        // ],
     });
 
     const onAddHotelPhotos = useCallback(
@@ -104,6 +104,7 @@ const useAddGeneral = (fn, initialValue) => {
                     console.log(err);
                 }
             }
+            return true;
         },
         [initialValue]
     );

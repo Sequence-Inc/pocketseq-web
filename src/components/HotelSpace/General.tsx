@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
     FileUpload,
     TextArea,
@@ -41,11 +41,14 @@ const General = ({
     const { t } = useTranslation("adminhost");
     const router = useRouter();
 
-    const { data: defaultHotelValue, loading: fetchingDefaultHotelValue } =
-        useQuery(generalQueries.HOTEL_BY_ID, {
-            variables: { id: initialValue?.id },
-            skip: !initialValue?.id,
-        });
+    const {
+        data: defaultHotelValue,
+        loading: fetchingDefaultHotelValue,
+        refetch,
+    } = useQuery(generalQueries.HOTEL_BY_ID, {
+        variables: { id: initialValue?.id },
+        skip: !initialValue?.id,
+    });
 
     const {
         onSubmit,
@@ -71,7 +74,16 @@ const General = ({
         setHotelId(id);
         setActiveTab(activeTab + 1);
     }
-
+    const handleAddPhoto = useCallback(
+        async (photo) => {
+            onAddHotelPhotos(photo)
+                .then((data) => {
+                    return refetch();
+                })
+                .catch((err) => console.log({ err }));
+        },
+        [onAddHotelPhotos, refetch]
+    );
     useEffect(() => {
         const api = async () => {
             const newZipCode = normalizeZipCodeInput(watch().zipCode, zipCode);
@@ -233,7 +245,7 @@ const General = ({
                                     }}
                                     defaultPhotos={initialValue?.photos}
                                     onRemove={onRemoveHotelPhoto}
-                                    onUpload={onAddHotelPhotos}
+                                    onUpload={handleAddPhoto}
                                 />
                             )}
                         />
