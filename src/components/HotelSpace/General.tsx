@@ -12,13 +12,15 @@ import useTranslation from "next-translate/useTranslation";
 import axios from "axios";
 import { Controller } from "react-hook-form";
 import { normalizeZipCodeInput } from "src/utils/normalizeZipCode";
-import { useAddGeneral } from "@hooks/useAddHotelSpace";
+
 import { useRouter } from "next/router";
 
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { useQuery } from "@apollo/client";
 import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
+
+import { useGeneral } from "@hooks/host-hotel";
 
 const format = "HH:mm a";
 
@@ -60,7 +62,9 @@ const General = ({
         getValues,
         onAddHotelStation,
         onRemoveStation,
-    } = useAddGeneral(handleNext, defaultHotelValue?.hotelById);
+        onRemoveHotelPhoto,
+        onAddHotelPhotos,
+    } = useGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
         setHotelId(id);
@@ -136,7 +140,6 @@ const General = ({
                                 required: true,
                             })}
                             errorMessage="Description is required"
-                            autoFocus
                             error={errors.description && true}
                             rows={3}
                             defaultValue={initialValue?.description}
@@ -208,7 +211,11 @@ const General = ({
                         </p>
 
                         <Controller
-                            rules={{ required: true }}
+                            rules={{
+                                required:
+                                    !defaultHotelValue?.hotelById?.photos
+                                        ?.length,
+                            }}
                             control={control}
                             name="photos"
                             render={({ field: { onChange } }) => (
@@ -224,6 +231,8 @@ const General = ({
                                         onChange(e);
                                     }}
                                     defaultPhotos={initialValue?.photos}
+                                    onRemove={onRemoveHotelPhoto}
+                                    onUpload={onAddHotelPhotos}
                                 />
                             )}
                         />

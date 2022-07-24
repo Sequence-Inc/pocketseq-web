@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     FileUpload,
     TextArea,
@@ -17,14 +17,14 @@ import {
     PRICING_BY_HOTEL_ID,
 } from "src/apollo/queries/hotel.queries";
 import { Controller, FieldArrayWithId } from "react-hook-form";
-import { useAddPlans } from "@hooks/useAddHotelSpace";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment from "moment";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { DAY_OF_WEEK } from "@config";
+import { useQuery } from "@apollo/client";
+import { DAY_OF_WEEK, PAYMENT_TYPES } from "@config";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
+import { usePlans } from "@hooks/host-hotel";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -40,44 +40,33 @@ interface IFields extends FieldArrayWithId {
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
     toggleForm: any;
-    initialValue?: any;
+    selectedPlan?: any;
     packageLoading?: boolean;
 }
 
-const ROOM_TYPES = [
-    { value: "Suit", label: "Suit" },
-    {
-        value: "Premium Double Room",
-        label: "Premium Double Room",
-    },
-    {
-        value: "Standard Single Room",
-        label: "Standard Single Room",
-    },
-];
-const BASIC_PIRCING = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-const PAYMENT_TYPES = [
-    {
-        value: "PER_ROOM",
-        label: "Per Room Basis",
-    },
-    {
-        value: "PER_PERSON",
-        label: "Per Person Basis",
-    },
-];
-
 const Plans = (props: IPlanFormProps) => {
-    const { hotelId, toggleForm, initialValue, packageLoading } = props;
+    const { hotelId, toggleForm, selectedPlan } = props;
     const { addAlert } = useToast();
     const router = useRouter();
 
+    const {
+        loading: packageLoading,
+        data: packageDetails,
+        error: fetchDetailError,
+    } = useQuery(PACKAGE_PLAN_BY_ID, {
+        variables: {
+            id: selectedPlan?.id,
+        },
+        skip: !selectedPlan?.id,
+        fetchPolicy: "network-only",
+    });
+    const [initialValue, setInitialValue] = useState(null);
+
     const onCompleted = useCallback(() => {
-        if (!initialValue) {
+        if (!selectedPlan) {
             toggleForm();
         }
-    }, [initialValue]);
+    }, [selectedPlan]);
     const {
         hotelRooms,
         refetchRooms,
@@ -96,7 +85,9 @@ const Plans = (props: IPlanFormProps) => {
         onSubmit,
         loading,
         updateRoomPlan,
-    } = useAddPlans({
+        onRemovePackagePhotos,
+        onAddHotelRoomPhotos,
+    } = usePlans({
         hotelId,
         addAlert,
         initialValue,
@@ -114,7 +105,29 @@ const Plans = (props: IPlanFormProps) => {
 
     const { t } = useTranslation("adminhost");
 
-    if (packageLoading)
+    const fetchPackageDetails = useCallback(async () => {
+        if (!packageDetails?.packagePlanById) {
+            setInitialValue(null);
+            return;
+        }
+
+        if (packageDetails) {
+            setInitialValue(packageDetails?.packagePlanById);
+        }
+        if (fetchDetailError) {
+            addAlert({ type: "error", message: "Could not get plan details" });
+        }
+
+        return () => {
+            setInitialValue(null);
+        };
+    }, [packageDetails, fetchDetailError]);
+
+    useEffect(() => {
+        fetchPackageDetails();
+    }, [fetchPackageDetails]);
+
+    if (selectedPlan && packageLoading)
         return <LoadingSpinner loadingText="Loading Plans Data..." />;
 
     return (
@@ -144,7 +157,6 @@ const Plans = (props: IPlanFormProps) => {
                             disabled={loading}
                             label=""
                             errorMessage="Description is required"
-                            autoFocus
                             rows={3}
                             error={errors.description && true}
                             {...register("description", {
@@ -337,7 +349,7 @@ const Plans = (props: IPlanFormProps) => {
                             Upload Photos
                         </p>
                         <Controller
-                            rules={{ required: true }}
+                            rules={{ required: !initialValue?.photos?.length }}
                             control={control}
                             name="photos"
                             render={({ field: { onChange } }) => (
@@ -352,6 +364,8 @@ const Plans = (props: IPlanFormProps) => {
                                     defaultPhotos={initialValue?.photos}
                                     errorMessage="Photos are required"
                                     onChange={(e) => onChange(e)}
+                                    onRemove={onRemovePackagePhotos}
+                                    onUpload={onAddHotelRoomPhotos}
                                 />
                             )}
                         />
@@ -600,7 +614,6 @@ const Plans = (props: IPlanFormProps) => {
                                 min: 0,
                             })}
                             errorMessage="Stock is required"
-                            autoFocus
                             type="number"
                             error={errors.stock && true}
                         />

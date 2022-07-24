@@ -75,10 +75,6 @@ const features = [
 ];
 
 export default function Home({ userSession, availableSpaceTypes }) {
-    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
-        fetchPolicy: "network-only",
-    });
-
     const { data: topPicks } = useQuery(GET_TOP_PICK_SPACES, {
         variables: {
             paginationInfo: {
@@ -183,16 +179,14 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {spaceTypes?.availableSpaceTypes.map(
-                                (spaceType, index) => (
-                                    <CategoryItem
-                                        key={spaceType.id}
-                                        title={spaceType.title}
-                                        subTitle={spaceType.description}
-                                        photo={spaceType.photo?.medium?.url}
-                                    />
-                                )
-                            )}
+                            {availableSpaceTypes?.map((spaceType) => (
+                                <CategoryItem
+                                    key={spaceType.id}
+                                    title={spaceType.title}
+                                    subTitle={spaceType.description}
+                                    photo={spaceType.photo?.medium?.url}
+                                />
+                            ))}
                         </div>
                     </div>
                     {/* <div>

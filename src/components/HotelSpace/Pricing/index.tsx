@@ -26,15 +26,16 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         skip: !hotelId,
     });
 
-    const { data: pricingDatas, loading: pricingLoading } = useQuery(
-        PRICING_BY_HOTEL_ID,
-        {
-            variables: {
-                hotelId,
-            },
-            skip: !hotelId,
-        }
-    );
+    const {
+        data: pricingDatas,
+        loading: pricingLoading,
+        refetch,
+    } = useQuery(PRICING_BY_HOTEL_ID, {
+        variables: {
+            hotelId,
+        },
+        skip: !hotelId,
+    });
 
     const [tableData, setTableData] = useState<THotelPriceScheme[]>();
 
@@ -117,6 +118,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                 columns={columns}
                 data={tableData || []}
                 handleRemoveRow={handleRemoveRow}
+                refetchPricings={refetch}
             />
         );
     }

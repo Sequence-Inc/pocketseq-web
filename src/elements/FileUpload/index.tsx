@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import useTranslation from "next-translate/useTranslation";
 
@@ -21,6 +21,8 @@ interface PhotoUploadFieldProps {
     singleRow?: boolean;
     hideLabel?: boolean;
     defaultPhotos?: any;
+    onRemove?: any;
+    onUpload?: any;
 }
 
 const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
@@ -36,29 +38,58 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
             onChange,
             hideLabel,
             defaultPhotos,
+            onRemove,
+            onUpload,
             ...rest
         } = props;
         const [photos, setPhotos] = useState([]);
+        const [mutatingPhoto, setMutatingPhoto] = useState(null);
 
         const handleDelete = (index) => {
             const newPhotos = photos.filter((_, idx) => idx !== index);
             setPhotos(newPhotos);
         };
+
         const { t } = useTranslation("adminhost");
+
+        const handleUploadPhoto = useCallback(
+            async (files: File[]) => {
+                onUpload && (await onUpload(files));
+            },
+            [onUpload]
+        );
+
         const handleSelectPhoto = (event) => {
             setPhotos([...photos, ...event.target.files]);
+
+            handleUploadPhoto(event.target.files);
         };
-        const handleDeleteDefaultPhoto = (photoIndex) => {
-            console.log({ photoIndex });
+
+        const handleDeleteDefaultPhoto = async (photo) => {
+            setMutatingPhoto(photo?.id);
+            onRemove && (await onRemove(photo));
+            setMutatingPhoto(null);
         };
+
         useEffect(() => {
             if (!photos.length) {
                 onChange(null);
             }
             const newPhotos = photos.filter((res) => typeof res === "object");
-            // const imageInputs = newPhotos.map((res) => ({ mime: res.type }));
+
             onChange(newPhotos);
+
+            return () => {
+                setMutatingPhoto(null);
+            };
         }, [photos]);
+
+        useEffect(() => {
+            if (defaultPhotos?.length) {
+                setPhotos([]);
+            }
+        }, [defaultPhotos?.length]);
+
         return (
             <div
                 className={clsx(
@@ -89,6 +120,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                         <DefaultPhotos
                             photos={defaultPhotos}
                             deletePhoto={handleDeleteDefaultPhoto}
+                            mutatingPhoto={mutatingPhoto}
                         />
                         <SelectedPhotos
                             photos={photos}
@@ -151,35 +183,46 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
     }
 );
 
-const DefaultPhotos = ({ photos, deletePhoto }) => {
+const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
     if (!photos?.length) return null;
 
     return (
-        <div>
-            <div className="grid grid-cols-3 gap-3">
-                {photos.map((photo, index) => {
-                    return (
-                        <div key={index} className="relative">
-                            <img
-                                src={photo?.medium?.url}
-                                className="object-cover rounded-lg w-36 h-36"
-                            />
-                            {typeof photo === "object" ? (
-                                <button
-                                    type="button"
-                                    onClick={() => deletePhoto(index)}
-                                    className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
-                                >
-                                    Remove
-                                </button>
-                            ) : null}
-                        </div>
-                    );
-                })}
-            </div>
+        <div className="grid grid-cols-3 gap-3">
+            {photos.map((photo, index) => {
+                return (
+                    <div key={index} className="relative flex justify-center">
+                        <img
+                            src={photo?.medium?.url}
+                            className="object-cover rounded-lg w-36 h-36 border-2 border-green-200"
+                        />
+
+                        {photo?.id === mutatingPhoto && (
+                            <div className="absolute  opacity-50 w-36 h-36 top-0 border-4 flex items-center justify-center space-x-2">
+                                <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin "></div>
+
+                                <p className="max-w-min">Loading</p>
+                            </div>
+                        )}
+                        {typeof photo === "object" &&
+                        photo?.id !== mutatingPhoto ? (
+                            <button
+                                type="button"
+                                onClick={() => deletePhoto(photo)}
+                                className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
+                            >
+                                Remove
+                            </button>
+                        ) : null}
+                    </div>
+                );
+            })}
         </div>
     );
 };
+
+// const Photo=()=>{
+
+// }
 
 const SelectedPhotos = ({ photos, deletePhoto }) => {
     if (photos.length === 0) return null;
@@ -201,6 +244,7 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                                 }
                                 className="object-cover rounded-lg w-36 h-36"
                             />
+
                             {typeof photo === "object" ? (
                                 <button
                                     type="button"

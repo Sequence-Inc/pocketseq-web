@@ -11,6 +11,8 @@ export const PRICE_SCHEME_ADULTS = [
     { key: "tenAdultCharge", name: "10 Adult" },
 ];
 
+export const ROOM_CHARGE_KEY = "roomCharge";
+
 export const PRICE_SCHEME_CHILD = [
     { key: "oneChildCharge", name: "1 Child" },
     { key: "twoChildCharge", name: "2 Child" },
@@ -32,4 +34,15 @@ export const DAY_OF_WEEK = [
     { name: "Thu", value: 4 },
     { name: "Fri", value: 5 },
     { name: "Sat", value: 6 },
+];
+
+export const PAYMENT_TYPES = [
+    {
+        value: "PER_ROOM",
+        label: "Per Room Basis",
+    },
+    {
+        value: "PER_PERSON",
+        label: "Per Person Basis",
+    },
 ];

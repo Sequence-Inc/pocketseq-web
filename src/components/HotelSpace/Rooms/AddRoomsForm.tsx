@@ -17,11 +17,14 @@ import {
     UseFieldArrayReturn,
     FieldArrayWithId,
 } from "react-hook-form";
-import { useAddRooms } from "@hooks/useAddHotelSpace";
 
+import { useRooms } from "@hooks/host-hotel";
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
+import { HOTLE_ROOM } from "src/apollo/queries/core.queries";
+import { ROOMS_BY_ID } from "src/apollo/queries/hotel.queries";
 
 interface IAddRoomFormProps {
     hotelId: string;
@@ -42,6 +45,13 @@ const AddRoomForm = ({
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
 
+    const { data: defaultRoomValue, loading: fetchingDefaultValue } = useQuery(
+        ROOMS_BY_ID,
+        {
+            variables: { roomId: initialValue?.id },
+            skip: !initialValue?.id,
+        }
+    );
     const { addAlert } = useToast();
     const router = useRouter();
     const {
@@ -57,7 +67,13 @@ const AddRoomForm = ({
         update,
         priceSchemes,
         priceSchemeLoading,
-    } = useAddRooms(hotelId, { fn: handleSubmit, initialValue, addAlert });
+        onRemoveRoomPhoto,
+        onAddHotelRoomPhotos,
+    } = useRooms(hotelId, {
+        fn: handleSubmit,
+        initialValue: defaultRoomValue?.hotelRoomById,
+        addAlert,
+    });
 
     return (
         <form
@@ -86,7 +102,6 @@ const AddRoomForm = ({
                         required: true,
                     })}
                     errorMessage="Description is required"
-                    autoFocus
                     error={errors.description && true}
                     rows={3}
                     disabled={loading}
@@ -106,7 +121,10 @@ const AddRoomForm = ({
                 </p>
 
                 <Controller
-                    rules={{ required: true }}
+                    rules={{
+                        required:
+                            !defaultRoomValue?.hotelRoomById?.photos?.length,
+                    }}
                     control={control}
                     name="photos"
                     render={({ field: { onChange } }) => (
@@ -118,7 +136,11 @@ const AddRoomForm = ({
                             error={errors.photos && true}
                             errorMessage="Photos are required"
                             onChange={(e) => onChange(e)}
-                            defaultPhotos={initialValue?.photos}
+                            defaultPhotos={
+                                defaultRoomValue?.hotelRoomById?.photos
+                            }
+                            onRemove={onRemoveRoomPhoto}
+                            onUpload={onAddHotelRoomPhotos}
                         />
                     )}
                 />
@@ -238,7 +260,7 @@ const AddRoomForm = ({
                         type="button"
                         onClick={() =>
                             router.push(
-                                `/host/hotel-space/edit/${hotelId}/stockoverride/room/${initialValue?.id}`
+                                `/host/hotel-space/edit/${hotelId}/stockoverride/room/${defaultRoomValue?.hotelRoomById?.id}`
                             )
                         }
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
@@ -254,7 +276,6 @@ const AddRoomForm = ({
                     })}
                     className="w-3/12 "
                     errorMessage="Stock is required"
-                    autoFocus
                     error={errors.stock && true}
                     type="number"
                     disabled={loading}
@@ -269,7 +290,7 @@ const AddRoomForm = ({
                         type="button"
                         onClick={() =>
                             router.push(
-                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${initialValue?.id}`
+                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${defaultRoomValue?.hotelRoomById?.id}`
                             )
                         }
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]

@@ -20,9 +20,10 @@ interface ITableProps {
     paginate?: any;
     handlePaginate?: (type: "prev" | "next") => void;
     handleRemoveRow?: any;
+    refetchPricings?: any;
 }
 
-const Table = ({ columns, data, ...rest }: ITableProps) => {
+const Table = ({ columns, data, refetchPricings, ...rest }: ITableProps) => {
     const { t } = useTranslation("adminhost");
 
     const columnClassName = (key): string | undefined => {
@@ -58,7 +59,7 @@ const Table = ({ columns, data, ...rest }: ITableProps) => {
                                         <th
                                             key={index}
                                             scope="col"
-                                            className={`px-4 py-3 font-bold text-sm tracking-wider uppercase  ${col.className}`}
+                                            className={`px-4 py-3 font-bold text-sm tracking-wider uppercase ${col.className}`}
                                         >
                                             {col?.name}
                                         </th>
@@ -85,6 +86,7 @@ const Table = ({ columns, data, ...rest }: ITableProps) => {
                                             rowId={index}
                                             key={index}
                                             columns={headers}
+                                            refetchPricings={refetchPricings}
                                             {...rest}
                                         />
                                     ))}
