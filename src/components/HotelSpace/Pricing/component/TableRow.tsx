@@ -17,6 +17,9 @@ import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import ErrorModal from "src/elements/ErrorModal";
 import ConfirmModal from "./ConfirmModal";
+import { usePricing } from "@hooks/host-hotel";
+import { useQuery } from "@apollo/client";
+import { PRICE_SCHEME_BY_ID } from "src/apollo/queries/hotel/pricing/queries";
 
 type TColumns = {
     className?: string;
@@ -29,6 +32,7 @@ interface TableRowProps {
     rowId: string | number;
     columns?: TColumns[];
     handleRemoveRow?: any;
+    refetchPricings?: any;
 }
 
 const InputFields = [
@@ -71,10 +75,23 @@ const ModalBody = ({ getValues, dirtyFields }) => {
 
 const TableRow = (props: TableRowProps) => {
     const { row, columns, handleRemoveRow } = props;
-    const { addAlert } = useToast();
-    const [content, setContent] = useState<React.ReactElement[]>();
     const errorModal = useRef(null);
     const confirmModal = useRef(null);
+    const [priceId, setPriceId] = useState(null);
+    const [content, setContent] = useState<React.ReactElement[]>();
+
+    const [defaultValue, setDefaultValue] = useState(null);
+    const {
+        data: priceScheme,
+        loading: priceSchemeLoading,
+        error: priceFetchError,
+    } = useQuery(PRICE_SCHEME_BY_ID, {
+        skip: !priceId,
+        variables: {
+            id: priceId,
+        },
+    });
+
     const {
         isDirty,
         register,
@@ -85,32 +102,14 @@ const TableRow = (props: TableRowProps) => {
         getValues,
         dirtyFields,
         resetField,
-        onUpdate,
-    } = useAddPriceScheme({
+        // onUpdate,
+    } = usePricing({
         hotelId: row?.hotelId,
-        formProps: {
-            defaultValues: { ...row },
-        },
+        initialValue: defaultValue,
         options: {
-            refetchQueries: [
-                {
-                    query: PRICING_BY_HOTEL_ID,
-                    variables: {
-                        hotelId: row.hotelId,
-                    },
-                },
-            ],
             onCompleted: (data) => {
-                addAlert({
-                    type: "success",
-                    message: "Successfully added new price scheme",
-                });
-            },
-            onError: () => {
-                addAlert({
-                    type: "error",
-                    message: "Could not add new price scheme",
-                });
+                setPriceId(data?.addPriceScheme?.priceScheme?.id);
+                setDefaultValue(data?.addPriceScheme?.priceScheme);
             },
         },
     });
@@ -127,12 +126,12 @@ const TableRow = (props: TableRowProps) => {
 
     const onConFirm = useCallback(() => {
         confirmModal.current.close();
-        if (row?.isNew) {
+        if (!priceScheme?.priceSchemeById) {
             return onSubmit();
         }
-        console.log("run update");
-        return onUpdate();
-    }, [row]);
+
+        // return onUpdate();
+    }, [priceScheme?.priceSchemeById]);
 
     const handleRemove = useCallback(() => {
         if (row?.isNew) {
@@ -152,31 +151,36 @@ const TableRow = (props: TableRowProps) => {
                 formFields.push(
                     <td
                         className={
-                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap  border-l-0 border-b-0 " +
+                            "px-4 py-3.5 text-base text-gray-700 whitespace-nowrap  border-l-0 border-b-0 " +
                             `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
                     >
-                        {!loading && <p>{row[col.key]}</p>}
-                        {loading && (
-                            <div>
-                                <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin"></div>
-                            </div>
+                        {!loading && !priceSchemeLoading && (
+                            <p>{defaultValue && defaultValue[col.key]}</p>
                         )}
+                        {loading ||
+                            (priceSchemeLoading && (
+                                <div>
+                                    <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin"></div>
+                                </div>
+                            ))}
                     </td>
                 );
             } else {
                 formFields.push(
                     <td
                         className={
-                            "px-4 py-3.5 text-base text-gray-700 max-w-0 whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
+                            "px-4 py-3.5 text-base text-gray-700  whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
                             `${loading && " bg-gray-200"}`
                         }
                         key={col.key}
                     >
                         <TextField
                             label=""
-                            disabled={loading || !row?.isNew}
+                            disabled={
+                                loading || priceSchemeLoading || defaultValue
+                            }
                             {...register(`${col.key}`, {
                                 required: true,
                                 min: {
@@ -185,6 +189,7 @@ const TableRow = (props: TableRowProps) => {
                                 },
                                 valueAsNumber: true,
                             })}
+                            className="min-w-max"
                             id={col.key}
                             type="number"
                             key={index}
@@ -220,53 +225,38 @@ const TableRow = (props: TableRowProps) => {
             </td>
         );
         setContent(formFields);
-    }, [row, columns, errors, loading]);
+    }, [defaultValue, columns, errors, loading, priceSchemeLoading]);
 
+    useEffect(() => {
+        if (row?.id) {
+            setPriceId(row.id);
+        }
+
+        return () => {
+            setPriceId(null);
+        };
+    }, [row]);
+
+    useEffect(() => {
+        if (priceScheme?.priceSchemeById) {
+            setDefaultValue(priceScheme?.priceSchemeById);
+            return;
+        }
+
+        setDefaultValue(null);
+
+        return () => {
+            setDefaultValue(null);
+        };
+    }, [priceScheme]);
     useEffect(handleBuildForm, [handleBuildForm]);
-
     return (
         <>
             <ErrorModal ref={errorModal} />
             <ConfirmModal ref={confirmModal} onConfirm={onConFirm}>
                 <ModalBody getValues={getValues} dirtyFields={dirtyFields} />
             </ConfirmModal>
-            <tr>
-                {content}
-
-                {/* {isDirty && row.isNew && (
-                    <td className="flex mt-3 ml-2  space-x-2 items-center absolute ">
-                        <Button
-                            onClick={handleSubmitForm}
-                            Icon={CheckIcon}
-                            className="text-green-400"
-                            loading={loading}
-                        >
-                            {" "}
-                        </Button>
-                        <Button
-                            onClick={handleRemove}
-                            Icon={XIcon}
-                            loading={loading}
-                            className="text-red-400"
-                        >
-                            {" "}
-                        </Button>
-                    </td>
-                )}
-
-                {!isDirty && row.isNew && (
-                    <td className="flex mt-3 ml-2  space-x-2 items-center absolute ">
-                        <Button
-                            onClick={handleRemove}
-                            Icon={XIcon}
-                            loading={loading}
-                            className="text-red-400"
-                        >
-                            {" "}
-                        </Button>
-                    </td>
-                )} */}
-            </tr>
+            <tr>{content}</tr>
         </>
     );
 };
