@@ -17,7 +17,6 @@ import {
     PRICING_BY_HOTEL_ID,
 } from "src/apollo/queries/hotel.queries";
 import { Controller, FieldArrayWithId } from "react-hook-form";
-import { useAddPlans } from "@hooks/useAddHotelSpace";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment from "moment";
 import { useQuery } from "@apollo/client";
@@ -25,6 +24,7 @@ import { DAY_OF_WEEK, PAYMENT_TYPES } from "@config";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
+import { usePlans } from "@hooks/host-hotel";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -58,6 +58,7 @@ const Plans = (props: IPlanFormProps) => {
             id: selectedPlan?.id,
         },
         skip: !selectedPlan?.id,
+        fetchPolicy: "network-only",
     });
     const [initialValue, setInitialValue] = useState(null);
 
@@ -86,7 +87,7 @@ const Plans = (props: IPlanFormProps) => {
         updateRoomPlan,
         onRemovePackagePhotos,
         onAddHotelRoomPhotos,
-    } = useAddPlans({
+    } = usePlans({
         hotelId,
         addAlert,
         initialValue,
