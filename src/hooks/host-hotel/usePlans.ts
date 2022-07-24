@@ -1,5 +1,16 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
+import { Plans, Room } from "src/apollo/queries/hotel";
+import handleUpload from "src/utils/uploadImages";
+import {
+    DAY_OF_WEEK,
+    PRICE_SCHEME_ADULTS,
+    PRICE_SCHEME_CHILD,
+} from "src/config";
+
 import {
     useFieldArray,
     useForm,
@@ -7,53 +18,33 @@ import {
     UseFieldArrayReturn,
     FieldArrayWithId,
 } from "react-hook-form";
-import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
-import {
-    ADD_HOTEL_SPACE,
-    ADD_HOTEL_ROOMS,
-    ADD_PRICING_SCHEME,
-    ROOMS_BY_HOTEL_ID,
-    ADD_HOTEL_PACKAGE_PLANS,
-    UPDATE_HOTEL_SPACE,
-    UPDATE_HOTEL_ROOMS,
-    UPDATE_PACKAGE_PLAN,
-    PACKAGE_PLAN_BY_HOTEL,
-    UPDATE_PRICING_SHCEME,
-    PRICING_BY_HOTEL_ID,
-    UPDATE_HOTEL_ROOMS_PRICE_SETTINGS,
-    UPDATE_ROOM_TYPE_PACKAGE_PLAN,
-    UPDATE_HOTEL_ADDRESS,
-    ADD_HOTEL_NEAREST_STATION,
-    REMOVE_HOTEL_NEAREST_STATION,
-    HOTEL_BY_ID,
-    PACKAGE_PLAN_BY_ID,
-} from "src/apollo/queries/hotel.queries";
+import useReduceObject from "@hooks/useFilterObject";
 
-import {
-    GeneralQueries,
-    RoomQueries,
-    PlanQueries,
-} from "src/apollo/queries/hotel";
+type AddPlansProps = {
+    hotelId: string;
+    addAlert: any;
+    initialValue?: any;
+    onCompleted?: any;
+};
+type PRICE_SETTINGS = {
+    dayOfWeek: string;
+    priceSchemeId?: string;
+};
+interface IFields extends FieldArrayWithId {
+    hotelRoomId: string;
+    priceSettings: PRICE_SETTINGS[];
+}
+const { queries: planQueries, mutations: planMutations } = Plans;
+const { queries: roomQueries } = Room;
 
-import handleUpload from "src/utils/uploadImages";
-import {
-    DAY_OF_WEEK,
-    PRICE_SCHEME_ADULTS,
-    PRICE_SCHEME_CHILD,
-} from "src/config";
-import { Description } from "@headlessui/react/dist/components/description/description";
-import { useToast } from "./useToasts";
-import { onError } from "apollo-link-error";
-
-const noOp = () => {};
-
-const ROOM_CHARGE_KEY = "roomCharge";
-
-export const AddPriceSchemaInputKeys = [
-    ROOM_CHARGE_KEY,
-    ...PRICE_SCHEME_ADULTS.map((item) => item.key),
-    ...PRICE_SCHEME_CHILD.map((item) => item.key),
-];
+const MY_ROOMS_BY_HOTEL_ID = gql`
+    query HotelRoomsByHotelId($hotelId: ID!) {
+        myHotelRooms(hotelId: $hotelId) {
+            id
+            name
+        }
+    }
+`;
 
 const ADD_PLAN_INPUT_KEYS = [
     "name",
@@ -69,7 +60,6 @@ const ADD_PLAN_INPUT_KEYS = [
     "roomTypes",
     "photos",
 ];
-
 const UPDATE_PLAN_KEYS = [
     "id",
     "name",
@@ -84,170 +74,7 @@ const UPDATE_PLAN_KEYS = [
     "cutOffTillTime",
 ];
 
-type TOptions = {
-    onCompleted?: Function;
-    onError?: Function;
-    refetchQueries?: any;
-};
-
-type AddPriceShcemaProps = {
-    hotelId: string;
-    formProps: UseFormProps;
-    options?: TOptions;
-};
-
-type AddPlansProps = {
-    hotelId: string;
-    addAlert: any;
-    initialValue?: any;
-    onCompleted?: any;
-};
-
-// const addGeneralDefault = {
-//     name: null,
-//     description: null,
-//     photos: null,
-//     zipCode: null,
-//     prefecture: null,
-//     city: null,
-//     addressLine1: null,
-//     addressLine2: null,
-//     nearestStations: null,
-//     checkInTime: null,
-//     checkOutTime: null,
-// };
-
-export const useReduceObject = (obj: Object, filterKeys: string[]) => {
-    return Object.entries(
-        Object.fromEntries(filterKeys.map((key) => [key, obj[key]]))
-    ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
-};
-
-export const useAddPriceScheme = (props: AddPriceShcemaProps) => {
-    const { hotelId, formProps, options } = props;
-    console.log({ props });
-    const [loading, setLoading] = useState<boolean>(false);
-    const {
-        register,
-        unregister,
-        control,
-        formState: { errors, isDirty, dirtyFields },
-        watch,
-        setValue,
-        handleSubmit,
-        getValues,
-        trigger,
-        setError,
-        reset,
-        resetField,
-    } = useForm(formProps);
-
-    const { addAlert } = useToast();
-
-    const [mutate] = useMutation(ADD_PRICING_SCHEME, {
-        ...options,
-        onCompleted: (data) => {
-            options.onCompleted();
-            setLoading(false);
-        },
-        onError: (error) => {
-            console.log({ error });
-            options?.onError();
-            setLoading(false);
-        },
-    });
-
-    const [updatePricingScheme] = useMutation(UPDATE_PRICING_SHCEME, {
-        ...options,
-        onCompleted: (data) => {
-            addAlert({ type: "success", message: "Updated Pricing Scheme" });
-
-            setLoading(false);
-        },
-        onError: (error) => {
-            addAlert({
-                type: "error",
-                message: "Could not update Pricing Scheme",
-            });
-
-            setLoading(false);
-        },
-    });
-
-    const onSubmit = handleSubmit(async (formData) => {
-        setLoading(true);
-
-        // This piece of code filter all the unnecessary keys & values on formData and
-        const payload = Object.entries(
-            Object.fromEntries(
-                AddPriceSchemaInputKeys.map((key) => [key, formData[key]])
-            )
-        ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
-
-        console.log({ hotelId });
-        return mutate({
-            variables: { hotelId, input: payload },
-        });
-    });
-
-    const onUpdate = handleSubmit(async (formData) => {
-        setLoading(true);
-
-        let payload = Object.entries(
-            Object.fromEntries(
-                AddPriceSchemaInputKeys.map((key) => [key, formData[key]])
-            )
-        ).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
-
-        payload = {
-            ...payload,
-            id: formProps?.defaultValues?.id,
-        };
-        return updatePricingScheme({
-            variables: { input: payload },
-        });
-    });
-
-    return {
-        register,
-        unregister,
-        loading,
-        control,
-        errors,
-        isDirty,
-        watch,
-        setValue,
-        handleSubmit,
-        getValues,
-        onSubmit,
-        trigger,
-        setError,
-        dirtyFields,
-        reset,
-        resetField,
-        onUpdate,
-    };
-};
-
-const MY_ROOMS_BY_HOTEL_ID = gql`
-    query HotelRoomsByHotelId($hotelId: ID!) {
-        myHotelRooms(hotelId: $hotelId) {
-            id
-            name
-        }
-    }
-`;
-
-type PRICE_SETTINGS = {
-    dayOfWeek: string;
-    priceSchemeId?: string;
-};
-interface IFields extends FieldArrayWithId {
-    hotelRoomId: string;
-    priceSettings: PRICE_SETTINGS[];
-}
-
-export const useAddPlans = (props: AddPlansProps) => {
+const useAddPlans = (props: AddPlansProps) => {
     const { hotelId, addAlert, initialValue = null, onCompleted } = props;
     const [loading, setLoading] = useState(false);
     const {
@@ -438,38 +265,37 @@ export const useAddPlans = (props: AddPlansProps) => {
             return;
         }
 
-        hotelRooms.myHotelRooms.forEach((room, index) => {
+        hotelRooms?.myHotelRooms?.forEach((room, index) => {
             const initValRoomIndex = initialValue.roomTypes.findIndex(
                 (roomType) => room.id === roomType.hotelRoom.id
             );
 
             if (initValRoomIndex !== -1) {
-                const { roomTypes } = initialValue;
+                const roomType = initialValue.roomTypes[initValRoomIndex];
+                console.log({ roomType });
 
-                roomTypes?.forEach((roomType) => {
-                    update(index, {
-                        roomPlanId: roomType.id,
-                        isSelected: true,
-                        hotelRoomId: room.id,
-                        priceSettings: [...roomType?.priceSettings]
-                            ?.sort((a, b) => {
-                                return a.dayOfWeek - b.dayOfWeek;
-                            })
-                            ?.map((setting) => ({
-                                dayOfWeek: setting.dayOfWeek,
-                                priceSchemeId: setting.priceScheme.id,
-                                ...setting,
-                            })),
-                    });
+                update(index, {
+                    roomPlanId: roomType.id,
+                    isSelected: true,
+                    hotelRoomId: room.id,
+                    priceSettings: [...roomType?.priceSettings]
+                        ?.sort((a, b) => {
+                            return a.dayOfWeek - b.dayOfWeek;
+                        })
+                        ?.map((setting) => ({
+                            dayOfWeek: setting.dayOfWeek,
+                            priceSchemeId: setting.priceScheme.id,
+                            ...setting,
+                        })),
                 });
             }
         });
     }, [hotelRooms, initialValue?.roomTypes]);
 
-    const [mutate] = useMutation(ADD_HOTEL_PACKAGE_PLANS, {
+    const [mutate] = useMutation(planMutations.ADD_HOTEL_PACKAGE_PLANS, {
         refetchQueries: [
             {
-                query: PACKAGE_PLAN_BY_HOTEL,
+                query: planQueries.PACKAGE_PLAN_BY_HOTEL,
                 variables: {
                     hotelId,
                 },
@@ -480,25 +306,28 @@ export const useAddPlans = (props: AddPlansProps) => {
         },
     });
 
-    const [updatePackagePlanGeneral] = useMutation(UPDATE_PACKAGE_PLAN, {
-        refetchQueries: [
-            {
-                query: PACKAGE_PLAN_BY_HOTEL,
-                variables: {
-                    hotelId,
-                },
-            },
-        ],
-    });
-
-    const [updateRoomTypePackagePlan] = useMutation(
-        UPDATE_ROOM_TYPE_PACKAGE_PLAN,
+    const [updatePackagePlanGeneral] = useMutation(
+        planMutations.UPDATE_PACKAGE_PLAN,
         {
             refetchQueries: [
                 {
-                    query: PACKAGE_PLAN_BY_HOTEL,
+                    query: planQueries.PACKAGE_PLAN_BY_ID,
                     variables: {
-                        hotelId,
+                        id: initialValue?.id,
+                    },
+                },
+            ],
+        }
+    );
+
+    const [updateRoomTypePackagePlan] = useMutation(
+        planMutations.UPDATE_ROOM_TYPE_PACKAGE_PLAN,
+        {
+            refetchQueries: [
+                {
+                    query: planQueries.PACKAGE_PLAN_BY_ID,
+                    variables: {
+                        id: initialValue?.id,
                     },
                 },
             ],
@@ -516,20 +345,26 @@ export const useAddPlans = (props: AddPlansProps) => {
         }
     );
 
-    const [removePackagePhotos] = useMutation(PlanQueries.REMOVE_HOTEL_PHOTO, {
-        refetchQueries: [
-            {
-                query: PACKAGE_PLAN_BY_ID,
-                variables: {
-                    id: initialValue?.id,
+    const [removePackagePhotos] = useMutation(
+        planMutations.REMOVE_PAKCAGE_PLAN_PHOTO,
+        {
+            refetchQueries: [
+                {
+                    query: planQueries.PACKAGE_PLAN_BY_ID,
+                    variables: {
+                        id: initialValue?.id,
+                    },
                 },
-            },
-        ],
-        onCompleted: () =>
-            addAlert({ type: "success", message: "Removed photo " }),
-        onError: () =>
-            addAlert({ type: "error", message: "Could not removed photo " }),
-    });
+            ],
+            onCompleted: () =>
+                addAlert({ type: "success", message: "Removed photo " }),
+            onError: () =>
+                addAlert({
+                    type: "error",
+                    message: "Could not removed photo ",
+                }),
+        }
+    );
 
     const onRemovePackagePhotos = useCallback(async (photo) => {
         await removePackagePhotos({
@@ -540,11 +375,11 @@ export const useAddPlans = (props: AddPlansProps) => {
     }, []);
 
     const [addPackagePhotos] = useMutation(
-        PlanQueries.ADD_PACKAGE_PLAN_PHOTOS,
+        planMutations.ADD_PACKAGE_PLAN_PHOTOS,
         {
             refetchQueries: [
                 {
-                    query: PACKAGE_PLAN_BY_ID,
+                    query: planQueries.PACKAGE_PLAN_BY_ID,
                     variables: {
                         id: initialValue?.id,
                     },
@@ -647,6 +482,8 @@ export const useAddPlans = (props: AddPlansProps) => {
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
         });
+        console.log({ data });
+
         if (errors) {
             console.log("Errors", errors);
             addAlert({
@@ -793,3 +630,5 @@ export const useAddPlans = (props: AddPlansProps) => {
         onAddHotelRoomPhotos,
     };
 };
+
+export default useAddPlans;

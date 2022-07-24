@@ -11,6 +11,8 @@ export const PRICE_SCHEME_ADULTS = [
     { key: "tenAdultCharge", name: "10 Adult" },
 ];
 
+export const ROOM_CHARGE_KEY = "roomCharge";
+
 export const PRICE_SCHEME_CHILD = [
     { key: "oneChildCharge", name: "1 Child" },
     { key: "twoChildCharge", name: "2 Child" },

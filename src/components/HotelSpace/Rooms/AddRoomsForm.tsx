@@ -17,8 +17,8 @@ import {
     UseFieldArrayReturn,
     FieldArrayWithId,
 } from "react-hook-form";
-import { useAddRooms } from "@hooks/useAddHotelSpace";
 
+import { useRooms } from "@hooks/host-hotel";
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
@@ -69,7 +69,7 @@ const AddRoomForm = ({
         priceSchemeLoading,
         onRemoveRoomPhoto,
         onAddHotelRoomPhotos,
-    } = useAddRooms(hotelId, {
+    } = useRooms(hotelId, {
         fn: handleSubmit,
         initialValue: defaultRoomValue?.hotelRoomById,
         addAlert,
@@ -102,7 +102,6 @@ const AddRoomForm = ({
                         required: true,
                     })}
                     errorMessage="Description is required"
-                    autoFocus
                     error={errors.description && true}
                     rows={3}
                     disabled={loading}
@@ -277,7 +276,6 @@ const AddRoomForm = ({
                     })}
                     className="w-3/12 "
                     errorMessage="Stock is required"
-                    autoFocus
                     error={errors.stock && true}
                     type="number"
                     disabled={loading}
