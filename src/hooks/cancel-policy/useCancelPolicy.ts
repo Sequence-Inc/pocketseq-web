@@ -3,7 +3,16 @@ import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-const useAddCancelPolicy = (fn, initialValue) => {
+export const MY_SPACES = gql`
+    query MySpaces {
+        mySpaces {
+            id
+            name
+        }
+    }
+`;
+
+const useAddCancelPolicy = () => {
     const { addAlert } = useToast();
     const [loading, setLoading] = useState(false);
     const {
@@ -23,6 +32,8 @@ const useAddCancelPolicy = (fn, initialValue) => {
         keyName: "policyId",
     });
 
+    const { data: spaces, loading: spacesLoading } = useQuery(MY_SPACES);
+
     return {
         register,
         unregister,
@@ -36,5 +47,9 @@ const useAddCancelPolicy = (fn, initialValue) => {
         append,
         update,
         remove,
+        spaces,
+        spacesLoading,
     };
 };
+
+export default useAddCancelPolicy;
