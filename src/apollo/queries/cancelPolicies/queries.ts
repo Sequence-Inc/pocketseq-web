@@ -1,10 +1,26 @@
 import { gql } from "@apollo/client";
-import { CANCEL_POLICY } from "./core.schema";
+import * as SCHEMA from "./core.schema";
 
 export const MY_CANCEL_POLICIES = gql`
     query MyCancelPolicies{
         myCancelPolicies{
-            ${CANCEL_POLICY}
+            ${SCHEMA.CANCEL_POLICY}
+        }
+    }
+`;
+
+export const MY_SPACES = gql`
+    query MySpaces {
+        mySpaces {
+           ${SCHEMA.FORM_MY_SPACES}
+        }
+    }
+`;
+
+export const MY_HOTELS = gql`
+    query MyHotels {
+        myHotels {
+            ${SCHEMA.FORM_MY_HOTELS}
         }
     }
 `;

@@ -3,14 +3,10 @@ import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-export const MY_SPACES = gql`
-    query MySpaces {
-        mySpaces {
-            id
-            name
-        }
-    }
-`;
+import {
+    queries as CancelPolicyQueires,
+    mutation as CancelPolicyMutaions,
+} from "src/apollo/queries/cancelPolicies";
 
 const useAddCancelPolicy = () => {
     const { addAlert } = useToast();
@@ -26,13 +22,47 @@ const useAddCancelPolicy = () => {
         getValues,
     } = useForm();
 
-    const { fields, append, update, remove } = useFieldArray({
+    const {
+        fields: policiesField,
+        append,
+        update,
+        remove,
+    } = useFieldArray({
         control,
         name: "policies",
         keyName: "policyId",
     });
 
-    const { data: spaces, loading: spacesLoading } = useQuery(MY_SPACES);
+    const { data: spaces, loading: spacesLoading } = useQuery(
+        CancelPolicyQueires.MY_SPACES
+    );
+    const { data: hotels, loading: hotelsLoading } = useQuery(
+        CancelPolicyQueires.MY_HOTELS
+    );
+
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+
+        setTimeout(() => setLoading(false), 1500);
+    });
+
+    const onAddPolciesField = useCallback(
+        (field?: { beforeHours?: number; percentage?: number }) => {
+            append({
+                beforeHours: field?.beforeHours || null,
+                percentage: field?.percentage || null,
+                isLoading: false,
+            });
+        },
+        []
+    );
+    const onRemovePoliciesField = useCallback((fiedlIndex) => {
+        remove(fiedlIndex);
+    }, []);
+
+    useEffect(() => {
+        append({ beforeHours: null, percentage: null, isLoading: false });
+    }, []);
 
     return {
         register,
@@ -42,13 +72,19 @@ const useAddCancelPolicy = () => {
         watch,
         setValue,
         handleSubmit,
+        onSubmit,
         getValues,
-        fields,
+        policiesField,
         append,
         update,
         remove,
         spaces,
         spacesLoading,
+        hotels,
+        hotelsLoading,
+        loading,
+        onAddPolciesField,
+        onRemovePoliciesField,
     };
 };
 

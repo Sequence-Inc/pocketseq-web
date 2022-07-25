@@ -13,22 +13,6 @@ import { useCancelPolicy } from "@hooks/cancel-policy";
 
 const AddCancelPolicies = ({ userSession }) => {
     const { t } = useTranslation("adminhost");
-    const {
-        register,
-        unregister,
-        control,
-        errors,
-        watch,
-        setValue,
-        handleSubmit,
-        getValues,
-        fields,
-        append,
-        update,
-        remove,
-        spaces,
-        spacesLoading,
-    } = useCancelPolicy();
 
     return (
         <HostLayout userSession={userSession}>
