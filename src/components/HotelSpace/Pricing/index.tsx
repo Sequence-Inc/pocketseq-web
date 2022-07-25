@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
-import {
-    ROOMS_BY_HOTEL_ID,
-    PRICING_BY_HOTEL_ID,
-} from "src/apollo/queries/hotel.queries";
+
 import { useQuery } from "@apollo/client";
 import useTranslation from "next-translate/useTranslation";
 import { Button } from "@element";
@@ -12,6 +9,14 @@ import { PRICE_SCHEME_ADULTS, PRICE_SCHEME_CHILD } from "@config";
 import Table from "./component/Table";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
+import {
+    Room as RoomQueires,
+    Pricing as PricingQueries,
+} from "src/apollo/queries/hotel";
+
+const { queries: roomQueries } = RoomQueires;
+const { queries: pricingQueries } = PricingQueries;
+
 interface IPricingFormProps extends TAddHotelProps {
     hotelId: string;
 }
@@ -19,18 +24,21 @@ interface IPricingFormProps extends TAddHotelProps {
 const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
     const { t } = useTranslation("adminhost");
 
-    const { data: hotelRooms, loading } = useQuery(ROOMS_BY_HOTEL_ID, {
-        variables: {
-            hotelId,
-        },
-        skip: !hotelId,
-    });
+    const { data: hotelRooms, loading } = useQuery(
+        roomQueries.ROOMS_BY_HOTEL_ID,
+        {
+            variables: {
+                hotelId,
+            },
+            skip: !hotelId,
+        }
+    );
 
     const {
         data: pricingDatas,
         loading: pricingLoading,
         refetch,
-    } = useQuery(PRICING_BY_HOTEL_ID, {
+    } = useQuery(pricingQueries.PRICING_BY_HOTEL_ID, {
         variables: {
             hotelId,
         },

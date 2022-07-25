@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
     FileUpload,
     TextArea,
@@ -18,12 +18,14 @@ import { useRouter } from "next/router";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { useQuery } from "@apollo/client";
-import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
 
+import { General as GeneralQueries } from "src/apollo/queries/hotel";
 import { useGeneral } from "@hooks/host-hotel";
+import { useToast } from "@hooks/useToasts";
 
 const format = "HH:mm a";
 
+const { query: generalQueries } = GeneralQueries;
 interface IGeneralFormProps extends TAddHotelProps {
     setHotelId: any;
     initialValue?: any;
@@ -40,12 +42,15 @@ const General = ({
     const { t } = useTranslation("adminhost");
     const router = useRouter();
 
-    const { data: defaultHotelValue, loading: fetchingDefaultHotelValue } =
-        useQuery(HOTEL_BY_ID, {
-            variables: { id: initialValue?.id },
-            skip: !initialValue?.id,
-        });
-
+    const {
+        data: defaultHotelValue,
+        loading: fetchingDefaultHotelValue,
+        refetch,
+    } = useQuery(generalQueries.HOTEL_BY_ID, {
+        variables: { id: initialValue?.id },
+        skip: !initialValue?.id,
+    });
+    const { addAlert } = useToast();
     const {
         onSubmit,
         errors,
@@ -70,7 +75,28 @@ const General = ({
         setHotelId(id);
         setActiveTab(activeTab + 1);
     }
-
+    const handleAddPhoto = useCallback(
+        async (photo) => {
+            onAddHotelPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddHotelPhotos, refetch]
+    );
     useEffect(() => {
         const api = async () => {
             const newZipCode = normalizeZipCodeInput(watch().zipCode, zipCode);
@@ -232,7 +258,7 @@ const General = ({
                                     }}
                                     defaultPhotos={initialValue?.photos}
                                     onRemove={onRemoveHotelPhoto}
-                                    onUpload={onAddHotelPhotos}
+                                    onUpload={handleAddPhoto}
                                 />
                             )}
                         />

@@ -48,3 +48,11 @@ export const ROOM_AND_ROOM_OVERRIDE = gql`
         }
     }
 `;
+
+export const ROOMS_BY_ID = gql`
+    query RoomsById($roomId:ID!){
+        hotelRoomById(id:$roomId){
+            ${HOTLE_ROOM}
+        }
+    }
+`;

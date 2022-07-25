@@ -17,14 +17,17 @@ import Link from "next/link";
 import router from "next/router";
 
 import { IColumns, TTableKey } from "src/types/timebookTypes";
-import { MY_HOTELS } from "src/apollo/queries/hotel.queries";
+
+import { General } from "src/apollo/queries/hotel";
+
+const { query: generalQueries } = General;
 
 const HotelSpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const { t } = useTranslation("adminhost");
-    const { data, loading, error } = useQuery(MY_HOTELS, {
+    const { data, loading, error } = useQuery(generalQueries.MY_HOTELS, {
         fetchPolicy: "network-only",
     });
 

@@ -80,15 +80,7 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
     // ADD HOTEL NEAREST STATION ENDS HERE
 
     const [addHotelRoomPhotos] = useMutation(
-        roomMutations.ADD_HOTEL_ROOM_PHOTOS,
-        {
-            refetchQueries: [
-                {
-                    query: roomQueries.ROOMS_BY_HOTEL_ID,
-                    variables: { hotelId },
-                },
-            ],
-        }
+        roomMutations.ADD_HOTEL_ROOM_PHOTOS
     );
 
     const onAddHotelRoomPhotos = useCallback(
@@ -110,14 +102,13 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
                         data.addHotelRoomPhotos.uploadRes,
                         photos
                     );
-                    addAlert({ type: "success", message: "Added photos" });
+                    return true;
                 } catch (err) {
-                    addAlert({
-                        type: "error",
-                        message: "Could not upload all photos",
-                    });
-                    console.log(err);
+                    throw err;
                 }
+            }
+            if (errors) {
+                throw errors;
             }
         },
         [initialValue]
