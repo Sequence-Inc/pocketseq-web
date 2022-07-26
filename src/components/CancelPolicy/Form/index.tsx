@@ -1,129 +1,162 @@
-import { Select, TextField, Button } from "@element";
+import { Select, TextField, Button, TextArea } from "@element";
 import { useCancelPolicy } from "@hooks/cancel-policy";
+import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
-import React from "react";
-import { Controller } from "react-hook-form";
+import React, { useCallback, useMemo } from "react";
+import { XIcon } from "@heroicons/react/outline";
 
 const CancelPolicyForm = () => {
     const router = useRouter();
+    const { addAlert } = useToast();
+
+    const onCreateOptions = useMemo(
+        () => ({
+            onCompleted: (data) => {
+                addAlert({ type: "success", message: "Added cancel policy" });
+                setTimeout(() => router.push("/host/cancelPolicies"), 1500);
+            },
+            onError: (err) => {
+                addAlert({
+                    type: "error",
+                    message: "Could not add cancel policy",
+                });
+            },
+        }),
+        [addAlert]
+    );
     const {
         register,
-        unregister,
         control,
         errors,
-        watch,
-        setValue,
-
         onSubmit,
         getValues,
+        dirtyFields,
         policiesField,
-        append,
-        update,
-        remove,
-        spaces,
-        spacesLoading,
-        hotels,
-        hotelsLoading,
+        loading,
         onAddPolciesField,
         onRemovePoliciesField,
-    } = useCancelPolicy();
+    } = useCancelPolicy({
+        onCreateOptions,
+    });
 
     return (
         <form onSubmit={onSubmit}>
             <div className="px-2 py-3 space-y-6 sm:py-6">
                 <div className="w-full md:w-8/12 lg:w-6/12">
-                    <p className="text-base leading-5 font-semibold">Space</p>
-
-                    <Controller
-                        rules={{
-                            required: !getValues("hotelId"),
-                        }}
-                        name="spaceId"
-                        control={control}
-                        render={({ field }) => (
-                            <div className="space-y-2">
-                                <Select
-                                    {...field}
-                                    label={""}
-                                    valueKey="id"
-                                    labelKey="name"
-                                    options={spaces?.mySpaces || []}
-                                    onChange={(val) => field.onChange(val)}
-                                    error={errors.spaceId && true}
-                                    errorMessage="Space is required"
-                                />
-                            </div>
-                        )}
+                    <p className="text-sm leading-5 font-semibold">Name</p>
+                    <TextField
+                        label=""
+                        {...register("name", {
+                            required: true,
+                        })}
+                        error={errors?.name && true}
+                        errorMessage="Name is required"
+                        autoFocus
                     />
                 </div>
 
                 <div className="w-full md:w-8/12 lg:w-6/12">
-                    <p className="text-base leading-5 font-semibold">Hotel</p>
-
-                    <Controller
-                        rules={{
-                            required: !getValues("spaceId"),
-                        }}
-                        name="hotelId"
-                        control={control}
-                        render={({ field }) => (
-                            <div className="space-y-2">
-                                <Select
-                                    {...field}
-                                    label={""}
-                                    valueKey="id"
-                                    labelKey="name"
-                                    options={hotels?.myHotels || []}
-                                    onChange={(val) => field.onChange(val)}
-                                    error={errors.hotelId && true}
-                                    errorMessage="Hotel is required"
-                                />
-                            </div>
-                        )}
-                    />
-                </div>
-                <div className="w-full md:w-8/12 lg:w-6/12">
-                    <p className="text-base leading-5 font-semibold">
-                        Policies
+                    <p className="text-sm leading-5 font-semibold">
+                        Description
                     </p>
+                    <TextArea
+                        label=""
+                        rows={4}
+                        {...register("description", {
+                            required: false,
+                        })}
+                        error={errors?.description && true}
+                        errorMessage="Description is required"
+                    />
+                </div>
+
+                <div className="w-full md:w-8/12 lg:w-8/12">
+                    <p className="text-sm  leading-5 font-semibold">Policies</p>
                     {policiesField?.map((field, index) => (
                         <div
                             className="w-full my-3 flex items-end justify-between space-x-2"
                             key={field.policyId}
                         >
                             <div className="flex flex-col flex-1 ">
-                                <p>Before Hours</p>
+                                <p className="text-xs text-gray-500">
+                                    Before Hours (hours)
+                                </p>
                                 <TextField
                                     label=""
                                     {...register(
                                         `policies.${index}.beforeHours`,
                                         {
-                                            valueAsNumber: true,
+                                            required: true,
+                                            min: {
+                                                value: 0,
+                                                message:
+                                                    "Value cannot be less than 0 ",
+                                            },
                                         }
                                     )}
+                                    error={
+                                        errors?.policies &&
+                                        errors?.policies[index] &&
+                                        errors?.policies[index].beforeHours &&
+                                        true
+                                    }
+                                    errorMessage={
+                                        errors?.policies &&
+                                        errors?.policies[index] &&
+                                        errors?.policies[index].beforeHours
+                                            ?.message
+                                    }
+                                    step="0.01"
                                     type="number"
+                                    disabled={loading}
                                 />
                             </div>
                             <div className="flex flex-col flex-1">
-                                <p>Percentage</p>
+                                <p className="text-xs text-gray-500">
+                                    Percentage (%)
+                                </p>
                                 <TextField
                                     label=""
                                     {...register(
                                         `policies.${index}.percentage`,
                                         {
-                                            valueAsNumber: true,
+                                            required: true,
+                                            min: {
+                                                value: 0,
+                                                message:
+                                                    "Value cannot be less than 0 ",
+                                            },
+                                            max: {
+                                                value: 100,
+                                                message:
+                                                    "Value shouldnot exceed 100",
+                                            },
                                         }
                                     )}
+                                    error={
+                                        errors?.policies &&
+                                        errors?.policies[index] &&
+                                        errors?.policies[index].percentage &&
+                                        true
+                                    }
+                                    errorMessage={
+                                        errors?.policies &&
+                                        errors?.policies[index] &&
+                                        errors?.policies[index].percentage
+                                            ?.message
+                                    }
+                                    step="0.01"
                                     type="number"
+                                    disabled={loading}
                                 />
                             </div>
-                            <Button
-                                className=" max-w-min"
+                            <button
+                                className=" max-w-min text-red-500 hover:bg-gray-100 rounded-sm p-2"
                                 onClick={() => onRemovePoliciesField(index)}
                                 type="button"
                             >
-                                Remove
-                            </Button>
+                                <XIcon className="  w-5  h-5" />
+                            </button>
                         </div>
                     ))}
 
@@ -132,11 +165,12 @@ const CancelPolicyForm = () => {
                     </Button>
                 </div>
 
-                <div className="w-full md:w-8/12 lg:w-6/12 flex items-center space-x-3  justify-end border-t py-6">
+                <div className="w-full md:w-8/12 lg:w-6/12 flex items-center space-x-3 justify-end border-t py-6">
                     <Button
                         variant="primary"
                         className="bg-indigo-600 w-16 hover:bg-indigo-400"
                         type="submit"
+                        loading={loading}
                         loadingText={"Please wait"}
                     >
                         Save
@@ -145,6 +179,7 @@ const CancelPolicyForm = () => {
                         variant="secondary"
                         className="w-16"
                         type="button"
+                        loading={loading}
                         onClick={() => router.back()}
                     >
                         Cancel

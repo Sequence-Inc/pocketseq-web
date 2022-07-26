@@ -1,7 +1,11 @@
 export const CANCEL_POLICY = `
     id
-    beforeHours
-    percentage
+    name
+    description
+    rates{
+        beforeHours
+        percentage
+    }
     createdAt
     updatedAt
 `;
@@ -15,5 +19,4 @@ export const FORM_MY_SPACES = `
 export const FORM_MY_HOTELS = `
     id
     name
-  
 `;

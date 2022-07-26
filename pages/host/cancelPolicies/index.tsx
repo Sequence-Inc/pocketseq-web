@@ -25,27 +25,23 @@ const CancelPolicies = ({ userSession }) => {
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const { data, loading, error } = useQuery(
-        cancelPolicyQueries.MY_CANCEL_POLICIES
+        cancelPolicyQueries.MY_CANCEL_POLICIES,
+        {
+            fetchPolicy: "network-only",
+        }
     );
-
-    console.log({ data });
-
-    const keys: TTableKey[] = [
-        { name: "Before Hours", key: "beforeHours" },
-        { name: "Percentage", key: "percentage" },
-    ];
+    const keys: TTableKey[] = [{ name: "Name", key: "name" }];
 
     const columnClassName = (key): string | undefined => {
-        if (key === "beforeHours") return "min-w-10 text-left";
-        if (key === "percentage") return "w-32 text-left";
+        if (key === "Name") return "border text-left";
+        return "text-left";
     };
 
     const childClassname = (key): string => {
-        if (key === "maximumCapacity" || key === "status") {
-            return "text-right";
-        } else {
-            return "text-left ";
+        if (key === "name") {
+            return "text-left";
         }
+        return "text-center";
     };
 
     useEffect(() => {
@@ -62,10 +58,7 @@ const CancelPolicies = ({ userSession }) => {
                                 href={`/host/my-space/edit/${row?.original?.id}/view`}
                             > */}
                             <a className="text-gray-600 hover:text-gray-700">
-                                {value}{" "}
-                                <span className="text-sm">
-                                    ({row.original.id})
-                                </span>
+                                {value}
                             </a>
                             {/* </Link> */}
                         </div>
@@ -83,11 +76,11 @@ const CancelPolicies = ({ userSession }) => {
                     <div className="flex items-center justify-center space-x-2">
                         <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
-                            onClick={() => {
-                                router.push(
-                                    `/host/hotel-space/edit/${row.original.id}/view`
-                                );
-                            }}
+                            // onClick={() => {
+                            //     router.push(
+                            //         `/host/cancelPolicies/edit/${row.original.id}/view`
+                            //     );
+                            // }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
                             確認
@@ -96,7 +89,7 @@ const CancelPolicies = ({ userSession }) => {
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  hover:bg-gray-200"
                             onClick={() => {
                                 router.push(
-                                    `/host/hotel-space/edit/${row.original.id}`
+                                    `/host/cancelPolicies/edit/${row.original.id}`
                                 );
                             }}
                         >
@@ -115,7 +108,7 @@ const CancelPolicies = ({ userSession }) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading hotels..." />;
+        content = <LoadingSpinner loadingText="Loading cancel policies..." />;
     }
     if (error) {
         content = <div>An error occurred: {error.message}</div>;

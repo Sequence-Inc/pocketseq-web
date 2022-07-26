@@ -1,4 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import useReduceObject from "@hooks/useFilterObject";
 import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -6,16 +7,27 @@ import { useFieldArray, useForm } from "react-hook-form";
 import {
     queries as CancelPolicyQueires,
     mutation as CancelPolicyMutaions,
+    mutation,
 } from "src/apollo/queries/cancelPolicies";
 
-const useAddCancelPolicy = () => {
-    const { addAlert } = useToast();
+const POLICY_FIELD_KEYS = ["beforeHours", "percentage"];
+
+type OnCreateOptionsTypes = {
+    onCompleted?: Function;
+    onError?: Function;
+};
+
+const useAddCancelPolicy = ({
+    onCreateOptions = {},
+}: {
+    onCreateOptions: OnCreateOptionsTypes;
+}) => {
     const [loading, setLoading] = useState(false);
     const {
         register,
         unregister,
         control,
-        formState: { errors },
+        formState: { errors, dirtyFields },
         watch,
         setValue,
         handleSubmit,
@@ -33,16 +45,40 @@ const useAddCancelPolicy = () => {
         keyName: "policyId",
     });
 
-    const { data: spaces, loading: spacesLoading } = useQuery(
-        CancelPolicyQueires.MY_SPACES
+    const [createNewCancelPolicy] = useMutation(
+        CancelPolicyMutaions.ADD_CANCEL_POLICIES,
+        {
+            refetchQueries: [{ query: CancelPolicyQueires.MY_CANCEL_POLICIES }],
+            onCompleted: (data) => {
+                setLoading(false);
+
+                onCreateOptions?.onCompleted(data);
+            },
+            onError: (err) => {
+                setLoading(false);
+                onCreateOptions?.onError(err);
+            },
+        }
     );
-    const { data: hotels, loading: hotelsLoading } = useQuery(
-        CancelPolicyQueires.MY_HOTELS
-    );
+
+    const onCreate = useCallback(async (formData) => {
+        const { policies, ...rest } = formData;
+
+        const formatedPolcies = policies
+            .map((policiy) => useReduceObject(policiy, POLICY_FIELD_KEYS))
+            .map((reduced) => ({
+                beforeHours: parseFloat(reduced.beforeHours),
+                percentage: parseFloat(reduced.percentage),
+            }));
+
+        return createNewCancelPolicy({
+            variables: { input: { ...rest, rates: formatedPolcies } },
+        });
+    }, []);
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
-
+        await onCreate(formData);
         setTimeout(() => setLoading(false), 1500);
     });
 
@@ -61,7 +97,10 @@ const useAddCancelPolicy = () => {
     }, []);
 
     useEffect(() => {
-        append({ beforeHours: null, percentage: null, isLoading: false });
+        append(
+            { beforeHours: null, percentage: null, isLoading: false },
+            { shouldFocus: false }
+        );
     }, []);
 
     return {
@@ -69,6 +108,7 @@ const useAddCancelPolicy = () => {
         unregister,
         control,
         errors,
+        dirtyFields,
         watch,
         setValue,
         handleSubmit,
@@ -78,10 +118,6 @@ const useAddCancelPolicy = () => {
         append,
         update,
         remove,
-        spaces,
-        spacesLoading,
-        hotels,
-        hotelsLoading,
         loading,
         onAddPolciesField,
         onRemovePoliciesField,
