@@ -470,7 +470,6 @@ const useAddPlans = (props: AddPlansProps) => {
         const { data, errors } = await mutate({
             variables: { hotelId, input: payload },
         });
-        console.log({ data });
 
         if (errors) {
             console.log("Errors", errors);

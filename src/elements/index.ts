@@ -31,3 +31,4 @@ export { default as ToastAlert } from "./Toast";
 export { default as HotelCalendarView } from "./HotelCalendarView";
 export { default as HotelCalendarViewStock } from "./HotelCalendarViewStock";
 export { default as FormConfirmModal } from "./FormConfirmModal";
+export { default as PageLayout } from "./PageLayout";
