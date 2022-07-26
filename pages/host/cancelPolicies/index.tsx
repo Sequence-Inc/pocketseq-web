@@ -1,51 +1,47 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-
+import { Button, Container, Table } from "@element";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
-import { Button, Container, Table } from "@element";
-import { LoadingSpinner } from "src/components/LoadingSpinner";
-import useTranslation from "next-translate/useTranslation";
+import Link from "next/link";
 import {
     PencilAltIcon,
     OfficeBuildingIcon,
     PlusIcon,
 } from "@heroicons/react/outline";
-import Link from "next/link";
-import router from "next/router";
-
+import useTranslation from "next-translate/useTranslation";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { IColumns, TTableKey } from "src/types/timebookTypes";
-import { General } from "src/apollo/queries/hotel";
+import router from "next/router";
+import * as CancelPoliciesQueries from "src/apollo/queries/cancelPolicies";
 
-const { query: generalQueries } = General;
+const { queries: cancelPolicyQueries } = CancelPoliciesQueries;
 
-const HotelSpace = ({ userSession }) => {
+const CancelPolicies = ({ userSession }) => {
+    const { t } = useTranslation("adminhost");
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
-    const { t } = useTranslation("adminhost");
-    const { data, loading, error } = useQuery(generalQueries.MY_HOTELS, {
-        fetchPolicy: "network-only",
-    });
-
-    const keys: TTableKey[] = [
-        { name: t("space-name"), key: "name" },
-        { name: t("hotel-space-status"), key: "status" },
-    ];
+    const { data, loading, error } = useQuery(
+        cancelPolicyQueries.MY_CANCEL_POLICIES,
+        {
+            fetchPolicy: "network-only",
+        }
+    );
+    const keys: TTableKey[] = [{ name: "Name", key: "name" }];
 
     const columnClassName = (key): string | undefined => {
-        if (key === "name") return "min-w-10 text-left";
-        if (key === "status") return "w-32 text-left";
+        if (key === "Name") return "border text-left";
+        return "text-left";
     };
 
     const childClassname = (key): string => {
-        if (key === "maximumCapacity" || key === "status") {
-            return "text-right";
-        } else {
-            return "text-left ";
+        if (key === "name") {
+            return "text-left";
         }
+        return "text-center";
     };
 
     useEffect(() => {
@@ -62,10 +58,7 @@ const HotelSpace = ({ userSession }) => {
                                 href={`/host/my-space/edit/${row?.original?.id}/view`}
                             > */}
                             <a className="text-gray-600 hover:text-gray-700">
-                                {value}{" "}
-                                <span className="text-sm">
-                                    ({row.original.id})
-                                </span>
+                                {value}
                             </a>
                             {/* </Link> */}
                         </div>
@@ -83,11 +76,11 @@ const HotelSpace = ({ userSession }) => {
                     <div className="flex items-center justify-center space-x-2">
                         <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
-                            onClick={() => {
-                                router.push(
-                                    `/host/hotel-space/edit/${row.original.id}/view`
-                                );
-                            }}
+                            // onClick={() => {
+                            //     router.push(
+                            //         `/host/cancelPolicies/edit/${row.original.id}/view`
+                            //     );
+                            // }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
                             確認
@@ -96,7 +89,7 @@ const HotelSpace = ({ userSession }) => {
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  hover:bg-gray-200"
                             onClick={() => {
                                 router.push(
-                                    `/host/hotel-space/edit/${row.original.id}`
+                                    `/host/cancelPolicies/edit/${row.original.id}`
                                 );
                             }}
                         >
@@ -115,20 +108,20 @@ const HotelSpace = ({ userSession }) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading hotels..." />;
+        content = <LoadingSpinner loadingText="Loading cancel policies..." />;
     }
     if (error) {
         content = <div>An error occurred: {error.message}</div>;
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data.myHotels} />;
+        content = <Table columns={columns} data={data?.myCancelPolicies} />;
     }
 
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Hotel Space</title>
+                <title>Cancel Policies</title>
             </Head>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
@@ -143,17 +136,17 @@ const HotelSpace = ({ userSession }) => {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            {t("my-hotel-spaces")}
+                                            Cancel Policies
                                         </h1>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="flex mt-6 space-x-3 md:mt-0 md:ml-4">
-                            <Link href="/host/hotel-space/add">
+                            <Link href="/host/cancelPolicies/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
-                                        {t("add-hotel")}
+                                        Add
                                     </Button>
                                 </a>
                             </Link>
@@ -169,7 +162,7 @@ const HotelSpace = ({ userSession }) => {
     );
 };
 
-export default HotelSpace;
+export default CancelPolicies;
 
 export const getServerSideProps = async (context) => {
     const userSession = await getSession(context);

@@ -208,3 +208,19 @@ export type THotelPriceScheme = {
     createdAt?: Date;
     updatedAt?: Date;
 };
+
+export type TCancelPolicyRates = {
+    beforeHours?: number;
+    percentage?: number;
+    createdAt?: number;
+    updatedAt?: number;
+};
+
+export type TCancelPolicy = {
+    id: string;
+    name: string;
+    description?: string;
+    rates: TCancelPolicyRates[];
+    createdAt?: Date;
+    updatedAt?: Date;
+};

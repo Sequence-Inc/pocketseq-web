@@ -75,6 +75,12 @@ export const navigation = [
         roles: ["host"],
     },
     {
+        name: "Cancel Policies",
+        href: "/host/cancelPolicies",
+        Icon: CalendarIcon,
+        roles: ["host"],
+    },
+    {
         name: "Hotel Space Management",
         href: "/host/hotel-space",
         Icon: OfficeBuildingIcon,
