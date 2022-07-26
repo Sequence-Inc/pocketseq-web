@@ -512,17 +512,7 @@ export const SearchBoxNew = ({
                                                                             10
                                                                         );
                                                                     let max =
-                                                                        null;
-                                                                    if (
-                                                                        searchType ===
-                                                                        "hotel"
-                                                                    ) {
-                                                                        max =
-                                                                            maxHotelPeople;
-                                                                    } else {
-                                                                        max =
-                                                                            maxSpacePeople;
-                                                                    }
+                                                                        maxSpacePeople;
                                                                     if (
                                                                         value >=
                                                                             1 &&
@@ -614,17 +604,7 @@ export const SearchBoxNew = ({
                                                                             10
                                                                         );
                                                                     let max =
-                                                                        null;
-                                                                    if (
-                                                                        searchType ===
-                                                                        "hotel"
-                                                                    ) {
-                                                                        max =
-                                                                            maxHotelPeople;
-                                                                    } else {
-                                                                        max =
-                                                                            maxSpacePeople;
-                                                                    }
+                                                                        maxSpacePeople;
                                                                     if (
                                                                         value >=
                                                                             0 &&
@@ -857,17 +837,7 @@ export const SearchBoxNew = ({
                                                                             10
                                                                         );
                                                                     let max =
-                                                                        null;
-                                                                    if (
-                                                                        searchType ===
-                                                                        "hotel"
-                                                                    ) {
-                                                                        max =
-                                                                            maxHotelPeople;
-                                                                    } else {
-                                                                        max =
-                                                                            maxSpacePeople;
-                                                                    }
+                                                                        maxHotelPeople;
                                                                     if (
                                                                         value >=
                                                                             1 &&
@@ -959,17 +929,7 @@ export const SearchBoxNew = ({
                                                                             10
                                                                         );
                                                                     let max =
-                                                                        null;
-                                                                    if (
-                                                                        searchType ===
-                                                                        "hotel"
-                                                                    ) {
-                                                                        max =
-                                                                            maxHotelPeople;
-                                                                    } else {
-                                                                        max =
-                                                                            maxSpacePeople;
-                                                                    }
+                                                                        maxHotelPeople;
                                                                     if (
                                                                         value >=
                                                                             0 &&
