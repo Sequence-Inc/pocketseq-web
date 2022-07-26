@@ -1,5 +1,10 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { MenuIcon, XIcon, ClockIcon } from "@heroicons/react/outline";
+import {
+    MenuIcon,
+    XIcon,
+    ClockIcon,
+    SearchIcon,
+} from "@heroicons/react/outline";
 import Link from "next/link";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -7,9 +12,10 @@ import { Button, Logo } from "@element";
 import { GET_SESSION } from "src/apollo/queries/state.queries";
 import { useQuery } from "@apollo/client";
 import { authorizeRole, logout, classNames } from "src/utils/";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import ClientOnly from "src/components/ClientOnly";
 import { getSession, signOut, useSession } from "next-auth/react";
+import { SearchBoxNew } from "@comp";
 
 interface INavLinkItems {
     name: string;
@@ -91,7 +97,11 @@ const NavLinkOnSmall = ({ link, name }: INavLinkItems) => {
 };
 
 const Header = ({ userSession }) => {
+    const [showSearch, setShowSearch] = useState(false);
+
     const router = useRouter();
+    const { pathname } = router;
+
     let isLoggedIn = false;
     let profile;
     let currentUser;
@@ -118,7 +128,7 @@ const Header = ({ userSession }) => {
                 <>
                     <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                         <div className="flex justify-between h-16">
-                            <div className="flex">
+                            <div className="flex z-20">
                                 <div className="flex items-center mr-2 -ml-2 md:hidden">
                                     {/* Mobile menu button */}
                                     <Disclosure.Button className="inline-flex items-center justify-center p-2 text-white rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -148,7 +158,25 @@ const Header = ({ userSession }) => {
                                     </a>
                                 </Link>
                             </div>
-                            <div className="flex items-center">
+                            {pathname !== "/main" && (
+                                <div className="hidden sm:block absolute w-full top-3 left-1/2 transform -translate-x-1/2 text-center">
+                                    <button
+                                        className="inline-flex items-center px-5 py-2 rounded-full text-white justify-center font-bold bg-primaryHover"
+                                        onClick={() => {
+                                            setShowSearch(!showSearch);
+                                        }}
+                                    >
+                                        <SearchIcon className="w-5 h-5 mr-2" />
+                                        新しい検索
+                                    </button>
+                                    {showSearch && (
+                                        <div className="mt-3 pt-3 pb-5 bg-primaryHover shadow-lg">
+                                            <SearchBoxNew />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                            <div className="flex items-center z-20">
                                 <div className="hidden h-full md:mr-6 md:flex md:space-x-8">
                                     {navLinkItems.map(
                                         (
