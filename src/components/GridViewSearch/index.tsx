@@ -58,7 +58,7 @@ export const GridViewSearch = ({
                                 style={{ paddingBottom: "100%" }}
                             >
                                 <Link href={link}>
-                                    <a>
+                                    <a target="_blank">
                                         {" "}
                                         <img
                                             src={thumbnail}
@@ -69,7 +69,10 @@ export const GridViewSearch = ({
                             </div>
                             <h3 className="text-gray-800 line-clamp-1 text-lg font-bold pt-2">
                                 <Link href={link}>
-                                    <a className="text-gray-700 hover:text-gray-900">
+                                    <a
+                                        target="_blank"
+                                        className="text-gray-700 hover:text-gray-900"
+                                    >
                                         {name}
                                     </a>
                                 </Link>
