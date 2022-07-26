@@ -336,7 +336,6 @@ export const RESERVE_HOTEL = gql`
             currency
             description
             intentCode
-
             intentId
             paymentMethodTypes
             reservationId

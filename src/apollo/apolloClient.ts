@@ -78,6 +78,7 @@ const httpLink = new HttpLink({
     // uri: "http://be12-2400-1a00-b010-cfa8-567e-afa7-9a2d-3974.ngrok.io/dev/graphql",
     // uri: "http://localhost:3001/dev/graphql",
     // uri: "http://47ad-2400-1a00-b010-ce46-14ba-bb36-5297-22c6.ngrok.io/dev/graphql",
+    // uri: "http://76f0-2400-1a00-b011-2074-617b-c3df-3104-8845.ngrok.io/dev/graphql",
 });
 
 const authLink = (token: string = undefined) => {
