@@ -44,7 +44,7 @@ export const HeroSection = ({
         >
             <div
                 className={clsx(
-                    "bg-gray-100 relative w-full mt-16 md:mt-0 aspect-w-1 aspect-h-1",
+                    "bg-gray-100 relative w-full mt-10 md:mt-0",
                     "sm:aspect-w-4 sm:aspect-h-3 lg:aspect-w-16 lg:aspect-h-8 xl:aspect-w-13 xl:aspect-h-5"
                 )}
             >
@@ -53,15 +53,16 @@ export const HeroSection = ({
                     src="/images/hero-02.jpg"
                     alt="timeQonnect"
                     role="presentation"
-                    className="z-0 object-cover object-center w-full h-full"
+                    className="z-0 object-cover object-left-top sm:object-center w-full h-full"
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-primary opacity-0">
                     &nbsp;
                 </div>
-                <Container className="absolute top-0 left-0 z-10 md:pt-16">
+                <Container className="z-10 pt-16">
                     <div className="flex flex-col items-center justify-center w-full h-full">
-                        <p className="mb-10 text-2xl font-bold text-center text-white sm:text-4xl">
+                        <p className="z-20 mb-10 text-3xl font-bold text-center text-white sm:text-4xl drop-shadow-md">
                             「人×場所×体験」を繋げる
+                            <br className="hidden sm:block" />
                             目的に合った場所を検索しよう
                         </p>
                         <SearchBoxNew
@@ -70,7 +71,7 @@ export const HeroSection = ({
                             }}
                         />
 
-                        <p className="mt-10 text-center text-white text-md sm:text-xl">
+                        <p className="z-20 mt-10 mb-10 sm:mb-0 text-center text-white text-xl drop-shadow-md">
                             <span className="font-bold">
                                 スタートアップ特集テーマ！
                             </span>

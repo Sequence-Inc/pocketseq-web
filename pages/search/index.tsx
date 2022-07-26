@@ -202,14 +202,14 @@ const Secondary = ({ userSession, availableSpaceTypes }) => {
                 <title>Search | {config.appName}</title>
             </Head>
             <div className="relative">
-                <div className="px-6 py-10 mt-16 w-full bg-gray-100">
+                {/* <div className="px-6 py-10 mt-16 w-full bg-gray-100">
                     <div className="flex justify-center">
                         <SearchBoxNew
                             defaultValue={searchParams}
                             onChange={onHandleSearchDataChange}
                         />
                     </div>
-                </div>
+                </div> */}
                 <Container className="relative py-12 space-y-12 grid grid-cols-1 lg:grid-cols-9">
                     <div className="px-6 py-10 col-span-9 lg:col-span-5">
                         <div>

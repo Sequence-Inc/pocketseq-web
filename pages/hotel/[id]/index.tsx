@@ -64,17 +64,28 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const [reservationLoading, setReservationLoading] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [result, setResult] = useState(null);
+    const [reservationError, setReservationError] = useState(null);
 
     const [
         fetchPaymentMethods,
-        { data: paymentMethods, loading: paymentMethodsLoading, error },
+        {
+            data: paymentMethods,
+            loading: paymentMethodsLoading,
+            error: paymentMethodsError,
+        },
     ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
 
     const [reserveHotel] = useMutation(RESERVE_HOTEL, {
         onCompleted(data) {
-            alert("Reservation successful.");
-            setResult(data?.reserveHotelroom);
-            setShowModal(false);
+            // alert("Reservation successful.");
+            console.log("Reservation successful", data);
+            setResult(data.reserveHotelroom);
+            setReservationLoading(false);
+        },
+        onError(error) {
+            alert(`Error: ${error.message}`);
+            setReservationError(error.message);
+            setReservationLoading(false);
         },
     });
 
@@ -84,10 +95,10 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         }
     }, []);
 
-    if (error) {
+    if (paymentMethodsError) {
         return (
             <div>
-                <h3>An error occurred: {error.message}</h3>
+                <h3>An error occurred: {paymentMethodsError.message}</h3>
                 <Link href="/">
                     <Button type="submit">Go Back</Button>
                 </Link>
@@ -160,16 +171,17 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     };
 
     const handleReservation = () => {
+        const input = {
+            paymentSourceId: selectedPaymentMethod,
+            roomPlanId: reservationData?.roomPlanId,
+            checkInDate: reservationData?.startDate.valueOf(),
+            checkOutDate: reservationData?.endDate.valueOf(),
+            nAdult: reservationData?.noOfAdults,
+            nChild: reservationData?.noOfChild,
+        };
         reserveHotel({
             variables: {
-                input: {
-                    paymentSourceId: selectedPaymentMethod,
-                    roomPlanId: reservationData?.roomPlanId,
-                    checkInDate: reservationData?.startDate.valueOf(),
-                    checkOutDate: reservationData?.endDate.valueOf(),
-                    nAdult: reservationData?.noOfAdults,
-                    nChild: reservationData?.noOfChild,
-                },
+                input,
             },
         });
     };
@@ -379,7 +391,6 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                                         selectedPaymentMethod
                                                                     }
                                                                 />
-                                                                <div className="border-t border-gray-300 h-0 max-h-0"></div>
                                                                 <div className="mt-4">
                                                                     <Button
                                                                         type="button"

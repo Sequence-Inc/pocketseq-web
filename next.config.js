@@ -8,6 +8,7 @@ module.exports = nextTranslate({
             "timebook-api-dev-media.s3.ap-northeast-1.amazonaws.com",
             "timebook-api-prod-media.s3.ap-northeast-1.amazonaws.com",
             "timebook-public-media.s3.ap-northeast-1.amazonaws.com",
+            "s3.ap-northeast-1.amazonaws.com",
         ],
     },
     webpack: (config) => {
