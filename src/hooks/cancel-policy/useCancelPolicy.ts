@@ -20,12 +20,14 @@ type OnCreateOptionsTypes = {
 
 type TuseAddCancelPolicyProps = {
     onCreateOptions?: OnCreateOptionsTypes;
+    onRemoveOptions?: OnCreateOptionsTypes;
     initialValue?: TCancelPolicy;
 };
 
 const useAddCancelPolicy = ({
     initialValue = null,
     onCreateOptions = {},
+    onRemoveOptions = {},
 }: TuseAddCancelPolicyProps) => {
     const [loading, setLoading] = useState(false);
     const { addAlert } = useToast();
@@ -66,6 +68,20 @@ const useAddCancelPolicy = ({
             },
         }
     );
+    const onCreate = useCallback(async (formData) => {
+        const { policies, ...rest } = formData;
+
+        const formatedPolcies = policies
+            .map((policiy) => useReduceObject(policiy, POLICY_FIELD_KEYS))
+            .map((reduced) => ({
+                beforeHours: parseFloat(reduced.beforeHours),
+                percentage: parseFloat(reduced.percentage),
+            }));
+
+        return createNewCancelPolicy({
+            variables: { input: { ...rest, rates: formatedPolcies } },
+        });
+    }, []);
 
     const [updateCancelPolicy] = useMutation(
         CancelPolicyMutaions.UPDATE_CANCEL_POLICIES,
@@ -95,22 +111,6 @@ const useAddCancelPolicy = ({
             },
         }
     );
-
-    const onCreate = useCallback(async (formData) => {
-        const { policies, ...rest } = formData;
-
-        const formatedPolcies = policies
-            .map((policiy) => useReduceObject(policiy, POLICY_FIELD_KEYS))
-            .map((reduced) => ({
-                beforeHours: parseFloat(reduced.beforeHours),
-                percentage: parseFloat(reduced.percentage),
-            }));
-
-        return createNewCancelPolicy({
-            variables: { input: { ...rest, rates: formatedPolcies } },
-        });
-    }, []);
-
     const onUpdate = useCallback(
         async (formData) => {
             const { policies, ...rest } = formData;
@@ -134,6 +134,30 @@ const useAddCancelPolicy = ({
         },
         [initialValue]
     );
+
+    const [removeCancelPolicy] = useMutation(
+        CancelPolicyMutaions.REMOVE_CANCEL_POLICIES,
+        {
+            refetchQueries: [{ query: CancelPolicyQueires.MY_CANCEL_POLICIES }],
+            onCompleted: (data) => {
+                setLoading(false);
+                onRemoveOptions?.onCompleted(data);
+            },
+            onError: (err) => {
+                setLoading(false);
+                onRemoveOptions?.onError(err);
+            },
+        }
+    );
+
+    const handleRemoveCancelPolicy = useCallback(async () => {
+        setLoading(true);
+        return removeCancelPolicy({
+            variables: {
+                id: initialValue?.id,
+            },
+        });
+    }, [initialValue]);
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
@@ -201,6 +225,7 @@ const useAddCancelPolicy = ({
         loading,
         onAddPolciesField,
         onRemovePoliciesField,
+        handleRemoveCancelPolicy,
     };
 };
 

@@ -13,7 +13,7 @@ export const ADD_CANCEL_POLICIES = gql`
 `;
 
 export const REMOVE_CANCEL_POLICIES = gql`
-    mutation RemoveCancelPolicy($id: ID) {
+    mutation RemoveCancelPolicy($id: ID!) {
         removeCancelPolicy(id: $id) {
             message
             action
