@@ -1,13 +1,29 @@
-import { Select, TextField, Button, TextArea } from "@element";
+import { TextField, Button, TextArea } from "@element";
 import { useCancelPolicy } from "@hooks/cancel-policy";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { XIcon } from "@heroicons/react/outline";
+import { useQuery } from "@apollo/client";
+import { queries as CancelPolicyQueries } from "src/apollo/queries/cancelPolicies";
 
-const CancelPolicyForm = () => {
+type TCancelPolicyFormProps = {
+    cancelPolicyId?: string;
+};
+
+const CancelPolicyForm = (props: TCancelPolicyFormProps) => {
     const router = useRouter();
     const { addAlert } = useToast();
+    const {
+        data: initialValue,
+        loading: fetchingPolicy,
+        error: fetchPolicyError,
+    } = useQuery(CancelPolicyQueries.CANCEL_POLICY_BY_ID, {
+        skip: !props?.cancelPolicyId,
+        variables: {
+            id: props?.cancelPolicyId,
+        },
+    });
 
     const onCreateOptions = useMemo(
         () => ({
@@ -37,6 +53,7 @@ const CancelPolicyForm = () => {
         onRemovePoliciesField,
     } = useCancelPolicy({
         onCreateOptions,
+        initialValue: initialValue?.cancelPolicyById,
     });
 
     return (
@@ -173,7 +190,7 @@ const CancelPolicyForm = () => {
                         loading={loading}
                         loadingText={"Please wait"}
                     >
-                        Save
+                        {props?.cancelPolicyId ? "Update" : " Save"}
                     </Button>
                     <Button
                         variant="secondary"

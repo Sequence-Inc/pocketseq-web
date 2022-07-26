@@ -24,7 +24,10 @@ export const REMOVE_CANCEL_POLICIES = gql`
 export const UPDATE_CANCEL_POLICIES = gql`
     mutation UpdateCancelPolicy($input:UpdateCancelPolicyInput!){
         updateCancelPolicy(input: $input){
-            ${CANCEL_POLICY}
+            message
+            cancelPolicy{
+                ${CANCEL_POLICY}
+            }
         }
     }
 `;

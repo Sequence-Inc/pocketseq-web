@@ -9,6 +9,7 @@ import {
     mutation as CancelPolicyMutaions,
     mutation,
 } from "src/apollo/queries/cancelPolicies";
+import { TCancelPolicy } from "@appTypes/timebookTypes";
 
 const POLICY_FIELD_KEYS = ["beforeHours", "percentage"];
 
@@ -17,12 +18,17 @@ type OnCreateOptionsTypes = {
     onError?: Function;
 };
 
+type TuseAddCancelPolicyProps = {
+    onCreateOptions?: OnCreateOptionsTypes;
+    initialValue?: TCancelPolicy;
+};
+
 const useAddCancelPolicy = ({
+    initialValue = null,
     onCreateOptions = {},
-}: {
-    onCreateOptions: OnCreateOptionsTypes;
-}) => {
+}: TuseAddCancelPolicyProps) => {
     const [loading, setLoading] = useState(false);
+    const { addAlert } = useToast();
     const {
         register,
         unregister,
@@ -61,6 +67,35 @@ const useAddCancelPolicy = ({
         }
     );
 
+    const [updateCancelPolicy] = useMutation(
+        CancelPolicyMutaions.UPDATE_CANCEL_POLICIES,
+        {
+            refetchQueries: [
+                {
+                    query: CancelPolicyQueires.CANCEL_POLICY_BY_ID,
+                    variables: {
+                        id: initialValue?.id,
+                    },
+                },
+            ],
+
+            onCompleted: (data) => {
+                addAlert({
+                    type: "success",
+                    message: "Updated policy successfully",
+                });
+                setLoading(false);
+            },
+            onError: (err) => {
+                setLoading(false);
+                addAlert({
+                    type: "error",
+                    message: "Could not updated policy",
+                });
+            },
+        }
+    );
+
     const onCreate = useCallback(async (formData) => {
         const { policies, ...rest } = formData;
 
@@ -76,10 +111,38 @@ const useAddCancelPolicy = ({
         });
     }, []);
 
+    const onUpdate = useCallback(
+        async (formData) => {
+            const { policies, ...rest } = formData;
+
+            const formatedPolcies = policies
+                .map((policiy) => useReduceObject(policiy, POLICY_FIELD_KEYS))
+                .map((reduced) => ({
+                    beforeHours: parseFloat(reduced.beforeHours),
+                    percentage: parseFloat(reduced.percentage),
+                }));
+
+            return updateCancelPolicy({
+                variables: {
+                    input: {
+                        ...rest,
+                        id: initialValue?.id,
+                        rates: formatedPolcies,
+                    },
+                },
+            });
+        },
+        [initialValue]
+    );
+
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
-        await onCreate(formData);
-        setTimeout(() => setLoading(false), 1500);
+        if (!initialValue) {
+            return onCreate(formData);
+        }
+        if (initialValue) {
+            return onUpdate(formData);
+        }
     });
 
     const onAddPolciesField = useCallback(
@@ -92,16 +155,33 @@ const useAddCancelPolicy = ({
         },
         []
     );
+
     const onRemovePoliciesField = useCallback((fiedlIndex) => {
         remove(fiedlIndex);
     }, []);
 
     useEffect(() => {
-        append(
-            { beforeHours: null, percentage: null, isLoading: false },
-            { shouldFocus: false }
-        );
-    }, []);
+        if (!initialValue) {
+            append(
+                { beforeHours: null, percentage: null, isLoading: false },
+                { shouldFocus: false }
+            );
+        }
+        if (initialValue) {
+            setValue("name", initialValue.name);
+            setValue("description", initialValue.description);
+            if (initialValue?.rates?.length) {
+                [...initialValue.rates]
+                    .sort((a, b) => a?.createdAt - b?.createdAt)
+                    ?.map((rate, index) =>
+                        update(index, {
+                            ...rate,
+                            isLoading: false,
+                        })
+                    );
+            }
+        }
+    }, [initialValue]);
 
     return {
         register,

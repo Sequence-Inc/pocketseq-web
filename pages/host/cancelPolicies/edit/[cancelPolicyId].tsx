@@ -1,22 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
-import { Container, ToastAlert } from "@element";
-import { OfficeBuildingIcon } from "@heroicons/react/outline";
+import { Container } from "@element";
 import useTranslation from "next-translate/useTranslation";
-import { Tabs } from "antd";
-import { General, Rooms, Pricing, Plans } from "src/components/HotelSpace";
 import CancelPolicyForm from "src/components/CancelPolicy/Form";
-import { useCancelPolicy } from "@hooks/cancel-policy";
 import { useRouter } from "next/router";
 
 const EditCancelPolicies = ({ userSession }) => {
     const { t } = useTranslation("adminhost");
     const router = useRouter();
-    const { cancelPolicyId: id } = router.query;
-    console.log({ id });
+    const { cancelPolicyId }: { cancelPolicyId?: string } = router.query;
     return (
         <HostLayout userSession={userSession}>
             <Head>
@@ -44,7 +39,7 @@ const EditCancelPolicies = ({ userSession }) => {
             </div>
 
             <Container className="bg-white py-4 sm:py-6 lg:py-8 mt-3 mb-3 sm:mb-5">
-                <CancelPolicyForm />
+                <CancelPolicyForm cancelPolicyId={cancelPolicyId} />
             </Container>
         </HostLayout>
     );
