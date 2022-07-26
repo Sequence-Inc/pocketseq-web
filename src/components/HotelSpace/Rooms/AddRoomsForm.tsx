@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
     FileUpload,
     TextArea,
@@ -9,23 +9,17 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 
-import { TAddHotelProps } from "@appTypes/timebookTypes";
-
-import {
-    Controller,
-    useFieldArray,
-    UseFieldArrayReturn,
-    FieldArrayWithId,
-} from "react-hook-form";
+import { Controller, FieldArrayWithId } from "react-hook-form";
 
 import { useRooms } from "@hooks/host-hotel";
 import { DAY_OF_WEEK } from "@config";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
-import { HOTLE_ROOM } from "src/apollo/queries/core.queries";
-import { ROOMS_BY_ID } from "src/apollo/queries/hotel.queries";
 
+import { Room as RoomQueires } from "src/apollo/queries/hotel";
+
+const { queries: roomQueries } = RoomQueires;
 interface IAddRoomFormProps {
     hotelId: string;
     handleSubmit?: any;
@@ -45,13 +39,15 @@ const AddRoomForm = ({
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
 
-    const { data: defaultRoomValue, loading: fetchingDefaultValue } = useQuery(
-        ROOMS_BY_ID,
-        {
-            variables: { roomId: initialValue?.id },
-            skip: !initialValue?.id,
-        }
-    );
+    const {
+        data: defaultRoomValue,
+        loading: fetchingDefaultValue,
+        refetch,
+    } = useQuery(roomQueries.ROOMS_BY_ID, {
+        variables: { roomId: initialValue?.id },
+        skip: !initialValue?.id,
+        fetchPolicy: "network-only",
+    });
     const { addAlert } = useToast();
     const router = useRouter();
     const {
@@ -74,6 +70,29 @@ const AddRoomForm = ({
         initialValue: defaultRoomValue?.hotelRoomById,
         addAlert,
     });
+
+    const handleUpload = useCallback(
+        async (photo) => {
+            onAddHotelRoomPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddHotelRoomPhotos, refetch]
+    );
 
     return (
         <form
@@ -140,7 +159,7 @@ const AddRoomForm = ({
                                 defaultRoomValue?.hotelRoomById?.photos
                             }
                             onRemove={onRemoveRoomPhoto}
-                            onUpload={onAddHotelRoomPhotos}
+                            onUpload={handleUpload}
                         />
                     )}
                 />
@@ -325,7 +344,7 @@ const AddRoomForm = ({
                                                 {...field}
                                                 hidePlaceholder
                                                 label={""}
-                                                className="lg:w-16"
+                                                className="lg:w-16 "
                                                 options={
                                                     priceSchemes?.myPriceSchemes ||
                                                     []

@@ -1,14 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 import { useQuery, NetworkStatus } from "@apollo/client";
-import { ROOMS_BY_HOTEL_ID } from "src/apollo/queries/hotel.queries";
+
 import { useToast } from "@hooks/useToasts";
 import RoomList from "./RoomList";
-import { Button, Container } from "@element";
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { Button } from "@element";
+import { PlusIcon } from "@heroicons/react/outline";
 import AddRoomForm from "./AddRoomsForm";
 
+import { Room as RoomQueires } from "src/apollo/queries/hotel";
+
+const { queries: roomQueries } = RoomQueires;
 interface IRoomFormProps extends TAddHotelProps {}
 
 const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
@@ -18,7 +21,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
 
     const toggleForm = () => setFormVisible((prev) => !prev);
     const { data, loading, error, networkStatus } = useQuery(
-        ROOMS_BY_HOTEL_ID,
+        roomQueries.ROOMS_BY_HOTEL_ID,
         {
             variables: {
                 hotelId,
@@ -47,7 +50,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
         addAlert({ type: "success", message: "Successfully added hotel room" });
     };
     return (
-        <>
+        <div className="overflow-auto">
             <div className="flex md:justify-end">
                 <div className="flex px-6 mt-6 space-x-3 md:mt-0 md:ml-4">
                     {!formVisible && (
@@ -91,7 +94,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                     initialValue={defaultFormData}
                 />
             )}
-        </>
+        </div>
     );
 };
 

@@ -10,7 +10,10 @@ import { Tabs } from "antd";
 import { General, Rooms, Pricing, Plans } from "src/components/HotelSpace";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
-import { HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
+
+import { General as GeneralQuries } from "src/apollo/queries/hotel";
+
+const { query: generalQueries } = GeneralQuries;
 
 const { TabPane } = Tabs;
 
@@ -25,7 +28,7 @@ function EditHotelSpace({ userSession }) {
         data,
         loading: hotelLoading,
         refetch,
-    } = useQuery(HOTEL_BY_ID, {
+    } = useQuery(generalQueries.HOTEL_BY_ID, {
         variables: { id },
         fetchPolicy: "network-only",
     });

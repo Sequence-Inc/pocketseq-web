@@ -12,10 +12,7 @@ import {
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
-import {
-    PACKAGE_PLAN_BY_ID,
-    PRICING_BY_HOTEL_ID,
-} from "src/apollo/queries/hotel.queries";
+
 import { Controller, FieldArrayWithId } from "react-hook-form";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import moment from "moment";
@@ -25,6 +22,10 @@ import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
 import { usePlans } from "@hooks/host-hotel";
+import { Plans as PlanQueries, Pricing } from "src/apollo/queries/hotel";
+
+const { queries: planQueries } = PlanQueries;
+const { queries: pricingQueries } = Pricing;
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -53,7 +54,8 @@ const Plans = (props: IPlanFormProps) => {
         loading: packageLoading,
         data: packageDetails,
         error: fetchDetailError,
-    } = useQuery(PACKAGE_PLAN_BY_ID, {
+        refetch,
+    } = useQuery(planQueries.PACKAGE_PLAN_BY_ID, {
         variables: {
             id: selectedPlan?.id,
         },
@@ -94,11 +96,34 @@ const Plans = (props: IPlanFormProps) => {
         onCompleted,
     });
 
+    const handleUpload = useCallback(
+        async (photo) => {
+            onAddHotelRoomPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddHotelRoomPhotos, refetch]
+    );
+
     const {
         data: priceSchemes,
         loading: priceSchemeLoading,
         error: priceSchemeError,
-    } = useQuery(PRICING_BY_HOTEL_ID, {
+    } = useQuery(pricingQueries.PRICING_BY_HOTEL_ID, {
         skip: !hotelId,
         variables: { hotelId },
     });
@@ -365,7 +390,7 @@ const Plans = (props: IPlanFormProps) => {
                                     errorMessage="Photos are required"
                                     onChange={(e) => onChange(e)}
                                     onRemove={onRemovePackagePhotos}
-                                    onUpload={onAddHotelRoomPhotos}
+                                    onUpload={handleUpload}
                                 />
                             )}
                         />
