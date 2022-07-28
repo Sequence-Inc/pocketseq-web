@@ -1,30 +1,33 @@
 import React from "react";
+import AddOptionsForm from "src/components/Options/Form";
+
+import { Button, PageLayout } from "@element";
+
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import HostLayout from "src/layouts/HostLayout";
-import Head from "next/head";
-import { Container, PageLayout } from "@element";
-import { OfficeBuildingIcon, AdjustmentsIcon } from "@heroicons/react/outline";
-import useTranslation from "next-translate/useTranslation";
+import { AdjustmentsIcon, PlusIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 
-import CancelPolicyForm from "src/components/CancelPolicy/Form";
+const EditOption = ({ userSession }) => {
+    const router = useRouter();
 
-const AddCancelPolicies = ({ userSession }) => {
-    const { t } = useTranslation("adminhost");
-
+    const { optionId }: { optionId?: string } = router.query;
     return (
         <HostLayout userSession={userSession}>
             <PageLayout
-                pageTitle="Add Cancel Policy"
+                pageTitle="Edit Option"
+                bannerTitle="Edit Options"
                 BannerIcon={AdjustmentsIcon}
+                childrenWrapperClassName="bg-white"
             >
-                <CancelPolicyForm />
+                <AddOptionsForm optionId={optionId} />
             </PageLayout>
         </HostLayout>
     );
 };
 
-export default AddCancelPolicies;
+export default EditOption;
 
 export const getServerSideProps = async (context) => {
     const userSession = await getSession(context);

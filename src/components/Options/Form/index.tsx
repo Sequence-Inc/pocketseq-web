@@ -8,10 +8,7 @@ import {
     Button,
     SwitchField,
     DatePickerField,
-    RadioField,
 } from "@element";
-import useTranslation from "next-translate/useTranslation";
-import { TAddHotelProps } from "@appTypes/timebookTypes";
 
 import { Controller, FieldArrayWithId } from "react-hook-form";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
@@ -22,17 +19,45 @@ import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
 import { useOptions } from "@hooks/options";
+import { queries as OptionQueries } from "src/apollo/queries/options";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
 
-const COST_OPTIONS = [
-    { label: "Per Person", value: "perPerson" },
-    { label: "Number Of times", value: "numberOfTimes" },
-    { label: "Flat", value: "flat" },
+const PAYMENT_TERMS = [
+    { label: "Per Person", value: "PER_PERSON" },
+    { label: "Per Room", value: "PER_ROOM" },
+    { label: "Per User", value: "PER_USER" },
+    { label: "Per Flat", value: "PER_FLAT" },
 ];
 
-const AddOptionsForm = () => {
+type TOptionFormProps = {
+    optionId?: string;
+};
+
+const AddOptionsForm = (props: TOptionFormProps) => {
+    const { optionId } = props;
+    const { addAlert } = useToast();
+    const {
+        data: initialValue,
+        loading: fetchingInitialData,
+        refetch,
+    } = useQuery(OptionQueries.OPTION_BY_ID, {
+        skip: !optionId,
+        variables: {
+            id: optionId,
+        },
+    });
+
+    const router = useRouter();
+    const onCreateSuccess = useCallback((data) => {
+        setTimeout(() => router.back(), 1500);
+    }, []);
+
+    const onCreateError = useCallback((data) => {
+        addAlert({ type: "error", message: "Could not created new option." });
+    }, []);
+
     const {
         loading,
         register,
@@ -48,9 +73,39 @@ const AddOptionsForm = () => {
         watchShowReservation,
         watchShowCutOff,
         watchAdditionalPrice,
-    } = useOptions();
+        onSubmit,
+        onAddOptionsPhotos,
+        onRemoveOptionPhotos,
+    } = useOptions({
+        onCreateSuccess,
+        onCreateError,
+        initialValue: initialValue?.optionById,
+    });
+
+    const handleUpload = useCallback(
+        async (photo) => {
+            onAddOptionsPhotos(photo)
+                .then((data) => {
+                    setTimeout(() => {
+                        addAlert({
+                            type: "success",
+                            message: "Added photos successfully",
+                        });
+                        refetch();
+                    }, 5000);
+                })
+                .catch((err) => {
+                    addAlert({
+                        type: "error",
+                        message: "Could not add photos ",
+                    });
+                    refetch();
+                });
+        },
+        [onAddOptionsPhotos, refetch]
+    );
     return (
-        <form className="px-2">
+        <form className="px-2" onSubmit={onSubmit}>
             <div className="px-0 py-3 space-y-6 sm:py-6">
                 <div className="w-full md:w-8/12 lg:w-6/12">
                     <p className="text-sm leading-5 font-medium">
@@ -70,7 +125,7 @@ const AddOptionsForm = () => {
 
                 <div className="w-full md:w-8/12 lg:w-6/12">
                     <p className="text-sm leading-5 font-medium">Description</p>
-                    <TextField
+                    <TextArea
                         disabled={loading}
                         label={""}
                         errorMessage="Description is required"
@@ -260,7 +315,9 @@ const AddOptionsForm = () => {
                         Upload Photos
                     </p>
                     <Controller
-                        rules={{ required: true }}
+                        rules={{
+                            required: !initialValue?.optionById?.photos?.length,
+                        }}
                         control={control}
                         name="photos"
                         render={({ field: { onChange } }) => (
@@ -272,11 +329,11 @@ const AddOptionsForm = () => {
                                 className="w-full"
                                 label=""
                                 error={errors.photos && true}
-                                // defaultPhotos={initialValue?.photos}
+                                defaultPhotos={initialValue?.optionById?.photos}
                                 errorMessage="Photos are required"
                                 onChange={(e) => onChange(e)}
-                                // onRemove={onRemovePackagePhotos}
-                                // onUpload={handleUpload}
+                                onRemove={onRemoveOptionPhotos}
+                                onUpload={handleUpload}
                             />
                         )}
                     />
@@ -291,8 +348,10 @@ const AddOptionsForm = () => {
                                 </span>
                             </>
                         }
-                        defaultValue={getValues("additionalPrice")}
-                        onChange={(val) => setValue("additionalPrice", val)}
+                        defaultValue={getValues("additionalPriceAllowed")}
+                        onChange={(val) =>
+                            setValue("additionalPriceAllowed", val)
+                        }
                     />
                     {watchAdditionalPrice && (
                         <div className="flex flex-col w-full space-y-2 items-start">
@@ -300,17 +359,17 @@ const AddOptionsForm = () => {
                                 <Controller
                                     rules={{ required: watchAdditionalPrice }}
                                     control={control}
-                                    name="costOption"
+                                    name="paymentTerm"
                                     render={({ field }) => (
                                         <Select
                                             {...field}
                                             label=""
-                                            options={COST_OPTIONS}
-                                            error={errors.spaceTypes && true}
+                                            options={PAYMENT_TERMS}
+                                            error={errors.paymentTerm && true}
                                             onChange={(val) =>
                                                 field.onChange(val)
                                             }
-                                            errorMessage="Cost options is required"
+                                            errorMessage="Payment terms is required"
                                             labelKey="label"
                                             valueKey="value"
                                             disabled={loading}
@@ -323,7 +382,7 @@ const AddOptionsForm = () => {
                                 <TextField
                                     disabled={loading}
                                     label=""
-                                    {...register("cost", {
+                                    {...register("additionalPrice", {
                                         required: watchAdditionalPrice,
                                         min: {
                                             value: 0,
@@ -333,7 +392,7 @@ const AddOptionsForm = () => {
                                         valueAsNumber: true,
                                     })}
                                     type="number"
-                                    error={errors.cost && true}
+                                    error={errors.additionalPrice && true}
                                 />
                             </div>
                         </div>
@@ -344,7 +403,7 @@ const AddOptionsForm = () => {
                     <Button
                         variant="primary"
                         className="bg-indigo-600 w-16 hover:bg-indigo-300"
-                        // type="submit"
+                        type="submit"
                         disabled={loading}
                     >
                         Save
