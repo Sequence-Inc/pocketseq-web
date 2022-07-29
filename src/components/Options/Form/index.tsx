@@ -463,7 +463,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             className="w-16"
                             type="button"
                             disabled={loading}
-                            // onClick={toggleForm}
+                            onClick={() => router.back()}
                         >
                             Cancel
                         </Button>
