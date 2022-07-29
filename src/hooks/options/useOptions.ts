@@ -101,6 +101,28 @@ const useOptions = ({
             setLoading(false);
         },
     });
+
+    const [removeOption] = useMutation(OptionMutation.REMOVE_OPTIONS, {
+        refetchQueries: [
+            {
+                query: OptionQueires.MY_OPTIONS,
+            },
+        ],
+        onCompleted: (data) => {
+            setLoading(false);
+            addAlert({
+                type: "success",
+                message: "Removed option successfully.",
+            });
+            onCreateSuccess(data);
+        },
+        onError: (err) => {
+            addAlert({ type: "error", message: "Could not remove option." });
+
+            setLoading(false);
+        },
+    });
+
     const [addPhotosToOption] = useMutation(OptionMutation.ADD_OPTION_PHOTOS);
     const [removeOptionsPhotos] = useMutation(
         OptionMutation.REMOVE_OPTIONS_PHOTO,
@@ -122,6 +144,7 @@ const useOptions = ({
                 }),
         }
     );
+
     const watchShowUsage = watch("usagePeriod", false);
     const watchShowReservation = watch("reservationPeriod", false);
     const watchShowCutOff = watch("cutOffPeriod", false);
@@ -192,40 +215,42 @@ const useOptions = ({
         if (initialValue) {
             setValue("name", initialValue.name);
             setValue("description", initialValue.description);
+            setValue("photos", initialValue?.photos);
 
+            // for additional options
             if (initialValue?.paymentTerm || initialValue?.additionalPrice) {
                 setValue("additionalPriceAllowed", true);
+                setValue("additionalPrice", initialValue?.additionalPrice);
+                setValue("paymentTerm", initialValue?.paymentTerm);
             }
-            setValue("paymentTerm", initialValue.paymentTerm);
-            setValue("additionalPrice", initialValue.additionalPrice);
 
+            // for usage period
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
+                setValue("startUsage", initialValue?.startUsage);
+                setValue("endUsage", initialValue?.endUsage);
             }
 
-            setValue("startUsage", initialValue?.startUsage);
-            setValue("endUsage", initialValue?.endUsage);
-
+            // for reservation period
             if (
                 initialValue?.startReservation ||
                 initialValue?.endReservation
             ) {
                 setValue("reservationPeriod", true);
+                setValue("startReservation", initialValue?.startReservation);
+                setValue("endReservation", initialValue?.endReservation);
             }
 
-            setValue("startReservation", initialValue?.startReservation);
-            setValue("endReservation", initialValue?.endReservation);
-
-            setValue("photos", initialValue?.photos);
+            // for cutOffPeriod
 
             if (
                 initialValue?.cutOffBeforeDays ||
                 initialValue?.cutOffTillTime
             ) {
                 setValue("cutOffPeriod", true);
+                setValue("cutOffBeforeDays", initialValue?.cutOffBeforeDays);
+                setValue("cutOffTillTime", initialValue?.cutOffTillTime);
             }
-            setValue("cutOffBeforeDays", initialValue?.cutOffBeforeDays);
-            setValue("cutOffTillTime", initialValue?.cutOffTillTime);
         }
     }, [initialValue]);
 
@@ -301,8 +326,8 @@ const useOptions = ({
                     endReservation: formData.endReservation || null,
                     cutOffBeforeDays: formData.cutOffBeforeDays || null,
                     cutOffTillTime: formData.cutOffTillTime || null,
-                    paymentTerm: formData?.paymentTerm,
-                    additionalPrice: formData?.additionalPrice,
+                    paymentTerm: formData.paymentTerm || null,
+                    additionalPrice: formData.additionalPrice || null,
                 };
 
                 // let filteredPayload = useReduceObject(
@@ -334,6 +359,18 @@ const useOptions = ({
             return onUpdate(formData);
         }
     });
+
+    const onRemove = useCallback(() => {
+        if (initialValue) {
+            setLoading(true);
+            return removeOption({
+                variables: {
+                    id: initialValue?.id,
+                },
+            });
+        }
+    }, [initialValue]);
+
     return {
         loading,
         register,
@@ -348,6 +385,7 @@ const useOptions = ({
         onSubmit,
         onAddOptionsPhotos,
         onRemoveOptionPhotos,
+        onRemove,
         watchShowUsage,
         watchShowReservation,
         watchShowCutOff,
