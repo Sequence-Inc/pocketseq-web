@@ -54,7 +54,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
 
         const handleUploadPhoto = useCallback(
             async (files: File[]) => {
-                if (!defaultPhotos?.length) return;
+                if (!defaultPhotos) return;
                 onUpload && (await onUpload(files));
             },
             [onUpload, defaultPhotos]
