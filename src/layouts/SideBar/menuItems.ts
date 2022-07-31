@@ -10,6 +10,7 @@ import {
     BadgeCheckIcon,
     IdentificationIcon,
     OfficeBuildingIcon,
+    AdjustmentsIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
@@ -84,6 +85,12 @@ export const navigation = [
         name: "Hotel Space Management",
         href: "/host/hotel-space",
         Icon: OfficeBuildingIcon,
+        roles: ["host"],
+    },
+    {
+        name: "Options",
+        href: "/host/options",
+        Icon: AdjustmentsIcon,
         roles: ["host"],
     },
     {
