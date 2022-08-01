@@ -10,7 +10,6 @@ export const MY_OPTIONS = gql`
         ) {
             id
             name
-            createdAt
         }
     }
 `;

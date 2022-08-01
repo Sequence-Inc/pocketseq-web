@@ -1,15 +1,20 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import { Plans, Room } from "src/apollo/queries/hotel";
-import { queries as OptionQueires } from "src/apollo/queries/options";
-
 import handleUpload from "src/utils/uploadImages";
-import { DAY_OF_WEEK } from "src/config";
+import {
+    DAY_OF_WEEK,
+    PRICE_SCHEME_ADULTS,
+    PRICE_SCHEME_CHILD,
+} from "src/config";
 
 import {
     useFieldArray,
     useForm,
+    UseFormProps,
     UseFieldArrayReturn,
     FieldArrayWithId,
 } from "react-hook-form";
@@ -54,7 +59,6 @@ const ADD_PLAN_INPUT_KEYS = [
     "cutOffTillTime",
     "roomTypes",
     "photos",
-    "options",
 ];
 const UPDATE_PLAN_KEYS = [
     "id",
@@ -81,14 +85,7 @@ const useAddPlans = (props: AddPlansProps) => {
         variables: {
             hotelId,
         },
-        skip: !hotelId,
     });
-
-    const {
-        data: options,
-        loading: optionsLoading,
-        error: optionsError,
-    } = useQuery(OptionQueires.MY_OPTIONS);
 
     const {
         register,
@@ -115,26 +112,6 @@ const useAddPlans = (props: AddPlansProps) => {
         name: "roomTypes",
         control,
     });
-
-    const {
-        fields: optionFields,
-        append: appendOptionFields,
-        update: updateOptionFields,
-    }: UseFieldArrayReturn & { fields: any[] } = useFieldArray<any, any, any>({
-        keyName: "optionFieldId",
-        name: "optionFields",
-        control,
-    });
-
-    const handleOptionFieldChange = useCallback(
-        (fieldIndex, value) => {
-            updateOptionFields(fieldIndex, {
-                ...optionFields[fieldIndex],
-                isChecked: value,
-            });
-        },
-        [optionFields]
-    );
 
     const handleRoomFieldUpdate = useCallback(
         (fieldIndex, priceIndex, value) => {
@@ -295,6 +272,7 @@ const useAddPlans = (props: AddPlansProps) => {
 
             if (initValRoomIndex !== -1) {
                 const roomType = initialValue.roomTypes[initValRoomIndex];
+                console.log({ roomType });
 
                 update(index, {
                     roomPlanId: roomType.id,
@@ -313,32 +291,6 @@ const useAddPlans = (props: AddPlansProps) => {
             }
         });
     }, [hotelRooms, initialValue?.roomTypes]);
-
-    useEffect(() => {
-        if (!options?.myOptions?.length) return;
-
-        [...options?.myOptions]
-            .sort((a, b) => a.createdAt - b.createdAt)
-            .forEach((option, index) => {
-                const initValOptionIndex =
-                    initialValue.optionsAttachments.findIndex(
-                        (optionAttachment) => optionAttachment.id === option.id
-                    );
-                if (initValOptionIndex !== -1) {
-                    updateOptionFields(index, {
-                        ...option,
-                        isChecked: true,
-                    });
-                }
-                if (initValOptionIndex == -1) {
-                    updateOptionFields(index, {
-                        ...option,
-                        isChecked: false,
-                    });
-                }
-            });
-        // options?.myOptions
-    }, [options, initialValue?.optionsAttachments]);
 
     const [mutate] = useMutation(planMutations.ADD_HOTEL_PACKAGE_PLANS, {
         refetchQueries: [
@@ -457,111 +409,103 @@ const useAddPlans = (props: AddPlansProps) => {
         [initialValue]
     );
 
-    const onCreate = useCallback(
-        async (formData) => {
-            const reducedFormData: any = useReduceObject(
-                formData,
-                ADD_PLAN_INPUT_KEYS
+    const onCreate = useCallback(async (formData) => {
+        const reducedFormData: any = useReduceObject(
+            formData,
+            ADD_PLAN_INPUT_KEYS
+        );
+
+        const { roomTypes } = reducedFormData;
+
+        if (!roomTypes?.length) {
+            setError(
+                "roomTypes",
+                {
+                    type: "custom",
+                    message: "Must Select at least one room type",
+                },
+                { shouldFocus: true }
             );
+            return;
+        }
 
-            const { roomTypes } = reducedFormData;
+        const reducedRoomTypes = roomTypes.map((room) => {
+            const { priceSettings, hotelRoomId } = room;
 
-            if (!roomTypes?.length) {
-                setError(
-                    "roomTypes",
-                    {
-                        type: "custom",
-                        message: "Must Select at least one room type",
-                    },
-                    { shouldFocus: true }
-                );
-                return;
+            const checkAllPricingExists = priceSettings.every(
+                (element) => element.priceSchemeId != null
+            );
+            if (checkAllPricingExists) {
+                return {
+                    hotelRoomId,
+                    priceSettings,
+                };
             }
+        });
 
-            const reducedOptions = optionFields
-                ?.filter((item: any) => !!item?.isChecked)
-                ?.map((option) => option.id);
+        if (reducedRoomTypes.includes(undefined)) {
+            setError(
+                "roomTypes",
+                {
+                    type: "custom",
+                    message: "Must add setting for all days of the week",
+                },
+                { shouldFocus: true }
+            );
+            return;
+        }
+        const payloadPhotos = formData.photos.map((res) => ({
+            mime: res.type,
+        }));
 
-            const reducedRoomTypes = roomTypes.map((room) => {
-                const { priceSettings, hotelRoomId } = room;
+        const payload = {
+            ...reducedFormData,
+            roomTypes: reducedRoomTypes,
+            photos: payloadPhotos,
+            stock: parseInt(reducedFormData.stock, 10),
+        };
 
-                const checkAllPricingExists = priceSettings.every(
-                    (element) => element.priceSchemeId != null
-                );
-                if (checkAllPricingExists) {
-                    return {
-                        hotelRoomId,
-                        priceSettings,
-                    };
-                }
+        setLoading(true);
+
+        const { data, errors } = await mutate({
+            variables: { hotelId, input: payload },
+        });
+
+        if (errors) {
+            console.log("Errors", errors);
+            addAlert({
+                type: "error",
+                message: "Could not add plan. Please try again later!!!",
             });
+            setLoading(false);
+            return;
+        }
 
-            if (reducedRoomTypes.includes(undefined)) {
-                setError(
-                    "roomTypes",
-                    {
-                        type: "custom",
-                        message: "Must add setting for all days of the week",
-                    },
-                    { shouldFocus: true }
+        if (data) {
+            try {
+                addAlert({
+                    type: "success",
+                    message: "Plan added successfully",
+                });
+
+                await handleUpload(
+                    data.addPackagePlan.uploadRes,
+                    formData.photos
                 );
-                return;
-            }
-            const payloadPhotos = formData.photos.map((res) => ({
-                mime: res.type,
-            }));
+                setLoading(false);
 
-            const payload = {
-                ...reducedFormData,
-                roomTypes: reducedRoomTypes,
-                photos: payloadPhotos,
-                stock: parseInt(reducedFormData.stock, 10),
-                options: reducedOptions,
-            };
-
-            setLoading(true);
-
-            const { data, errors } = await mutate({
-                variables: { hotelId, input: payload },
-            });
-
-            if (errors) {
-                console.log("Errors", errors);
+                addAlert({
+                    type: "success",
+                    message: "Uploaded Photos for plan",
+                });
+            } catch (err) {
                 addAlert({
                     type: "error",
-                    message: "Could not add plan. Please try again later!!!",
+                    message: "Could not upload photos for plan",
                 });
-                setLoading(false);
-                return;
             }
-
-            if (data) {
-                try {
-                    addAlert({
-                        type: "success",
-                        message: "Plan added successfully",
-                    });
-
-                    await handleUpload(
-                        data.addPackagePlan.uploadRes,
-                        formData.photos
-                    );
-                    setLoading(false);
-
-                    addAlert({
-                        type: "success",
-                        message: "Uploaded Photos for plan",
-                    });
-                } catch (err) {
-                    addAlert({
-                        type: "error",
-                        message: "Could not upload photos for plan",
-                    });
-                }
-            }
-        },
-        [optionFields]
-    );
+        }
+    }, []);
 
     const onUpdate = useCallback(
         async (formData) => {
@@ -569,9 +513,6 @@ const useAddPlans = (props: AddPlansProps) => {
                 formData,
                 UPDATE_PLAN_KEYS
             );
-            const reducedOptions = optionFields
-                ?.filter((item: any) => !!item?.isChecked)
-                ?.map((option) => option.id);
 
             const payload = {
                 id: initialValue.id,
@@ -581,7 +522,6 @@ const useAddPlans = (props: AddPlansProps) => {
                 endReservation: formData?.endReservation || null,
                 cutOffBeforeDays: formData?.cutOffBeforeDays || null,
                 cutOffTillTime: formData?.cutOffTillTime || null,
-                options: reducedOptions,
                 ...reducedFormData,
             };
 
@@ -602,11 +542,12 @@ const useAddPlans = (props: AddPlansProps) => {
 
             setLoading(false);
         },
-        [initialValue, fields, optionFields]
+        [initialValue, fields]
     );
 
     const updateRoomPlan = useCallback(
         async (fieldIndex) => {
+            console.log({ fieldIndex, room: fields[fieldIndex] });
             const { priceSettings, ...rest } = fields[fieldIndex];
 
             const validateRoomTypes = priceSettings.every(
@@ -656,9 +597,6 @@ const useAddPlans = (props: AddPlansProps) => {
         fetchRoomErrors,
         control,
         errors,
-        options: options?.myOptions,
-        optionsLoading,
-        optionsError,
         refetchRooms,
         register,
         watch,
@@ -673,12 +611,10 @@ const useAddPlans = (props: AddPlansProps) => {
         watchShowCutOff,
         handleRoomTypesChange,
         fields,
-        optionFields,
         handleRoomFieldUpdate,
         updateRoomPlan,
         onRemovePackagePhotos,
         onAddHotelRoomPhotos,
-        handleOptionFieldChange,
     };
 };
 
