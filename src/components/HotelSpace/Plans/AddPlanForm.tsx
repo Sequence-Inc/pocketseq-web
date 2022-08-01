@@ -71,6 +71,9 @@ const Plans = (props: IPlanFormProps) => {
     }, [selectedPlan]);
     const {
         hotelRooms,
+        options,
+        optionsError,
+        optionsLoading,
         refetchRooms,
         fetchRoomErrors,
         watchShowUsage,
@@ -86,9 +89,11 @@ const Plans = (props: IPlanFormProps) => {
         handleRoomFieldUpdate,
         onSubmit,
         loading,
+        optionFields,
         updateRoomPlan,
         onRemovePackagePhotos,
         onAddHotelRoomPhotos,
+        handleOptionFieldChange,
     } = usePlans({
         hotelId,
         addAlert,
@@ -643,7 +648,7 @@ const Plans = (props: IPlanFormProps) => {
                             error={errors.stock && true}
                         />
                     </div>
-                    {/* <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
+                    <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
                             <p className="text-lg font-medium leading-6">
                                 Option Attachment
@@ -655,15 +660,45 @@ const Plans = (props: IPlanFormProps) => {
                                 Manage Options
                             </Button>
                         </div>
-                        <Select
-                        {...register("options")}
-                            className="w-80"
-                            value=""
-                            onChange={() => {}}
-                            options={[]}
-                            label=""
-                        />
-                    </div> */}
+
+                        {optionFields?.map((option: any, index) => (
+                            <div
+                                className="flex items-center space-x-4 py-2 "
+                                key={index}
+                            >
+                                <input
+                                    id={`options-${option.id}`}
+                                    aria-describedby="options-description"
+                                    name="option"
+                                    type="checkbox"
+                                    checked={option?.isChecked}
+                                    disabled={loading}
+                                    onChange={(e) =>
+                                        handleOptionFieldChange(
+                                            index,
+                                            e.target.checked
+                                        )
+                                    }
+                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                />
+
+                                <p className="text-sm leading-4 font-medium">
+                                    {option?.name}
+                                </p>
+                            </div>
+                        ))}
+                        {errors?.options && (
+                            <div className="flex items-center pr-3 pointer-events-none">
+                                <ExclamationCircleIcon
+                                    className="w-5 h-5 text-red-400"
+                                    aria-hidden="true"
+                                />
+                                <span className="text-sm text-red-500">
+                                    {errors?.options?.message}
+                                </span>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
                         <Button
