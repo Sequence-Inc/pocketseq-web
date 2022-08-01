@@ -71,9 +71,4 @@ export const PACKAGE_PLAN_BY_ID = gql`
                         updatedAt
                     }
             }
-
-            optionsAttachments{
-                id
-                name
-            }
         }}`;

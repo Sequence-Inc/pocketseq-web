@@ -22,7 +22,6 @@ const ADD_OPTIONS_KEYS = [
     "paymentTerm",
     "additionalPrice",
     "photos",
-    "stock",
 ];
 
 const UPDATE_OPTIONS_KEYS = [
@@ -316,6 +315,7 @@ const useOptions = ({
     const onUpdate = useCallback(
         async (formData) => {
             if (initialValue) {
+                console.log({ formData });
                 const payload = {
                     id: initialValue?.id,
                     name: formData.name || null,
@@ -328,8 +328,17 @@ const useOptions = ({
                     cutOffTillTime: formData.cutOffTillTime || null,
                     paymentTerm: formData.paymentTerm || null,
                     additionalPrice: formData.additionalPrice || null,
-                    stock: formData.stock || null,
                 };
+
+                // let filteredPayload = useReduceObject(
+                //     payload,
+                //     UPDATE_OPTIONS_KEYS
+                // );
+
+                // filteredPayload = {
+                //     id: initialValue?.id,
+                //     ...filteredPayload,
+                // };
                 return updateOption({
                     variables: {
                         input: payload,
