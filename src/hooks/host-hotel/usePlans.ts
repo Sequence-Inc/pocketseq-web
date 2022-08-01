@@ -320,21 +320,31 @@ const useAddPlans = (props: AddPlansProps) => {
         [...options?.myOptions]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
-                const initValOptionIndex =
-                    initialValue.optionsAttachments.findIndex(
-                        (optionAttachment) => optionAttachment.id === option.id
-                    );
-                if (initValOptionIndex !== -1) {
-                    updateOptionFields(index, {
-                        ...option,
-                        isChecked: true,
-                    });
-                }
-                if (initValOptionIndex == -1) {
+                if (!initialValue?.optionsAttachments?.length) {
                     updateOptionFields(index, {
                         ...option,
                         isChecked: false,
                     });
+                }
+                if (initialValue?.optionsAttachments?.length) {
+                    const initValOptionIndex =
+                        initialValue?.optionsAttachments.findIndex(
+                            (optionAttachment) =>
+                                optionAttachment.id === option.id
+                        );
+
+                    if (initValOptionIndex > -1) {
+                        updateOptionFields(index, {
+                            ...option,
+                            isChecked: true,
+                        });
+                    }
+                    if (initValOptionIndex < 0) {
+                        updateOptionFields(index, {
+                            ...option,
+                            isChecked: false,
+                        });
+                    }
                 }
             });
         // options?.myOptions
