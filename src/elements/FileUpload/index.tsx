@@ -44,7 +44,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
         } = props;
         const [photos, setPhotos] = useState([]);
         const [mutatingPhoto, setMutatingPhoto] = useState(null);
-
+// just a comment
         const handleDelete = (index) => {
             const newPhotos = photos.filter((_, idx) => idx !== index);
             setPhotos(newPhotos);

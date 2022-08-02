@@ -11,11 +11,9 @@ import {
     FormConfirmModal,
 } from "@element";
 
-import { Controller, FieldArrayWithId } from "react-hook-form";
-import { ExclamationCircleIcon } from "@heroicons/react/solid";
+import { Controller } from "react-hook-form";
 import moment from "moment";
 import { useQuery } from "@apollo/client";
-import { DAY_OF_WEEK, PAYMENT_TYPES } from "@config";
 import { LoadingSpinner } from "../../LoadingSpinner";
 import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
@@ -64,13 +62,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
     const {
         loading,
         register,
-        unregister,
         control,
         errors,
-        dirtyFields,
-        watch,
         setValue,
-        handleSubmit,
         getValues,
         watchShowUsage,
         watchShowReservation,
@@ -437,7 +431,26 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                         )}
                     </div>
 
-                    <div className="w-6/12 flex items-center space-x-3 justify-end border-t py-6">
+                    <div className="w-full md:w-8/12 lg:w-6/12">
+                        <p className="text-sm leading-5 font-medium">
+                            Stock
+                        </p>
+                        <TextField
+                            disabled={loading}
+                            label={""}
+                            errorMessage="Stock is required."
+                            className="w-full md:w-20"
+                            {...register("stock", {
+                                required: true,
+                                valueAsNumber:true
+                            })}
+                            type="number"
+                            error={errors.stock && true}
+                            
+                        />
+                    </div>
+
+                    <div className="w-full md:w-6/12 flex items-center space-x-3 justify-end border-t py-6">
                         <Button
                             variant="primary"
                             className="bg-indigo-600 w-16 hover:bg-indigo-300"
