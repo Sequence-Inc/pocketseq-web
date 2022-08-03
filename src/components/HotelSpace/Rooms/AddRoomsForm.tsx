@@ -271,7 +271,7 @@ const AddRoomForm = ({
                 </div>
             </div>
 
-            <div className="w-6/12">
+            <div className="w-full  md:w-6/12">
                 <div className="w-full pb-2 flex items-center justify-between">
                     <p className="text-lg font-medium leading-6">Stock</p>
 
@@ -283,7 +283,7 @@ const AddRoomForm = ({
                             )
                         }
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
-                        className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                        className="max-w-min whitespace-nowrap  lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                     >
                         Stock Overrides
                     </Button>
@@ -293,7 +293,7 @@ const AddRoomForm = ({
                     {...register("stock", {
                         required: true,
                     })}
-                    className="w-3/12 "
+                    className="w-full md:w-3/12 "
                     errorMessage="Stock is required"
                     error={errors.stock && true}
                     type="number"

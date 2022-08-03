@@ -36,15 +36,17 @@ const HotelSpace = ({ userSession }) => {
     ];
 
     const columnClassName = (key): string | undefined => {
-        if (key === "name") return "min-w-10 text-left";
-        if (key === "status") return "w-32 text-left";
+        const defaultValue = "";
+        if (key === "name") return "min-w-10 pr-3 text-left";
+        if (key === "status") return "max-w-min md:w-32  text-center";
+        if (key === "action") return " text-center";
     };
 
     const childClassname = (key): string => {
         if (key === "maximumCapacity" || key === "status") {
-            return "text-right";
+            return "text-center";
         } else {
-            return "text-left ";
+            return "text-left min-w-max ";
         }
     };
 
@@ -57,17 +59,14 @@ const HotelSpace = ({ userSession }) => {
             Cell: ({ column, row, value }) => {
                 if (column?.id === "name") {
                     return (
-                        <div className="text-left">
-                            {/* <Link
-                                href={`/host/my-space/edit/${row?.original?.id}/view`}
-                            > */}
-                            <a className="text-gray-600 hover:text-gray-700">
-                                {value}{" "}
-                                <span className="text-sm">
-                                    ({row.original.id})
-                                </span>
-                            </a>
-                            {/* </Link> */}
+                        <div className="text-left w-24 md:w-full whitespace-pre-wrap break-words ">
+                            <Link
+                                href={`/host/hotel-space/edit/${row.original.id}/view`}
+                            >
+                                <a className="text-gray-600 hover:text-gray-700">
+                                    {value}
+                                </a>
+                            </Link>
                         </div>
                     );
                 }
@@ -78,10 +77,35 @@ const HotelSpace = ({ userSession }) => {
         newData.push({
             Header: "ACTION",
             accessor: "action",
+            className: columnClassName("action"),
+            childClassName: childClassname("action"),
             Cell: ({ row }: { row: any }) => {
                 return (
-                    <div className="flex items-center justify-center space-x-2">
+                    <div className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm space-y-2 md:flex md:items-center md:justify-center md:space-y-0 md:space-x-2 ">
                         <button
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
+                            onClick={() => {
+                                router.push(
+                                    `/host/hotel-space/edit/${row.original.id}/view`
+                                );
+                            }}
+                        >
+                            <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
+                            確認
+                        </button>
+
+                        <button
+                            className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700  hover:bg-gray-200"
+                            onClick={() => {
+                                router.push(
+                                    `/host/hotel-space/edit/${row.original.id}`
+                                );
+                            }}
+                        >
+                            <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
+                            編集
+                        </button>
+                        {/* <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
                             onClick={() => {
                                 router.push(
@@ -102,7 +126,7 @@ const HotelSpace = ({ userSession }) => {
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
                             編集
-                        </button>
+                        </button> */}
                     </div>
                 );
             },
