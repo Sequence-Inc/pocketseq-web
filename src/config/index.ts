@@ -26,6 +26,13 @@ export const PRICE_SCHEME_CHILD = [
     { key: "tenChildCharge", name: "10 Child" },
 ];
 
+export const BUILDING_TYPE_OPTIONS = [
+    { label: "Whole House Rental", value: "wholeHouseRental" },
+    { label: "Simple Accomodation", value: "simpleAccomodation" },
+    { label: "Hotel", value: "hotel" },
+    { label: "Inn", value: "inn" },
+];
+
 export const DAY_OF_WEEK = [
     { name: "Sun", value: 0 },
     { name: "Mon", value: 1 },
