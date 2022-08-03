@@ -194,6 +194,29 @@ const Plans = (props: IPlanFormProps) => {
                             })}
                         />
                     </div>
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Breakfast included
+                        </p>
+
+                        <Controller
+                            name="breakfastIncluded"
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            defaultValue={initialValue?.breakfastIncluded}
+                            render={({ field }) => {
+                                return (
+                                    <SwitchField
+                                        label=""
+                                        onChange={(val) => field.onChange(val)}
+                                        disabled={loading}
+                                    />
+                                );
+                            }}
+                        />
+                    </div>
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <SwitchField
