@@ -13,6 +13,7 @@ export const PACKAGE_PLAN = `
     cutOffBeforeDays
     cutOffTillTime
     hotelId
+    isBreakfastIncluded
     photos{
         ${PHOTO}
     }

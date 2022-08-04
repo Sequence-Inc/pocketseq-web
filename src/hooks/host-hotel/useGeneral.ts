@@ -234,6 +234,8 @@ const useAddGeneral = (fn, initialValue) => {
             nearestStations: formData.nearestStations,
             checkInTime: formData.checkInTime,
             checkOutTime: formData.checkOutTime,
+            buildingType: formData.buildingType,
+            isPetAllowed: formData.isPetAllowed,
             address: {
                 postalCode: formData.zipCode,
                 prefectureId: formData.prefecture,
@@ -260,6 +262,7 @@ const useAddGeneral = (fn, initialValue) => {
         }
 
         if (data?.addHotel?.hotel?.id) {
+            setLoading(false);
             return fn(data?.addHotel?.hotel?.id);
         }
     }, []);

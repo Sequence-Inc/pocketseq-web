@@ -39,7 +39,7 @@ const HotelSpace = ({ userSession }) => {
         const defaultValue = "";
         if (key === "name") return "min-w-10 pr-3 text-left";
         if (key === "status") return "max-w-min md:w-32  text-center";
-        if (key === "action") return " text-center border";
+        if (key === "action") return " text-center";
     };
 
     const childClassname = (key): string => {

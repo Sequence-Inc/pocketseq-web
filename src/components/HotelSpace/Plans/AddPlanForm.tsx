@@ -49,33 +49,29 @@ const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, selectedPlan } = props;
     const { addAlert } = useToast();
     const router = useRouter();
-
-    const {
-        loading: packageLoading,
-        data: packageDetails,
-        error: fetchDetailError,
-        refetch,
-    } = useQuery(planQueries.PACKAGE_PLAN_BY_ID, {
-        variables: {
-            id: selectedPlan?.id,
-        },
-        skip: !selectedPlan?.id,
-        fetchPolicy: "network-only",
-    });
-    const [initialValue, setInitialValue] = useState(null);
+    // const {
+    //     loading: packageLoading,
+    //     data: packageDetails,
+    //     error: fetchDetailError,
+    //     refetch,
+    // } = useQuery(planQueries.PACKAGE_PLAN_BY_ID, {
+    //     variables: {
+    //         id: selectedPlan,
+    //     },
+    //     skip: true,
+    //     fetchPolicy: "network-only",
+    // });
 
     const onCompleted = useCallback(() => {
         if (!selectedPlan) {
             toggleForm();
         }
     }, [selectedPlan]);
+
     const {
+        initialValue,
         hotelRooms,
-        options,
-        optionsError,
-        optionsLoading,
-        refetchRooms,
-        fetchRoomErrors,
+        refetchPlanDetail,
         watchShowUsage,
         register,
         setValue,
@@ -89,15 +85,18 @@ const Plans = (props: IPlanFormProps) => {
         handleRoomFieldUpdate,
         onSubmit,
         loading,
-        optionFields,
+        includedOptions,
+        additionalOptions,
         updateRoomPlan,
         onRemovePackagePhotos,
         onAddHotelRoomPhotos,
-        handleOptionFieldChange,
+        handleIncludedOptionFieldChange,
+        handleAdditionalOptionFieldChange,
+        fetchingPlanDetails,
     } = usePlans({
         hotelId,
         addAlert,
-        initialValue,
+        selectedPlanId: selectedPlan,
         onCompleted,
     });
 
@@ -110,7 +109,7 @@ const Plans = (props: IPlanFormProps) => {
                             type: "success",
                             message: "Added photos successfully",
                         });
-                        refetch();
+                        refetchPlanDetail();
                     }, 5000);
                 })
                 .catch((err) => {
@@ -118,10 +117,10 @@ const Plans = (props: IPlanFormProps) => {
                         type: "error",
                         message: "Could not add photos ",
                     });
-                    refetch();
+                    refetchPlanDetail();
                 });
         },
-        [onAddHotelRoomPhotos, refetch]
+        [onAddHotelRoomPhotos, refetchPlanDetail]
     );
 
     const {
@@ -135,29 +134,7 @@ const Plans = (props: IPlanFormProps) => {
 
     const { t } = useTranslation("adminhost");
 
-    const fetchPackageDetails = useCallback(async () => {
-        if (!packageDetails?.packagePlanById) {
-            setInitialValue(null);
-            return;
-        }
-
-        if (packageDetails) {
-            setInitialValue(packageDetails?.packagePlanById);
-        }
-        if (fetchDetailError) {
-            addAlert({ type: "error", message: "Could not get plan details" });
-        }
-
-        return () => {
-            setInitialValue(null);
-        };
-    }, [packageDetails, fetchDetailError]);
-
-    useEffect(() => {
-        fetchPackageDetails();
-    }, [fetchPackageDetails]);
-
-    if (selectedPlan && packageLoading)
+    if (selectedPlan && fetchingPlanDetails)
         return <LoadingSpinner loadingText="Loading Plans Data..." />;
 
     return (
@@ -200,16 +177,20 @@ const Plans = (props: IPlanFormProps) => {
                         </p>
 
                         <Controller
-                            name="breakfastIncluded"
+                            name="isBreakfastIncluded"
                             control={control}
                             rules={{
-                                required: true,
+                                required: false,
                             }}
-                            defaultValue={initialValue?.breakfastIncluded}
+                            defaultValue={initialValue?.isBreakfastIncluded}
                             render={({ field }) => {
                                 return (
                                     <SwitchField
                                         label=""
+                                        {...field}
+                                        defaultValue={getValues(
+                                            "isBreakfastIncluded"
+                                        )}
                                         onChange={(val) => field.onChange(val)}
                                         disabled={loading}
                                     />
@@ -674,7 +655,7 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
                             <p className="text-lg font-medium leading-6">
-                                Option Attachment
+                                Included Attachment
                             </p>
                             <Button
                                 type="button"
@@ -684,7 +665,7 @@ const Plans = (props: IPlanFormProps) => {
                             </Button>
                         </div>
 
-                        {optionFields?.map((option: any, index) => (
+                        {includedOptions?.map((option: any, index) => (
                             <div
                                 className="flex items-center space-x-4 py-2 "
                                 key={index}
@@ -697,7 +678,59 @@ const Plans = (props: IPlanFormProps) => {
                                     checked={option?.isChecked}
                                     disabled={loading}
                                     onChange={(e) =>
-                                        handleOptionFieldChange(
+                                        handleIncludedOptionFieldChange(
+                                            index,
+                                            e.target.checked
+                                        )
+                                    }
+                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                />
+
+                                <p className="text-sm leading-4 font-medium">
+                                    {option?.name}
+                                </p>
+                            </div>
+                        ))}
+                        {errors?.options && (
+                            <div className="flex items-center pr-3 pointer-events-none">
+                                <ExclamationCircleIcon
+                                    className="w-5 h-5 text-red-400"
+                                    aria-hidden="true"
+                                />
+                                <span className="text-sm text-red-500">
+                                    {errors?.options?.message}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
+                        <div className="flex justify-between items-center pb-4">
+                            <p className="text-lg font-medium leading-6">
+                                Additional Attachment
+                            </p>
+                            <Button
+                                type="button"
+                                className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                            >
+                                Manage Options
+                            </Button>
+                        </div>
+
+                        {additionalOptions?.map((option: any, index) => (
+                            <div
+                                className="flex items-center space-x-4 py-2 "
+                                key={index}
+                            >
+                                <input
+                                    id={`options-${option.id}`}
+                                    aria-describedby="options-description"
+                                    name="option"
+                                    type="checkbox"
+                                    checked={option?.isChecked}
+                                    disabled={loading}
+                                    onChange={(e) =>
+                                        handleAdditionalOptionFieldChange(
                                             index,
                                             e.target.checked
                                         )
