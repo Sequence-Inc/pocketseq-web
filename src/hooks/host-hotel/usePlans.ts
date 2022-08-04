@@ -73,6 +73,7 @@ const UPDATE_PLAN_KEYS = [
 const useAddPlans = (props: AddPlansProps) => {
     const { hotelId, addAlert, initialValue = null, onCompleted } = props;
     const [loading, setLoading] = useState(false);
+    console.log({ initialValue });
     const {
         data: hotelRooms,
         refetch: refetchRooms,

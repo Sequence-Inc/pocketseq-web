@@ -25,7 +25,6 @@ const { queries: pricingQueries, mutations: pricingMutations } = Pricing;
 const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [hotelId] = useState<string>(hotleSpaceId);
-
     const {
         data: priceSchemes,
         loading: priceSchemeLoading,
@@ -211,6 +210,8 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
                 id: field.id,
                 priceSchemeId: field.priceSchemeId,
             }));
+
+            console.log({ priceSettings });
 
             const mutationArray = [
                 updateHotelRoomGeneral({

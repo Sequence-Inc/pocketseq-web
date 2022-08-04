@@ -189,9 +189,6 @@ const General = ({
                                     label=""
                                     options={BUILDING_TYPE_OPTIONS}
                                     error={errors?.buildingType && true}
-                                    onChange={(event) => {
-                                        field.onChange(event);
-                                    }}
                                     className="w-full md:w-80"
                                     errorMessage="Prefecture is required"
                                     labelKey="label"
@@ -207,14 +204,18 @@ const General = ({
                         <p className="text-sm leading-5 font-medium">
                             Pets allowed
                         </p>
-                        <SwitchField
-                            label=""
-                            {...register("petAllowed", {
-                                required: true,
-                            })}
-                            onChange={(val) => setValue("petAllowed", val)}
-                            defaultValue={initialValue?.petAllowed}
-                            disabled={loading}
+                        <Controller
+                            name="isPetAllowed"
+                            control={control}
+                            render={({ field }) => (
+                                <SwitchField
+                                    {...field}
+                                    label=""
+                                    onChange={(val) => field.onChange(val)}
+                                    defaultValue={initialValue?.isPetAllowed}
+                                    disabled={loading}
+                                />
+                            )}
                         />
                     </div>
                     <div className="w-full sm:w-80">

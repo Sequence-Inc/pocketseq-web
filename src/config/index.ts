@@ -27,10 +27,10 @@ export const PRICE_SCHEME_CHILD = [
 ];
 
 export const BUILDING_TYPE_OPTIONS = [
-    { label: "Whole House Rental", value: "wholeHouseRental" },
-    { label: "Simple Accomodation", value: "simpleAccomodation" },
-    { label: "Hotel", value: "hotel" },
-    { label: "Inn", value: "inn" },
+    { label: "Whole House Rental", value: "WHOLE_HOUSE" },
+    { label: "Simple Accomodation", value: "SIMPLE_ACCOMODATION" },
+    { label: "Hotel", value: "HOTEL" },
+    { label: "Inn", value: "INN" },
 ];
 
 export const DAY_OF_WEEK = [

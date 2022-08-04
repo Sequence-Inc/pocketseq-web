@@ -38,7 +38,7 @@ const AddRoomForm = ({
     initialValue,
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
-
+    console.log({ initialValue });
     const {
         data: defaultRoomValue,
         loading: fetchingDefaultValue,
