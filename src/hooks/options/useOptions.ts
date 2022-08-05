@@ -217,7 +217,7 @@ const useOptions = ({
             setValue("name", initialValue.name);
             setValue("description", initialValue.description);
             setValue("photos", initialValue?.photos);
-
+            setValue("stock", initialValue.stock);
             // for additional options
             if (initialValue?.paymentTerm || initialValue?.additionalPrice) {
                 setValue("additionalPriceAllowed", true);
