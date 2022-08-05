@@ -15,6 +15,7 @@ export const OPTION_OBJECT = `
     photos{
         ${PHOTO}
     }
+    stock
     createdAt
     updatedAt
 `;
