@@ -70,7 +70,7 @@ const RoomList = (props: IRoomListProps) => {
                     <div className="flex items-center justify-center space-x-2">
                         <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
-                            onClick={() => setFormData(row.original)}
+                            onClick={() => setFormData(row.original?.id)}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
                             確認
