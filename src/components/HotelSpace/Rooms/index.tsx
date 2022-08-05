@@ -91,7 +91,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                     hotelId={hotelId}
                     handleSubmit={handleSubmit}
                     toggleForm={closeForm}
-                    initialValue={defaultFormData}
+                    selectedRoom={defaultFormData}
                 />
             )}
         </div>

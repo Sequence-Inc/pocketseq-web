@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { useToast } from "@hooks/useToasts";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -22,10 +22,9 @@ import {
 const { queries: roomQueries, mutations: roomMutations } = Room;
 const { queries: pricingQueries, mutations: pricingMutations } = Pricing;
 
-const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
+const useAddRooms = (hotleSpaceId: string, { fn, addAlert, selectedRoom }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [hotelId] = useState<string>(hotleSpaceId);
-
     const {
         data: priceSchemes,
         loading: priceSchemeLoading,
@@ -34,6 +33,12 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
         skip: !hotelId,
         variables: { hotelId },
     });
+    const [initialValue, setInitialValue] = useState(null);
+
+    const [
+        getRoomById,
+        { refetch: refetchRoomDetail, loading: fetchingRoomDetails },
+    ] = useLazyQuery(roomQueries.ROOMS_BY_ID);
 
     const {
         register,
@@ -58,6 +63,21 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
         name: "basicPriceSettings",
         control,
     });
+
+    const handleFetchRoomDetails = useCallback(async () => {
+        if (!selectedRoom) return;
+        const roomDetail = await getRoomById({
+            variables: { roomId: selectedRoom },
+        });
+
+        if (roomDetail?.data?.hotelRoomById) {
+            setInitialValue(roomDetail?.data?.hotelRoomById);
+        }
+    }, [selectedRoom]);
+
+    useEffect(() => {
+        handleFetchRoomDetails();
+    }, [handleFetchRoomDetails]);
 
     const [mutate] = useMutation(roomMutations.ADD_HOTEL_ROOMS, {
         refetchQueries: [
@@ -198,7 +218,7 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
     const onUpdate = useCallback(
         async (formData) => {
             const payload = {
-                id: initialValue.id,
+                id: selectedRoom,
                 name: formData.name,
                 description: formData.description,
                 paymentTerm: formData.paymentTerm,
@@ -220,7 +240,7 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
                 }),
                 updateHotelRoomPrice({
                     variables: {
-                        hotelRoomId: initialValue.id,
+                        hotelRoomId: selectedRoom,
                         priceSettings,
                     },
                 }),
@@ -261,12 +281,12 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
 
     useEffect(() => {
         if (!initialValue?.basicPriceSettings?.length) {
-            DAY_OF_WEEK.map((day, index) => {
+            DAY_OF_WEEK.forEach((day, index) => {
                 setValue(`basicPriceSettings.${index}`, {
                     dayOfWeek: day.value,
                     priceSchemeId: null,
                 });
-                append({ dayOfWeek: day.value, priceSchemeId: null });
+                update(index, { dayOfWeek: day.value, priceSchemeId: null });
             });
             return;
         }
@@ -311,6 +331,9 @@ const useAddRooms = (hotleSpaceId: string, { fn, initialValue, addAlert }) => {
         priceSchemeLoading,
         onRemoveRoomPhoto,
         onAddHotelRoomPhotos,
+        initialValue,
+        fetchingRoomDetails,
+        refetchRoomDetail,
     };
 };
 

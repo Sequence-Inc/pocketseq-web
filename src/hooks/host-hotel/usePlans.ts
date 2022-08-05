@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Plans, Room } from "src/apollo/queries/hotel";
@@ -18,7 +18,7 @@ import useReduceObject from "@hooks/useFilterObject";
 type AddPlansProps = {
     hotelId: string;
     addAlert: any;
-    initialValue?: any;
+    selectedPlanId?: any;
     onCompleted?: any;
 };
 type PRICE_SETTINGS = {
@@ -30,7 +30,6 @@ interface IFields extends FieldArrayWithId {
     priceSettings: PRICE_SETTINGS[];
 }
 const { queries: planQueries, mutations: planMutations } = Plans;
-const { queries: roomQueries } = Room;
 
 const MY_ROOMS_BY_HOTEL_ID = gql`
     query HotelRoomsByHotelId($hotelId: ID!) {
@@ -55,6 +54,7 @@ const ADD_PLAN_INPUT_KEYS = [
     "roomTypes",
     "photos",
     "options",
+    "isBreakfastIncluded",
 ];
 const UPDATE_PLAN_KEYS = [
     "id",
@@ -68,11 +68,19 @@ const UPDATE_PLAN_KEYS = [
     "endReservation",
     "cutOffBeforeDays",
     "cutOffTillTime",
+    "isBreakfastIncluded",
 ];
 
 const useAddPlans = (props: AddPlansProps) => {
-    const { hotelId, addAlert, initialValue = null, onCompleted } = props;
+    const { hotelId, addAlert, selectedPlanId = null, onCompleted } = props;
     const [loading, setLoading] = useState(false);
+    const [initialValue, setInitialValue] = useState(null);
+
+    const [
+        getPlanById,
+        { refetch: refetchPlanDetail, loading: fetchingPlanDetails },
+    ] = useLazyQuery(planQueries.PACKAGE_PLAN_BY_ID);
+
     const {
         data: hotelRooms,
         refetch: refetchRooms,
@@ -117,23 +125,68 @@ const useAddPlans = (props: AddPlansProps) => {
     });
 
     const {
-        fields: optionFields,
-        append: appendOptionFields,
-        update: updateOptionFields,
+        fields: includedOptions,
+        update: updateIncludedOptionFields,
     }: UseFieldArrayReturn & { fields: any[] } = useFieldArray<any, any, any>({
-        keyName: "optionFieldId",
-        name: "optionFields",
+        keyName: "includedOptionFieldId",
+        name: "includedOptions",
         control,
     });
 
-    const handleOptionFieldChange = useCallback(
+    const {
+        fields: additionalOptions,
+        update: updateAdditionalOptionFields,
+    }: UseFieldArrayReturn & { fields: any[] } = useFieldArray<any, any, any>({
+        keyName: "additionalOptionId",
+        name: "additionalOptions",
+        control,
+    });
+
+    const handleIncludedOptionFieldChange = useCallback(
         (fieldIndex, value) => {
-            updateOptionFields(fieldIndex, {
-                ...optionFields[fieldIndex],
+            const optionDetails = includedOptions[fieldIndex];
+
+            updateIncludedOptionFields(fieldIndex, {
+                ...includedOptions[fieldIndex],
                 isChecked: value,
             });
+
+            const targetAdditionalOptionIndex = additionalOptions?.findIndex(
+                (item) => item.id === optionDetails.id
+            );
+            if (targetAdditionalOptionIndex < 0) return;
+
+            if (value) {
+                updateAdditionalOptionFields(targetAdditionalOptionIndex, {
+                    ...additionalOptions[targetAdditionalOptionIndex],
+                    isChecked: !value,
+                });
+            }
         },
-        [optionFields]
+        [includedOptions, additionalOptions]
+    );
+
+    const handleAdditionalOptionFieldChange = useCallback(
+        (fieldIndex, value) => {
+            const optionDetails = additionalOptions[fieldIndex];
+
+            updateAdditionalOptionFields(fieldIndex, {
+                ...additionalOptions[fieldIndex],
+                isChecked: value,
+            });
+            const targetIncludedOptionIndex = includedOptions?.findIndex(
+                (item) => item.id === optionDetails.id
+            );
+            if (targetIncludedOptionIndex < 0) return;
+
+            if (value) {
+                updateIncludedOptionFields(targetIncludedOptionIndex, {
+                    ...includedOptions[targetIncludedOptionIndex],
+                    isChecked: !value,
+                });
+            }
+        },
+        [additionalOptions, includedOptions]
     );
 
     const handleRoomFieldUpdate = useCallback(
@@ -252,6 +305,8 @@ const useAddPlans = (props: AddPlansProps) => {
             setValue("description", initialValue.description);
             setValue("paymentTerm", initialValue.paymentTerm);
             setValue("stock", initialValue.stock);
+            setValue("isBreakfastIncluded", initialValue?.isBreakfastIncluded);
+
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }
@@ -314,42 +369,94 @@ const useAddPlans = (props: AddPlansProps) => {
         });
     }, [hotelRooms, initialValue?.roomTypes]);
 
-    useEffect(() => {
+    const setInitialIncludedOptions = useCallback(() => {
         if (!options?.myOptions?.length) return;
 
         [...options?.myOptions]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
-                if (!initialValue?.optionsAttachments?.length) {
-                    updateOptionFields(index, {
+                if (!initialValue?.includedOptions?.length) {
+                    updateIncludedOptionFields(index, {
                         ...option,
                         isChecked: false,
                     });
                 }
-                if (initialValue?.optionsAttachments?.length) {
+                if (initialValue?.includedOptions?.length) {
                     const initValOptionIndex =
-                        initialValue?.optionsAttachments.findIndex(
+                        initialValue?.includedOptions.findIndex(
                             (optionAttachment) =>
                                 optionAttachment.id === option.id
                         );
 
                     if (initValOptionIndex > -1) {
-                        updateOptionFields(index, {
+                        updateIncludedOptionFields(index, {
                             ...option,
                             isChecked: true,
                         });
                     }
                     if (initValOptionIndex < 0) {
-                        updateOptionFields(index, {
+                        updateIncludedOptionFields(index, {
                             ...option,
                             isChecked: false,
                         });
                     }
                 }
             });
-        // options?.myOptions
-    }, [options, initialValue?.optionsAttachments]);
+    }, [options, initialValue?.includedOptions]);
 
+    useEffect(setInitialIncludedOptions, [setInitialIncludedOptions]);
+
+    const setInitialAdditionalOptions = useCallback(() => {
+        if (!options?.myOptions?.length) return;
+
+        [...options?.myOptions]
+            .sort((a, b) => a.createdAt - b.createdAt)
+            .forEach((option, index) => {
+                if (!initialValue?.additionalOptions?.length) {
+                    updateAdditionalOptionFields(index, {
+                        ...option,
+                        isChecked: false,
+                    });
+                }
+                if (initialValue?.additionalOptions?.length) {
+                    const initValOptionIndex =
+                        initialValue?.additionalOptions.findIndex(
+                            (optionAttachment) =>
+                                optionAttachment.id === option.id
+                        );
+
+                    if (initValOptionIndex > -1) {
+                        updateAdditionalOptionFields(index, {
+                            ...option,
+                            isChecked: true,
+                        });
+                    }
+                    if (initValOptionIndex < 0) {
+                        updateAdditionalOptionFields(index, {
+                            ...option,
+                            isChecked: false,
+                        });
+                    }
+                }
+            });
+    }, [options, initialValue?.additionalOptions]);
+
+    useEffect(setInitialAdditionalOptions, [setInitialAdditionalOptions]);
+
+    const handleFetchPackagePlan = useCallback(async () => {
+        if (!selectedPlanId) return;
+        const planDetails = await getPlanById({
+            variables: { id: selectedPlanId },
+        });
+
+        if (planDetails?.data?.packagePlanById) {
+            setInitialValue(planDetails?.data?.packagePlanById);
+        }
+    }, [selectedPlanId]);
+
+    useEffect(() => {
+        handleFetchPackagePlan();
+    }, [handleFetchPackagePlan]);
     const [mutate] = useMutation(planMutations.ADD_HOTEL_PACKAGE_PLANS, {
         refetchQueries: [
             {
@@ -371,7 +478,7 @@ const useAddPlans = (props: AddPlansProps) => {
                 {
                     query: planQueries.PACKAGE_PLAN_BY_ID,
                     variables: {
-                        id: initialValue?.id,
+                        id: selectedPlanId,
                     },
                 },
             ],
@@ -385,7 +492,7 @@ const useAddPlans = (props: AddPlansProps) => {
                 {
                     query: planQueries.PACKAGE_PLAN_BY_ID,
                     variables: {
-                        id: initialValue?.id,
+                        id: selectedPlanId,
                     },
                 },
             ],
@@ -410,7 +517,7 @@ const useAddPlans = (props: AddPlansProps) => {
                 {
                     query: planQueries.PACKAGE_PLAN_BY_ID,
                     variables: {
-                        id: initialValue?.id,
+                        id: selectedPlanId,
                     },
                 },
             ],
@@ -438,13 +545,13 @@ const useAddPlans = (props: AddPlansProps) => {
 
     const onAddHotelRoomPhotos = useCallback(
         async (photos) => {
-            if (!initialValue) return;
+            if (!selectedPlanId) return;
             const payloadPhotos = Array.from(photos)?.map((res: File) => ({
                 mime: res.type,
             }));
             const { data, errors } = await addPackagePhotos({
                 variables: {
-                    packagePlanId: initialValue?.id,
+                    packagePlanId: selectedPlanId,
                     photos: payloadPhotos,
                 },
             });
@@ -464,7 +571,7 @@ const useAddPlans = (props: AddPlansProps) => {
                 throw errors;
             }
         },
-        [initialValue]
+        [selectedPlanId]
     );
 
     const onCreate = useCallback(
@@ -488,7 +595,11 @@ const useAddPlans = (props: AddPlansProps) => {
                 return;
             }
 
-            const reducedOptions = optionFields
+            const reducedIncludecOptions = includedOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
+
+            const reducedAdditionalOptions = additionalOptions
                 ?.filter((item: any) => !!item?.isChecked)
                 ?.map((option) => option.id);
 
@@ -526,7 +637,9 @@ const useAddPlans = (props: AddPlansProps) => {
                 roomTypes: reducedRoomTypes,
                 photos: payloadPhotos,
                 stock: parseInt(reducedFormData.stock, 10),
-                options: reducedOptions,
+                includedOptions: reducedIncludecOptions,
+                additionalOptions: reducedAdditionalOptions,
+                isBreakfastIncluded: formData.isBreakfastIncluded,
             };
 
             setLoading(true);
@@ -570,7 +683,7 @@ const useAddPlans = (props: AddPlansProps) => {
                 }
             }
         },
-        [optionFields]
+        [includedOptions, additionalOptions]
     );
 
     const onUpdate = useCallback(
@@ -579,19 +692,25 @@ const useAddPlans = (props: AddPlansProps) => {
                 formData,
                 UPDATE_PLAN_KEYS
             );
-            const reducedOptions = optionFields
+            const reducedIncludecOptions = includedOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
+
+            const reducedAdditionalOptions = additionalOptions
                 ?.filter((item: any) => !!item?.isChecked)
                 ?.map((option) => option.id);
 
             const payload = {
-                id: initialValue.id,
+                id: selectedPlanId,
                 startUsage: formData?.startUsage || null,
                 endUsage: formData?.endUsage || null,
                 startReservation: formData?.startReservation || null,
                 endReservation: formData?.endReservation || null,
                 cutOffBeforeDays: formData?.cutOffBeforeDays || null,
                 cutOffTillTime: formData?.cutOffTillTime || null,
-                options: reducedOptions,
+                includedOptions: reducedIncludecOptions,
+                additionalOptions: reducedAdditionalOptions,
+                isBreakfastIncluded: formData.isBreakfastIncluded,
                 ...reducedFormData,
             };
 
@@ -612,7 +731,7 @@ const useAddPlans = (props: AddPlansProps) => {
 
             setLoading(false);
         },
-        [initialValue, fields, optionFields]
+        [selectedPlanId, fields, includedOptions]
     );
 
     const updateRoomPlan = useCallback(
@@ -652,15 +771,16 @@ const useAddPlans = (props: AddPlansProps) => {
         [fields]
     );
     const onSubmit = handleSubmit(async (formData) => {
-        if (!initialValue) {
+        if (!selectedPlanId) {
             return onCreate(formData);
         }
-        if (initialValue) {
+        if (selectedPlanId) {
             return onUpdate(formData);
         }
     });
 
     return {
+        initialValue,
         hotelRooms,
         loading,
         fetchRoomErrors,
@@ -669,6 +789,7 @@ const useAddPlans = (props: AddPlansProps) => {
         options: options?.myOptions,
         optionsLoading,
         optionsError,
+        fetchingPlanDetails,
         refetchRooms,
         register,
         watch,
@@ -683,12 +804,15 @@ const useAddPlans = (props: AddPlansProps) => {
         watchShowCutOff,
         handleRoomTypesChange,
         fields,
-        optionFields,
+        includedOptions,
+        additionalOptions,
         handleRoomFieldUpdate,
         updateRoomPlan,
         onRemovePackagePhotos,
         onAddHotelRoomPhotos,
-        handleOptionFieldChange,
+        handleIncludedOptionFieldChange,
+        handleAdditionalOptionFieldChange,
+        refetchPlanDetail,
     };
 };
 

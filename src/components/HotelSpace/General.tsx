@@ -7,6 +7,7 @@ import {
     Select,
     HotelNearestStation,
     Button,
+    SwitchField,
 } from "@element";
 import useTranslation from "next-translate/useTranslation";
 import axios from "axios";
@@ -22,6 +23,7 @@ import { useQuery } from "@apollo/client";
 import { General as GeneralQueries } from "src/apollo/queries/hotel";
 import { useGeneral } from "@hooks/host-hotel";
 import { useToast } from "@hooks/useToasts";
+import { BUILDING_TYPE_OPTIONS } from "@config";
 
 const format = "HH:mm a";
 
@@ -170,6 +172,50 @@ const General = ({
                             rows={3}
                             defaultValue={initialValue?.description}
                             disabled={loading}
+                        />
+                    </div>
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Building Type
+                        </p>
+
+                        <Controller
+                            name={`buildingType`}
+                            control={control}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    label=""
+                                    options={BUILDING_TYPE_OPTIONS}
+                                    error={errors?.buildingType && true}
+                                    className="w-full md:w-80"
+                                    errorMessage="Prefecture is required"
+                                    labelKey="label"
+                                    valueKey="value"
+                                    disabled={loading}
+                                    singleRow
+                                />
+                            )}
+                        />
+                    </div>
+
+                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Pets allowed
+                        </p>
+                        <Controller
+                            name="isPetAllowed"
+                            control={control}
+                            render={({ field }) => (
+                                <SwitchField
+                                    {...field}
+                                    label=""
+                                    onChange={(val) => field.onChange(val)}
+                                    defaultValue={initialValue?.isPetAllowed}
+                                    disabled={loading}
+                                />
+                            )}
                         />
                     </div>
                     <div className="w-full sm:w-80">

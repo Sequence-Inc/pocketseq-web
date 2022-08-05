@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 
 import { Room as RoomQueires } from "src/apollo/queries/hotel";
+import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const { queries: roomQueries } = RoomQueires;
 interface IAddRoomFormProps {
@@ -25,6 +26,7 @@ interface IAddRoomFormProps {
     handleSubmit?: any;
     toggleForm?: any;
     initialValue?: any;
+    selectedRoom?: any;
 }
 interface IFields extends FieldArrayWithId {
     dayOfWeek: string;
@@ -35,19 +37,18 @@ const AddRoomForm = ({
     hotelId,
     handleSubmit,
     toggleForm,
-    initialValue,
+    selectedRoom,
 }: IAddRoomFormProps) => {
     const { t } = useTranslation("adminhost");
-
-    const {
-        data: defaultRoomValue,
-        loading: fetchingDefaultValue,
-        refetch,
-    } = useQuery(roomQueries.ROOMS_BY_ID, {
-        variables: { roomId: initialValue?.id },
-        skip: !initialValue?.id,
-        fetchPolicy: "network-only",
-    });
+    // const {
+    //     data: defaultRoomValue,
+    //     loading: fetchingDefaultValue,
+    //     refetch,
+    // } = useQuery(roomQueries.ROOMS_BY_ID, {
+    //     variables: { roomId: initialValue?.id },
+    //     skip: true,
+    //     fetchPolicy: "network-only",
+    // });
     const { addAlert } = useToast();
     const router = useRouter();
     const {
@@ -65,9 +66,13 @@ const AddRoomForm = ({
         priceSchemeLoading,
         onRemoveRoomPhoto,
         onAddHotelRoomPhotos,
+        initialValue,
+        fetchingRoomDetails,
+        refetchRoomDetail,
     } = useRooms(hotelId, {
         fn: handleSubmit,
-        initialValue: defaultRoomValue?.hotelRoomById,
+        // initialValue: defaultRoomValue?.hotelRoomById,
+        selectedRoom,
         addAlert,
     });
 
@@ -80,7 +85,7 @@ const AddRoomForm = ({
                             type: "success",
                             message: "Added photos successfully",
                         });
-                        refetch();
+                        refetchRoomDetail();
                     }, 5000);
                 })
                 .catch((err) => {
@@ -88,11 +93,14 @@ const AddRoomForm = ({
                         type: "error",
                         message: "Could not add photos ",
                     });
-                    refetch();
+                    refetchRoomDetail();
                 });
         },
-        [onAddHotelRoomPhotos, refetch]
+        [onAddHotelRoomPhotos, refetchRoomDetail]
     );
+
+    if (fetchingRoomDetails)
+        return <LoadingSpinner loadingText="Loading Room Details" />;
 
     return (
         <form
@@ -141,8 +149,7 @@ const AddRoomForm = ({
 
                 <Controller
                     rules={{
-                        required:
-                            !defaultRoomValue?.hotelRoomById?.photos?.length,
+                        required: !initialValue?.photos?.length,
                     }}
                     control={control}
                     name="photos"
@@ -155,9 +162,7 @@ const AddRoomForm = ({
                             error={errors.photos && true}
                             errorMessage="Photos are required"
                             onChange={(e) => onChange(e)}
-                            defaultPhotos={
-                                defaultRoomValue?.hotelRoomById?.photos
-                            }
+                            defaultPhotos={initialValue?.photos}
                             onRemove={onRemoveRoomPhoto}
                             onUpload={handleUpload}
                         />
@@ -271,7 +276,7 @@ const AddRoomForm = ({
                 </div>
             </div>
 
-            <div className="w-6/12">
+            <div className="w-full  md:w-6/12">
                 <div className="w-full pb-2 flex items-center justify-between">
                     <p className="text-lg font-medium leading-6">Stock</p>
 
@@ -279,11 +284,11 @@ const AddRoomForm = ({
                         type="button"
                         onClick={() =>
                             router.push(
-                                `/host/hotel-space/edit/${hotelId}/stockoverride/room/${defaultRoomValue?.hotelRoomById?.id}`
+                                `/host/hotel-space/edit/${hotelId}/stockoverride/room/${initialValue?.id}`
                             )
                         }
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
-                        className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                        className="max-w-min whitespace-nowrap  lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                     >
                         Stock Overrides
                     </Button>
@@ -293,7 +298,7 @@ const AddRoomForm = ({
                     {...register("stock", {
                         required: true,
                     })}
-                    className="w-3/12 "
+                    className="w-full md:w-3/12 "
                     errorMessage="Stock is required"
                     error={errors.stock && true}
                     type="number"
@@ -309,7 +314,7 @@ const AddRoomForm = ({
                         type="button"
                         onClick={() =>
                             router.push(
-                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${defaultRoomValue?.hotelRoomById?.id}`
+                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${initialValue?.id}`
                             )
                         }
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]

@@ -14,7 +14,7 @@ interface IPlanListProps {
 }
 
 const RoomList = (props: IPlanListProps) => {
-    const { data, loading, refetching, setFormData } = props;
+    const { data, loading, setFormData } = props;
 
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
@@ -72,7 +72,7 @@ const RoomList = (props: IPlanListProps) => {
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700"
                             // hover:bg-gray-200
                             onClick={() => {
-                                setFormData(row.original);
+                                setFormData(row.original.id);
                             }}
                         >
                             <PencilAltIcon className="w-4 h-4 text-gray-400 mr-1" />
@@ -94,7 +94,7 @@ const RoomList = (props: IPlanListProps) => {
     }
 
     if (loadComplete && data?.length) {
-        content = <Table columns={columns} data={data} />;
+        content = <Table columns={columns} data={[...data]} />;
     }
 
     return <div className="py-4 text-gray-700">{content}</div>;

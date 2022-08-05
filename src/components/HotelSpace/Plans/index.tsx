@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import AddPlanForm from "./AddPlanForm";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
@@ -15,25 +15,7 @@ interface IPlanFormProps extends TAddHotelProps {
 const Plans = (props: IPlanFormProps) => {
     const { hotelId } = props;
     const [showForm, setForm] = useState<boolean>(false);
-    const [
-        getPackagePlan,
-        { loading: fetchingPlan, error: fetchPlanError, data: packagePlanData },
-    ] = useLazyQuery(planQueries.PACKAGE_PLAN_BY_ID, {
-        fetchPolicy: "network-only",
-    });
-
-    const toggleForm = () => setForm((prev) => !prev);
-
-    const closeForm = () => {
-        setDefaultFormData(null);
-        toggleForm();
-    };
-    const [defaultFormData, setDefaultFormData] = useState(null);
-
-    const setFormData = (data) => {
-        setDefaultFormData(data);
-        toggleForm();
-    };
+    const defaultFormData = useRef(null);
 
     const { data, loading, error, networkStatus } = useQuery(
         planQueries.PACKAGE_PLAN_BY_HOTEL,
@@ -43,6 +25,21 @@ const Plans = (props: IPlanFormProps) => {
             },
             skip: !hotelId,
         }
+    );
+
+    const toggleForm = () => setForm((prev) => !prev);
+
+    const closeForm = () => {
+        toggleForm();
+    };
+
+    const setFormData = useCallback(
+        (data: string) => {
+            setForm(true);
+
+            defaultFormData.current = data;
+        },
+        [defaultFormData]
     );
 
     useEffect(() => {
@@ -76,10 +73,11 @@ const Plans = (props: IPlanFormProps) => {
             )}
             {showForm && (
                 <AddPlanForm
-                    {...props}
+                    hotelId={hotelId}
+                    setActiveTab={props.setActiveTab}
+                    activeTab={props.activeTab}
                     toggleForm={closeForm}
-                    selectedPlan={defaultFormData}
-                    packageLoading={fetchingPlan}
+                    selectedPlan={defaultFormData?.current}
                 />
             )}
         </div>

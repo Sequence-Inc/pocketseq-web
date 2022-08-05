@@ -171,6 +171,9 @@ const useAddGeneral = (fn, initialValue) => {
             setValue("nearestStations", initialValue.nearestStations);
             setValue("checkInTime", initialValue.checkInTime);
             setValue("checkOutTime", initialValue.checkOutTime);
+            setValue("buildingType", initialValue?.buildingType);
+            setValue("isPetAllowed", initialValue?.isPetAllowed);
+
             // setValue("address", initialValue.address);
         }
     }, [initialValue]);
@@ -183,6 +186,8 @@ const useAddGeneral = (fn, initialValue) => {
                 description: formData.description,
                 checkInTime: formData.checkInTime,
                 checkOutTime: formData.checkOutTime,
+                buildingType: formData.buildingType,
+                isPetAllowed: formData.isPetAllowed,
             };
 
             const addressPayload = {
@@ -229,6 +234,8 @@ const useAddGeneral = (fn, initialValue) => {
             nearestStations: formData.nearestStations,
             checkInTime: formData.checkInTime,
             checkOutTime: formData.checkOutTime,
+            buildingType: formData.buildingType,
+            isPetAllowed: formData.isPetAllowed,
             address: {
                 postalCode: formData.zipCode,
                 prefectureId: formData.prefecture,
@@ -255,6 +262,7 @@ const useAddGeneral = (fn, initialValue) => {
         }
 
         if (data?.addHotel?.hotel?.id) {
+            setLoading(false);
             return fn(data?.addHotel?.hotel?.id);
         }
     }, []);
