@@ -53,3 +53,10 @@ export const PAYMENT_TYPES = [
         label: "Per Person Basis",
     },
 ];
+
+export const OPTION_PAYMENT_TERMS = [
+    { label: "Per Person", value: "PER_PERSON" },
+    { label: "Per Room", value: "PER_ROOM" },
+    { label: "Per Use", value: "PER_USE" },
+    { label: "Per Flat", value: "PER_FLAT" },
+];
