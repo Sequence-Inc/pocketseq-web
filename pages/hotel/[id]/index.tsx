@@ -121,7 +121,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         //     },
         // });
 
-        handleHotelReservation(input);
+        await handleHotelReservation(input);
         setShowModal(false);
         setAdditionalOptions([]);
         setReservationData(null);
