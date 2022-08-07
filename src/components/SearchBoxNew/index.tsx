@@ -91,6 +91,14 @@ export const SearchBoxNew = ({
         return current && current < moment().endOf("day");
     };
 
+    const disabledDateCheckout = (current) => {
+        if (checkInDate) {
+            return current < checkInDate.endOf("day");
+        } else {
+            return false;
+        }
+    };
+
     const search = () => {
         // validate
         const errorList = [];
@@ -405,7 +413,7 @@ export const SearchBoxNew = ({
                                                             close();
                                                         }}
                                                         disabledDate={
-                                                            disabledDate
+                                                            disabledDateCheckout
                                                         }
                                                     />
                                                 </div>
