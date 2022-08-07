@@ -5,14 +5,25 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { OPTION_OBJECT } from "src/apollo/queries/options/core.scheme";
 import { useFieldArray, useForm } from "react-hook-form";
 
+const DEFAULT_OPTIONS_QUANTITY = 1,
+    DEFAULT_DAY = 1;
+
 const GET_PACKAGE_PLAN_BY_ID = gql`
     query PackagePlanById($id: ID!) {
         packagePlanById(id: $id) {
+            includedOptions {
+                id
+                additionalPrice
+                name
+                paymentTerm
+                stock
+            }
             additionalOptions {
                 id
                 additionalPrice
                 name
                 paymentTerm
+                stock
             }
         }
     }
@@ -50,6 +61,9 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
         }
     );
     const [loading, setLoading] = useState(false);
+    const [dayContingency, setDayContingency] = useState(DEFAULT_DAY);
+    const [stockContingency, setStockContingency] = useState(null);
+
     const {
         register,
         unregister,
@@ -84,6 +98,7 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
                     name: additionalOption?.name,
                     paymentTerm: additionalOption.paymentTerm,
                     additionalPrice: additionalOption.additionalPrice,
+                    quantity: DEFAULT_OPTIONS_QUANTITY,
                     isChecked: false,
                 });
             }
