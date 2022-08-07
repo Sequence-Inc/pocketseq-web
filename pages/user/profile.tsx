@@ -157,7 +157,7 @@ export const getServerSideProps = async (context) => {
     const validation = requireAuth({
         session: userSession,
         pathAfterFailure: "/api/auth/signin",
-        roles: ["user"],
+        roles: ["user", "host"],
     });
     if (validation !== true) {
         return validation;
