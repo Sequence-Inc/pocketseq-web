@@ -67,6 +67,15 @@ export const searchSpace = async (
         }
     }
 
+    if (price) {
+        if (minPrice) {
+            filters =
+                filters === ""
+                    ? `price.type:HOURLY AND price.duration:1 AND price.amount:${minPrice} TO ${price}`
+                    : `${filters} AND price.type:HOURLY AND price.duration:1 AND price.amount:${minPrice} TO ${price}`;
+        }
+    }
+
     let aroundLatLng: string;
     let aroundRadius: number;
 

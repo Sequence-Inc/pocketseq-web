@@ -267,9 +267,9 @@ const Search = ({ userSession, availableSpaceTypes }) => {
                                                                         true,
                                                                 }}
                                                                 defaultValue={[
-                                                                    500, 3000,
+                                                                    0, 10000,
                                                                 ]}
-                                                                min={500}
+                                                                min={0}
                                                                 max={30000}
                                                                 step={500}
                                                                 tooltipVisible
@@ -279,13 +279,14 @@ const Search = ({ userSession, availableSpaceTypes }) => {
                                                                     console.log(
                                                                         value
                                                                     );
-                                                                    updateSearchParam(
-                                                                        "minPrice",
-                                                                        value[0]
-                                                                    );
-                                                                    updateSearchParam(
-                                                                        "price",
-                                                                        value[1]
+
+                                                                    setSearchParams(
+                                                                        {
+                                                                            ...searchParams,
+                                                                            minPrice:
+                                                                                value[0],
+                                                                            price: value[1],
+                                                                        }
                                                                     );
                                                                 }}
                                                             />
