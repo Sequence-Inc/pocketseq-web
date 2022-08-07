@@ -19,6 +19,7 @@ import { useToast } from "@hooks/useToasts";
 import { useRouter } from "next/router";
 import { useOptions } from "@hooks/options";
 import { queries as OptionQueries } from "src/apollo/queries/options";
+import { OPTION_PAYMENT_TERMS } from "@config";
 
 const timeFormat = "HH:mm a";
 const dateFormat = "YYYY-MM-DD";
@@ -394,7 +395,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                                             <Select
                                                 {...field}
                                                 label=""
-                                                options={PAYMENT_TERMS}
+                                                options={OPTION_PAYMENT_TERMS}
                                                 error={
                                                     errors.paymentTerm && true
                                                 }
@@ -432,9 +433,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">
-                            Stock
-                        </p>
+                        <p className="text-sm leading-5 font-medium">Stock</p>
                         <TextField
                             disabled={loading}
                             label={""}
@@ -442,11 +441,10 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             className="w-full md:w-20"
                             {...register("stock", {
                                 required: true,
-                                valueAsNumber:true
+                                valueAsNumber: true,
                             })}
                             type="number"
                             error={errors.stock && true}
-                            
                         />
                     </div>
 
