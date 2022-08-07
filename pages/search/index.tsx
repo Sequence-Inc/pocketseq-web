@@ -25,7 +25,6 @@ import {
 import { MainLayout } from "@layout";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { Slider } from "antd";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { ILocationMarker } from "src/types/timebookTypes";
@@ -47,7 +46,7 @@ type SearchParams = {
     buildingType?: string;
 };
 
-const Search = ({ userSession, availableSpaceTypes }) => {
+const Search = ({ userSession, availableSpaceTypes, search }) => {
     const [filter, setFilter] = useState<string>("おすすめ");
     const [sort, setSort] = useState<"grid">("grid");
     const [page, setPage] = useState<number>(1);
@@ -56,19 +55,12 @@ const Search = ({ userSession, availableSpaceTypes }) => {
 
     const [activeIndex, setActiveIndex] = useState<string | number>(-1);
 
-    const [searchParams, setSearchParams] = useState(null);
+    const [searchParams, setSearchParams] = useState(search);
 
     const [searchDataReceived, setSearchDataReceived] = useState(false);
     const [algoliaSearchResults, setAlgoliaSearchResults] = useState<
         SearchResult[]
     >([]);
-
-    const router = useRouter();
-
-    useEffect(() => {
-        const params = router.query;
-        setSearchParams(params);
-    }, []);
 
     useEffect(() => {
         const type = searchParams?.searchType;
@@ -82,7 +74,7 @@ const Search = ({ userSession, availableSpaceTypes }) => {
         const pet = searchParams?.pet;
         const buildingType = searchParams?.buildingType;
 
-        if (searchParams?.searchType === "space") {
+        if (type === "space") {
             const filters = {};
             if (area) {
                 filters["city"] = area;
@@ -696,6 +688,7 @@ export const getServerSideProps = async (context) => {
         props: {
             userSession: session,
             availableSpaceTypes: data.availableSpaceTypes,
+            search: context.query,
         },
     };
 };
