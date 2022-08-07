@@ -41,6 +41,18 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
     const [noOfNight, setNoOfNight] = useState(null);
 
     const [loading, setLoading] = useState(false);
+    const disabledDate = (current) => {
+        // Can not select days before today and today
+        return current && current < moment().endOf("day");
+    };
+
+    const disabledDateCheckout = (current) => {
+        if (startDate) {
+            return current < startDate.endOf("day");
+        } else {
+            return false;
+        }
+    };
 
     const [calculatePrice] = useLazyQuery(CALCULATE_ROOM_PLAN_PRICE, {
         onCompleted(data) {
@@ -64,7 +76,9 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
 
     useEffect(() => {
         if (startDate && endDate) {
-            const noOfNights = endDate.diff(startDate, "days");
+            const noOfNights = endDate
+                .endOf("day")
+                .diff(startDate.startOf("day"), "days");
             setNoOfNight(noOfNights);
         }
     }, [startDate, endDate]);
@@ -364,6 +378,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             onChange={(date) =>
                                                 setStartDate(date)
                                             }
+                                            disabledDate={disabledDate}
                                             bordered={false}
                                             className="px-3 w-full rounded-none rounded-tl-md bg-transparent text-gray-600 placeholder-gray-400 border border-gray-200 hover:cursor-pointer"
                                         />
@@ -381,6 +396,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             onChange={(date) =>
                                                 setEndDate(date)
                                             }
+                                            disabledDate={disabledDateCheckout}
                                             bordered={false}
                                             className="px-3 w-full rounded-none rounded-tl-md bg-transparent text-gray-600 placeholder-gray-400 border border-gray-200 hover:cursor-pointer"
                                         />
