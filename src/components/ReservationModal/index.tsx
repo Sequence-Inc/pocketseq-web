@@ -3,32 +3,22 @@ import { Transition } from "@headlessui/react";
 import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
-import moment from "moment";
+import { CheckIcon } from "@heroicons/react/outline";
 
 const RequestReservationModal = ({
     showModal,
     reservationData,
     setShowModal,
+    setAdditionalOptions,
     children,
 }) => {
+    const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
+        useCalculatePrice();
     const {
-        fetchCalculatedPrice,
-        priceCalculation,
-        calculatingPrice,
-        priceCalculationError,
-    } = useCalculatePrice();
-
-    const {
-        register,
-        unregister,
-        control,
-        errors,
-        watch,
-        setValue,
-        handleSubmit,
-        getValues,
         additionalOptionsFields,
         onAdditionalOptionsCheckboxAction,
+        onAdditionalFieldChangeQuantity,
+        includedOptions,
     } = useReserveHotel({
         plan: reservationData?.plan.id,
         roomPlanId: reservationData?.roomPlanId,
@@ -40,17 +30,22 @@ const RequestReservationModal = ({
 
     useEffect(() => {
         if (!reservationData) return;
-
         let calculatePriceInput = {
             roomPlanId: reservationData?.roomPlanId,
             nAdult: reservationData?.noOfAdults,
             nChild: reservationData?.noOfChilds,
             checkInDate: reservationData?.startDate,
             checkOutDate: reservationData?.endDate,
+            additionalOptionsFields: additionalOptionsFields,
         };
-
+        setAdditionalOptions(additionalOptionsFields);
         fetchCalculatedPrice(calculatePriceInput);
-    }, [reservationData, fetchCalculatedPrice]);
+    }, [
+        reservationData,
+        additionalOptionsFields,
+        setAdditionalOptions,
+        fetchCalculatedPrice,
+    ]);
 
     return (
         <Transition.Root show={showModal} as={Fragment}>
@@ -204,21 +199,51 @@ const RequestReservationModal = ({
 
                                                 <div className="border-t border-gray-300 h-0 max-h-0"></div>
 
+                                                <div className="w-full space-y-3">
+                                                    <h5 className="font-bold">
+                                                        Included Options
+                                                    </h5>
+
+                                                    {includedOptions?.map(
+                                                        (
+                                                            includedOption,
+                                                            index
+                                                        ) => (
+                                                            <div
+                                                                key={index}
+                                                                className="flex space-x-2"
+                                                            >
+                                                                <CheckIcon className="w-6 text-green-400" />
+                                                                <span className="flex items-center space-x-2">
+                                                                    <p>
+                                                                        {
+                                                                            includedOption?.name
+                                                                        }
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500">
+                                                                        {includedOption?.description &&
+                                                                            `(${includedOption?.description})`}
+                                                                    </p>
+                                                                </span>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+
+                                                <div className="border-t border-gray-300 h-0 max-h-0"></div>
+
                                                 <div className="">
                                                     <div className="mb-8">
                                                         <span className="text-2xl font-bold ">
-                                                            Options
+                                                            Additional Options
                                                         </span>
                                                     </div>
                                                     <div className="space-y-4">
                                                         {additionalOptionsFields?.map(
                                                             (
                                                                 additionalField: any,
-                                                                index
+                                                                additionalFieldIndex
                                                             ) => {
-                                                                console.log({
-                                                                    additionalField,
-                                                                });
                                                                 const paymentTerm =
                                                                     OPTION_PAYMENT_TERMS.find(
                                                                         (
@@ -249,7 +274,7 @@ const RequestReservationModal = ({
                                                                                     event
                                                                                 ) =>
                                                                                     onAdditionalOptionsCheckboxAction(
-                                                                                        index,
+                                                                                        additionalFieldIndex,
                                                                                         event
                                                                                             .target
                                                                                             .checked
@@ -264,34 +289,80 @@ const RequestReservationModal = ({
                                                                                     }
                                                                                 </p>
 
-                                                                                <span className="font-normal leading-5 font-base flex space-x-1">
-                                                                                    <p>
-                                                                                        ￥
-                                                                                        {
-                                                                                            additionalField?.additionalPrice
-                                                                                        }
-                                                                                    </p>
-                                                                                    <p>
-                                                                                        /
-                                                                                    </p>
-                                                                                    <p>
-                                                                                        {
-                                                                                            paymentTerm
-                                                                                        }
-                                                                                    </p>
-                                                                                </span>
+                                                                                {paymentTerm && (
+                                                                                    <span className="font-normal leading-5 font-base flex space-x-1">
+                                                                                        <p>
+                                                                                            ￥
+                                                                                            {
+                                                                                                additionalField?.additionalPrice
+                                                                                            }
+                                                                                        </p>
+                                                                                        <p>
+                                                                                            /
+                                                                                        </p>
+                                                                                        <p>
+                                                                                            {
+                                                                                                paymentTerm
+                                                                                            }
+                                                                                        </p>
+                                                                                    </span>
+                                                                                )}
+                                                                                {!paymentTerm && (
+                                                                                    <span className="font-normal leading-5 font-base flex space-x-1">
+                                                                                        <p className="text-sm text-gray-500">
+                                                                                            No
+                                                                                            additional
+                                                                                            charge
+                                                                                        </p>
+                                                                                    </span>
+                                                                                )}
                                                                             </div>
                                                                         </div>
 
                                                                         <div className="flex justify-end  space-x-3">
                                                                             <div className="w-20">
                                                                                 <Select
-                                                                                    options={[]}
-                                                                                    value=""
+                                                                                    options={
+                                                                                        additionalField?.stockOptions
+                                                                                    }
+                                                                                    value={
+                                                                                        additionalField?.quantity
+                                                                                    }
+                                                                                    onChange={(
+                                                                                        val
+                                                                                    ) =>
+                                                                                        onAdditionalFieldChangeQuantity(
+                                                                                            val,
+                                                                                            additionalFieldIndex
+                                                                                        )
+                                                                                    }
                                                                                     label=""
+                                                                                    valueKey="value"
+                                                                                    labelKey="label"
                                                                                     className="w-full"
                                                                                     hidePlaceholder
                                                                                 />
+
+                                                                                {/* <select>
+                                                                                    {quantityOptions?.map(
+                                                                                        (
+                                                                                            val
+                                                                                        ) => (
+                                                                                            <option
+                                                                                                value={
+                                                                                                    val
+                                                                                                }
+                                                                                                key={
+                                                                                                    val
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    val
+                                                                                                }
+                                                                                            </option>
+                                                                                        )
+                                                                                    )}
+                                                                                </select> */}
                                                                             </div>
 
                                                                             <div className=" flex items-center ">
@@ -352,21 +423,103 @@ const RequestReservationModal = ({
                                                             )}
                                                         </div>
                                                     </div>
+                                                    {calculatingPrice && (
+                                                        <p>
+                                                            Calculating Price .
+                                                            . .
+                                                        </p>
+                                                    )}
+                                                    {!calculatingPrice &&
+                                                        additionalOptionsFields
+                                                            ?.filter(
+                                                                (item: any) =>
+                                                                    !!item?.isChecked
+                                                            )
+                                                            ?.map(
+                                                                (
+                                                                    additionalfield: any,
+                                                                    index
+                                                                ) => {
+                                                                    const optionsCharge =
+                                                                        additionalfield?.additionalPrice *
+                                                                            additionalfield?.quantity ||
+                                                                        "No Charge";
+                                                                    return (
+                                                                        <div
+                                                                            className="flex items-center justify-between"
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                        >
+                                                                            <span className="flex space-x-2 items-end">
+                                                                                <p>
+                                                                                    {
+                                                                                        additionalfield?.name
+                                                                                    }
+                                                                                </p>
+
+                                                                                <p className="text-gray-400 text-sm">
+                                                                                    X
+                                                                                    {
+                                                                                        additionalfield?.quantity
+                                                                                    }
+                                                                                </p>
+                                                                            </span>
+                                                                            <p
+                                                                                className={`${
+                                                                                    optionsCharge ===
+                                                                                        "No Charge" &&
+                                                                                    "text-sm text-grey-400"
+                                                                                }`}
+                                                                            >
+                                                                                {
+                                                                                    optionsCharge
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            )}
                                                     <div className="flex items-center justify-between">
                                                         <div>税金</div>
                                                         <div>
                                                             ￥{" "}
-                                                            {reservationData?.price *
-                                                                0.1}
+                                                            {!priceCalculation &&
+                                                                !calculatingPrice &&
+                                                                reservationData?.price *
+                                                                    0.1}
+                                                            {calculatingPrice && (
+                                                                <p>
+                                                                    Please wait
+                                                                    ...
+                                                                </p>
+                                                            )}
+                                                            {!calculatingPrice &&
+                                                                priceCalculation &&
+                                                                (priceCalculation
+                                                                    ?.calculateRoomPlanPrice
+                                                                    ?.totalAmount ||
+                                                                    0) * 0.1}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
                                                         <div>合計（税込）</div>
                                                         <div>
                                                             ￥{" "}
-                                                            {reservationData?.price *
-                                                                0.1 +
-                                                                reservationData?.price}
+                                                            {calculatingPrice && (
+                                                                <p>
+                                                                    Please wait
+                                                                    ...
+                                                                </p>
+                                                            )}
+                                                            {!calculatingPrice &&
+                                                                priceCalculation
+                                                                    ?.calculateRoomPlanPrice
+                                                                    ?.totalAmount *
+                                                                    0.1 +
+                                                                    priceCalculation
+                                                                        ?.calculateRoomPlanPrice
+                                                                        ?.totalAmount}
                                                         </div>
                                                     </div>
                                                 </div>

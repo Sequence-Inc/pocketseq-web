@@ -15,6 +15,7 @@ const GET_PACKAGE_PLAN_BY_ID = gql`
                 id
                 additionalPrice
                 name
+                description
                 paymentTerm
                 stock
             }
@@ -49,7 +50,7 @@ type TReserveHotelProps = {
     roomPlanId?: string;
 };
 
-const useReserveHotel = (formData: TReserveHotelProps) => {
+const useReserveHotel = (formData?: TReserveHotelProps) => {
     const { data: planDetails, loading: fetchingPlanDetails } = useQuery(
         GET_PACKAGE_PLAN_BY_ID,
         {
@@ -61,8 +62,6 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
         }
     );
     const [loading, setLoading] = useState(false);
-    const [dayContingency, setDayContingency] = useState(DEFAULT_DAY);
-    const [stockContingency, setStockContingency] = useState(null);
 
     const {
         register,
@@ -79,6 +78,10 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
         ReserveHotelMutations.RESERVE_HOTEL_ROOM
     );
 
+    const handleHotelReservation = useCallback(async (reservationData) => {
+        console.log({ reservationData });
+    }, []);
+
     const {
         fields: additionalOptionsFields,
         update: updateAdditionalOptionsFields,
@@ -93,12 +96,20 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
 
         planDetails?.packagePlanById?.additionalOptions?.forEach(
             (additionalOption, index) => {
+                const stockOptions = Array.from(
+                    Array(additionalOption?.stock || 1).keys()
+                ).map((val) => ({
+                    value: val + 1,
+                    label: val + 1,
+                }));
                 updateAdditionalOptionsFields(index, {
                     id: additionalOption?.id,
                     name: additionalOption?.name,
                     paymentTerm: additionalOption.paymentTerm,
                     additionalPrice: additionalOption.additionalPrice,
                     quantity: DEFAULT_OPTIONS_QUANTITY,
+                    stockOptions,
+                    maxStock: additionalOption?.stock || 1,
                     isChecked: false,
                 });
             }
@@ -110,6 +121,16 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
             updateAdditionalOptionsFields(optionIndex, {
                 ...additionalOptionsFields[optionIndex],
                 isChecked: val,
+            });
+        },
+        [additionalOptionsFields]
+    );
+
+    const onAdditionalFieldChangeQuantity = useCallback(
+        (value, index) => {
+            updateAdditionalOptionsFields(index, {
+                ...additionalOptionsFields[index],
+                quantity: value,
             });
         },
         [additionalOptionsFields]
@@ -141,6 +162,9 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
         getValues,
         onAdditionalOptionsCheckboxAction,
         additionalOptionsFields,
+        onAdditionalFieldChangeQuantity,
+        includedOptions: planDetails?.packagePlanById?.includedOptions,
+        handleHotelReservation,
     };
 };
 

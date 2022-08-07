@@ -25,16 +25,19 @@ const useCalculatePrice = () => {
 
     const fetchCalculatedPrice = useCallback(
         async (props: TCalculatePriceProps) => {
-            console.log({ props });
-
             let calculatePriceInput = {
                 roomPlanId: props?.roomPlanId,
                 nAdult: props?.nAdult,
                 nChild: props?.nChild,
                 checkInDate: props?.checkInDate?.startOf("day").valueOf(),
                 checkOutDate: props?.checkOutDate?.startOf("day").valueOf(),
+                additionalOptions: props?.additionalOptionsFields
+                    ?.filter((item) => item?.isChecked)
+                    ?.map((field) => ({
+                        optionId: field?.id,
+                        quantity: field.quantity,
+                    })),
             };
-
             await calculatePrice({
                 variables: {
                     input: calculatePriceInput,
