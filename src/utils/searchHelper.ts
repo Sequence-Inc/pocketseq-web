@@ -75,7 +75,6 @@ export const searchHotel = async (
     filterOptions?: HotelSearchFilterOptions
 ) => {
     if (!filterOptions) return hotelIndex.search(searchText);
-    console.log("searching hotel...", filterOptions);
     const { geoloc, city, adult, child } = filterOptions;
 
     let filters: string = "";

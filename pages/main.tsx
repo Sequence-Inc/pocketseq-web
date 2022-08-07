@@ -225,9 +225,9 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                 iconStyle="mr-2 text-primary"
                                 textStyle="text-xl text-primary"
                             >
-                                新着ピックアップスペース
+                                新着スペース
                             </Tag>
-                            <Link href="/search">
+                            <Link href="/search?searchType=space">
                                 <a className="flex items-center text-xs text-gray-500 hover:text-primary">
                                     もっと見る
                                     <ChevronRightIcon className="w-4 h-4 ml-1" />
@@ -235,9 +235,11 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {topPicks?.allSpaces?.data.map((item, index) => (
-                                <ItemGrid key={index} data={item} />
-                            ))}
+                            {topPicks?.allSpaces?.data.map((item, index) => {
+                                if (index < 4) {
+                                    return <ItemGrid key={index} data={item} />;
+                                }
+                            })}
                         </div>
                     </div>
                     <div>
@@ -250,7 +252,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             >
                                 新着宿泊スペース
                             </Tag>
-                            <Link href="/search">
+                            <Link href="/search?searchType=hotel">
                                 <a className="flex items-center text-xs text-gray-500 hover:text-primary">
                                     もっと見る
                                     <ChevronRightIcon className="w-4 h-4 ml-1" />
@@ -260,9 +262,16 @@ export default function Home({ userSession, availableSpaceTypes }) {
 
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                             {topPicks?.allPublishedHotels?.map(
-                                (item, index) => (
-                                    <ItemGridHotel key={index} data={item} />
-                                )
+                                (item, index) => {
+                                    if (index < 4) {
+                                        return (
+                                            <ItemGridHotel
+                                                key={index}
+                                                data={item}
+                                            />
+                                        );
+                                    }
+                                }
                             )}
                         </div>
                     </div>

@@ -14,12 +14,7 @@ import {
     Pill,
     Select,
 } from "@element";
-import {
-    LightBulbIcon,
-    SpeakerphoneIcon,
-    ViewGridAddIcon,
-    ViewListIcon,
-} from "@heroicons/react/outline";
+import { LightBulbIcon, SpeakerphoneIcon } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
@@ -28,16 +23,8 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import createApolloClient from "src/apollo/apolloClient";
-import {
-    GET_AVAILABLE_SPACE_TYPES,
-    GET_TOP_PICK_SPACES,
-} from "src/apollo/queries/space.queries";
-import {
-    ILocationMarker,
-    IPhoto,
-    IRating,
-    ISpace,
-} from "src/types/timebookTypes";
+import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
+import { ILocationMarker } from "src/types/timebookTypes";
 import { config, FormatPrice, searchHotel, searchSpace } from "src/utils";
 
 type SearchParams = {
@@ -63,19 +50,19 @@ const Secondary = ({ userSession, availableSpaceTypes }) => {
     >([]);
 
     const router = useRouter();
-    const params = router.query;
 
     useEffect(() => {
+        const params = router.query;
         setSearchParams(params);
     }, []);
 
     useEffect(() => {
-        const area: string = searchParams?.area as string;
         const type = searchParams?.searchType;
+        const area: string = searchParams?.area as string;
         const adult = parseInt(searchParams?.noOfAdults as string, 10);
         const child = parseInt(searchParams?.noOfChild as string, 10);
-        console.log(adult, child);
-        if (type === "space") {
+
+        if (searchParams?.searchType === "space") {
             const filters = {};
             if (area) {
                 filters["city"] = area;
@@ -202,14 +189,6 @@ const Secondary = ({ userSession, availableSpaceTypes }) => {
                 <title>Search | {config.appName}</title>
             </Head>
             <div className="relative">
-                {/* <div className="px-6 py-10 mt-16 w-full bg-gray-100">
-                    <div className="flex justify-center">
-                        <SearchBoxNew
-                            defaultValue={searchParams}
-                            onChange={onHandleSearchDataChange}
-                        />
-                    </div>
-                </div> */}
                 <Container className="relative py-12 space-y-12 grid grid-cols-1 lg:grid-cols-9">
                     <div className="px-6 py-10 col-span-9 lg:col-span-5">
                         <div>
@@ -303,12 +282,6 @@ const Secondary = ({ userSession, availableSpaceTypes }) => {
 export default Secondary;
 
 export const getServerSideProps = async (context) => {
-    // const session = await getSession(context);
-    // return {
-    //     props: {
-    //         userSession: session,
-    //     },
-    // };
     const client = createApolloClient();
     const { data } = await client.query({
         query: GET_AVAILABLE_SPACE_TYPES,
