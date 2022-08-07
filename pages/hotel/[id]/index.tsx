@@ -1,19 +1,15 @@
 import {
-    HostProfile,
     SpaceUtilities,
-    SpaceInfoTitle,
     SpaceInfoBanner,
     SpaceInfoAccess,
     SpaceInfoReviews,
-    ISpaceInfoTitleProps,
     LoadingSpinner,
 } from "@comp";
 import { Button, Container, Rating, Tag } from "@element";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import {
     config,
     FormatShortAddress,
@@ -23,7 +19,6 @@ import {
 import { IRating } from "src/types/timebookTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
-
 import createApolloClient from "src/apollo/apolloClient";
 import { getSession, signIn } from "next-auth/react";
 import { FloatingPriceThree } from "src/components/FloatingPriceThree";
@@ -40,6 +35,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { ro } from "date-fns/locale";
 import RequestReservationModal from "src/components/ReservationModal";
 import PaymentMethods from "src/components/PaymentMethods";
+import { useReserveHotel } from "@hooks/reserveHotel";
 
 const ContentSection = ({
     title,
@@ -67,7 +63,12 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [result, setResult] = useState(null);
     const [reservationError, setReservationError] = useState(null);
-
+    const { handleHotelReservation } = useReserveHotel();
+    const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
+    //   const{addAlert}= useToast()
+    const handleAdditionalOptionsChange = useCallback((options) => {
+        setAdditionalOptions(options?.filter((option) => option?.isChecked));
+    }, []);
     const [
         fetchPaymentMethods,
         {
@@ -79,13 +80,16 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
     const [reserveHotel] = useMutation(RESERVE_HOTEL, {
         onCompleted(data) {
-            // alert("Reservation successful.");
+            alert("Reservation successful.");
+            // addAlert({type:"success",message:"Reservation successful"})
             console.log("Reservation successful", data);
             setResult(data.reserveHotelroom);
             setReservationLoading(false);
         },
         onError(error) {
             alert(`Error: ${error.message}`);
+            // addAlert({type:"error",message:"Reservation successful"})
+
             setReservationError(error.message);
             setReservationLoading(false);
         },
@@ -186,6 +190,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 input,
             },
         });
+        // handleHotelReservation(input);
     };
 
     return (
@@ -230,6 +235,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 showModal={showModal}
                 setShowModal={setShowModal}
                 reservationData={reservationData}
+                setAdditionalOptions={handleAdditionalOptionsChange}
             >
                 <div className="space-y-6">
                     {userSession ? (

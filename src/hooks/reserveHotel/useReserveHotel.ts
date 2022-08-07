@@ -50,7 +50,7 @@ type TReserveHotelProps = {
     roomPlanId?: string;
 };
 
-const useReserveHotel = (formData: TReserveHotelProps) => {
+const useReserveHotel = (formData?: TReserveHotelProps) => {
     const { data: planDetails, loading: fetchingPlanDetails } = useQuery(
         GET_PACKAGE_PLAN_BY_ID,
         {
@@ -77,6 +77,10 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
     const [reserveHotelSpace] = useMutation(
         ReserveHotelMutations.RESERVE_HOTEL_ROOM
     );
+
+    const handleHotelReservation = useCallback(async (reservationData) => {
+        console.log({ reservationData });
+    }, []);
 
     const {
         fields: additionalOptionsFields,
@@ -160,6 +164,7 @@ const useReserveHotel = (formData: TReserveHotelProps) => {
         additionalOptionsFields,
         onAdditionalFieldChangeQuantity,
         includedOptions: planDetails?.packagePlanById?.includedOptions,
+        handleHotelReservation,
     };
 };
 

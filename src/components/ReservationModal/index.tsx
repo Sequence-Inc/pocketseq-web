@@ -3,15 +3,13 @@ import { Transition } from "@headlessui/react";
 import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
-import moment from "moment";
-import { Controller } from "react-hook-form";
 import { CheckIcon } from "@heroicons/react/outline";
-import { LoadingSpinner } from "../LoadingSpinner";
 
 const RequestReservationModal = ({
     showModal,
     reservationData,
     setShowModal,
+    setAdditionalOptions,
     children,
 }) => {
     const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
@@ -32,7 +30,6 @@ const RequestReservationModal = ({
 
     useEffect(() => {
         if (!reservationData) return;
-
         let calculatePriceInput = {
             roomPlanId: reservationData?.roomPlanId,
             nAdult: reservationData?.noOfAdults,
@@ -41,9 +38,14 @@ const RequestReservationModal = ({
             checkOutDate: reservationData?.endDate,
             additionalOptionsFields: additionalOptionsFields,
         };
-
+        setAdditionalOptions(additionalOptionsFields);
         fetchCalculatedPrice(calculatePriceInput);
-    }, [reservationData, additionalOptionsFields, fetchCalculatedPrice]);
+    }, [
+        reservationData,
+        additionalOptionsFields,
+        setAdditionalOptions,
+        fetchCalculatedPrice,
+    ]);
 
     return (
         <Transition.Root show={showModal} as={Fragment}>
