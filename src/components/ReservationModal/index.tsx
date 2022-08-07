@@ -432,12 +432,12 @@ const RequestReservationModal = ({
                                                     {!calculatingPrice &&
                                                         additionalOptionsFields
                                                             ?.filter(
-                                                                (item) =>
-                                                                    item?.isChecked
+                                                                (item: any) =>
+                                                                    !!item?.isChecked
                                                             )
                                                             ?.map(
                                                                 (
-                                                                    additionalfield,
+                                                                    additionalfield: any,
                                                                     index
                                                                 ) => {
                                                                     const optionsCharge =

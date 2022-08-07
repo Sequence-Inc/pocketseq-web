@@ -376,7 +376,9 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                     <div className="relative block w-full rounded-none rounded-tl-md bg-transparent sm:text-sm border-gray-300">
                                         <DatePicker
                                             onChange={(date) =>
-                                                setStartDate(date)
+                                                setStartDate(
+                                                    date.startOf("day")
+                                                )
                                             }
                                             disabledDate={disabledDate}
                                             bordered={false}
@@ -394,7 +396,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                     <div className="relative block w-full rounded-none rounded-tr-md bg-transparent sm:text-sm border-gray-300">
                                         <DatePicker
                                             onChange={(date) =>
-                                                setEndDate(date)
+                                                setEndDate(date.endOf("day"))
                                             }
                                             disabledDate={disabledDateCheckout}
                                             bordered={false}
