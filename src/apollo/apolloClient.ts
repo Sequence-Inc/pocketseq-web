@@ -75,6 +75,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL,
+    // uri: "http://cada-2400-1a00-b010-6b48-714-9848-8ea5-ce42.ngrok.io/dev/graphql",
     // uri: "http://be12-2400-1a00-b010-cfa8-567e-afa7-9a2d-3974.ngrok.io/dev/graphql",
     // uri: "http://localhost:3001/dev/graphql",
     // uri: "http://47ad-2400-1a00-b010-ce46-14ba-bb36-5297-22c6.ngrok.io/dev/graphql",

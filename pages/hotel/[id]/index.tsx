@@ -63,11 +63,18 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [result, setResult] = useState(null);
     const [reservationError, setReservationError] = useState(null);
-    const { handleHotelReservation } = useReserveHotel();
     const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
-    //   const{addAlert}= useToast()
+    const { handleHotelReservation } = useReserveHotel();
+
     const handleAdditionalOptionsChange = useCallback((options) => {
-        setAdditionalOptions(options?.filter((option) => option?.isChecked));
+        setAdditionalOptions(
+            options
+                ?.filter((option) => option?.isChecked)
+                ?.map((option) => ({
+                    optionId: option.id,
+                    quantity: option.quantity,
+                }))
+        );
     }, []);
     const [
         fetchPaymentMethods,
@@ -81,15 +88,12 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const [reserveHotel] = useMutation(RESERVE_HOTEL, {
         onCompleted(data) {
             alert("Reservation successful.");
-            // addAlert({type:"success",message:"Reservation successful"})
             console.log("Reservation successful", data);
             setResult(data.reserveHotelroom);
             setReservationLoading(false);
         },
         onError(error) {
             alert(`Error: ${error.message}`);
-            // addAlert({type:"error",message:"Reservation successful"})
-
             setReservationError(error.message);
             setReservationLoading(false);
         },
@@ -100,6 +104,28 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
             fetchPaymentMethods();
         }
     }, []);
+
+    const handleReservation = useCallback(async () => {
+        const input = {
+            paymentSourceId: selectedPaymentMethod,
+            roomPlanId: reservationData?.roomPlanId,
+            checkInDate: reservationData?.startDate?.startOf("day").valueOf(),
+            checkOutDate: reservationData?.endDate?.startOf("day").valueOf(),
+            nAdult: reservationData?.noOfAdults,
+            nChild: reservationData?.noOfChild,
+            additionalOptions: selectedAdditionalOptions,
+        };
+        // return reserveHotel({
+        //     variables: {
+        //         input,
+        //     },
+        // });
+
+        handleHotelReservation(input);
+        setShowModal(false);
+        setAdditionalOptions([]);
+        setReservationData(null);
+    }, [selectedPaymentMethod, reservationData, selectedAdditionalOptions]);
 
     if (paymentMethodsError) {
         return (
@@ -174,23 +200,6 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 setSelectedPaymentMethod(paymentSourceId);
             }
         }
-    };
-
-    const handleReservation = () => {
-        const input = {
-            paymentSourceId: selectedPaymentMethod,
-            roomPlanId: reservationData?.roomPlanId,
-            checkInDate: reservationData?.startDate.valueOf(),
-            checkOutDate: reservationData?.endDate.valueOf(),
-            nAdult: reservationData?.noOfAdults,
-            nChild: reservationData?.noOfChild,
-        };
-        reserveHotel({
-            variables: {
-                input,
-            },
-        });
-        // handleHotelReservation(input);
     };
 
     return (

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { queries as ReserveHotelQueries } from "src/apollo/queries/reserveHotel";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 
 type TCalculatePriceProps = {
     roomPlanId?: string;

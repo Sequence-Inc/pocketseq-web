@@ -75,11 +75,24 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
     } = useForm();
 
     const [reserveHotelSpace] = useMutation(
-        ReserveHotelMutations.RESERVE_HOTEL_ROOM
+        ReserveHotelMutations.RESERVE_HOTEL_ROOM,
+        {
+            onCompleted: (data) => {
+                alert("Hotel room reserved");
+            },
+            onError: (err) => {
+                alert("Reservation Error");
+                console.log({ err });
+            },
+        }
     );
 
     const handleHotelReservation = useCallback(async (reservationData) => {
-        console.log({ reservationData });
+        return reserveHotelSpace({
+            variables: {
+                input: reservationData,
+            },
+        });
     }, []);
 
     const {
