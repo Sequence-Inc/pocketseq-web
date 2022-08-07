@@ -375,11 +375,13 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                     </label>
                                     <div className="relative block w-full rounded-none rounded-tl-md bg-transparent sm:text-sm border-gray-300">
                                         <DatePicker
-                                            onChange={(date) =>
-                                                setStartDate(
-                                                    date.startOf("day")
-                                                )
-                                            }
+                                            onChange={(date) => {
+                                                if (date) {
+                                                    setStartDate(
+                                                        date?.startOf("day")
+                                                    );
+                                                }
+                                            }}
                                             disabledDate={disabledDate}
                                             bordered={false}
                                             className="px-3 w-full rounded-none rounded-tl-md bg-transparent text-gray-600 placeholder-gray-400 border border-gray-200 hover:cursor-pointer"
@@ -395,9 +397,13 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                     </label>
                                     <div className="relative block w-full rounded-none rounded-tr-md bg-transparent sm:text-sm border-gray-300">
                                         <DatePicker
-                                            onChange={(date) =>
-                                                setEndDate(date.endOf("day"))
-                                            }
+                                            onChange={(date) => {
+                                                if (date) {
+                                                    setEndDate(
+                                                        date?.endOf("day")
+                                                    );
+                                                }
+                                            }}
                                             disabledDate={disabledDateCheckout}
                                             bordered={false}
                                             className="px-3 w-full rounded-none rounded-tl-md bg-transparent text-gray-600 placeholder-gray-400 border border-gray-200 hover:cursor-pointer"

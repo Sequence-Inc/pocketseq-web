@@ -10,6 +10,7 @@ const RequestReservationModal = ({
     reservationData,
     setShowModal,
     setAdditionalOptions,
+
     children,
 }) => {
     const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
@@ -30,6 +31,8 @@ const RequestReservationModal = ({
 
     useEffect(() => {
         if (!reservationData) return;
+
+        console.log({ reservationData });
         let calculatePriceInput = {
             roomPlanId: reservationData?.roomPlanId,
             nAdult: reservationData?.noOfAdults,
