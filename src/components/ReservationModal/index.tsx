@@ -216,6 +216,9 @@ const RequestReservationModal = ({
                                                                 additionalField: any,
                                                                 index
                                                             ) => {
+                                                                console.log({
+                                                                    additionalField,
+                                                                });
                                                                 const paymentTerm =
                                                                     OPTION_PAYMENT_TERMS.find(
                                                                         (
@@ -223,7 +226,7 @@ const RequestReservationModal = ({
                                                                         ) =>
                                                                             terms.value ===
                                                                             additionalField?.paymentTerm
-                                                                    ).label;
+                                                                    )?.label;
 
                                                                 // const selectOptions =
                                                                 return (
