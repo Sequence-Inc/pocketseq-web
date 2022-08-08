@@ -1,27 +1,21 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Price } from "@element";
+import { Button } from "@element";
 import {
     CheckIcon,
     InformationCircleIcon,
     SelectorIcon,
 } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
-import { ISpace, ISpacePricePlan } from "src/types/timebookTypes";
 
 import { DatePicker } from "antd";
-import Link from "next/link";
-import moment, { Moment } from "moment";
-import { durationSuffix } from "../Space/PricingPlan";
-import { PriceFormatter } from "src/utils/priceFormatter";
-import { FormatPrice, toBase64 } from "src/utils/stringHelper";
-import { useLazyQuery } from "@apollo/client";
-import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
-import { Listbox, Transition } from "@headlessui/react";
-import { PLAN_OBJECT } from "src/apollo/queries/core.queries";
-import { CALCULATE_ROOM_PLAN_PRICE } from "src/apollo/queries/hotel.queries";
-import { LoadingSpinner } from "../LoadingSpinner";
 
-type DurationType = "DAILY" | "HOURLY" | "MINUTES";
+import moment, { Moment } from "moment";
+
+import { useLazyQuery } from "@apollo/client";
+import { Listbox, Transition } from "@headlessui/react";
+import { CALCULATE_ROOM_PLAN_PRICE } from "src/apollo/queries/hotel.queries";
+
+// type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
