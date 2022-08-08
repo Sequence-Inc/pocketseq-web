@@ -34,13 +34,9 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
     const [selectedRoom, setSelectedRoom] = useState(plans[0]?.roomTypes[0]);
     const [noOfAdults, setNoOfAdults] = useState(1);
     const [noOfChild, setNoOfChild] = useState(0);
-
     const [guestPanelOpen, setGuestPanelOpen] = useState(false);
-
     const [price, setPrice] = useState(null);
     const [noOfNight, setNoOfNight] = useState(null);
-
-    const [loading, setLoading] = useState(false);
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current < moment().endOf("day");
@@ -60,7 +56,6 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
     ] = useLazyQuery(CALCULATE_ROOM_PLAN_PRICE, {
         onCompleted(data) {
             setPrice(data?.calculateRoomPlanPrice?.totalAmount);
-            setLoading(false);
         },
         onError(error) {
             console.log(error);
@@ -109,7 +104,6 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     },
                 },
             });
-            setLoading(true);
         }
     }, [selectedRoom, startDate, endDate, noOfAdults, noOfChild]);
 
