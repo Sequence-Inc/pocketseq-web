@@ -32,7 +32,6 @@ const RequestReservationModal = ({
     useEffect(() => {
         if (!reservationData) return;
 
-        console.log({ reservationData });
         let calculatePriceInput = {
             roomPlanId: reservationData?.roomPlanId,
             nAdult: reservationData?.noOfAdults,
@@ -200,38 +199,45 @@ const RequestReservationModal = ({
                                                     </div>
                                                 </div>
 
-                                                <div className="border-t border-gray-300 h-0 max-h-0"></div>
+                                                {includedOptions?.length >
+                                                    0 && (
+                                                    <>
+                                                        <div className="border-t border-gray-300 h-0 max-h-0"></div>
 
-                                                <div className="w-full space-y-3">
-                                                    <h5 className="font-bold">
-                                                        Included Options
-                                                    </h5>
+                                                        <div className="w-full space-y-3">
+                                                            <h5 className="font-bold">
+                                                                Included Options
+                                                            </h5>
 
-                                                    {includedOptions?.map(
-                                                        (
-                                                            includedOption,
-                                                            index
-                                                        ) => (
-                                                            <div
-                                                                key={index}
-                                                                className="flex space-x-2"
-                                                            >
-                                                                <CheckIcon className="w-6 text-green-400" />
-                                                                <span className="flex items-center space-x-2">
-                                                                    <p>
-                                                                        {
-                                                                            includedOption?.name
+                                                            {includedOptions?.map(
+                                                                (
+                                                                    includedOption,
+                                                                    index
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            index
                                                                         }
-                                                                    </p>
-                                                                    <p className="text-xs text-gray-500">
-                                                                        {includedOption?.description &&
-                                                                            `(${includedOption?.description})`}
-                                                                    </p>
-                                                                </span>
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </div>
+                                                                        className="flex space-x-2"
+                                                                    >
+                                                                        <CheckIcon className="w-6 text-green-400" />
+                                                                        <span className="flex items-center space-x-2">
+                                                                            <p>
+                                                                                {
+                                                                                    includedOption?.name
+                                                                                }
+                                                                            </p>
+                                                                            <p className="text-xs text-gray-500">
+                                                                                {includedOption?.description &&
+                                                                                    `(${includedOption?.description})`}
+                                                                            </p>
+                                                                        </span>
+                                                                    </div>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                )}
 
                                                 <div className="border-t border-gray-300 h-0 max-h-0"></div>
 
@@ -389,6 +395,7 @@ const RequestReservationModal = ({
                                                     {children}
                                                 </div>
                                             </div>
+
                                             <div className="mt-2 ml-6 space-y-5 w-1/3">
                                                 <div className="border border-gray-300 shadow-sm py-3 px-4 rounded-lg space-y-5">
                                                     <h3 className="text-2xl font-bold">
