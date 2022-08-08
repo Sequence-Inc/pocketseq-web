@@ -54,7 +54,10 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
         }
     };
 
-    const [calculatePrice] = useLazyQuery(CALCULATE_ROOM_PLAN_PRICE, {
+    const [
+        calculatePrice,
+        { loading: calculatingPrice, error: priceCalculationError },
+    ] = useLazyQuery(CALCULATE_ROOM_PLAN_PRICE, {
         onCompleted(data) {
             setPrice(data?.calculateRoomPlanPrice?.totalAmount);
             setLoading(false);
@@ -63,6 +66,8 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
             console.log(error);
         },
     });
+
+    console.log({ priceCalculationError });
 
     useEffect(() => {
         setSelectedRoom(selectedPlan?.roomTypes[0]);
@@ -580,9 +585,20 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <InformationCircleIcon className="w-4 h-4 text-gray-400" />
                 </div>
                 <div>
-                    {loading ? (
-                        <LoadingSpinner />
-                    ) : (
+                    {calculatingPrice && (
+                        <div className="flex items-center justify-center">
+                            <p>Please wait . . .</p>
+                        </div>
+                    )}
+
+                    {priceCalculationError && (
+                        <p className="text-sm text-gray-500">
+                            {priceCalculationError?.message ||
+                                "Could not load price."}
+                        </p>
+                    )}
+
+                    {!calculatingPrice && !priceCalculationError && (
                         <div className="space-y-3 text-lg">
                             {noOfNight && (
                                 <>
