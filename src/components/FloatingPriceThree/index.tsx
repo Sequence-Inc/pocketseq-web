@@ -56,8 +56,6 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
         },
     });
 
-    console.log({ priceCalculationError });
-
     useEffect(() => {
         setSelectedRoom(selectedPlan?.roomTypes[0]);
     }, [selectedPlan]);
