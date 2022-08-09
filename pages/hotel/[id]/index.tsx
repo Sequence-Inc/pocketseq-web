@@ -434,7 +434,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                             className="w-60 rounded-lg"
                                         >
                                             <img
-                                                src="https://a0.muscache.com/im/pictures/9cdeb897-97c7-4788-8f96-10f0adef0613.jpg?im_w=720"
+                                                src={plan.photos[0].large.url}
                                                 className="w-60 h-40 rounded-lg bg-gray-200"
                                             />
                                             <div className=" space-y-1 py-2 mt-2">
@@ -475,7 +475,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                             className="w-60 rounded-lg"
                                         >
                                             <img
-                                                src="https://a0.muscache.com/im/pictures/9cdeb897-97c7-4788-8f96-10f0adef0613.jpg?im_w=720"
+                                                src={room.photos[0].large.url}
                                                 className="w-60 h-40 rounded-lg bg-gray-200"
                                             />
                                             <div className=" space-y-1 py-2 mt-2">

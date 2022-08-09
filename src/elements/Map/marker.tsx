@@ -43,7 +43,7 @@ const MyMarker = ({
         <div className="relative">
             <button
                 className={clsx(
-                    "rounded-full px-3 text-lg font-bold flex justify-center relative",
+                    "rounded-full px-3 py-1 text-base font-bold flex justify-center relative shadow-station",
                     "hover:bg-gray-900 focus:outline-none hover:text-white",
                     {
                         "bg-gray-900 text-white": activeIndex === marker.id,
