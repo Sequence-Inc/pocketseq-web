@@ -4,7 +4,6 @@ import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
-import { LoadingSpinner } from "../LoadingSpinner";
 
 const RequestReservationModal = ({
     showModal,
