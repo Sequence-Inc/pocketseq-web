@@ -4,6 +4,7 @@ import { queries as OptionQueries } from "src/apollo/queries/options";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { OPTION_OBJECT } from "src/apollo/queries/options/core.scheme";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useToast } from "@hooks/useToasts";
 
 const DEFAULT_OPTIONS_QUANTITY = 1,
     DEFAULT_DAY = 1;
@@ -63,6 +64,8 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
     );
     const [loading, setLoading] = useState(false);
 
+    const { addAlert } = useToast();
+
     const {
         register,
         unregister,
@@ -74,15 +77,14 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
         getValues,
     } = useForm();
 
-    const [reserveHotelSpace] = useMutation(
+    const [reserveHotelSpace, { loading: reservingHotel }] = useMutation(
         ReserveHotelMutations.RESERVE_HOTEL_ROOM,
         {
             onCompleted: (data) => {
-                alert("Hotel room reserved");
+                addAlert({ type: "success", message: "Hotel room reserved" });
             },
             onError: (err) => {
-                alert("Reservation Error");
-                console.log({ err });
+                addAlert({ type: "error", message: "Reservation Error" });
             },
         }
     );
@@ -178,6 +180,7 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
         onAdditionalFieldChangeQuantity,
         includedOptions: planDetails?.packagePlanById?.includedOptions,
         handleHotelReservation,
+        reservingHotel,
     };
 };
 

@@ -27,7 +27,11 @@ import {
     GET_HOTEL_BY_ID,
     RESERVE_HOTEL,
 } from "src/apollo/queries/hotel.queries";
-import { LocationMarkerIcon, UserGroupIcon } from "@heroicons/react/outline";
+import {
+    LocationMarkerIcon,
+    UserGroupIcon,
+    CurrencyYenIcon,
+} from "@heroicons/react/outline";
 import { Rooms } from "src/components/HotelSpace";
 import { Dialog, Transition } from "@headlessui/react";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
@@ -36,6 +40,7 @@ import { ro } from "date-fns/locale";
 import RequestReservationModal from "src/components/ReservationModal";
 import PaymentMethods from "src/components/PaymentMethods";
 import { useReserveHotel } from "@hooks/reserveHotel";
+import AlertModal from "src/components/AlertModal";
 
 const ContentSection = ({
     title,
@@ -64,7 +69,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const [result, setResult] = useState(null);
     const [reservationError, setReservationError] = useState(null);
     const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
-    const { handleHotelReservation } = useReserveHotel();
+    const { handleHotelReservation, reservingHotel } = useReserveHotel();
+
+    const [alertModalOpen, setAlertModal] = useState(false);
+    const toggleAlertModal = () => {
+        console.log("toggler clled");
+        setAlertModal((prev) => !prev);
+    };
 
     const handleAdditionalOptionsChange = useCallback((options) => {
         setAdditionalOptions(
@@ -239,7 +250,36 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                     content={`${publicImage(photos[0], "large")}`}
                 />
             </Head>
-
+            <AlertModal
+                isOpen={reservingHotel}
+                title="Reserving Hotel"
+                Icon={CurrencyYenIcon}
+                iconClass="h-6 w-6 text-green-600"
+            >
+                <div className="flex items-center justify-center h-20">
+                    <svg
+                        className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                        ></circle>
+                        <path
+                            className="opacity-50"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                    </svg>
+                    <span className="text-gray-400 text-lg">Please Wait</span>
+                </div>
+            </AlertModal>
             <RequestReservationModal
                 showModal={showModal}
                 setShowModal={setShowModal}
