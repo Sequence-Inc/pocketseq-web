@@ -1,11 +1,17 @@
 import Link from "next/link";
 import React from "react";
-import { ItemGrid } from "../ItemGrid";
+import { PriceFormatter } from "src/utils";
 
+export type SpacePricePlan = {
+    amount: number;
+    duration: number;
+    type: "HOURLY" | "DAILY" | "MINUTES";
+};
 export type SearchResult = {
     id: string;
     name: string;
     price: number;
+    priceUnit: "泊" | "日" | "時間" | "5分" | "10分" | "15分" | "30分" | "45分";
     maxAdult: number;
     maxChild?: number;
     thumbnail?: string;
@@ -18,10 +24,12 @@ export const GridViewSearch = ({
     lists,
     activeIndex,
     setActiveIndex,
+    minPriceFilter,
 }: {
     lists: SearchResult[];
     activeIndex: string | number;
     setActiveIndex: any;
+    minPriceFilter?: number;
 }) => {
     const renderPax = (type, maxAdult, maxChild) => {
         if (type === "hotel") {
@@ -34,10 +42,20 @@ export const GridViewSearch = ({
             }
         }
     };
+
     return (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {lists.map(
-                ({ id, thumbnail, name, type, price, maxAdult, maxChild }) => {
+                ({
+                    id,
+                    thumbnail,
+                    name,
+                    type,
+                    price,
+                    priceUnit,
+                    maxAdult,
+                    maxChild,
+                }) => {
                     const link = `/` + type + `/${id}`;
                     const pax = renderPax(type, maxAdult, maxChild);
                     return (
@@ -81,11 +99,8 @@ export const GridViewSearch = ({
                                 {pax}
                             </div>
                             <div className="text-xl font-bold">
-                                {price}〜
-                                <span className="font-normal">
-                                    {" "}
-                                    /{type === "hotel" ? "泊" : "時間"}
-                                </span>
+                                {PriceFormatter(price)}〜
+                                <span className="font-normal">{` /${priceUnit}`}</span>
                             </div>
                         </div>
                     );

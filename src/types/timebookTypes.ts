@@ -1,3 +1,4 @@
+import { SpacePricePlan } from "@comp";
 import { Dispatch, SetStateAction } from "react";
 
 interface IHOST {
@@ -101,6 +102,7 @@ export interface ILocationMarker {
     };
     name: string;
     price: number;
+    priceUnit: string;
     priceText: string;
     rating: IRating;
     photo: string;
