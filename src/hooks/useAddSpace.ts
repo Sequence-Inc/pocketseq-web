@@ -190,8 +190,6 @@ export const useBasicSpace = (fn, initialValue) => {
         error: cancelPoliciesError,
     } = useQuery(CancelPolicyQueires.MY_CANCEL_POLICIES);
 
-    console.log({ cancelPolicies });
-
     const [mutate] = useMutation(ADD_SPACE);
     const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
     const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
@@ -246,8 +244,6 @@ export const useBasicSpace = (fn, initialValue) => {
             },
         },
     });
-
-    console.log({ options });
 
     const {
         fields: includedOptions,
