@@ -15,6 +15,7 @@ import {
     UPDATE_SPACE_ADDRESS,
     UPDATE_SPACE_SETTING,
     UPDATE_TYPES_IN_SPACE,
+    GET_SPACE_BY_ID,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import { queries as OptionQueires } from "src/apollo/queries/options";
@@ -171,7 +172,44 @@ const useAddSpace = () => {
 
 export default useAddSpace;
 
-export const useBasicSpace = (fn, initialValue) => {
+export const useGetInitialSpace = (id) => {
+    const [initialValue, setInitialValue] = useState(null);
+
+    const [
+        fetchSpaceDetail,
+        {
+            loading: spaceDetailLoading,
+            refetch: refetchSpaceDetail,
+            error: fetchSpaceDetailsError,
+        },
+    ] = useLazyQuery(GET_SPACE_BY_ID);
+
+    const getSpaceDetails = useCallback(async () => {
+        if (!id) return;
+
+        const { data } = await fetchSpaceDetail({
+            variables: {
+                id: id,
+            },
+        });
+        if (data) {
+            setInitialValue(data.spaceById);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        getSpaceDetails();
+    }, [getSpaceDetails]);
+
+    return {
+        initialValue,
+        spaceDetailLoading,
+        refetchSpaceDetail,
+        fetchSpaceDetailsError,
+    };
+};
+
+export const useBasicSpace = (fn, selectedSpaceId) => {
     const [zipCode, setZipCode] = useState("");
     const [freeCoords, setFreeCoords] = useState<
         { lat: any; lng: any } | undefined
@@ -179,6 +217,13 @@ export const useBasicSpace = (fn, initialValue) => {
     const [cache, setCache] = useState({});
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
 
+    const {
+        initialValue,
+        spaceDetailLoading,
+        refetchSpaceDetail,
+        fetchSpaceDetailsError,
+    } = useGetInitialSpace(selectedSpaceId);
+    console.log({ initialValue });
     const {
         data: options,
         loading: optionsLoading,
@@ -567,6 +612,7 @@ export const useBasicSpace = (fn, initialValue) => {
             setValue("city", initialValue.address?.city);
             setValue("addressLine1", initialValue.address?.addressLine1);
             setValue("addressLine2", initialValue.address?.addressLine2);
+            setValue("cancelPolicyId", initialValue?.cancelPolicyId);
             setFreeCoords({
                 lat: initialValue.address?.latitude,
                 lng: initialValue.address?.longitude,
@@ -616,6 +662,9 @@ export const useBasicSpace = (fn, initialValue) => {
         cancelPolicies: cancelPolicies?.myCancelPolicies || [],
         handleIncludedOptionFieldChange,
         handleAdditionalOptionFieldChange,
+        initialValue,
+        spaceDetailLoading,
+        refetchSpaceDetail,
     };
 };
 

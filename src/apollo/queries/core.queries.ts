@@ -261,7 +261,15 @@ export const SPACE = `
     }
     pricePlans {
         ${SPACE_PRICE_PLAN}
-    }    
+    }   
+    includedOptions{
+        id
+        name
+    } 
+    additionalOptions{
+        id
+        name
+    }
 `;
 
 export const SPACE_SETTING = `

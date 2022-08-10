@@ -26,14 +26,14 @@ const EditNewSpace = ({ userSession }) => {
     const { t } = useTranslation("adminhost");
 
     const { id } = router.query;
-    const {
-        data,
-        loading: spaceLoading,
-        refetch,
-    } = useQuery(GET_SPACE_BY_ID, {
-        variables: { id },
-        fetchPolicy: "network-only",
-    });
+    // const {
+    //     data,
+    //     loading: spaceLoading,
+    //     refetch,
+    // } = useQuery(GET_SPACE_BY_ID, {
+    //     variables: { id },
+    //     fetchPolicy: "network-only",
+    // });
 
     const steps = [
         t("space-basic"),
@@ -61,8 +61,8 @@ const EditNewSpace = ({ userSession }) => {
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             setSpaceId={setSpaceId}
-                            initialValue={data?.spaceById}
-                            spaceLoading={spaceLoading}
+                            selectedSpaceId={id}
+                            // spaceLoading={spaceLoading}
                         />
                     ) : activeStep === 1 ? (
                         <NearestStationStep
@@ -70,16 +70,17 @@ const EditNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.nearestStations}
+                            selectedSpaceId={id}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
-                            refetch={refetch}
+                            // refetch={refetch}
                             spaceId={spaceId || id}
-                            initialValue={data?.spaceById?.photos}
+                            // initialValue={data?.spaceById?.photos}
+                            selectedSpaceId={id}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
@@ -87,8 +88,10 @@ const EditNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.pricePlans}
-                            refetch={refetch}
+                            // initialValue={data?.spaceById?.pricePlans}
+                            // refetch={refetch}
+                            // initialValue={id}
+                            selectedSpaceId={id}
                         />
                     ) : null}
                 </Stepper>

@@ -20,7 +20,7 @@ interface IBasicSpace {
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any;
+    selectedSpaceId?: any;
     spaceLoading?: boolean;
 }
 
@@ -29,7 +29,7 @@ const Basic = ({
     setActiveStep,
     steps,
     setSpaceId,
-    initialValue,
+    selectedSpaceId,
     spaceLoading,
 }: IBasicSpace) => {
     const [change, setChange] = useState<boolean>(false);
@@ -55,7 +55,10 @@ const Basic = ({
         handleIncludedOptionFieldChange,
         handleAdditionalOptionFieldChange,
         cancelPolicies,
-    } = useBasicSpace(handleNext, initialValue);
+        initialValue,
+        spaceDetailLoading,
+        refetchSpaceDetail,
+    } = useBasicSpace(handleNext, selectedSpaceId);
 
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
@@ -114,7 +117,7 @@ const Basic = ({
                     この情報は公開されますので、有効な情報を入力してください。
                 </p>
             </div>
-            {spaceLoading ? (
+            {spaceDetailLoading ? (
                 <LoadingSpinner />
             ) : (
                 <form onSubmit={onSubmit}>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@element";
+import { LoadingSpinner } from "@comp";
+
 import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
@@ -7,6 +9,7 @@ import { IOtherSpacesProps } from "./NearestStationStep";
 import { useEffect } from "react";
 
 import useTranslation from "next-translate/useTranslation";
+import { useGetInitialSpace } from "@hooks/useAddSpace";
 
 const SpacePhotos = ({
     activeStep,
@@ -14,25 +17,26 @@ const SpacePhotos = ({
     refetch,
     steps,
     spaceId,
-    initialValue,
+    selectedSpaceId,
 }: IOtherSpacesProps) => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
-
+    const { initialValue, spaceDetailLoading, refetchSpaceDetail } =
+        useGetInitialSpace(spaceId);
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
     const { t } = useTranslation("adminhost");
 
     useEffect(() => {
-        if (initialValue?.length) {
-            const newPhotos = initialValue.map(
+        if (initialValue?.photos?.length) {
+            const newPhotos = initialValue?.photos?.map(
                 (res: any) => res.thumbnail?.url
             );
             setPhotos(newPhotos);
         }
-    }, []);
+    }, [initialValue?.photos]);
 
     const handlePrevious = (): void => {
         if (hasPrevious) setActiveStep(activeStep - 1);
@@ -79,13 +83,16 @@ const SpacePhotos = ({
                     })
                 );
                 if (initialValue) {
-                    refetch();
+                    refetchSpaceDetail();
                 } else handleNext();
             } catch (err) {
                 console.log(err);
             }
         }
     };
+
+    if (spaceDetailLoading)
+        return <LoadingSpinner loadingText="Loading Space Photos" />;
 
     return (
         <form onSubmit={handleSubmit}>
@@ -142,7 +149,7 @@ const SpacePhotos = ({
                 </div>
             </div>
 
-            {initialValue ? (
+            {initialValue?.photos?.length > 0 ? (
                 <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
                     <Button
                         type="submit"
