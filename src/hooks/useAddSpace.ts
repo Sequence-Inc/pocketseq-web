@@ -216,7 +216,7 @@ export const useBasicSpace = (fn, initialValue) => {
         getValues,
     } = useForm({
         defaultValues: {
-            cancelPolicy: undefined,
+            cancelPolicyId: undefined,
             name: undefined,
             description: undefined,
             maximumCapacity: undefined,
@@ -325,6 +325,7 @@ export const useBasicSpace = (fn, initialValue) => {
             needApproval: formData.needApproval,
             includedOptions: reducedIncludecOptions,
             additionalOptions: reducedAdditionalOptions,
+            cancelPolicyId: formData.cancelPolicyId,
         };
 
         const addressModel = {

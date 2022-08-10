@@ -216,15 +216,15 @@ const Basic = ({
 
                         <div className="">
                             <Controller
-                                name="cancelPolicy"
+                                name="cancelPolicyId"
                                 control={control}
                                 rules={{ required: true }}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        label={"cancelPolicy"}
+                                        label={"cancelPolicyId"}
                                         options={cancelPolicies || []}
-                                        error={errors.spaceTypes && true}
+                                        error={errors.cancelPolicyId && true}
                                         errorMessage="Cancel Policy is required"
                                         labelKey="name"
                                         valueKey="id"
