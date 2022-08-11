@@ -270,6 +270,9 @@ export const SPACE = `
         id
         name
     }
+    cancelPolicy{
+        id
+    }
 `;
 
 export const SPACE_SETTING = `

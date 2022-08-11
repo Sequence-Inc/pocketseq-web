@@ -612,7 +612,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
             setValue("city", initialValue.address?.city);
             setValue("addressLine1", initialValue.address?.addressLine1);
             setValue("addressLine2", initialValue.address?.addressLine2);
-            setValue("cancelPolicyId", initialValue?.cancelPolicyId);
+            setValue("cancelPolicyId", initialValue?.cancelPolicy?.id);
             setFreeCoords({
                 lat: initialValue.address?.latitude,
                 lng: initialValue.address?.longitude,
