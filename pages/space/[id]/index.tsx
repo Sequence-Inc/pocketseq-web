@@ -8,7 +8,7 @@ import {
     ISpaceInfoTitleProps,
 } from "@comp";
 import { Button, Container, Tag } from "@element";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
@@ -27,6 +27,7 @@ import createApolloClient from "src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
+import ReserceSpaceModal from "src/components/ReserveSpaceModal";
 
 const ContentSection = ({
     title,
@@ -49,7 +50,9 @@ const ContentSection = ({
 const SpaceDetail = ({ spaceId, space, userSession }) => {
     const id = spaceId;
     const router = useRouter();
+    console.log({ space });
 
+    const [showModal, setShowModal] = useState(false);
     const {
         name,
         description,
@@ -119,6 +122,11 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         );
     };
 
+    const handleReserve = useCallback((data) => {
+        console.log({ data });
+        setShowModal(true);
+    }, []);
+
     return (
         <MainLayout userSession={userSession}>
             <Head>
@@ -156,7 +164,15 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     content={`${publicImage(photos[0], "large")}`}
                 />
             </Head>
+
             <Container className="mt-16">
+                <ReserceSpaceModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                >
+                    <p>Reserve Space</p>
+                </ReserceSpaceModal>
+
                 <div className="relative flex space-x-12">
                     <div className="flex-1">
                         <div className="h-6"></div>
@@ -263,6 +279,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <FloatingPriceTwo
                             pricePlans={pricePlans}
                             space={space}
+                            handleReserve={handleReserve}
                         />
                     </div>
                 </div>
