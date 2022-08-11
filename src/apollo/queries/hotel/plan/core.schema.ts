@@ -36,6 +36,9 @@ export const PACKAGE_PLAN = `
         id
         name
     }
+    cancelPolicy{
+        id
+    }
     createdAt
     updatedAt
 `;

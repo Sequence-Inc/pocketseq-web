@@ -71,6 +71,7 @@ const UPDATE_PLAN_KEYS = [
     "cutOffBeforeDays",
     "cutOffTillTime",
     "isBreakfastIncluded",
+    "cancelPolicyId",
 ];
 
 const useAddPlans = (props: AddPlansProps) => {
@@ -305,7 +306,6 @@ const useAddPlans = (props: AddPlansProps) => {
             register("cutOffTillTime", { required: true });
         }
     }, [watchShowCutOff]);
-
     useEffect(() => {
         if (initialValue) {
             setValue("name", initialValue.name);
@@ -313,7 +313,7 @@ const useAddPlans = (props: AddPlansProps) => {
             setValue("paymentTerm", initialValue.paymentTerm);
             setValue("stock", initialValue.stock);
             setValue("isBreakfastIncluded", initialValue?.isBreakfastIncluded);
-
+            setValue("cancelPolicyId", initialValue?.cancelPolicy?.id);
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }

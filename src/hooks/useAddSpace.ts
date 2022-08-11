@@ -223,7 +223,6 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         refetchSpaceDetail,
         fetchSpaceDetailsError,
     } = useGetInitialSpace(selectedSpaceId);
-    console.log({ initialValue });
     const {
         data: options,
         loading: optionsLoading,

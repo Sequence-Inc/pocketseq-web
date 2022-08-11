@@ -57,7 +57,6 @@ const Basic = ({
         cancelPolicies,
         initialValue,
         spaceDetailLoading,
-        refetchSpaceDetail,
     } = useBasicSpace(handleNext, selectedSpaceId);
 
     const hasNext: boolean = activeStep < steps.length - 1 && true;
