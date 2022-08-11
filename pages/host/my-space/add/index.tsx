@@ -77,7 +77,6 @@ const AddNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={null}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
@@ -85,7 +84,6 @@ const AddNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={null}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
@@ -93,7 +91,6 @@ const AddNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={null}
                         />
                     ) : (
                         <Preview
