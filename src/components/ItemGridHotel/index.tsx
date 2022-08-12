@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
     LocationMarkerIcon,
@@ -58,9 +57,8 @@ export const ItemGridHotel = ({
             onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
         >
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9 z-0">
-                <Image
-                    layout="fill"
-                    src={photo.medium.url}
+                <img
+                    src={photo.medium?.url}
                     alt={name}
                     className="object-cover object-left-top w-full h-full z-0"
                 />
