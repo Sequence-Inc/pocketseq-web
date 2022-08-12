@@ -72,8 +72,7 @@ export default function Services({ userSession }) {
                                             <a>
                                                 <div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                                                     {res.photo && (
-                                                        <Image
-                                                            layout="fill"
+                                                        <img
                                                             src={res.photo}
                                                             alt="category items"
                                                             className="object-cover w-full h-full"

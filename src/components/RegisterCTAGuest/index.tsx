@@ -35,8 +35,7 @@ export const RegisterCTAGuest = () => {
                 </div>
             </div>
             <div className="relative h-56 sm:h-72 md:absolute md:right-0 md:top-0 md:h-full md:w-1/2">
-                <Image
-                    layout="fill"
+                <img
                     src="/cta-bg1.jpg"
                     className="object-cover w-full h-full"
                 />

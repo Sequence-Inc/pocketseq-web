@@ -1,10 +1,10 @@
-import React from 'react'
-import Image from 'next/image'
+import React from "react";
+import Image from "next/image";
 
 export const HostProfile = ({ title, description }) => {
     return (
         <div className="flex space-x-4">
-            <Image
+            <img
                 className="rounded-lg"
                 src="/host.svg"
                 width="56"
@@ -15,5 +15,5 @@ export const HostProfile = ({ title, description }) => {
                 <p className="text-sm text-gray-400">{description}</p>
             </div>
         </div>
-    )
-}
+    );
+};

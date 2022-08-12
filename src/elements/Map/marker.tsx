@@ -63,7 +63,7 @@ const MyMarker = ({
                         className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8"
                     >
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
-                            <Image src={marker.photo} layout="fill" />
+                            <img src={marker.photo} />
                         </div>
                         <div className="py-2 px-3 space-y-1.5">
                             {/* <Tag
