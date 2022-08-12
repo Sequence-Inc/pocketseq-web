@@ -3,6 +3,7 @@ import { Transition } from "@headlessui/react";
 import {
     useCalculateSpacePrice,
     TUseCalculateSpacePriceProps,
+    useReserveSpace,
 } from "@hooks/reserveSpace";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
@@ -21,6 +22,7 @@ const ReserveSpaceModal = ({
     setShowModal,
     children,
 }: IReserveSpaceModal) => {
+    const { spaceId } = useReserveSpace(reservationData?.spaceId);
     const { calculatingPrice, calculatedPrice, priceCalculationError } =
         useCalculateSpacePrice(reservationData);
 
