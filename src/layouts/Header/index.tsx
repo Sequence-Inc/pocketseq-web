@@ -158,7 +158,7 @@ const Header = ({ userSession }) => {
                                     </a>
                                 </Link>
                             </div>
-                            {pathname !== "/main" && (
+                            {pathname !== "/main" && pathname !== "/search" && (
                                 <div className="hidden sm:block absolute w-full top-3 left-1/2 transform -translate-x-1/2 text-center">
                                     <button
                                         className="inline-flex items-center px-5 py-2 rounded-full text-white justify-center font-bold bg-primaryHover"
@@ -171,7 +171,7 @@ const Header = ({ userSession }) => {
                                     </button>
                                     {showSearch && (
                                         <div className="mt-3 pt-3 pb-5 bg-primaryHover shadow-lg">
-                                            <SearchBoxNew />
+                                            <SearchBoxNew type="primary" />
                                         </div>
                                     )}
                                 </div>

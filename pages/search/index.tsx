@@ -166,9 +166,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 }
 
                 result.price.map((price) => {
-                    console.log(price);
                     if (max > price.amount && price.amount >= min) {
-                        console.log("YO!");
                         max = price.amount;
                         type = price.type;
                         duration = price.duration;
@@ -259,7 +257,21 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 <title>Search | {config.appName}</title>
             </Head>
             <div className="relative">
-                <Container className="relative py-12 space-y-12 grid grid-cols-1 lg:grid-cols-9">
+                <Container className="relative py-12 space-y-10 grid grid-cols-1 lg:grid-cols-9">
+                    <div className="mt-8 py-5 col-span-9 lg:col-span-9 bg-gray-100 rounded-md">
+                        <div className="">
+                            <SearchBoxNew
+                                onChange={(data) => {
+                                    setSearchParams({
+                                        ...searchParams,
+                                        ...data,
+                                    });
+                                }}
+                                defaultValue={searchParams}
+                                type="secondary"
+                            />
+                        </div>
+                    </div>
                     <div className="px-6 py-10 col-span-9 lg:col-span-5">
                         <div>
                             <h1 className="flex items-center justify-between mb-6">

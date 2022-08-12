@@ -48,9 +48,11 @@ const maxHotelPeople = 10;
 export const SearchBoxNew = ({
     defaultValue,
     onChange,
+    type,
 }: {
     defaultValue?: any;
     onChange?: any;
+    type?: "primary" | "secondary";
 }) => {
     const [area, setArea] = useState<string>("");
     const [searchType, setSearchType] = useState<"space" | "hotel">("space");
@@ -136,12 +138,13 @@ export const SearchBoxNew = ({
                 searchData["area"] = area;
             }
 
-            router.push({
-                pathname: "/search",
-                query: searchData,
-            });
             if (onChange) {
                 onChange(searchData);
+            } else {
+                router.push({
+                    pathname: "/search",
+                    query: searchData,
+                });
             }
         } else {
             alert(errorList.map((error) => `${error}\n`));
@@ -189,32 +192,34 @@ export const SearchBoxNew = ({
 
     return (
         <>
-            <div className="z-20 w-full text-center text-white text-lg space-x-5 mb-6">
-                <button
-                    className={`px-1 font-bold border-b-4 ${
-                        searchType === "space"
-                            ? `text-white border-primary`
-                            : `border-transparent text-gray-100 hover:text-white hover:border-white`
-                    } `}
-                    onClick={() => {
-                        setSearchType("space");
-                    }}
-                >
-                    スペース
-                </button>
-                <button
-                    className={`px-1 font-bold border-b-4 ${
-                        searchType === "hotel"
-                            ? `text-white border-primary`
-                            : `border-transparent text-gray-100 hover:text-white hover:border-white`
-                    } `}
-                    onClick={() => {
-                        setSearchType("hotel");
-                    }}
-                >
-                    宿泊
-                </button>
-            </div>
+            {type === "primary" && (
+                <div className="z-20 w-full text-center text-white text-lg space-x-5 mb-6">
+                    <button
+                        className={`px-1 font-bold border-b-4 ${
+                            searchType === "space"
+                                ? `text-white border-primary`
+                                : `border-transparent text-gray-100 hover:text-white hover:border-white`
+                        } `}
+                        onClick={() => {
+                            setSearchType("space");
+                        }}
+                    >
+                        スペース
+                    </button>
+                    <button
+                        className={`px-1 font-bold border-b-4 ${
+                            searchType === "hotel"
+                                ? `text-white border-primary`
+                                : `border-transparent text-gray-100 hover:text-white hover:border-white`
+                        } `}
+                        onClick={() => {
+                            setSearchType("hotel");
+                        }}
+                    >
+                        宿泊
+                    </button>
+                </div>
+            )}
             <div className="flex flex-col w-full sm:items-center sm:justify-center sm:flex-row space-y-0 z-40 relative rounded-lg">
                 {searchType === "hotel" && (
                     <>

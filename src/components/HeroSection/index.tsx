@@ -64,11 +64,7 @@ export const HeroSection = ({
                             <br className="hidden sm:block" />
                             目的に合った場所を検索しよう
                         </p>
-                        <SearchBoxNew
-                            onChange={() => {
-                                return null;
-                            }}
-                        />
+                        <SearchBoxNew type="primary" />
 
                         <p className="z-20 mt-10 mb-10 sm:mb-0 text-center text-white text-xl drop-shadow-md">
                             <span className="font-bold">
