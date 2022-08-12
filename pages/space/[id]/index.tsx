@@ -28,6 +28,7 @@ import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import ReserceSpaceModal from "src/components/ReserveSpaceModal";
+import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
 
 const ContentSection = ({
     title,
@@ -50,9 +51,15 @@ const ContentSection = ({
 const SpaceDetail = ({ spaceId, space, userSession }) => {
     const id = spaceId;
     const router = useRouter();
-    console.log({ space });
 
     const [showModal, setShowModal] = useState(false);
+    const [reservationData, setReservationData] =
+        useState<TUseCalculateSpacePriceProps>({
+            fromDateTime: null,
+            duration: null,
+            spaceId: spaceId,
+            durationType: null,
+        });
     const {
         name,
         description,
@@ -122,9 +129,9 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         );
     };
 
-    const handleReserve = useCallback((data) => {
-        console.log({ data });
+    const handleReserve = useCallback((data: TUseCalculateSpacePriceProps) => {
         setShowModal(true);
+        setReservationData(data);
     }, []);
 
     return (
@@ -169,6 +176,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 <ReserceSpaceModal
                     showModal={showModal}
                     setShowModal={setShowModal}
+                    reservationData={reservationData}
                 >
                     <p>Reserve Space</p>
                 </ReserceSpaceModal>
@@ -179,12 +187,12 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <SpaceInfoTitle titleInfo={titleInfo} />
                         <SpaceInfoBanner photos={photos} />
                         <div className="w-full my-6 border-t border-gray-300" />
-                        <div className="block md:hidden">
+                        {/* <div className="block md:hidden">
                             <FloatingPriceTwo
                                 pricePlans={pricePlans}
                                 space={space}
                             />
-                        </div>
+                        </div> */}
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />
                         <div className="w-full my-6 border-t border-gray-300" />

@@ -12,6 +12,7 @@ import { PriceFormatter } from "src/utils/priceFormatter";
 import { FormatPrice, toBase64 } from "src/utils/stringHelper";
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
+import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
 
 const options = {
     DAILY: Array.from({ length: 30 }).map((_, index) => index + 1),
@@ -28,7 +29,7 @@ export const FloatingPriceTwo = ({
 }: {
     pricePlans: ISpacePricePlan[];
     space: ISpace;
-    handleReserve: Function;
+    handleReserve: (data: TUseCalculateSpacePriceProps) => void;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -251,13 +252,21 @@ export const FloatingPriceTwo = ({
     const url = `?data=${params}`;
 
     const initiateReserve = useCallback(() => {
+        const start = durationType === "DAILY" ? startDateTime : startDateTime;
         handleReserve({
-            startDateTime,
-            endDateTime,
+            fromDateTime: start.unix() * 1000,
             duration,
             durationType,
+            spaceId: space.id,
         });
-    }, [handleReserve, startDateTime, endDateTime, duration, durationType]);
+    }, [
+        handleReserve,
+        startDateTime,
+        endDateTime,
+        duration,
+        durationType,
+        space?.id,
+    ]);
 
     const disabledDate = (current) => {
         // Can not select days before today and today

@@ -1,21 +1,34 @@
 import { Select } from "@element";
 import { Transition } from "@headlessui/react";
-import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
+import {
+    useCalculateSpacePrice,
+    TUseCalculateSpacePriceProps,
+} from "@hooks/reserveSpace";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 
 interface IReserveSpaceModal {
+    reservationData: TUseCalculateSpacePriceProps;
     showModal: boolean;
     setShowModal: Function;
     children?: React.ReactNode;
 }
 
 const ReserveSpaceModal = ({
+    reservationData,
     showModal,
     setShowModal,
     children,
 }: IReserveSpaceModal) => {
+    const { calculatingPrice, calculatedPrice, priceCalculationError } =
+        useCalculateSpacePrice(reservationData);
+
+    console.log("modal data", {
+        calculatingPrice,
+        calculatedPrice,
+        priceCalculationError,
+    });
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
