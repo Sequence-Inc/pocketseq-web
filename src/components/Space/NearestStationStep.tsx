@@ -8,15 +8,17 @@ import {
 } from "src/apollo/queries/space.queries";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { Button } from "@element";
+import { LoadingSpinner } from "@comp";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { RefreshIcon } from "@heroicons/react/solid";
+import { useGetInitialSpace } from "@hooks/useAddSpace";
 
 export interface IOtherSpacesProps {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
-    initialValue?: any;
+    selectedSpaceId?: any;
     spaceId?: any;
     refetch?: any;
 }
@@ -26,27 +28,30 @@ const NearestStationStep = ({
     setActiveStep,
     steps,
     spaceId,
-    initialValue,
+    selectedSpaceId,
 }: IOtherSpacesProps) => {
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [toggleForm, setToggleForm] = useState(false);
     const [mutate] = useMutation(ADD_NEAREST_STATION);
+    const { initialValue, spaceDetailLoading } =
+        useGetInitialSpace(selectedSpaceId);
+
     const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION);
     const [activeStation, setActiveStation] = useState(-1);
     const router = useRouter();
     const { id } = router.query;
 
     useEffect(() => {
-        if (initialValue) {
-            const newValue = initialValue.map((res) => ({
+        if (initialValue?.nearestStations) {
+            const newValue = initialValue.nearestStations?.map((res) => ({
                 stationId: res.station.id,
                 via: res.via,
                 time: res.time,
             }));
             setStations(newValue);
         }
-    }, [initialValue]);
+    }, [initialValue?.nearestStations]);
 
     const handleStation = async () => {
         if (stations.length > 0) handleNext();
@@ -63,7 +68,7 @@ const NearestStationStep = ({
     const addStation = async ({ stationId, via, time }) => {
         const { data } = await mutate({
             variables: {
-                spaceId: initialValue ? id : spaceId,
+                spaceId: initialValue?.nearestStations ? id : spaceId,
                 stations: [{ stationId, via, time: parseInt(time) }],
             },
         });
@@ -81,7 +86,10 @@ const NearestStationStep = ({
         try {
             const { data } = await mutateRemoveStation({
                 variables: {
-                    input: { spaceId: initialValue ? id : spaceId, stationId },
+                    input: {
+                        spaceId: initialValue?.nearestStations ? id : spaceId,
+                        stationId,
+                    },
                 },
             });
             if (data) {
@@ -107,6 +115,9 @@ const NearestStationStep = ({
     function handleNext(): void {
         if (hasNext) setActiveStep(activeStep + 1);
     }
+
+    if (spaceDetailLoading)
+        return <LoadingSpinner loadingText="Loading nearest stations" />;
 
     return (
         <div className="">
@@ -164,7 +175,7 @@ const NearestStationStep = ({
                 )}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue ? null : (
+                {initialValue?.nearestStations ? null : (
                     <>
                         <Button
                             className="w-auto px-8"
