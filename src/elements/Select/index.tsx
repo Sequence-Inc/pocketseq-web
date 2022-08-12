@@ -22,6 +22,7 @@ interface SelectProps {
     singleRow?: boolean;
     disabled?: boolean;
     className?: string;
+    optionClassName?: string;
     loading?: boolean;
     hidePlaceholder?: boolean;
 }
@@ -31,6 +32,7 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
         options,
         onChange,
         className,
+        optionClassName,
         valueKey,
         labelKey,
         value,
@@ -116,7 +118,10 @@ const Select = React.forwardRef<any, SelectProps>((props, ref) => {
                             >
                                 <Listbox.Options
                                     static
-                                    className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                                    className={clsx(
+                                        "absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
+                                        optionClassName ? optionClassName : ""
+                                    )}
                                 >
                                     {loading && (
                                         <div className="w-full flex items-center justify-center">

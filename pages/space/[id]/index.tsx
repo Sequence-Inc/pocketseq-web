@@ -6,13 +6,16 @@ import {
     SpaceInfoAccess,
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
+    LoadingSpinner,
 } from "@comp";
 import { Button, Container, Tag } from "@element";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
+import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
+
 import {
     config,
     FormatShortAddress,
@@ -22,6 +25,7 @@ import {
 import { IRating } from "src/types/timebookTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import PaymentMethods from "src/components/PaymentMethods";
 
 import createApolloClient from "src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
@@ -29,6 +33,7 @@ import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import ReserceSpaceModal from "src/components/ReserveSpaceModal";
 import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
+import { useLazyQuery } from "@apollo/client";
 
 const ContentSection = ({
     title,
@@ -60,6 +65,18 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             spaceId: spaceId,
             durationType: null,
         });
+    const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
+    const [
+        fetchPaymentMethods,
+        {
+            data: paymentMethods,
+            loading: paymentMethodsLoading,
+            error: paymentMethodsError,
+        },
+    ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
+
     const {
         name,
         description,
@@ -134,6 +151,60 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         setReservationData(data);
     }, []);
 
+    const handleReservation = useCallback(async () => {
+        // const input = {
+        //     paymentSourceId: selectedPaymentMethod,
+        //     roomPlanId: reservationData?.roomPlanId,
+        //     checkInDate: reservationData?.startDate?.startOf("day").valueOf(),
+        //     checkOutDate: reservationData?.endDate?.startOf("day").valueOf(),
+        //     nAdult: reservationData?.noOfAdults,
+        //     nChild: reservationData?.noOfChild,
+        //     additionalOptions: selectedAdditionalOptions,
+        // };
+
+        // await handleHotelReservation(input);
+        setShowModal(false);
+        // setAdditionalOptions([]);
+        setReservationData(null);
+    }, [selectedPaymentMethod, reservationData]);
+
+    useEffect(() => {
+        if (userSession) {
+            fetchPaymentMethods();
+        }
+    }, []);
+
+    if (paymentMethodsError) {
+        return (
+            <div>
+                <h3>An error occurred: {paymentMethodsError.message}</h3>
+                <Link href="/">
+                    <Button type="submit">Go Back</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    if (paymentMethodsLoading) {
+        return (
+            <div>
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
+    const { paymentSource } = paymentMethods || { paymentSource: null };
+
+    const selectPaymentMethod = (paymentSourceId: string) => {
+        if (paymentSourceId) {
+            if (paymentSourceId === selectedPaymentMethod) {
+                setSelectedPaymentMethod(null);
+            } else {
+                setSelectedPaymentMethod(paymentSourceId);
+            }
+        }
+    };
+
     return (
         <MainLayout userSession={userSession}>
             <Head>
@@ -177,8 +248,50 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     showModal={showModal}
                     setShowModal={setShowModal}
                     reservationData={reservationData}
+                    setAdditionalOptions={setAdditionalOptions}
                 >
-                    <p>Reserve Space</p>
+                    <div className="space-y-6">
+                        {userSession ? (
+                            <div>
+                                <PaymentMethods
+                                    paymentSource={paymentSource}
+                                    selectPaymentMethod={selectPaymentMethod}
+                                    currentPaymentMethod={selectedPaymentMethod}
+                                />
+                                <div className="mt-4">
+                                    <Button
+                                        type="button"
+                                        variant={
+                                            selectedPaymentMethod === null
+                                                ? "disabled"
+                                                : "primary"
+                                        }
+                                        className="inline-block"
+                                        disabled={
+                                            selectedPaymentMethod === null
+                                        }
+                                        // onClick={handleReservation}
+                                    >
+                                        Pay and Reserve
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="font-bold text-center mb-4">
+                                    Please login to finish reservation
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    className="inline-block"
+                                    onClick={() => signIn("credentials")}
+                                >
+                                    ログイン
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </ReserceSpaceModal>
 
                 <div className="relative flex space-x-12">
