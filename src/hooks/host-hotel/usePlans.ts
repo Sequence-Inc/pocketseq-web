@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Plans, Room } from "src/apollo/queries/hotel";
 import { queries as OptionQueires } from "src/apollo/queries/options";
+import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
 
 import handleUpload from "src/utils/uploadImages";
 import { DAY_OF_WEEK } from "src/config";
@@ -55,6 +56,7 @@ const ADD_PLAN_INPUT_KEYS = [
     "photos",
     "options",
     "isBreakfastIncluded",
+    "cancelPolicyId",
 ];
 const UPDATE_PLAN_KEYS = [
     "id",
@@ -69,6 +71,7 @@ const UPDATE_PLAN_KEYS = [
     "cutOffBeforeDays",
     "cutOffTillTime",
     "isBreakfastIncluded",
+    "cancelPolicyId",
 ];
 
 const useAddPlans = (props: AddPlansProps) => {
@@ -80,6 +83,11 @@ const useAddPlans = (props: AddPlansProps) => {
         getPlanById,
         { refetch: refetchPlanDetail, loading: fetchingPlanDetails },
     ] = useLazyQuery(planQueries.PACKAGE_PLAN_BY_ID);
+    const {
+        data: cancelPolicies,
+        loading: cancelPoliciesLoading,
+        error: cancelPoliciesError,
+    } = useQuery(CancelPolicyQueires.MY_CANCEL_POLICIES);
 
     const {
         data: hotelRooms,
@@ -298,7 +306,6 @@ const useAddPlans = (props: AddPlansProps) => {
             register("cutOffTillTime", { required: true });
         }
     }, [watchShowCutOff]);
-
     useEffect(() => {
         if (initialValue) {
             setValue("name", initialValue.name);
@@ -306,7 +313,7 @@ const useAddPlans = (props: AddPlansProps) => {
             setValue("paymentTerm", initialValue.paymentTerm);
             setValue("stock", initialValue.stock);
             setValue("isBreakfastIncluded", initialValue?.isBreakfastIncluded);
-
+            setValue("cancelPolicyId", initialValue?.cancelPolicy?.id);
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
             }
@@ -806,6 +813,7 @@ const useAddPlans = (props: AddPlansProps) => {
         fields,
         includedOptions,
         additionalOptions,
+        cancelPolicies: cancelPolicies?.myCancelPolicies || [],
         handleRoomFieldUpdate,
         updateRoomPlan,
         onRemovePackagePhotos,

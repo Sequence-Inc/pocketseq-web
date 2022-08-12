@@ -48,8 +48,7 @@ export const HeroSection = ({
                     "sm:aspect-w-4 sm:aspect-h-3 lg:aspect-w-16 lg:aspect-h-8 xl:aspect-w-13 xl:aspect-h-5"
                 )}
             >
-                <Image
-                    layout="fill"
+                <img
                     src="/images/hero-02.jpg"
                     alt="timeQonnect"
                     role="presentation"

@@ -31,6 +31,7 @@ const Plans = (props: IPlanFormProps) => {
 
     const closeForm = () => {
         toggleForm();
+        defaultFormData.current = null;
     };
 
     const setFormData = useCallback(

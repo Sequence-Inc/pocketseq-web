@@ -43,7 +43,7 @@ const MyMarker = ({
         <div className="relative">
             <button
                 className={clsx(
-                    "rounded-full px-3 text-lg font-bold flex justify-center relative",
+                    "rounded-full px-3 py-1 text-base font-bold flex justify-center relative shadow-station",
                     "hover:bg-gray-900 focus:outline-none hover:text-white",
                     {
                         "bg-gray-900 text-white": activeIndex === marker.id,
@@ -63,7 +63,7 @@ const MyMarker = ({
                         className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8"
                     >
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
-                            <Image src={marker.photo} layout="fill" />
+                            <img src={marker.photo} />
                         </div>
                         <div className="py-2 px-3 space-y-1.5">
                             {/* <Tag

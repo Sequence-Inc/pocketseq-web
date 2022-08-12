@@ -56,7 +56,7 @@ export const ItemGrid = ({
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9 z-0">
                 <Image
                     layout="fill"
-                    src={photo?.medium?.url || "/images/hero-01.jpg"}
+                    src={photo.medium.url}
                     alt={name}
                     className="object-cover object-left-top w-full h-full z-0"
                 />

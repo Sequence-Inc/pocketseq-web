@@ -93,6 +93,7 @@ const Plans = (props: IPlanFormProps) => {
         handleIncludedOptionFieldChange,
         handleAdditionalOptionFieldChange,
         fetchingPlanDetails,
+        cancelPolicies,
     } = usePlans({
         hotelId,
         addAlert,
@@ -169,6 +170,30 @@ const Plans = (props: IPlanFormProps) => {
                             {...register("description", {
                                 required: true,
                             })}
+                        />
+                    </div>
+
+                    <div className="lg:w-6/12 md:w-3/4 sm:w-full space-y-2">
+                        <p className="text-sm leading-5 font-medium">
+                            Cancel Policy
+                        </p>
+                        <Controller
+                            name="cancelPolicyId"
+                            control={control}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    label={""}
+                                    options={cancelPolicies || []}
+                                    error={errors.cancelPolicyId && true}
+                                    errorMessage="Cancel Policy is required"
+                                    labelKey="name"
+                                    valueKey="id"
+                                    disabled={loading}
+                                    singleRow
+                                />
+                            )}
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">

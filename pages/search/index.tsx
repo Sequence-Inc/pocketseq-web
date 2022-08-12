@@ -28,7 +28,14 @@ import Head from "next/head";
 import { Slider } from "antd";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { ILocationMarker } from "src/types/timebookTypes";
-import { config, FormatPrice, searchHotel, searchSpace } from "src/utils";
+import {
+    config,
+    FormatPrice,
+    PriceFormatter,
+    searchHotel,
+    searchSpace,
+} from "src/utils";
+import { listenerCount } from "stream";
 
 type SearchParams = {
     area?: string;
@@ -150,12 +157,45 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
     ): SearchResult[] => {
         return results.map((result: any) => {
             if (type === "space") {
+                let max = 9999999999;
+                let min = 0;
+                let type = "HOURLY";
+                let duration = 1;
+                if (searchParams.minPrice) {
+                    min = searchParams.minPrice - 1;
+                }
+
+                result.price.map((price) => {
+                    console.log(price);
+                    if (max > price.amount && price.amount >= min) {
+                        console.log("YO!");
+                        max = price.amount;
+                        type = price.type;
+                        duration = price.duration;
+                    }
+                });
+
+                let priceUnit = "";
+
+                if (type === "DAILY") {
+                    priceUnit = "日";
+                } else if (type === "HOURLY") {
+                    priceUnit = "時間";
+                } else {
+                    priceUnit = "分";
+                }
+
+                if (duration > 1) {
+                    priceUnit = duration + priceUnit;
+                }
+
                 return {
                     id: result.objectID,
                     name: result.name,
                     maxAdult: result.maximumCapacity,
                     maxChild: 0,
-                    price: FormatPrice("HOURLY", result.price, true, true),
+                    price: max,
+                    priceUnit,
                     lat: result._geoloc?.lat,
                     lng: result._geoloc?.lng,
                     thumbnail: result.thumbnail,
@@ -168,6 +208,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     maxAdult: result.maxAdult,
                     maxChild: result.maxChild,
                     price: result.lowestPrice,
+                    priceUnit: "泊",
                     lat: result._geoloc?.lat,
                     lng: result._geoloc?.lng,
                     thumbnail: result.thumbnail,
@@ -183,13 +224,10 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
 
     const locationMarkers: ILocationMarker[] = algoliaSearchResults.map(
         (result) => {
-            const { id, lat, lng, name, price, thumbnail, type } = result;
-            let priceText = "";
-            if (searchParams.searchType === "space") {
-                priceText = `￥ ${price} /時間`;
-            } else {
-                priceText = `￥ ${price} /泊`;
-            }
+            const { id, lat, lng, name, price, priceUnit, thumbnail, type } =
+                result;
+            const priceText = `${PriceFormatter(price)}〜 /${priceUnit}`;
+
             return {
                 id,
                 coords: {
@@ -198,6 +236,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 },
                 name,
                 price,
+                priceUnit,
                 priceText,
                 photo: thumbnail,
                 rating: {

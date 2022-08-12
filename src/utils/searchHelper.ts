@@ -71,8 +71,8 @@ export const searchSpace = async (
         if (minPrice) {
             filters =
                 filters === ""
-                    ? `price.type:HOURLY AND price.duration:1 AND price.amount:${minPrice} TO ${price}`
-                    : `${filters} AND price.type:HOURLY AND price.duration:1 AND price.amount:${minPrice} TO ${price}`;
+                    ? `AND price.amount:${minPrice - 1} TO ${price}`
+                    : `${filters} AND price.amount:${minPrice - 1} TO ${price}`;
         }
     }
 

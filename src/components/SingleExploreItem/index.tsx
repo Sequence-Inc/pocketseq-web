@@ -14,8 +14,7 @@ export const SingleExploreItem = ({ name, distance, photo }: IExploreItem) => {
             <div className="relative w-full overflow-hidden aspect-w-16 aspect-h-9 rounded-lg">
                 <Link href="/search">
                     <a>
-                        <Image
-                            layout="fill"
+                        <img
                             src={photo}
                             alt={name}
                             className="w-full h-full object-cover"

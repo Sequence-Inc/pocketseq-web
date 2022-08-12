@@ -20,7 +20,7 @@ interface IBasicSpace {
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any;
+    selectedSpaceId?: any;
     spaceLoading?: boolean;
 }
 
@@ -29,7 +29,7 @@ const Basic = ({
     setActiveStep,
     steps,
     setSpaceId,
-    initialValue,
+    selectedSpaceId,
     spaceLoading,
 }: IBasicSpace) => {
     const [change, setChange] = useState<boolean>(false);
@@ -50,7 +50,14 @@ const Basic = ({
         setValue,
         onSubmit,
         getValues,
-    } = useBasicSpace(handleNext, initialValue);
+        includedOptions,
+        additionalOptions,
+        handleIncludedOptionFieldChange,
+        handleAdditionalOptionFieldChange,
+        cancelPolicies,
+        initialValue,
+        spaceDetailLoading,
+    } = useBasicSpace(handleNext, selectedSpaceId);
 
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
@@ -109,7 +116,7 @@ const Basic = ({
                     この情報は公開されますので、有効な情報を入力してください。
                 </p>
             </div>
-            {spaceLoading ? (
+            {spaceDetailLoading ? (
                 <LoadingSpinner />
             ) : (
                 <form onSubmit={onSubmit}>
@@ -209,6 +216,27 @@ const Basic = ({
                             />
                         </div>
 
+                        <div className="">
+                            <Controller
+                                name="cancelPolicyId"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label={"cancelPolicyId"}
+                                        options={cancelPolicies || []}
+                                        error={errors.cancelPolicyId && true}
+                                        errorMessage="Cancel Policy is required"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        disabled={loading}
+                                        singleRow
+                                    />
+                                )}
+                            />
+                        </div>
+
                         <div className="items-center flex-none sm:space-x-4 sm:flex">
                             <div className="w-60" />
                             <Controller
@@ -235,6 +263,76 @@ const Basic = ({
                                     </div>
                                 )}
                             />
+                        </div>
+
+                        <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
+                            <p className="font-bold text-base">
+                                Included options
+                            </p>
+                            <div className="flex flex-wrap">
+                                {includedOptions?.map((option: any, index) => (
+                                    <div
+                                        className="flex items-center space-x-4 py-2 ml-3 "
+                                        key={index}
+                                    >
+                                        <input
+                                            id={`options-${option.id}`}
+                                            aria-describedby="options-description"
+                                            name="option"
+                                            type="checkbox"
+                                            checked={option?.isChecked}
+                                            disabled={loading}
+                                            onChange={(e) =>
+                                                handleIncludedOptionFieldChange(
+                                                    index,
+                                                    e.target.checked
+                                                )
+                                            }
+                                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                        />
+
+                                        <p className="text-sm leading-4 font-medium">
+                                            {option?.name}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
+                            <p className="font-bold text-base">
+                                Additional Options
+                            </p>
+                            <div className="flex flex-wrap">
+                                {additionalOptions?.map(
+                                    (option: any, index) => (
+                                        <div
+                                            className="flex items-center space-x-4 py-2 ml-3 "
+                                            key={index}
+                                        >
+                                            <input
+                                                id={`options-${option.id}`}
+                                                aria-describedby="options-description"
+                                                name="option"
+                                                type="checkbox"
+                                                checked={option?.isChecked}
+                                                disabled={loading}
+                                                onChange={(e) =>
+                                                    handleAdditionalOptionFieldChange(
+                                                        index,
+                                                        e.target.checked
+                                                    )
+                                                }
+                                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                            />
+
+                                            <p className="text-sm leading-4 font-medium">
+                                                {option?.name}
+                                            </p>
+                                        </div>
+                                    )
+                                )}
+                            </div>
                         </div>
 
                         <div className="pb-1">
@@ -328,19 +426,21 @@ const Basic = ({
                             />
                         </div>
                     </div>
-                    <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
-                        <label
-                            htmlFor="Map"
-                            className={
-                                "block text-sm font-bold text-gray-700 sm:text-right w-60"
-                            }
-                        >
-                            Map
-                        </label>
-                        <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
-                            <GoogleMap mark={freeCoords} zoom={16} />
+                    {initialValue && (
+                        <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                            <label
+                                htmlFor="Map"
+                                className={
+                                    "block text-sm font-bold text-gray-700 sm:text-right w-60"
+                                }
+                            >
+                                Map
+                            </label>
+                            <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
+                                <GoogleMap mark={freeCoords} zoom={16} />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className="pb-1">
                         <div className="border-t border-gray-200 my-8"></div>

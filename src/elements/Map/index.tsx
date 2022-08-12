@@ -72,6 +72,10 @@ const GoogleMap = ({
 
     const _onChildMouseLeave = () => {};
 
+    const _onChange = (props) => {
+        console.log({ props });
+    };
+
     const changeMarks = (markEvent: any) => {
         const { lat, lng } = markEvent;
         setFreeCoords({ lat, lng });
@@ -102,7 +106,82 @@ const GoogleMap = ({
                     onChildMouseEnter={_onChildMouseEnter}
                     onChildMouseLeave={_onChildMouseLeave}
                     distanceToMouse={distanceToMouse}
+                    onChange={_onChange}
                     zoom={zoom}
+                    options={(maps) => ({
+                        styles: [
+                            {
+                                featureType: "administrative.land_parcel",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi",
+                                elementType: "labels.text",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.business",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.park",
+                                elementType: "labels.text",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.arterial",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.highway",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.local",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.local",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                        ],
+                    })}
                 >
                     {type === "multi" &&
                         markers.map((marker) => (
@@ -130,6 +209,80 @@ const GoogleMap = ({
                     defaultZoom={defaultZoom}
                     defaultCenter={mark || JAPAN_CENTER_COORDS}
                     zoom={zoom}
+                    options={(maps) => ({
+                        styles: [
+                            {
+                                featureType: "administrative.land_parcel",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi",
+                                elementType: "labels.text",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.business",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.park",
+                                elementType: "labels.text",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.arterial",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.highway",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.local",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.local",
+                                elementType: "labels",
+                                stylers: [
+                                    {
+                                        visibility: "off",
+                                    },
+                                ],
+                            },
+                        ],
+                    })}
                 >
                     {mark && <SingleMarker lat={mark.lat} lng={mark.lng} />}
                 </GoogleMapReact>
