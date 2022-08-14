@@ -43,7 +43,7 @@ export const ItemGrid = ({
 
     const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
 
-    const photo: IPhoto = photos[0];
+    const photo: IPhoto = photos.find((item) => !!item?.medium?.url);
 
     return (
         <div

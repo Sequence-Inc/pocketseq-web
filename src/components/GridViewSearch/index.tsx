@@ -44,7 +44,7 @@ export const GridViewSearch = ({
     };
 
     return (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             {lists.map(
                 ({
                     id,
@@ -61,7 +61,7 @@ export const GridViewSearch = ({
                     return (
                         <div
                             key={id}
-                            className={`space-y-1 mb-3 p-2 pb-3 rounded-2xl ${
+                            className={`space-y-1 mb-3 rounded-2xl ${
                                 activeIndex === id ? "bg-gray-50" : ""
                             }`}
                             onMouseEnter={() =>
