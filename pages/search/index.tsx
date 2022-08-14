@@ -51,6 +51,7 @@ type SearchParams = {
     breakfast?: boolean;
     pet?: boolean;
     buildingType?: string;
+    boundingBox?: number[];
 };
 
 const Search = ({ userSession, availableSpaceTypes, search }) => {
@@ -80,6 +81,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
         const breakfast = searchParams?.breakfast;
         const pet = searchParams?.pet;
         const buildingType = searchParams?.buildingType;
+        const boundingBox = searchParams?.boundingBox;
 
         if (type === "space") {
             const filters = {};
@@ -101,6 +103,9 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
             }
             if (minPrice) {
                 filters["minPrice"] = minPrice;
+            }
+            if (boundingBox) {
+                filters["boundingBox"] = boundingBox;
             }
             searchSpace("", filters)
                 .then((data) => {
@@ -134,6 +139,9 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
             }
             if (buildingType) {
                 filters["buildingType"] = buildingType;
+            }
+            if (boundingBox) {
+                filters["boundingBox"] = boundingBox;
             }
             searchHotel("", filters)
                 .then((data) => {
@@ -251,13 +259,25 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
         setSearchParams(newParams);
     };
 
+    const handleMapChange = (data) => {
+        const { ne, sw } = data.marginBounds;
+        const boundingBox = [
+            ne.lat, // p1Lat
+            ne.lng, // p1Lng
+            sw.lat, // p2Lat
+            sw.lng, // p2Lng
+        ];
+
+        updateSearchParam("boundingBox", boundingBox);
+    };
+
     return (
         <MainLayout userSession={userSession}>
             <Head>
                 <title>Search | {config.appName}</title>
             </Head>
-            <div className="relative">
-                <Container className="relative py-12 space-y-10 grid grid-cols-1 lg:grid-cols-9">
+            <div className="">
+                <Container className="pt-12 space-y-10 grid grid-cols-1 lg:grid-cols-9">
                     <div className="mt-8 py-5 col-span-9 lg:col-span-9 bg-gray-100 rounded-md">
                         <div className="">
                             <SearchBoxNew
@@ -272,7 +292,9 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                             />
                         </div>
                     </div>
-                    <div className="px-6 py-10 col-span-9 lg:col-span-5">
+                </Container>
+                <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
+                    <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
                         <div>
                             <h1 className="flex items-center justify-between mb-6">
                                 <span className="text-3xl font-bold text-gray-700">
@@ -712,14 +734,17 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="sticky top-0 right-0 hidden lg:block w-full h-screen col-span-4 rounded-lg shadow overflow-hidden">
-                        <GoogleMap
-                            markers={locationMarkers}
-                            type="multi"
-                            activeIndex={activeIndex}
-                            setActiveIndex={setActiveIndex}
-                            zoom={5}
-                        />
+                    <div className="sticky top-12 hidden pt-8 pb-16 lg:block w-full h-screen col-span-4">
+                        <div className="w-full h-full rounded-lg shadow-lg overflow-hidden">
+                            <GoogleMap
+                                markers={locationMarkers}
+                                type="multi"
+                                activeIndex={activeIndex}
+                                setActiveIndex={setActiveIndex}
+                                zoom={5}
+                                onChange={handleMapChange}
+                            />
+                        </div>
                     </div>
                 </Container>
             </div>

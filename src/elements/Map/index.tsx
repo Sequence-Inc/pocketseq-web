@@ -14,6 +14,7 @@ interface GoogleMapProps {
     setActiveIndex?: (index: string | number) => void;
     zoom?: number;
     setFreeCoords?: any;
+    onChange?: any;
 }
 
 // Return map bounds based on list of markers
@@ -55,6 +56,7 @@ const GoogleMap = ({
     setActiveIndex,
     zoom,
     setFreeCoords,
+    onChange,
 }: GoogleMapProps) => {
     const [alive, setAlive] = useState<boolean>(false);
     const JAPAN_CENTER_COORDS = {
@@ -73,20 +75,13 @@ const GoogleMap = ({
     const _onChildMouseLeave = () => {};
 
     const _onChange = (props) => {
-        console.log({ props });
+        onChange && onChange(props);
     };
 
     const changeMarks = (markEvent: any) => {
         const { lat, lng } = markEvent;
         setFreeCoords({ lat, lng });
     };
-
-    // useEffect(() => {
-    //     // get users current location
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(function (position) {});
-    //     }
-    // }, []);
 
     return (
         <>

@@ -21,6 +21,7 @@ type SpaceSearchFilterOptions = {
         longitude: number;
         radius: number;
     };
+    boundingBox?: number[];
 };
 type HotelSearchFilterOptions = {
     city?: string;
@@ -34,6 +35,7 @@ type HotelSearchFilterOptions = {
         longitude: number;
         radius: number;
     };
+    boundingBox?: number[];
 };
 
 export const searchSpace = async (
@@ -41,7 +43,8 @@ export const searchSpace = async (
     filterOptions?: SpaceSearchFilterOptions
 ) => {
     if (!filterOptions) return spaceIndex.search(searchText);
-    const { spaceType, geoloc, city, max, price, minPrice } = filterOptions;
+    const { spaceType, geoloc, city, max, price, minPrice, boundingBox } =
+        filterOptions;
 
     let filters: string = "";
     if (spaceType)
@@ -76,20 +79,16 @@ export const searchSpace = async (
         }
     }
 
-    let aroundLatLng: string;
-    let aroundRadius: number;
-
-    if (geoloc) {
-        const { latitude, longitude, radius } = geoloc;
-        aroundLatLng = `${latitude}, ${longitude}`;
-        aroundRadius = radius;
+    if (boundingBox) {
+        return await spaceIndex.search(searchText, {
+            filters,
+            insideBoundingBox: [boundingBox],
+        });
+    } else {
+        return await spaceIndex.search(searchText, {
+            filters,
+        });
     }
-
-    return await spaceIndex.search(searchText, {
-        filters,
-        aroundLatLng,
-        aroundRadius,
-    });
 };
 
 export const searchHotel = async (
@@ -97,8 +96,16 @@ export const searchHotel = async (
     filterOptions?: HotelSearchFilterOptions
 ) => {
     if (!filterOptions) return hotelIndex.search(searchText);
-    const { geoloc, city, adult, child, breakfast, pet, buildingType } =
-        filterOptions;
+    const {
+        geoloc,
+        city,
+        adult,
+        child,
+        breakfast,
+        pet,
+        buildingType,
+        boundingBox,
+    } = filterOptions;
     let filters: string = "";
 
     if (city)
@@ -132,17 +139,14 @@ export const searchHotel = async (
                 ? `maxChild >= ${child}`
                 : `${filters} AND maxChild >= ${child}`;
 
-    let aroundLatLng: string;
-    let aroundRadius: number;
-    if (geoloc) {
-        const { latitude, longitude, radius } = geoloc;
-        aroundLatLng = `${latitude}, ${longitude}`;
-        aroundRadius = radius;
+    if (boundingBox) {
+        return await hotelIndex.search(searchText, {
+            filters,
+            insideBoundingBox: [boundingBox],
+        });
+    } else {
+        return await hotelIndex.search(searchText, {
+            filters,
+        });
     }
-
-    return await hotelIndex.search(searchText, {
-        filters,
-        aroundLatLng,
-        aroundRadius,
-    });
 };
