@@ -32,7 +32,7 @@ import { useRouter } from "next/router";
 import PaymentMethods from "src/components/PaymentMethods";
 
 import createApolloClient from "src/apollo/apolloClient";
-import { getSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import ReserceSpaceModal from "src/components/ReserveSpaceModal";
