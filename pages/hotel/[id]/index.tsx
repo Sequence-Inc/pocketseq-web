@@ -27,11 +27,7 @@ import {
     GET_HOTEL_BY_ID,
     RESERVE_HOTEL,
 } from "src/apollo/queries/hotel.queries";
-import {
-    LocationMarkerIcon,
-    UserGroupIcon,
-    CurrencyYenIcon,
-} from "@heroicons/react/outline";
+import { LocationMarkerIcon, CurrencyYenIcon } from "@heroicons/react/outline";
 import { Rooms } from "src/components/HotelSpace";
 import { Dialog, Transition } from "@headlessui/react";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";

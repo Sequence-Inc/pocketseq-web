@@ -10,6 +10,7 @@ const Calculate_Price_Inputs = [
     "durationType",
     "fromDateTime",
     "spaceId",
+    // "additionalOptionsFields",
 ];
 
 const CALCULATE_PRICE_SCHEME = yup.object().shape({
@@ -17,6 +18,7 @@ const CALCULATE_PRICE_SCHEME = yup.object().shape({
     durationType: yup.string().required(),
     fromDateTime: yup.number().required(),
     spaceId: yup.string().required(),
+    // additionalOptionsFields: yup.array().optional(),
 });
 
 export type TUseCalculateSpacePriceProps = {
@@ -38,17 +40,23 @@ const useCalculateSpacePrice = () => {
 
     const fetchCalculatedPrice = useCallback(
         async (props: TUseCalculateSpacePriceProps) => {
-            const input = useReduceObject(props, Calculate_Price_Inputs);
+            console.log({ props });
+
+            const { additionalOptionsFields, ...rest } = props;
+
+            const input = useReduceObject(rest, Calculate_Price_Inputs);
+
+            console.log({ input });
             const isValid = await CALCULATE_PRICE_SCHEME.isValid(input);
             if (!isValid) return;
             let calculatePriceInput = {
                 ...input,
-                // additionalOptions: props?.additionalOptionsFields
-                //     ?.filter((item) => item?.isChecked)
-                //     ?.map((field) => ({
-                //         optionId: field?.id,
-                //         quantity: field.quantity,
-                //     })),
+                additionalOptions: props?.additionalOptionsFields
+                    ?.filter((item) => item?.isChecked)
+                    ?.map((field) => ({
+                        optionId: field?.id,
+                        quantity: field.quantity,
+                    })),
             };
             await calculatePrice({
                 variables: {

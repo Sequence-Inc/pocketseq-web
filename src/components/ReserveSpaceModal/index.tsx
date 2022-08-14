@@ -10,6 +10,7 @@ import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import moment from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { PriceFormatter } from "src/utils";
 
 interface IReserveSpaceModal {
     reservationData: TUseCalculateSpacePriceProps;
@@ -42,14 +43,13 @@ const ReserveSpaceModal = ({
         calculatedPrice,
         priceCalculationError,
     } = useCalculateSpacePrice();
-    console.log({ calculatedPrice });
     const addressText = `〒${spaceDetails?.address?.postalCode} ${spaceDetails?.address?.prefecture.name} ${spaceDetails?.address?.addressLine1} ${spaceDetails?.address?.addressLine2}`;
 
     useEffect(() => {
         if (!reservationData) return;
         let calculatePriceInput = {
             ...reservationData,
-            // additionalOptionsFields: additionalOptionsFields,
+            additionalOptionsFields: additionalOptionsFields,
         };
         setAdditionalOptions(additionalOptionsFields);
         fetchCalculatedPrice(calculatePriceInput);
@@ -59,7 +59,11 @@ const ReserveSpaceModal = ({
         setAdditionalOptions,
         fetchCalculatedPrice,
     ]);
-
+    const taxCalculated = calculatedPrice?.total
+        ? Math.ceil(
+              calculatedPrice?.total - Math.ceil(calculatedPrice?.total / 1.1)
+          )
+        : 0;
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -273,10 +277,9 @@ const ReserveSpaceModal = ({
                                                                                             {paymentTerm && (
                                                                                                 <span className="font-normal leading-5 font-base flex space-x-1">
                                                                                                     <p>
-                                                                                                        ￥
-                                                                                                        {
+                                                                                                        {PriceFormatter(
                                                                                                             additionalField?.additionalPrice
-                                                                                                        }
+                                                                                                        )}
                                                                                                     </p>
                                                                                                     <p>
                                                                                                         /
@@ -407,39 +410,17 @@ const ReserveSpaceModal = ({
                                                         <h3 className="text-2xl font-bold">
                                                             料金の詳細
                                                         </h3>
-                                                        <div className="flex items-center justify-between "></div>
 
-                                                        <div className="flex items-center justify-between ">
-                                                            <div>
-                                                                大人
-                                                                {
-                                                                    reservationData?.noOfAdults
-                                                                }
-                                                                {reservationData?.noOfChild >
-                                                                    0 && (
-                                                                    <>
-                                                                        ・子供
-                                                                        {
-                                                                            reservationData?.noOfChild
-                                                                        }
-                                                                    </>
-                                                                )}
-                                                                x
-                                                                {
-                                                                    reservationData?.noOfNight
-                                                                }
-                                                                泊
-                                                            </div>
-                                                            <div>
-                                                                {reservationData?.price && (
-                                                                    <div>
-                                                                        ￥{" "}
-                                                                        {
-                                                                            reservationData?.price
-                                                                        }
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                        <div className="flex items-center justify-between">
+                                                            <div>Space Fee</div>
+
+                                                            {calculatedPrice?.spaceAmount && (
+                                                                <p>
+                                                                    {PriceFormatter(
+                                                                        calculatedPrice?.spaceAmount
+                                                                    )}
+                                                                </p>
+                                                            )}
                                                         </div>
 
                                                         {!calculatingPrice &&
@@ -456,8 +437,10 @@ const ReserveSpaceModal = ({
                                                                         index
                                                                     ) => {
                                                                         const optionsCharge =
-                                                                            additionalfield?.additionalPrice *
-                                                                                additionalfield?.quantity ||
+                                                                            PriceFormatter(
+                                                                                additionalfield?.additionalPrice *
+                                                                                    additionalfield?.quantity
+                                                                            ) ||
                                                                             "No Charge";
                                                                         return (
                                                                             <div
@@ -474,7 +457,6 @@ const ReserveSpaceModal = ({
                                                                                     </p>
 
                                                                                     <p className="text-gray-400 text-sm">
-                                                                                        X
                                                                                         {
                                                                                             additionalfield?.quantity
                                                                                         }
@@ -487,11 +469,9 @@ const ReserveSpaceModal = ({
                                                                                         "text-sm text-grey-400"
                                                                                     }`}
                                                                                 >
-                                                                                    {optionsCharge ===
-                                                                                    "No Charge"
-                                                                                        ? optionsCharge
-                                                                                        : "￥" +
-                                                                                          optionsCharge}
+                                                                                    {
+                                                                                        optionsCharge
+                                                                                    }
                                                                                 </p>
                                                                             </div>
                                                                         );
@@ -499,11 +479,25 @@ const ReserveSpaceModal = ({
                                                                 )}
                                                         <div className="flex items-center justify-between">
                                                             <div>税金</div>
+
+                                                            <p>
+                                                                {PriceFormatter(
+                                                                    taxCalculated
+                                                                )}
+                                                            </p>
                                                         </div>
                                                         <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
                                                             <div>
                                                                 合計（税込）
                                                             </div>
+
+                                                            {calculatedPrice?.total && (
+                                                                <p>
+                                                                    {PriceFormatter(
+                                                                        calculatedPrice?.total
+                                                                    )}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>

@@ -11,7 +11,11 @@ import {
 import { Button, Container, Tag } from "@element";
 import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
-import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
+import {
+    StarIcon,
+    ShieldCheckIcon,
+    CurrencyYenIcon,
+} from "@heroicons/react/solid";
 import Link from "next/link";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
@@ -32,8 +36,12 @@ import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import ReserceSpaceModal from "src/components/ReserveSpaceModal";
-import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
+import {
+    TUseCalculateSpacePriceProps,
+    useReserveSpace,
+} from "@hooks/reserveSpace";
 import { useLazyQuery } from "@apollo/client";
+import AlertModal from "src/components/AlertModal";
 
 const ContentSection = ({
     title,
@@ -76,6 +84,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             error: paymentMethodsError,
         },
     ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
+    const { handleSpaceReservation, reservingSpace } = useReserveSpace(id);
 
     const {
         name,
@@ -152,19 +161,17 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
     }, []);
 
     const handleReservation = useCallback(async () => {
-        // const input = {
-        //     paymentSourceId: selectedPaymentMethod,
-        //     roomPlanId: reservationData?.roomPlanId,
-        //     checkInDate: reservationData?.startDate?.startOf("day").valueOf(),
-        //     checkOutDate: reservationData?.endDate?.startOf("day").valueOf(),
-        //     nAdult: reservationData?.noOfAdults,
-        //     nChild: reservationData?.noOfChild,
-        //     additionalOptions: selectedAdditionalOptions,
-        // };
-
-        // await handleHotelReservation(input);
+        const input = {
+            ...reservationData,
+            paymentSourceId: selectedPaymentMethod,
+            additionalOptions: selectedAdditionalOptions?.map((option) => ({
+                optionId: option?.id,
+                quantity: option?.quantity || 1,
+            })),
+        };
+        await handleSpaceReservation(input);
         setShowModal(false);
-        // setAdditionalOptions([]);
+        setAdditionalOptions([]);
         setReservationData(null);
     }, [selectedPaymentMethod, reservationData]);
 
@@ -244,6 +251,38 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             </Head>
 
             <Container className="mt-16">
+                <AlertModal
+                    isOpen={reservingSpace}
+                    title="Reserving Hotel"
+                    Icon={CurrencyYenIcon}
+                    iconClass="h-6 w-6 text-green-600"
+                >
+                    <div className="flex items-center justify-center h-20">
+                        <svg
+                            className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-50"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        <span className="text-gray-400 text-lg">
+                            Please Wait
+                        </span>
+                    </div>
+                </AlertModal>
                 <ReserceSpaceModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -270,7 +309,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                         disabled={
                                             selectedPaymentMethod === null
                                         }
-                                        // onClick={handleReservation}
+                                        onClick={handleReservation}
                                     >
                                         Pay and Reserve
                                     </Button>

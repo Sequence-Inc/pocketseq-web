@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useForm, useFieldArray } from "react-hook-form";
-import { SPACE } from "src/apollo/queries/core.queries";
+import { RESERVE_SPACE } from "src/apollo/queries/user.queries";
+import { useToast } from "@hooks/useToasts";
 
 const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
@@ -58,10 +59,24 @@ const useReserveSpace = (spaceId) => {
         },
     });
 
-    console.log({ spaceDetails });
+    const { addAlert } = useToast();
+    const [reserveSpace, { loading: reservingSpace }] = useMutation(
+        RESERVE_SPACE,
+        {
+            onCompleted: (data) => {
+                console.log(data);
+                addAlert({ type: "success", message: "Reserved space" });
+            },
+            onError: (err) => {
+                addAlert({
+                    type: "error",
+                    message: "Could not reserve space.",
+                });
+            },
+        }
+    );
 
     const { control } = useForm();
-
     const {
         fields: additionalOptionsFields,
         update: updateAdditionalOptionsFields,
@@ -70,7 +85,6 @@ const useReserveSpace = (spaceId) => {
         name: "additionalOptions",
         control,
     });
-
     const initializeAdditionalOptions = useCallback(() => {
         if (!spaceDetails?.spaceById?.additionalOptions?.length) return;
 
@@ -116,6 +130,15 @@ const useReserveSpace = (spaceId) => {
         [additionalOptionsFields]
     );
 
+    // const handleSpaceReservation = useCallback(async()=>{},[])
+
+    const handleSpaceReservation = useCallback(async (reservationData) => {
+        return reserveSpace({
+            variables: {
+                input: reservationData,
+            },
+        });
+    }, []);
     // const onReserveHotel = useCallback(async()=>{},[])
 
     useEffect(initializeAdditionalOptions, [initializeAdditionalOptions]);
@@ -128,6 +151,8 @@ const useReserveSpace = (spaceId) => {
         onAdditionalFieldChangeQuantity,
         onAdditionalOptionsCheckboxAction,
         includedOptions: spaceDetails?.spaceById?.includedOptions,
+        reservingSpace,
+        handleSpaceReservation,
     };
 };
 

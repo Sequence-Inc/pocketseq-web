@@ -288,7 +288,7 @@ export const FloatingPriceTwo = ({
                 <div className="flex justify-between">
                     <Price amount={price} />
                     {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
-                    {startDateTime?.format("YYYY-MM-DD HH:mm")}
+                    {/* {startDateTime?.format("YYYY-MM-DD HH:mm")} */}
                 </div>
                 {/* date and time row */}
                 <div className="">
