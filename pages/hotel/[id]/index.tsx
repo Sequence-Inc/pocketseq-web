@@ -506,7 +506,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
             </Transition.Root>
             <Container className="mt-16">
                 <div className="relative flex space-x-12">
-                    <div className="w-2/3">
+                    <div className="w-full lg:w-2/3">
                         <>
                             <SpaceInfoBanner photos={photos} />
                             <div className="text-lg">
@@ -539,11 +539,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 </div>
                             </div>
                         </>
+                        <div className="w-full my-6 border-t border-gray-300 md:hidden" />
                         <div className="block md:hidden">
-                            {/* <FloatingPriceTwo
-                                pricePlans={pricePlans}
-                                space={space}
-                            /> */}
+                            <FloatingPriceThree
+                                plans={packagePlans}
+                                currentPlan={selectedPlan}
+                                reserve={reserve}
+                            />
                         </div>
                         <div className="w-full my-6 border-t border-gray-300" />
                         <SpaceUtilities />

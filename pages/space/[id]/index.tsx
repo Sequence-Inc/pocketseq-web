@@ -158,11 +158,11 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             </Head>
             <Container className="mt-16">
                 <div className="relative flex space-x-12">
-                    <div className="flex-1">
+                    <div className="lg:flex-1">
                         <div className="h-6"></div>
                         <SpaceInfoTitle titleInfo={titleInfo} />
                         <SpaceInfoBanner photos={photos} />
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-300 md:hidden" />
                         <div className="block md:hidden">
                             <FloatingPriceTwo
                                 pricePlans={pricePlans}
