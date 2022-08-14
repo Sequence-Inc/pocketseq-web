@@ -6,13 +6,20 @@ import {
     SpaceInfoAccess,
     SpaceInfoReviews,
     ISpaceInfoTitleProps,
+    LoadingSpinner,
 } from "@comp";
 import { Button, Container, Tag } from "@element";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
-import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
+import {
+    StarIcon,
+    ShieldCheckIcon,
+    CurrencyYenIcon,
+} from "@heroicons/react/solid";
 import Link from "next/link";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
+import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
+
 import {
     config,
     FormatShortAddress,
@@ -22,11 +29,19 @@ import {
 import { IRating } from "src/types/timebookTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import PaymentMethods from "src/components/PaymentMethods";
 
 import createApolloClient from "src/apollo/apolloClient";
 import { getSession } from "next-auth/react";
 import { FloatingPriceTwo } from "src/components/FloatingPriceTwo";
 import { durationSuffix } from "src/components/Space/PricingPlan";
+import ReserceSpaceModal from "src/components/ReserveSpaceModal";
+import {
+    TUseCalculateSpacePriceProps,
+    useReserveSpace,
+} from "@hooks/reserveSpace";
+import { useLazyQuery } from "@apollo/client";
+import AlertModal from "src/components/AlertModal";
 
 const ContentSection = ({
     title,
@@ -49,6 +64,27 @@ const ContentSection = ({
 const SpaceDetail = ({ spaceId, space, userSession }) => {
     const id = spaceId;
     const router = useRouter();
+
+    const [showModal, setShowModal] = useState(false);
+    const [reservationData, setReservationData] =
+        useState<TUseCalculateSpacePriceProps>({
+            fromDateTime: null,
+            duration: null,
+            spaceId: spaceId,
+            durationType: null,
+        });
+    const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
+    const [
+        fetchPaymentMethods,
+        {
+            data: paymentMethods,
+            loading: paymentMethodsLoading,
+            error: paymentMethodsError,
+        },
+    ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
+    const { handleSpaceReservation, reservingSpace } = useReserveSpace(id);
 
     const {
         name,
@@ -119,6 +155,63 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         );
     };
 
+    const handleReserve = useCallback((data: TUseCalculateSpacePriceProps) => {
+        setShowModal(true);
+        setReservationData(data);
+    }, []);
+
+    const handleReservation = useCallback(async () => {
+        const input = {
+            ...reservationData,
+            paymentSourceId: selectedPaymentMethod,
+            additionalOptions: selectedAdditionalOptions?.map((option) => ({
+                optionId: option?.id,
+                quantity: option?.quantity || 1,
+            })),
+        };
+        await handleSpaceReservation(input);
+        setShowModal(false);
+        setAdditionalOptions([]);
+        setReservationData(null);
+    }, [selectedPaymentMethod, reservationData]);
+
+    useEffect(() => {
+        if (userSession) {
+            fetchPaymentMethods();
+        }
+    }, []);
+
+    if (paymentMethodsError) {
+        return (
+            <div>
+                <h3>An error occurred: {paymentMethodsError.message}</h3>
+                <Link href="/">
+                    <Button type="submit">Go Back</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    if (paymentMethodsLoading) {
+        return (
+            <div>
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
+    const { paymentSource } = paymentMethods || { paymentSource: null };
+
+    const selectPaymentMethod = (paymentSourceId: string) => {
+        if (paymentSourceId) {
+            if (paymentSourceId === selectedPaymentMethod) {
+                setSelectedPaymentMethod(null);
+            } else {
+                setSelectedPaymentMethod(paymentSourceId);
+            }
+        }
+    };
+
     return (
         <MainLayout userSession={userSession}>
             <Head>
@@ -156,114 +249,203 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     content={`${publicImage(photos[0], "large")}`}
                 />
             </Head>
+
             <Container className="mt-16">
+                <AlertModal
+                    isOpen={reservingSpace}
+                    title="Reserving Hotel"
+                    Icon={CurrencyYenIcon}
+                    iconClass="h-6 w-6 text-green-600"
+                >
+                    <div className="flex items-center justify-center h-20">
+                        <svg
+                            className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-50"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        <span className="text-gray-400 text-lg">
+                            Please Wait
+                        </span>
+                    </div>
+                </AlertModal>
+                <ReserceSpaceModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    reservationData={reservationData}
+                    setAdditionalOptions={setAdditionalOptions}
+                >
+                    <div className="space-y-6">
+                        {userSession ? (
+                            <div>
+                                <PaymentMethods
+                                    paymentSource={paymentSource}
+                                    selectPaymentMethod={selectPaymentMethod}
+                                    currentPaymentMethod={selectedPaymentMethod}
+                                />
+                                <div className="mt-4">
+                                    <Button
+                                        type="button"
+                                        variant={
+                                            selectedPaymentMethod === null
+                                                ? "disabled"
+                                                : "primary"
+                                        }
+                                        className="inline-block"
+                                        disabled={
+                                            selectedPaymentMethod === null
+                                        }
+                                        onClick={handleReservation}
+                                    >
+                                        Pay and Reserve
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="font-bold text-center mb-4">
+                                    Please login to finish reservation
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    className="inline-block"
+                                    onClick={() => signIn("credentials")}
+                                >
+                                    ログイン
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </ReserceSpaceModal>
+
                 <div className="relative flex space-x-12">
                     <div className="lg:flex-1">
                         <div className="h-6"></div>
                         <SpaceInfoTitle titleInfo={titleInfo} />
                         <SpaceInfoBanner photos={photos} />
-                        <div className="w-full my-6 border-t border-gray-300 md:hidden" />
+
+                        <div className="w-full my-6 border-t border-gray-300" />
                         <div className="block md:hidden">
-                            <FloatingPriceTwo
-                                pricePlans={pricePlans}
-                                space={space}
-                            />
-                        </div>
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        <SpaceUtilities />
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        {/* host profile */}
-                        <div>
-                            <div className="space-y-6 sm:flex sm:space-y-0">
-                                <div className="flex-1">
-                                    <HostProfile
-                                        title={host?.name}
-                                        description="2015年8月年からメンバー"
-                                    />
+                            <div className="w-full my-6 border-t border-gray-300 md:hidden" />
+                            <div className="block md:hidden">
+                                <FloatingPriceTwo
+                                    pricePlans={pricePlans}
+                                    space={space}
+                                    handleReserve={handleReserve}
+                                />
+                            </div>
+                            <div className="w-full my-6 border-t border-gray-300" />
+                            <SpaceUtilities />
+                            <div className="w-full my-6 border-t border-gray-300" />
+                            {/* host profile */}
+                            <div>
+                                <div className="space-y-6 sm:flex sm:space-y-0">
+                                    <div className="flex-1">
+                                        <HostProfile
+                                            title={host?.name}
+                                            description="2015年8月年からメンバー"
+                                        />
+                                    </div>
+                                    <Button
+                                        variant="primary"
+                                        rounded
+                                        className="w-auto px-4 h-9"
+                                        onClick={sendMessage}
+                                    >
+                                        Send Message
+                                    </Button>
                                 </div>
-                                <Button
-                                    variant="primary"
-                                    rounded
-                                    className="w-auto px-4 h-9"
-                                    onClick={sendMessage}
-                                >
-                                    Send Message
-                                </Button>
+                                <div className="flex mt-6 space-x-3">
+                                    <Tag
+                                        Icon={StarIcon}
+                                        iconSize={5}
+                                        iconStyle="text-red-500"
+                                        textStyle="text-sm text-gray-500"
+                                        numberOfLines={1}
+                                    >
+                                        499 評価とレビュー
+                                    </Tag>
+                                    <Tag
+                                        Icon={ShieldCheckIcon}
+                                        iconSize={5}
+                                        iconStyle="text-red-500"
+                                        textStyle="text-sm text-gray-500"
+                                        numberOfLines={1}
+                                    >
+                                        本人確認済み
+                                    </Tag>
+                                </div>
                             </div>
-                            <div className="flex mt-6 space-x-3">
-                                <Tag
-                                    Icon={StarIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    499 評価とレビュー
-                                </Tag>
-                                <Tag
-                                    Icon={ShieldCheckIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    本人確認済み
-                                </Tag>
-                            </div>
-                        </div>
-                        {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                            {/* divider */}
+                            <div className="w-full my-6 border-t border-gray-300" />
 
-                        {/* About Sapce */}
-                        <ContentSection
-                            title="スペースについて"
-                            description={description}
-                        />
+                            {/* About Sapce */}
+                            <ContentSection
+                                title="スペースについて"
+                                description={description}
+                            />
 
-                        {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                            {/* divider */}
+                            <div className="w-full my-6 border-t border-gray-300" />
 
-                        {/* Services / equipment */}
-                        {/* <ContentSection
+                            {/* Services / equipment */}
+                            {/* <ContentSection
                             title="サービス・設備"
                             description="ママ会、女子会、おうちデート、映画鑑賞、カップル利用、ファミリー会（子連れ歓迎）、誕生日会、セミナー、ワークショップ、写真撮影、ロケ撮影、商品撮影、商用撮影、ストックフォト、キッチンスタジオ、撮影スタジオ、ハウススタジオ、パーティールーム、レンタルスペース、宿泊可能"
                         /> */}
-                        {/* <div className="w-full my-6 border-t border-gray-300" /> */}
+                            {/* <div className="w-full my-6 border-t border-gray-300" /> */}
 
-                        {/* access section */}
-                        <SpaceInfoAccess
-                            address={address}
-                            nearestStations={nearestStations}
-                        />
+                            {/* access section */}
+                            <SpaceInfoAccess
+                                address={address}
+                                nearestStations={nearestStations}
+                            />
 
-                        {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        {/* Price Plans */}
-                        <div>
-                            <h2 className="mb-4 text-lg font-bold text-gray-700">
-                                料金プラン
-                            </h2>
-                            {pricePlansDaily.map((plan, index) =>
-                                renderPricePlanItem(plan, index)
-                            )}
-                            {pricePlansHourly.map((plan, index) =>
-                                renderPricePlanItem(plan, index)
-                            )}
-                            {pricePlansMinutes.map((plan, index) =>
-                                renderPricePlanItem(plan, index)
-                            )}
+                            {/* divider */}
+                            <div className="w-full my-6 border-t border-gray-300" />
+                            {/* Price Plans */}
+                            <div>
+                                <h2 className="mb-4 text-lg font-bold text-gray-700">
+                                    料金プラン
+                                </h2>
+                                {pricePlansDaily.map((plan, index) =>
+                                    renderPricePlanItem(plan, index)
+                                )}
+                                {pricePlansHourly.map((plan, index) =>
+                                    renderPricePlanItem(plan, index)
+                                )}
+                                {pricePlansMinutes.map((plan, index) =>
+                                    renderPricePlanItem(plan, index)
+                                )}
+                            </div>
+                            {/* divider */}
+                            <div className="w-full my-6 border-t border-gray-300" />
+
+                            {/* reviews and comment section */}
+                            <SpaceInfoReviews />
                         </div>
-                        {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
-
-                        {/* reviews and comment section */}
-                        <SpaceInfoReviews />
-                    </div>
-                    <div className="hidden md:block">
-                        <FloatingPriceTwo
-                            pricePlans={pricePlans}
-                            space={space}
-                        />
+                        <div className="hidden md:block">
+                            <FloatingPriceTwo
+                                pricePlans={pricePlans}
+                                space={space}
+                                handleReserve={handleReserve}
+                            />
+                        </div>
                     </div>
                 </div>
             </Container>

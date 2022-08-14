@@ -449,7 +449,10 @@ export const GET_PRICE_PLANS = gql`
             total
             duration
             durationType
+            spaceAmount
+            optionAmount
             applicablePricePlans {
+                id
                 title
                 duration
                 type
@@ -519,5 +522,17 @@ export const ADD_REVIEW = gql`
             createdAt
             updatedAt
         }
+    }
+`;
+
+export const RESERVE_SPACE = gql`
+    mutation reserveSpace($input: ReserveSpaceInput) {
+        transactionId
+        intentId
+        intentCode
+        amount
+        description
+        currency
+        paymentMethodTypes
     }
 `;

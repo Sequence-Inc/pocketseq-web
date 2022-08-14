@@ -43,7 +43,7 @@ export const ItemGrid = ({
 
     const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
 
-    const photo: IPhoto = photos[0];
+    const photo: IPhoto = photos.find((item) => !!item?.medium?.url);
 
     return (
         <div
@@ -54,8 +54,9 @@ export const ItemGrid = ({
             onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
         >
             <div className="w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9 z-0">
-                <img
-                    src={photo.medium?.url}
+                <Image
+                    layout="fill"
+                    src={photo.medium.url}
                     alt={name}
                     className="object-cover object-left-top w-full h-full z-0"
                 />

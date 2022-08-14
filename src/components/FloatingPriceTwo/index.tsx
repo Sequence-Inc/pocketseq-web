@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Price } from "@element";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
@@ -12,6 +12,7 @@ import { PriceFormatter } from "src/utils/priceFormatter";
 import { FormatPrice, toBase64 } from "src/utils/stringHelper";
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
+import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
 
 const options = {
     DAILY: Array.from({ length: 30 }).map((_, index) => index + 1),
@@ -24,9 +25,11 @@ type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 export const FloatingPriceTwo = ({
     pricePlans,
     space,
+    handleReserve,
 }: {
     pricePlans: ISpacePricePlan[];
     space: ISpace;
+    handleReserve: (data: TUseCalculateSpacePriceProps) => void;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -248,6 +251,23 @@ export const FloatingPriceTwo = ({
     );
     const url = `?data=${params}`;
 
+    const initiateReserve = useCallback(() => {
+        const start = durationType === "DAILY" ? startDateTime : startDateTime;
+        handleReserve({
+            fromDateTime: start.unix() * 1000,
+            duration,
+            durationType,
+            spaceId: space.id,
+        });
+    }, [
+        handleReserve,
+        startDateTime,
+        endDateTime,
+        duration,
+        durationType,
+        space?.id,
+    ]);
+
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current < moment().endOf("day");
@@ -268,7 +288,7 @@ export const FloatingPriceTwo = ({
                 <div className="flex justify-between">
                     <Price amount={price} />
                     {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
-                    {startDateTime?.format("YYYY-MM-DD HH:mm")}
+                    {/* {startDateTime?.format("YYYY-MM-DD HH:mm")} */}
                 </div>
                 {/* date and time row */}
                 <div className="">
@@ -378,11 +398,15 @@ export const FloatingPriceTwo = ({
                 )}
                 {okayToBook() && initialPricingDetail()}
                 {/* button row */}
-                <Link href={`/space/${space.id}/reserve${url}`}>
-                    <Button variant="primary" disabled={!okayToBook()}>
-                        予約可能状況を確認する
-                    </Button>
-                </Link>
+                {/* <Link href={`/space/${space.id}/reserve${url}`}> */}
+                <Button
+                    variant="primary"
+                    disabled={!okayToBook()}
+                    onClick={initiateReserve}
+                >
+                    予約可能状況を確認する
+                </Button>
+                {/* </Link> */}
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
                     <p className="text-gray-600">48時間キャンセル無料</p>
