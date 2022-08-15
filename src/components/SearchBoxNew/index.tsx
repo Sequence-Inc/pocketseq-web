@@ -769,7 +769,7 @@ export const SearchBoxNew = ({
                                         >
                                             <span className="text-gray-600 ">
                                                 <p className="font-bold mb-0">
-                                                    旅行者
+                                                    利用者
                                                 </p>
                                                 ゲスト
                                                 {`${addPax(
