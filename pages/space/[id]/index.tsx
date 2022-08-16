@@ -302,7 +302,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                             {
                                                 reservationSuccessData
                                                     ?.reserveSpace
-                                                    ?.transactionId
+                                                    ?.reservationId
                                             }
                                         </p>
                                     )}
