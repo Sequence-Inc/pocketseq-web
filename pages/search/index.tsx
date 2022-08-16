@@ -167,7 +167,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
             if (type === "space") {
                 let max = 9999999999;
                 let min = 0;
-                let type = "HOURLY";
+                let spaceType = "HOURLY";
                 let duration = 1;
                 if (searchParams.minPrice) {
                     min = searchParams.minPrice - 1;
@@ -176,16 +176,16 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 result.price.map((price) => {
                     if (max > price.amount && price.amount >= min) {
                         max = price.amount;
-                        type = price.type;
+                        spaceType = price.type;
                         duration = price.duration;
                     }
                 });
 
                 let priceUnit = "";
 
-                if (type === "DAILY") {
+                if (spaceType === "DAILY") {
                     priceUnit = "日";
-                } else if (type === "HOURLY") {
+                } else if (spaceType === "HOURLY") {
                     priceUnit = "時間";
                 } else {
                     priceUnit = "分";
