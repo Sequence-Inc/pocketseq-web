@@ -340,7 +340,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         </div>
                     }
                     toggle={toggleProgressModal}
-                    actionButtonClassName="bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400 "
+                    actionButtonClassName={
+                        !!reservedHotelSuccessData
+                            ? "bg-green-300 hover:bg-green-400 disabled:bg-green-200 focus:ring-green-400"
+                            : !!reserveHotelError
+                            ? "bg-red-300 hover:bg-red-400 disabled:bg-red-200 focus:ring-red-400"
+                            : "bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400"
+                    }
                 />
                 <div className="relative flex space-x-12">
                     <div className="w-full lg:w-2/3">

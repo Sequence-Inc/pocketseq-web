@@ -326,7 +326,13 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         </div>
                     }
                     toggle={toggleProgressModal}
-                    actionButtonClassName="bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400 "
+                    actionButtonClassName={
+                        !!reservationSuccessData
+                            ? "bg-green-300 hover:bg-green-400 disabled:bg-green-200 focus:ring-green-400"
+                            : !!reservationFailure
+                            ? "bg-red-300 hover:bg-red-400 disabled:bg-red-200 focus:ring-red-400"
+                            : "bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400"
+                    }
                 />
 
                 <ReserceSpaceModal
