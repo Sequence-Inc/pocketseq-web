@@ -77,17 +77,16 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
         getValues,
     } = useForm();
 
-    const [reserveHotelSpace, { loading: reservingHotel }] = useMutation(
-        ReserveHotelMutations.RESERVE_HOTEL_ROOM,
+    const [
+        reserveHotelSpace,
         {
-            onCompleted: (data) => {
-                addAlert({ type: "success", message: "Hotel room reserved" });
-            },
-            onError: (err) => {
-                addAlert({ type: "error", message: "Reservation Error" });
-            },
-        }
-    );
+            loading: reservingHotel,
+            data: reservedHotelSuccessData,
+            error: reserveHotelError,
+        },
+    ] = useMutation(ReserveHotelMutations.RESERVE_HOTEL_ROOM, {
+        ignoreResults: false,
+    });
 
     const handleHotelReservation = useCallback(async (reservationData) => {
         return reserveHotelSpace({
@@ -181,6 +180,8 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
         includedOptions: planDetails?.packagePlanById?.includedOptions,
         handleHotelReservation,
         reservingHotel,
+        reservedHotelSuccessData,
+        reserveHotelError,
     };
 };
 

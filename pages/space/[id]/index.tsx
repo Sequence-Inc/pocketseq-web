@@ -14,8 +14,6 @@ import { MainLayout } from "@layout";
 import {
     StarIcon,
     ShieldCheckIcon,
-    CurrencyYenIcon,
-    ExclamationCircleIcon,
     ExclamationIcon,
     CheckIcon,
 } from "@heroicons/react/solid";
