@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Button } from "@element";
+import { Button, FileUpload } from "@element";
 import { LoadingSpinner } from "@comp";
-
 import axios from "axios";
 import { useMutation } from "@apollo/client";
 import { GET_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 import { IOtherSpacesProps } from "./NearestStationStep";
 import { useEffect } from "react";
-
 import useTranslation from "next-translate/useTranslation";
 import { useGetInitialSpace } from "@hooks/useAddSpace";
 
@@ -24,6 +22,8 @@ const SpacePhotos = ({
     const [mutate] = useMutation(GET_UPLOAD_TOKEN);
     const { initialValue, spaceDetailLoading, refetchSpaceDetail } =
         useGetInitialSpace(spaceId);
+
+    console.log({ initialValue });
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
 
@@ -104,7 +104,7 @@ const SpacePhotos = ({
                     {t("photo-description")}
                 </p>
             </div>
-            <div className="max-w-lg px-4 py-2 mx-auto space-y-4 sm:px-6 sm:py-6">
+            {/* <div className="max-w-lg px-4 py-2 mx-auto space-y-4 sm:px-6 sm:py-6">
                 <SelectedPhotos photos={photos} deletePhoto={handleDelete} />
                 <h3>{t("photo-select")}</h3>
                 <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -140,14 +140,28 @@ const SpacePhotos = ({
                                     disabled={loading}
                                 />
                             </label>
-                            {/* <p className="pl-1">or drag and drop</p> */}
+                            
                         </div>
                         <p className="text-xs text-gray-500 text-center">
                             {t("photo-upload-description")}
                         </p>
                     </div>
                 </div>
-            </div>
+            </div> */}
+
+            <FileUpload
+                key="room_form"
+                id="general_form"
+                hideLabel
+                className="w-full"
+                label=""
+                // error={errors.photos && true}
+                errorMessage="Photos are required"
+                onChange={(e) => {}}
+                defaultPhotos={initialValue?.photos}
+                onRemove={() => {}}
+                onUpload={() => {}}
+            />
 
             {initialValue?.photos?.length > 0 ? (
                 <div className="flex justify-end px-4 py-5 bg-gray-50 sm:px-6">
