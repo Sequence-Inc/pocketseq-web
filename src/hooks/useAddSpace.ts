@@ -16,10 +16,13 @@ import {
     UPDATE_SPACE_SETTING,
     UPDATE_TYPES_IN_SPACE,
     GET_SPACE_BY_ID,
+    REMOVE_SPACE_PHOTO,
+    GET_UPLOAD_TOKEN,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import { queries as OptionQueires } from "src/apollo/queries/options";
 import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
+import handleUpload from "src/utils/uploadImages";
 
 interface IData {
     id: string;
@@ -83,6 +86,53 @@ const defaultValues = {
     nearestStations: [defaultStationObj],
 };
 
+export const useSpacePhotos = (spaceId) => {
+    const [addSpacePhotos] = useMutation(GET_UPLOAD_TOKEN);
+
+    const handleAddSpacePhotos = useCallback(async (photos) => {
+        const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+            mime: res.type,
+        }));
+
+        const { data, errors } = await addSpacePhotos({
+            variables: {
+                spaceId,
+                imageInputs: payloadPhotos,
+            },
+        });
+
+        if (data) {
+            try {
+                await handleUpload(data.addSpacePhotos, photos);
+                return true;
+            } catch (err) {
+                throw err;
+            }
+        }
+        if (errors) {
+            throw errors;
+        }
+    }, []);
+    const [removeSpacePhoto] = useMutation(REMOVE_SPACE_PHOTO, {
+        refetchQueries: [
+            {
+                query: GET_SPACE_BY_ID,
+                variables: { id: spaceId },
+            },
+        ],
+    });
+
+    const handleRemovePhoto = useCallback(async (photo) => {
+        return removeSpacePhoto({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+
+    return { handleRemovePhoto, handleAddSpacePhotos };
+};
+
 const useAddSpace = () => {
     const {
         register,
@@ -113,6 +163,7 @@ const useAddSpace = () => {
 
     const [mutateStationId, { data: stationId }] =
         useLazyQuery(GET_STATIONS_BY_LINE);
+
     const { data: spaceTypes } = useQuery<IAllSpaceType>(
         GET_AVAILABLE_SPACE_TYPES,
         { fetchPolicy: "network-only" }
@@ -173,36 +224,20 @@ const useAddSpace = () => {
 export default useAddSpace;
 
 export const useGetInitialSpace = (id) => {
-    const [initialValue, setInitialValue] = useState(null);
-
-    const [
-        fetchSpaceDetail,
-        {
-            loading: spaceDetailLoading,
-            refetch: refetchSpaceDetail,
-            error: fetchSpaceDetailsError,
+    const {
+        data: initialValue,
+        loading: spaceDetailLoading,
+        error: fetchSpaceDetailsError,
+        refetch: refetchSpaceDetail,
+    } = useQuery(GET_SPACE_BY_ID, {
+        skip: !id,
+        variables: {
+            id,
         },
-    ] = useLazyQuery(GET_SPACE_BY_ID);
-
-    const getSpaceDetails = useCallback(async () => {
-        if (!id) return;
-
-        const { data } = await fetchSpaceDetail({
-            variables: {
-                id: id,
-            },
-        });
-        if (data) {
-            setInitialValue(data.spaceById);
-        }
-    }, [id]);
-
-    useEffect(() => {
-        getSpaceDetails();
-    }, [getSpaceDetails]);
+    });
 
     return {
-        initialValue,
+        initialValue: initialValue?.spaceById,
         spaceDetailLoading,
         refetchSpaceDetail,
         fetchSpaceDetailsError,
@@ -217,12 +252,9 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
     const [cache, setCache] = useState({});
     const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
 
-    const {
-        initialValue,
-        spaceDetailLoading,
-        refetchSpaceDetail,
-        fetchSpaceDetailsError,
-    } = useGetInitialSpace(selectedSpaceId);
+    const { initialValue, spaceDetailLoading } =
+        useGetInitialSpace(selectedSpaceId);
+
     const {
         data: options,
         loading: optionsLoading,
@@ -442,6 +474,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
             const addSpacesData = await mutate({
                 variables: { input: basicModel },
             });
+
             await Promise.all([
                 mutateSpaceAddress({
                     variables: {
@@ -663,7 +696,6 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         handleAdditionalOptionFieldChange,
         initialValue,
         spaceDetailLoading,
-        refetchSpaceDetail,
     };
 };
 

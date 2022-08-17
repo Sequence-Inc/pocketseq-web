@@ -1,6 +1,9 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
-import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
+import useAddSpace, {
+    useBasicSpace,
+    useGetInitialSpace,
+} from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 import axios from "axios";
@@ -34,6 +37,14 @@ const Basic = ({
 }: IBasicSpace) => {
     const [change, setChange] = useState<boolean>(false);
     const { spaceTypes } = useAddSpace();
+    const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const handleNext = (id): void => {
+        console.log({ id });
+        setSpaceId(id);
+        if (hasNext) setActiveStep(activeStep + 1);
+    };
+
     const {
         prefectures,
         loading,
@@ -59,14 +70,7 @@ const Basic = ({
         spaceDetailLoading,
     } = useBasicSpace(handleNext, selectedSpaceId);
 
-    const hasNext: boolean = activeStep < steps.length - 1 && true;
-
     const { t } = useTranslation("adminhost");
-
-    function handleNext(id): void {
-        if (hasNext) setActiveStep(activeStep + 1);
-        setSpaceId(id);
-    }
 
     useEffect(() => {
         const api = async () => {
