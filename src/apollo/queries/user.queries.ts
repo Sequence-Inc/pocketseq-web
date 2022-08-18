@@ -66,6 +66,7 @@ export const RESERVE_SPACE = gql`
             amount
             description
             currency
+            reservationId
         }
     }
 `;
