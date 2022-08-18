@@ -33,11 +33,15 @@ const NearestStationStep = ({
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [toggleForm, setToggleForm] = useState(false);
-    const [mutate] = useMutation(ADD_NEAREST_STATION);
-    const { initialValue, spaceDetailLoading } =
-        useGetInitialSpace(selectedSpaceId);
+    const [mutate] = useMutation(ADD_NEAREST_STATION, {
+        onCompleted: (data) => refetchSpaceDetail(),
+    });
+    const { initialValue, spaceDetailLoading, refetchSpaceDetail } =
+        useGetInitialSpace(spaceId);
 
-    const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION);
+    const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION, {
+        onCompleted: (data) => refetchSpaceDetail(),
+    });
     const [activeStation, setActiveStation] = useState(-1);
     const router = useRouter();
     const { id } = router.query;
@@ -68,7 +72,7 @@ const NearestStationStep = ({
     const addStation = async ({ stationId, via, time }) => {
         const { data } = await mutate({
             variables: {
-                spaceId: initialValue?.nearestStations ? id : spaceId,
+                spaceId: id || spaceId,
                 stations: [{ stationId, via, time: parseInt(time) }],
             },
         });
@@ -87,7 +91,7 @@ const NearestStationStep = ({
             const { data } = await mutateRemoveStation({
                 variables: {
                     input: {
-                        spaceId: initialValue?.nearestStations ? id : spaceId,
+                        spaceId: id || spaceId,
                         stationId,
                     },
                 },
@@ -175,25 +179,24 @@ const NearestStationStep = ({
                 )}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue?.nearestStations ? null : (
-                    <>
-                        <Button
-                            className="w-auto px-8"
-                            disabled={!hasPrevious || loading}
-                            onClick={handlePrevious}
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="primary"
-                            className="w-auto px-8"
-                            onClick={handleStation}
-                            loading={loading}
-                        >
-                            Next
-                        </Button>
-                    </>
-                )}
+                <>
+                    <Button
+                        className="w-auto px-8"
+                        disabled={!hasPrevious || loading}
+                        onClick={handlePrevious}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        disabled={!stations?.length}
+                        variant="primary"
+                        className="w-auto px-8"
+                        onClick={handleStation}
+                        loading={loading}
+                    >
+                        Next
+                    </Button>
+                </>
             </div>
         </div>
     );
