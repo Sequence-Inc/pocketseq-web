@@ -63,9 +63,9 @@ export const ItemGridHotel = ({
                     className="object-cover object-left-top w-full h-full z-0"
                 />
             </div>
-            <div className="px-2 space-y-2">
+            <div className="md:px-2 space-y-2">
                 {/* location and rating section */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between">
                     <Tag
                         Icon={LocationMarkerIcon}
                         iconStyle="text-gray-300"
@@ -101,7 +101,7 @@ export const ItemGridHotel = ({
                     <span className="font-normal"> /泊</span>
                 </div>
                 {/* action section */}
-                <div className="flex justify-between py-2 space-x-4">
+                <div className="flex flex-col md:flex-row justify-between py-2 space-y-2 md:space-y-0 md:space-x-4">
                     <Button
                         variant="primary"
                         onClick={() => router.push(`/hotel/${id}`)}
