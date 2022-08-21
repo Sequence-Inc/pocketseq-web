@@ -74,17 +74,12 @@ const features = [
     },
 ];
 
-export default function Home({ userSession, availableSpaceTypes }) {
-    const { data: topPicks } = useQuery(GET_TOP_PICK_SPACES, {
-        variables: {
-            paginationInfo: {
-                take: 4,
-                skip: 0,
-            },
-        },
-        fetchPolicy: "network-only",
-    });
-
+export default function Home({
+    userSession,
+    availableSpaceTypes,
+    allSpaces,
+    allPublishedHotels,
+}) {
     return (
         <div className="bg-gray-50">
             <Head>
@@ -235,7 +230,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             </Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-4">
-                            {topPicks?.allSpaces?.data.map((item, index) => {
+                            {allSpaces?.data.map((item, index) => {
                                 if (index < 4) {
                                     return <ItemGrid key={index} data={item} />;
                                 }
@@ -261,18 +256,16 @@ export default function Home({ userSession, availableSpaceTypes }) {
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
-                            {topPicks?.allPublishedHotels?.map(
-                                (item, index) => {
-                                    if (index < 4) {
-                                        return (
-                                            <ItemGridHotel
-                                                key={index}
-                                                data={item}
-                                            />
-                                        );
-                                    }
+                            {allPublishedHotels?.map((item, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <ItemGridHotel
+                                            key={index}
+                                            data={item}
+                                        />
+                                    );
                                 }
-                            )}
+                            })}
                         </div>
                     </div>
                     <RegisterCTA />
@@ -286,13 +279,21 @@ export default function Home({ userSession, availableSpaceTypes }) {
 export const getServerSideProps = async (context) => {
     const client = createApolloClient();
     const { data } = await client.query({
-        query: GET_AVAILABLE_SPACE_TYPES,
+        query: GET_TOP_PICK_SPACES,
+        variables: {
+            paginationInfo: {
+                take: 4,
+                skip: 0,
+            },
+        },
     });
     const session = await getSession(context);
     return {
         props: {
             userSession: session,
             availableSpaceTypes: data.availableSpaceTypes,
+            allSpaces: data.allSpaces,
+            allPublishedHotels: data.allPublishedHotels,
         },
     };
 };

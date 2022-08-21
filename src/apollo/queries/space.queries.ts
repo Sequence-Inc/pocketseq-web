@@ -363,6 +363,14 @@ export const GET_SPACE_BY_ID = gql`
 
 export const GET_TOP_PICK_SPACES = gql`
     query top_picks($paginate: PaginationOption){
+        availableSpaceTypes {
+            id
+            title
+            description
+            photo {
+                ${PHOTO}
+            }
+        }
         allSpaces(paginate: $paginate){
             data {
                 ${SPACE}
