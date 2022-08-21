@@ -277,8 +277,8 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 <title>Search | {config.appName}</title>
             </Head>
             <div className="">
-                <Container className="pt-12 space-y-10 grid grid-cols-1 lg:grid-cols-9">
-                    <div className="mt-8 py-5 col-span-9 lg:col-span-9 bg-gray-100 rounded-md">
+                <div className="pt-16 space-y-10 grid grid-cols-1 lg:grid-cols-9">
+                    <div className="p-5 col-span-9 lg:col-span-9 bg-gray-100 rounded-md">
                         <div className="">
                             <SearchBoxNew
                                 onChange={(data) => {
@@ -292,7 +292,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                             />
                         </div>
                     </div>
-                </Container>
+                </div>
                 <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
                     <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
                         <div>

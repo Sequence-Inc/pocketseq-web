@@ -128,7 +128,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                     ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
                                 </p>
                                 <div className="mt-12">
-                                    <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                                         {features.map((feature) => (
                                             <div
                                                 key={feature.name}
@@ -178,7 +178,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                 </a>
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-3 md:gap-x-6 md:gap-y-6">
                             {availableSpaceTypes?.map((spaceType) => (
                                 <CategoryItem
                                     key={spaceType.id}
@@ -234,7 +234,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                 </a>
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-4">
                             {topPicks?.allSpaces?.data.map((item, index) => {
                                 if (index < 4) {
                                     return <ItemGrid key={index} data={item} />;
@@ -260,7 +260,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                             </Link>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
                             {topPicks?.allPublishedHotels?.map(
                                 (item, index) => {
                                     if (index < 4) {
