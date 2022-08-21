@@ -39,6 +39,7 @@ export const PACKAGE_PLAN = `
     cancelPolicy{
         id
     }
+    subcriptionPrice
     createdAt
     updatedAt
 `;

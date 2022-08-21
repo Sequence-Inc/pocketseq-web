@@ -58,6 +58,8 @@ export const ADD_HOTEL_PACKAGE_PLANS = gql`
                    }
                    createdAt
                    updatedAt
+                   subcriptionPrice
+
                 }
                 uploadRes{
                     ${IMAGE_UPLOAD_RESULT}
