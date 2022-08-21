@@ -64,6 +64,8 @@ interface IFormState {
     city: string;
     addressLine1: string;
     addressLine2?: string;
+    subscriptionPriceEnabled?: boolean;
+    subcriptionPrice?: number;
 }
 
 const defaultPriceObj = {
@@ -142,6 +144,8 @@ const useAddSpace = () => {
         setValue,
         watch,
         handleSubmit,
+        reset,
+        getValues,
     } = useForm<IFormState, IFormState>({ defaultValues });
 
     const { fields, prepend, remove } = useFieldArray({
@@ -288,6 +292,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         setValue,
         handleSubmit,
         getValues,
+        reset,
     } = useForm({
         defaultValues: {
             cancelPolicyId: undefined,
@@ -318,8 +323,24 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                 thirtyMinuteAmount: 0,
                 fortyFiveMinuteAmount: 0,
             },
+            subscriptionPriceEnabled: false,
+            subcriptionPrice: 0,
         },
     });
+
+    const watchSubscriptionPrice = watch("subscriptionPriceEnabled", false);
+
+    useEffect(() => {
+        if (!watchSubscriptionPrice) {
+            reset({
+                ...getValues(),
+                subcriptionPrice: undefined,
+            });
+        }
+        if (watchSubscriptionPrice) {
+            register("subcriptionPrice", { required: true });
+        }
+    }, [watchSubscriptionPrice]);
 
     const {
         fields: includedOptions,
@@ -398,6 +419,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
             includedOptions: reducedIncludecOptions,
             additionalOptions: reducedAdditionalOptions,
             cancelPolicyId: formData.cancelPolicyId,
+            subcriptionPrice: formData.subcriptionPrice || undefined,
         };
 
         const addressModel = {
@@ -663,6 +685,10 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                     setValue("totalStock", defaultSetting.totalStock);
                 }
             }
+            if (initialValue?.subcriptionPrice) {
+                setValue("subscriptionPriceEnabled", true);
+                setValue("subcriptionPrice", initialValue?.subcriptionPrice);
+            }
             if (initialValue.pricePlans?.length > 0) {
                 setValue(
                     "pricePlan",
@@ -696,6 +722,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         handleAdditionalOptionFieldChange,
         initialValue,
         spaceDetailLoading,
+        watchSubscriptionPrice,
     };
 };
 

@@ -57,6 +57,7 @@ const ADD_PLAN_INPUT_KEYS = [
     "options",
     "isBreakfastIncluded",
     "cancelPolicyId",
+    "subcriptionPrice",
 ];
 const UPDATE_PLAN_KEYS = [
     "id",
@@ -72,6 +73,7 @@ const UPDATE_PLAN_KEYS = [
     "cutOffTillTime",
     "isBreakfastIncluded",
     "cancelPolicyId",
+    "subcriptionPrice",
 ];
 
 const useAddPlans = (props: AddPlansProps) => {
@@ -260,6 +262,7 @@ const useAddPlans = (props: AddPlansProps) => {
     const watchShowUsage = watch("usagePeriod", false);
     const watchShowReservation = watch("reservationPeriod", false);
     const watchShowCutOff = watch("cutOffPeriod", false);
+    const watchSubscriptionPrice = watch("subscriptionPriceEnabled", false);
 
     useEffect(() => {
         if (!watchShowUsage) {
@@ -306,6 +309,20 @@ const useAddPlans = (props: AddPlansProps) => {
             register("cutOffTillTime", { required: true });
         }
     }, [watchShowCutOff]);
+
+    useEffect(() => {
+        console.log({ watchSubscriptionPrice });
+        if (!watchSubscriptionPrice) {
+            reset({
+                ...getValues(),
+                subcriptionPrice: undefined,
+            });
+        }
+        if (watchSubscriptionPrice) {
+            register("subcriptionPrice", { required: true });
+        }
+    }, [watchSubscriptionPrice]);
+
     useEffect(() => {
         if (initialValue) {
             setValue("name", initialValue.name);
@@ -316,6 +333,10 @@ const useAddPlans = (props: AddPlansProps) => {
             setValue("cancelPolicyId", initialValue?.cancelPolicy?.id);
             if (initialValue?.startUsage || initialValue?.endUsage) {
                 setValue("usagePeriod", true);
+            }
+            if (initialValue?.subcriptionPrice) {
+                setValue("subscriptionPriceEnabled", true);
+                setValue("subcriptionPrice", initialValue?.subcriptionPrice);
             }
 
             setValue("startUsage", initialValue?.startUsage);
@@ -644,6 +665,9 @@ const useAddPlans = (props: AddPlansProps) => {
                 roomTypes: reducedRoomTypes,
                 photos: payloadPhotos,
                 stock: parseInt(reducedFormData.stock, 10),
+                subcriptionPrice:
+                    reducedFormData?.subcriptionPrice &&
+                    parseInt(reducedFormData?.subcriptionPrice, 10),
                 includedOptions: reducedIncludecOptions,
                 additionalOptions: reducedAdditionalOptions,
                 isBreakfastIncluded: formData.isBreakfastIncluded,
@@ -809,6 +833,7 @@ const useAddPlans = (props: AddPlansProps) => {
         watchShowUsage,
         watchShowReservation,
         watchShowCutOff,
+        watchSubscriptionPrice,
         handleRoomTypesChange,
         fields,
         includedOptions,
