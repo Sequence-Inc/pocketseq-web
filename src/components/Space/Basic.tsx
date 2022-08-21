@@ -1,5 +1,12 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
+import {
+    Button,
+    GoogleMap,
+    Select,
+    SwitchField,
+    TextArea,
+    TextField,
+} from "@element";
 import useAddSpace, {
     useBasicSpace,
     useGetInitialSpace,
@@ -68,6 +75,7 @@ const Basic = ({
         cancelPolicies,
         initialValue,
         spaceDetailLoading,
+        watchSubscriptionPrice,
     } = useBasicSpace(handleNext, selectedSpaceId);
 
     const { t } = useTranslation("adminhost");
@@ -497,6 +505,54 @@ const Basic = ({
                                 defaultValue={getValues("pricePlan")}
                                 onSave={(value) => setValue("pricePlan", value)}
                             />
+                        </div>
+                    </div>
+
+                    <div className="pb-1  ">
+                        <div className="border-t border-gray-200 my-8"></div>
+
+                        <h3 className="font-bold md:ml-60 md:pl-4  text-primary text-xl">
+                            Subscription
+                        </h3>
+                        <div className="md:ml-60 md:pl-4 mt-4 ">
+                            <SwitchField
+                                label={
+                                    <>
+                                        <span className="text-sm leading-5 font-medium">
+                                            Subscritpion Price
+                                        </span>
+                                    </>
+                                }
+                                defaultValue={getValues(
+                                    "subscriptionPriceEnabled"
+                                )}
+                                onChange={(val) =>
+                                    setValue("subscriptionPriceEnabled", val)
+                                }
+                            />
+
+                            <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2 ">
+                                {watchSubscriptionPrice && (
+                                    <div className="flex items-center space-x-2  mt-4 ">
+                                        <TextField
+                                            disabled={loading}
+                                            label=""
+                                            {...register("subcriptionPrice", {
+                                                required:
+                                                    watchSubscriptionPrice,
+                                                min: 0,
+                                                valueAsNumber: true,
+                                            })}
+                                            type="number"
+                                            placeholder="Subscription Price"
+                                            errorMessage="Invalid subscription price."
+                                            error={
+                                                errors.subcriptionPrice && true
+                                            }
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 

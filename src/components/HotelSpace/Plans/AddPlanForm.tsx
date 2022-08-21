@@ -812,7 +812,7 @@ const Plans = (props: IPlanFormProps) => {
                                     type="number"
                                     placeholder="Subscription Price"
                                     errorMessage="Invalid subscription price."
-                                    error={errors.cutOffBeforeDays && true}
+                                    error={errors.subcriptionPrice && true}
                                 />
                             </div>
                         )}

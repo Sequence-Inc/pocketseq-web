@@ -273,6 +273,7 @@ export const SPACE = `
     cancelPolicy{
         id
     }
+    subcriptionPrice
 `;
 
 export const SPACE_SETTING = `
