@@ -52,7 +52,7 @@ export const HeroSection = ({
                     src="/images/hero-02.jpg"
                     alt="timeQonnect"
                     role="presentation"
-                    className="absolute top-0 left-0 opacity-90 md:opacity-100 md:block z-0 object-cover object-left-top md:object-center w-full h-full"
+                    className="absolute top-0 left-0 opacity-90 md:opacity-100 md:block z-0 object-cover md:object-center w-full h-full"
                 />
 
                 <Container className="z-10 py-6 md:py-0">
