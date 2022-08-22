@@ -8,7 +8,6 @@ import {
     ItemGridHotel,
     IExploreItem,
     RegisterCTA,
-    SingleExploreItem,
     HeroSection,
 } from "@comp";
 import { Header, Footer } from "@layout";
@@ -16,43 +15,38 @@ import { Header, Footer } from "@layout";
 import {
     FlagIcon,
     StarIcon,
-    LocationMarkerIcon,
     ChevronRightIcon,
     BookmarkAltIcon,
     FireIcon,
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
-import { useQuery } from "@apollo/client";
-import {
-    GET_AVAILABLE_SPACE_TYPES,
-    GET_TOP_PICK_SPACES,
-} from "src/apollo/queries/space.queries";
+import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 
-const exploreAreas: IExploreItem[] = [
-    {
-        name: "新宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
-    },
-    {
-        name: "渋谷",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
-    },
-    {
-        name: "池袋",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
-    },
-    {
-        name: "原宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
-    },
-];
+// const exploreAreas: IExploreItem[] = [
+//     {
+//         name: "新宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
+//     },
+//     {
+//         name: "渋谷",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
+//     },
+//     {
+//         name: "池袋",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
+//     },
+//     {
+//         name: "原宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
+//     },
+// ];
 
 const features = [
     {
