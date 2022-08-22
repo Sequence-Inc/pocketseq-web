@@ -37,7 +37,7 @@ const NearestStationStep = ({
         onCompleted: (data) => refetchSpaceDetail(),
     });
     const { initialValue, spaceDetailLoading, refetchSpaceDetail } =
-        useGetInitialSpace(spaceId);
+        useGetInitialSpace(spaceId || selectedSpaceId);
 
     const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION, {
         onCompleted: (data) => refetchSpaceDetail(),
