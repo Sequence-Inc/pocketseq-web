@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 export interface ICategoryItem {
@@ -10,7 +9,7 @@ export interface ICategoryItem {
 
 export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
     return (
-        <Link href="/search">
+        <Link href={`/search?searchType=space&spaceType=${title}`}>
             <a>
                 <div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                     {photo && (

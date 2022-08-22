@@ -1,41 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
 import createApolloClient from "src/apollo/apolloClient";
 import { Switch } from "@headlessui/react";
 import {
     GridViewSearch,
-    ListViewSearch,
     LoadingSpinner,
     SearchBoxNew,
     SearchResult,
 } from "@comp";
-import {
-    Alert,
-    Container,
-    GoogleMap,
-    Pagination,
-    Pill,
-    Select,
-} from "@element";
-import {
-    AdjustmentsIcon,
-    LightBulbIcon,
-    SpeakerphoneIcon,
-} from "@heroicons/react/outline";
+import { Container, GoogleMap } from "@element";
+import { AdjustmentsIcon } from "@heroicons/react/outline";
 import { MainLayout } from "@layout";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { Slider } from "antd";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { ILocationMarker } from "src/types/timebookTypes";
-import {
-    config,
-    FormatPrice,
-    PriceFormatter,
-    searchHotel,
-    searchSpace,
-} from "src/utils";
-import { listenerCount } from "stream";
+import { config, PriceFormatter, searchHotel, searchSpace } from "src/utils";
 
 type SearchParams = {
     area?: string;
