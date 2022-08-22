@@ -14,6 +14,7 @@ type SpaceSearchFilterOptions = {
     spaceType?: string;
     city?: string;
     max?: number;
+    minPax?: number;
     price?: number;
     minPrice?: number;
     geoloc?: {
@@ -43,8 +44,16 @@ export const searchSpace = async (
     filterOptions?: SpaceSearchFilterOptions
 ) => {
     if (!filterOptions) return spaceIndex.search(searchText);
-    const { spaceType, geoloc, city, max, price, minPrice, boundingBox } =
-        filterOptions;
+    const {
+        spaceType,
+        geoloc,
+        city,
+        max,
+        minPax,
+        price,
+        minPrice,
+        boundingBox,
+    } = filterOptions;
 
     let filters: string = "";
     if (spaceType)
@@ -57,19 +66,18 @@ export const searchSpace = async (
         filters =
             filters === "" ? `city:${city}` : `${filters} AND city:${city}`;
     if (max) {
-        if (max === 40) {
+        if (minPax > 0) {
             filters =
                 filters === ""
-                    ? `maximumCapacity >= ${max}`
-                    : `${filters} AND maximumCapacity >= ${max}`;
+                    ? `maximumCapacity:${minPax} TO ${max}`
+                    : `${filters} AND maximumCapacity:${minPax} TO ${max}`;
         } else {
             filters =
                 filters === ""
-                    ? `maximumCapacity <= ${max}`
-                    : `${filters} AND maximumCapacity <= ${max}`;
+                    ? `maximumCapacity >= ${max}`
+                    : `${filters} AND maximumCapacity >=${max}`;
         }
     }
-
     if (price) {
         if (minPrice) {
             filters =

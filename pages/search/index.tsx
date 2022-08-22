@@ -41,6 +41,7 @@ type SearchParams = {
     area?: string;
     noOfAdults: number;
     noOfChild: number;
+    noOfAdultsMin: number;
     searchType: "hotel" | "space";
     checkInDate: string;
     checkOutDate?: string;
@@ -74,6 +75,8 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
         const type = searchParams?.searchType;
         const area: string = searchParams?.area as string;
         const adult = parseInt(searchParams?.noOfAdults as string, 10);
+        const adultMin =
+            parseInt(searchParams?.noOfAdultsMin as string, 10) || 0;
         const child = parseInt(searchParams?.noOfChild as string, 10);
         const spaceType = searchParams?.spaceType;
         const price = searchParams?.price;
@@ -93,6 +96,9 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     filters["max"] = adult + child;
                 } else {
                     filters["max"] = adult;
+                }
+                if (adultMin > 0) {
+                    filters["minPax"] = adultMin;
                 }
             }
             if (spaceType) {
@@ -367,36 +373,49 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                                                             onChange={(
                                                                 event
                                                             ) => {
-                                                                updateSearchParam(
-                                                                    "noOfAdults",
-                                                                    parseInt(
-                                                                        event
-                                                                            .target
-                                                                            .value,
-                                                                        10
-                                                                    )
+                                                                const [
+                                                                    min,
+                                                                    max,
+                                                                ] =
+                                                                    event.target.value.split(
+                                                                        ":"
+                                                                    );
+                                                                setSearchParams(
+                                                                    {
+                                                                        ...searchParams,
+                                                                        noOfAdults:
+                                                                            max,
+                                                                        noOfAdultsMin:
+                                                                            min,
+                                                                    }
                                                                 );
                                                             }}
                                                         >
-                                                            <option value="10">
+                                                            <option value="1:1000">
+                                                                指定なし
+                                                            </option>
+                                                            <option value="1:10">
                                                                 1〜10名
                                                             </option>
-                                                            <option value="15">
-                                                                〜15名
+                                                            <option value="11:15">
+                                                                11〜15名
                                                             </option>
-                                                            <option value="20">
-                                                                20名
+                                                            <option value="16:20">
+                                                                16〜20名
                                                             </option>
-                                                            <option value="25">
-                                                                25名
+                                                            <option value="21:25">
+                                                                21〜25名
                                                             </option>
-                                                            <option value="30">
-                                                                30名
+                                                            <option value="26:30">
+                                                                26〜30名
                                                             </option>
-                                                            <option value="35">
-                                                                35名
+                                                            <option value="31:35">
+                                                                31〜35名
                                                             </option>
-                                                            <option value="40">
+                                                            <option value="36:40">
+                                                                36〜40名
+                                                            </option>
+                                                            <option value="41:1000">
                                                                 40名以上
                                                             </option>
                                                         </select>

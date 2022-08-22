@@ -751,9 +751,7 @@ export const SearchBoxNew = ({
                                 </>
                             )}
                         </Popover>
-
                         {/* No of guests */}
-
                         <Popover className="relative">
                             {({ close }) => (
                                 <>
@@ -850,7 +848,7 @@ export const SearchBoxNew = ({
                                                                             10
                                                                         );
                                                                     let max =
-                                                                        maxHotelPeople;
+                                                                        maxSpacePeople;
                                                                     if (
                                                                         value >=
                                                                             1 &&
