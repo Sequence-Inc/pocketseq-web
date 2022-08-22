@@ -38,7 +38,7 @@
     "price-plan-description": "スペースに応じて、該当する料金プランを追加してください。",
     "price-plan-add": "料金プラン追加",
     "price-plan-name": "プランタイトル",
-    "price-plan-price": "料金",
+    "price-plan-price": "料金（税込）",
     "price-plan-discount": "直前割引",
     "price-plan-cooldown": "リセット時間",
     "price-plan-handling-fee": "手数料",

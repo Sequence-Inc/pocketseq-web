@@ -509,7 +509,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
     }, [defaultValue]);
 
     return (
-        <FormCard title="料金設定">
+        <FormCard title="料金設定（税込）">
             <div className="flex flex-col">
                 <div className="divide-y divide-gray-100 border border-gray-100 rounded-lg shadow">
                     <div className="flex items-center space-x-2 py-3 px-5 hover:bg-gray-50">
