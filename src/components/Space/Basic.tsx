@@ -489,10 +489,9 @@ const Basic = ({
                                     } = value;
                                     setValue("openingHr", openingHr);
                                     setValue("closingHr", closingHr);
-                                    if (breakFromHr && breakToHr) {
-                                        setValue("breakFromHr", breakFromHr);
-                                        setValue("breakToHr", breakToHr);
-                                    }
+
+                                    setValue("breakFromHr", breakFromHr);
+                                    setValue("breakToHr", breakToHr);
                                 }}
                             />
                             <StockManager

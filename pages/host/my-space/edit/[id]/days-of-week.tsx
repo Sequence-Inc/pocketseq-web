@@ -243,6 +243,10 @@ export const BusinessHourManager = ({
             businessHours["breakToHr"] =
                 breakEndHour + getMinuteInFloat(breakEndMinute);
         }
+        if (!breakAvailable) {
+            businessHours["breakFromHr"] = null;
+            businessHours["breakToHr"] = null;
+        }
         onSave(businessHours);
     }, [
         hour,
