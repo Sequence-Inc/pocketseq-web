@@ -448,14 +448,14 @@ const Basic = ({
                         <div className="">
                             <TextField
                                 {...register("addressLine2", {
-                                    required: true,
+                                    required: false,
                                 })}
                                 defaultValue={
                                     initialValue?.address?.addressLine2
                                 }
                                 label={t("address-line-2")}
-                                error={errors.zipCode && true}
-                                errorMessage="Address Line 2 is required"
+                                error={errors.addressLine2 && true}
+                                errorMessage="Invalid address Line 2 "
                                 disabled={loading}
                                 singleRow
                             />
