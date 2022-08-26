@@ -75,20 +75,20 @@ const SpacePhotos = ({
                     {t("photo-description")}
                 </p>
             </div>
-
-            <FileUpload
-                key="room_form"
-                id="general_form"
-                hideLabel
-                className="w-full"
-                label=""
-                // error={errors.photos && true}
-                errorMessage="Photos are required"
-                onChange={(e) => {}}
-                defaultPhotos={initialValue?.photos || []}
-                onRemove={handleRemovePhoto}
-                onUpload={handleAddPhoto}
-            />
+            <div className="w-6/12 mx-auto mb-4">
+                <FileUpload
+                    key="room_form"
+                    id="general_form"
+                    hideLabel
+                    label=""
+                    // error={errors.photos && true}
+                    errorMessage="Photos are required"
+                    onChange={(e) => {}}
+                    defaultPhotos={initialValue?.photos || []}
+                    onRemove={handleRemovePhoto}
+                    onUpload={handleAddPhoto}
+                />
+            </div>
 
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
                 <Button
