@@ -63,6 +63,7 @@ const ContentSection = ({
 };
 
 const SpaceDetail = ({ hotelId, hotel, userSession }) => {
+    console.log({ hotel });
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [reservationData, setReservationData] = useState(null);
     const [showModal, setShowModal] = useState(false);

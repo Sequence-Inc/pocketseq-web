@@ -49,6 +49,8 @@ const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, selectedPlan } = props;
     const { addAlert } = useToast();
     const router = useRouter();
+
+    const redirectToOptions = () => router.push("/host/options");
     // const {
     //     loading: packageLoading,
     //     data: packageDetails,
@@ -687,6 +689,7 @@ const Plans = (props: IPlanFormProps) => {
                             </p>
                             <Button
                                 type="button"
+                                onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
                                 Manage Options
@@ -739,6 +742,7 @@ const Plans = (props: IPlanFormProps) => {
                             </p>
                             <Button
                                 type="button"
+                                onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
                                 Manage Options

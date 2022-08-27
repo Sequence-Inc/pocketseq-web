@@ -24,6 +24,7 @@ import {
     StockManager,
 } from "@page/host/my-space/edit/[id]/days-of-week";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { useRouter } from "next/router";
 
 interface IBasicSpace {
     activeStep: number;
@@ -45,6 +46,9 @@ const Basic = ({
     const [change, setChange] = useState<boolean>(false);
     const { spaceTypes } = useAddSpace();
     const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const router = useRouter();
+    const redirectToOptions = () => router.push("/host/options");
 
     const handleNext = (id): void => {
         console.log({ id });
@@ -277,10 +281,29 @@ const Basic = ({
                             />
                         </div>
 
+                        <div className="pb-1">
+                            <div className="border-t border-gray-200 my-8"></div>
+                            <div className="md:ml-60 md:pl-4  flex items-center space-x-4">
+                                <h3 className="font-bold text-primary text-xl">
+                                    Options
+                                </h3>
+
+                                <Button
+                                    type="button"
+                                    onClick={redirectToOptions}
+                                    className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                >
+                                    Manage Options
+                                </Button>
+                            </div>
+                        </div>
+
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
-                            <p className="font-bold text-base">
-                                Included options
-                            </p>
+                            <div className="flex justify-between items-center pb-4 space-x-4">
+                                <p className="font-bold text-base">
+                                    Included options
+                                </p>
+                            </div>
                             <div className="flex flex-wrap">
                                 {includedOptions?.map((option: any, index) => (
                                     <div
@@ -425,14 +448,14 @@ const Basic = ({
                         <div className="">
                             <TextField
                                 {...register("addressLine2", {
-                                    required: true,
+                                    required: false,
                                 })}
                                 defaultValue={
                                     initialValue?.address?.addressLine2
                                 }
                                 label={t("address-line-2")}
-                                error={errors.zipCode && true}
-                                errorMessage="Address Line 2 is required"
+                                error={errors.addressLine2 && true}
+                                errorMessage="Invalid address Line 2 "
                                 disabled={loading}
                                 singleRow
                             />

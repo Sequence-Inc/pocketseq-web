@@ -45,6 +45,20 @@ import { useLazyQuery } from "@apollo/client";
 import AlertModal from "src/components/AlertModal";
 import ProgressModal from "src/components/ProgressModal";
 
+type TDefaultSettings = {
+    id?: string;
+    totalStock?: string;
+    isDefault?: string;
+    closed?: string;
+    businessDays?: string;
+    openingHr?: string;
+    closingHr?: string;
+    breakFromHr?: string;
+    breakToHr?: string;
+    fromDate?: string;
+    toDate?: string;
+};
+
 const ContentSection = ({
     title,
     description,
@@ -65,6 +79,9 @@ const ContentSection = ({
 
 const SpaceDetail = ({ spaceId, space, userSession }) => {
     const id = spaceId;
+
+    const [defaultSettings, setDefaultSettings] = useState<TDefaultSettings>();
+    const [wantedHours, setWantedHours] = useState<number[]>();
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
     const [showProgressModal, setProgressModalVisibility] =
@@ -196,6 +213,37 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             setProgressModalVisibility(false);
         };
     }, []);
+
+    useEffect(() => {
+        if (space?.settings?.length) {
+            setDefaultSettings(
+                space.settings.find((setting) => !!setting.isDefault)
+            );
+        }
+    }, [space]);
+
+    useEffect(() => {
+        if (defaultSettings) {
+            const unwantedHours = [
+                defaultSettings?.breakFromHr,
+                defaultSettings?.breakToHr,
+            ].filter((item) => !!item);
+            let tempWantedHours = [];
+
+            for (
+                let i = Number(defaultSettings?.openingHr || 0);
+                i < Number(defaultSettings?.closingHr || 24);
+                i++
+            ) {
+                tempWantedHours.push(i);
+            }
+
+            tempWantedHours = tempWantedHours.filter(
+                (item) => !unwantedHours.includes(item)
+            );
+            setWantedHours([...tempWantedHours]);
+        }
+    }, [defaultSettings]);
 
     if (paymentMethodsError) {
         return (
@@ -491,6 +539,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     </div>
                     <div className="hidden md:block">
                         <FloatingPriceTwo
+                            availableHours={wantedHours}
                             pricePlans={pricePlans}
                             space={space}
                             handleReserve={handleReserve}
