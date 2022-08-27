@@ -181,7 +181,7 @@ const TableRow = (props: TableRowProps) => {
                             {...register(`${col.key}`, {
                                 required: true,
                                 min: {
-                                    value: 0,
+                                    value: 1,
                                     message: "Must be greater than 0",
                                 },
                                 valueAsNumber: true,

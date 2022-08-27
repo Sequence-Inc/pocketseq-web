@@ -950,6 +950,7 @@ export const PriceOverrideForm = ({
                     <div className="w-full">
                         <input
                             type="number"
+                            min={0}
                             value={getValues("amount")}
                             onChange={(event) => {
                                 setValue(
