@@ -91,7 +91,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     const router = useRouter();
     const redirectAuth = () => signIn();
     const redirectPaymentSource = () => router.push("/user/settings");
-    const redirectManageSubscription = () => router.push("/user/subscription");
+    const redirectManageSubscription = () => router.push("/user/subscriptions");
     const redirectSignup = () => router.push("/auth/register");
     const { paymentSource, paymentSourcefetchError, loadingPaymentSources } =
         useFetchPaymentSources();
