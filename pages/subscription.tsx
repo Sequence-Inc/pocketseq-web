@@ -92,7 +92,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     const redirectAuth = () => signIn();
     const redirectPaymentSource = () => router.push("/user/settings");
     const redirectManageSubscription = () => router.push("/user/subscription");
-
+    const redirectSignup = () => router.push("/auth/register");
     const { paymentSource, paymentSourcefetchError, loadingPaymentSources } =
         useFetchPaymentSources();
 
@@ -103,7 +103,6 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     }, [paymentSource]);
 
     const handleSubscribe = useCallback(() => {
-        console.log({ selectedPriceId });
         onSubmit(selectedPriceId);
     }, [selectedPriceId]);
 
@@ -122,13 +121,22 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             This action requires you to log in first.
                         </p>
 
-                        <button
-                            type="button"
-                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
-                            onClick={redirectAuth}
-                        >
-                            Login
-                        </button>
+                        <div className="flex flex-col w-full justify-between  space-y-4 ">
+                            <button
+                                type="button"
+                                className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                                onClick={redirectAuth}
+                            >
+                                Login
+                            </button>
+
+                            <button
+                                className="text-blue-500 underline underline-offset-8"
+                                onClick={redirectSignup}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
                     </div>
                 </div>
             );
@@ -218,6 +226,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
                             onClick={() => {
                                 setModalOpen(false);
+                                resetSubscription();
                             }}
                         >
                             Done
@@ -241,7 +250,6 @@ export default function Home({ userSession, allSubscriptionProducts }) {
         }
 
         if (!!subscriptionFailed) {
-            console.log({ failedMsg: subscriptionFailed?.message });
             return (
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
@@ -255,12 +263,26 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                         "You have already subscribed to rental-space subscription" ? (
                             <>
                                 <p>Already subscribed to this subscription.</p>
-                                <button
-                                    className="bg-purple-500 p-3 rounded-md text-sm text-white"
-                                    onClick={redirectManageSubscription}
-                                >
-                                    Manage Subscription
-                                </button>
+                                <div className="flex flex-col space-y-4">
+                                    <button
+                                        className="bg-purple-500 p-3 rounded-md text-sm text-white"
+                                        onClick={() => {
+                                            redirectManageSubscription();
+                                            resetSubscription();
+                                        }}
+                                    >
+                                        Manage Subscription
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setModalOpen(false);
+                                            resetSubscription();
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
                             </>
                         ) : (
                             <>
@@ -402,7 +424,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             <main>
                 <AlertModal
                     isOpen={modalOpen}
-                    setOpen={() => setModalOpen(false)}
+                    setOpen={() => {
+                        setModalOpen(false);
+                        resetSubscription();
+                    }}
                     disableTitle
                     disableDefaultIcon
                     // title="Subscription Process"
@@ -603,6 +628,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         onClick={() => {
                                                             console.log(
                                                                 "Subscript to price id",
+                                                                product.price.id
+                                                            );
+
+                                                            initiateSpaceSubscription(
                                                                 product.price.id
                                                             );
                                                         }}
