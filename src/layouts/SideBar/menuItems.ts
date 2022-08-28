@@ -7,7 +7,6 @@ import {
     UsersIcon,
     MailIcon,
     UserCircleIcon,
-    BadgeCheckIcon,
     IdentificationIcon,
     OfficeBuildingIcon,
     AdjustmentsIcon,
@@ -48,6 +47,12 @@ export const navigation = [
         name: "プロフィール",
         href: "/user/profile",
         Icon: UserCircleIcon,
+        roles: ["user"],
+    },
+    {
+        name: "Subscriptions",
+        href: "/user/subscriptions",
+        Icon: CalendarIcon,
         roles: ["user"],
     },
     {

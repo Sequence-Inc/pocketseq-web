@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import { Tab } from "@headlessui/react";
 
 import { Container } from "@element";
 import { Header, Footer } from "@layout";
 
 import { getSession } from "next-auth/react";
-import { config, FormatPrice, PriceFormatter } from "src/utils/index";
+import { config, PriceFormatter } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 import { ALL_SUBSCRIPTION_PRODUCTS } from "src/apollo/queries/subscriptions/queries";
 import { LoadingSpinner } from "@comp";
