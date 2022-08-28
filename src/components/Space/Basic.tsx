@@ -167,6 +167,7 @@ const Basic = ({
                             <TextField
                                 {...register("maximumCapacity", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("max-capacity")}
@@ -182,6 +183,7 @@ const Basic = ({
                             <TextField
                                 {...register("numberOfSeats", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("space-number-of-seats")}
@@ -197,6 +199,7 @@ const Basic = ({
                             <TextField
                                 {...register("spaceSize", {
                                     required: true,
+                                    min: 0,
                                     setValueAs: (val) => parseFloat(val),
                                 })}
                                 label={t("space-size")}

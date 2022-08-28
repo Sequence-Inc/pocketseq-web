@@ -451,6 +451,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             <input
                                                 type="number"
                                                 value={noOfAdults}
+                                                min={1}
                                                 className="w-16 px-3 h-8 rounded border border-gray-300 shadow-sm"
                                             />
                                             <button
@@ -512,6 +513,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             </button>
                                             <input
                                                 type="number"
+                                                min={0}
                                                 value={noOfChild}
                                                 className="w-16 px-3 h-8 rounded border border-gray-300 shadow-sm"
                                             />

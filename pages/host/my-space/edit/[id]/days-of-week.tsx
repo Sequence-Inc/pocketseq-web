@@ -537,6 +537,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             onChange={(e) => {
                                 setDailyPrice(parseInt(e.target.value, 10));
                             }}
+                            min={1}
                             disabled={!dailyActive}
                             className={`${
                                 dailyActive ? "opacity-100" : "opacity-30"
@@ -562,6 +563,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         <input
                             type="number"
                             value={hourlyPrice}
+                            min={1}
                             onChange={(e) => {
                                 setHourlyPrice(parseInt(e.target.value, 10));
                             }}
@@ -589,6 +591,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fiveMinutesPrice}
                             onChange={(e) => {
                                 setFiveMinutesPrice(
@@ -620,6 +623,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={tenMinutesPrice}
                             onChange={(e) => {
                                 setTenMinutesPrice(
@@ -651,6 +655,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fifteenMinutesPrice}
                             onChange={(e) => {
                                 setFifteenMinutesPrice(
@@ -684,6 +689,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={thirtyMinutesPrice}
                             onChange={(e) => {
                                 setThirtyMinutesPrice(
@@ -719,6 +725,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fortyFiveMinutesPrice}
                             onChange={(e) => {
                                 setFortyFiveMinutesPrice(
@@ -751,6 +758,7 @@ export const StockManager = ({ defaultValue, onSave }) => {
                 <div className="w-20">
                     <input
                         type="number"
+                        min={1}
                         value={stock}
                         onChange={(e) => {
                             setStock(parseInt(e.target.value, 10));
