@@ -58,8 +58,8 @@ const HotelCalendarView = ({
         setBasicPriceRank(basicPriceRanks);
         const mappedOverrides = priceOverride.map((override) => {
             return {
-                fromDate: moment(override.startDate).startOf("day"),
-                toDate: moment(override.endDate).startOf("day"),
+                fromDate: moment(override.startDate),
+                toDate: moment(override.endDate),
                 priceScheme: override.priceScheme,
             };
         });
@@ -227,7 +227,7 @@ const HotelCalendarView = ({
 
         const startDate = moment(selectedDates[0]).startOf("day").valueOf();
         const endDate = moment(selectedDates[selectedDates.length - 1])
-            .startOf("day")
+            .endOf("day")
             .valueOf();
 
         addPriceOverride({

@@ -87,7 +87,6 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
 
     const plan = data?.packagePlanById;
     const priceOverride = data?.priceOverridesByRoomPlanId;
-    const stockOverride = data?.stockOverridesByPackagePlanId;
     const priceScheme = data?.myPriceSchemes;
 
     const basicPriceSetting = plan.roomTypes.filter(

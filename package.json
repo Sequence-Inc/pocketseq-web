@@ -24,6 +24,7 @@
         "date-fns": "^2.27.0",
         "google-map-react": "^2.1.10",
         "graphql": "^15.5.1",
+        "moment-timezone": "^0.5.37",
         "next": "latest",
         "next-auth": "^4.1.2",
         "next-pwa": "^5.2.24",
