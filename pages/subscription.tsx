@@ -207,8 +207,12 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         {product.name}
                                                     </h2>
                                                     <p className="mt-4 text-gray-500">
-                                                        毎月{product.unit}
-                                                        時間を使う
+                                                        毎月
+                                                        <span className="text-gray-700">
+                                                            {product.unit}
+                                                            時間
+                                                        </span>
+                                                        を使う
                                                     </p>
                                                     <p className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
@@ -309,8 +313,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         {product.name}
                                                     </h2>
                                                     <p className="mt-4 text-gray-500">
-                                                        毎月{product.unit}
-                                                        時間を使う
+                                                        毎月
+                                                        <span className="text-gray-700">
+                                                            {product.unit}泊
+                                                        </span>
+                                                        を使う
                                                     </p>
                                                     <p className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
@@ -326,7 +333,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     <button
                                                         onClick={() => {
                                                             console.log(
-                                                                "Subscript to price id",
+                                                                "Subscribe to price id",
                                                                 product.price.id
                                                             );
                                                         }}

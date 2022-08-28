@@ -114,6 +114,7 @@ export interface IPaymentMethod {
     type: string;
     expMonth: number;
     expYear: number;
+    isDefault: any;
     last4: number;
     brand: string;
     country: string;
