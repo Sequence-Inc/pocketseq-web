@@ -159,7 +159,7 @@ const UserSettings = ({ userSession }) => {
                                         </div>
                                         <div>
                                             <div className="text-right text-gray-600">
-                                                {remainingUnit}/{unit}
+                                                {unit - remainingUnit}/{unit}
                                                 {type === "hotel"
                                                     ? "泊"
                                                     : "時間"}
@@ -169,7 +169,8 @@ const UserSettings = ({ userSession }) => {
                                                     className={`h-3 bg-primary`}
                                                     style={{
                                                         width: `${
-                                                            (remainingUnit /
+                                                            ((unit -
+                                                                remainingUnit) /
                                                                 unit) *
                                                             100
                                                         }%`,
