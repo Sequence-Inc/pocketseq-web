@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Tab } from "@headlessui/react";
-
+import {
+    HandIcon,
+    ShieldExclamationIcon,
+    ShoppingBagIcon,
+} from "@heroicons/react/outline";
 import { Container } from "@element";
 import { Header, Footer } from "@layout";
 
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { config, FormatPrice, PriceFormatter } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 import { ALL_SUBSCRIPTION_PRODUCTS } from "src/apollo/queries/subscriptions/queries";
@@ -15,6 +19,9 @@ import {
     SubscriptionCategoryType,
     SubscriptionProduct,
 } from "src/apollo/queries/subscriptions/core.schema";
+import { useFetchPaymentSources } from "@hooks/paymentSource";
+import AlertModal from "src/components/AlertModal";
+import { useRouter } from "next/router";
 
 const tiers = [
     {
@@ -62,6 +69,106 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     const [hotelProducts, setHotelProducts] =
         useState<SubscriptionProduct[]>(null);
 
+    const router = useRouter();
+    const redirectAuth = () => router.push("/auth/login");
+    const redirectPaymentSource = () => router.push("/user/settings");
+
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const { paymentSource, paymentSourcefetchError, loadingPaymentSources } =
+        useFetchPaymentSources();
+
+    const defaultPaymentSource = useMemo(() => {
+        if (paymentSource?.length) {
+            return paymentSource.find((src) => !!src.isDefault);
+        }
+    }, [paymentSource]);
+
+    const modalContent = useMemo(() => {
+        if (!userSession) {
+            return (
+                <div>
+                    <div className="flex items-center justify-center space-x-2">
+                        <ShieldExclamationIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
+                        <p className=" text-base font-semibold  text-gray-600">
+                            Please wait !
+                        </p>
+                    </div>
+                    <div className=" mt-4 text-center  space-y-4">
+                        <p className="text-sm">
+                            This action requires you to log in first.
+                        </p>
+
+                        <button
+                            type="button"
+                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                            onClick={redirectAuth}
+                        >
+                            Login
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (!defaultPaymentSource) {
+            return (
+                <div>
+                    <div className="flex items-center justify-center space-x-2">
+                        <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
+                        <p className=" text-base font-semibold  text-gray-600">
+                            Oops !
+                        </p>
+                    </div>
+                    <div className=" mt-4 text-center  space-y-4">
+                        <p className="text-sm">
+                            Default Payment source not found. Please add default
+                            payment source first in your settings page.
+                        </p>
+
+                        <button
+                            type="button"
+                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                            onClick={redirectPaymentSource}
+                        >
+                            Go to Settings
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="">
+                <div className="flex items-center justify-center space-x-2">
+                    <ShoppingBagIcon className="text-blue-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-500" />
+                    <p className=" text-base font-semibold  text-gray-600">
+                        Subscribe
+                    </p>
+                </div>
+                <div className=" mt-4 text-center space-y-4">
+                    <p className="text-sm">
+                        Are your sure you want to subscribe ?
+                    </p>
+
+                    <button
+                        type="button"
+                        className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        );
+    }, [useSession, defaultPaymentSource]);
+
+    console.log({
+        userSession,
+        paymentSource,
+        paymentSourcefetchError,
+        loadingPaymentSources,
+        defaultPaymentSource,
+    });
+
     useEffect(() => {
         const typeSpace: SubscriptionProduct[] = [];
         const typeHotel: SubscriptionProduct[] = [];
@@ -100,6 +207,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
         });
     }, [currentSpaceCategory, currentHotelCategory]);
 
+    const initiateSpaceSubscription = (priceId) => {
+        console.log({ priceId });
+    };
+
     if (!spaceProducts || !hotelProducts) {
         return <LoadingSpinner />;
     }
@@ -137,6 +248,15 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             </Head>
             <Header userSession={userSession} />
             <main>
+                <AlertModal
+                    isOpen={true}
+                    disableTitle
+                    disableDefaultIcon
+                    // title="Subscription Process"
+                    // iconClass="h-6 w-6 text-green-600"
+                >
+                    {modalContent}
+                </AlertModal>
                 <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
                     <div className="relative">
                         <div className="bg-white rounded-lg">
@@ -207,12 +327,8 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         {product.name}
                                                     </h2>
                                                     <p className="mt-4 text-gray-500">
-                                                        毎月
-                                                        <span className="text-gray-700">
-                                                            {product.unit}
-                                                            時間
-                                                        </span>
-                                                        を使う
+                                                        毎月{product.unit}
+                                                        時間を使う
                                                     </p>
                                                     <p className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
@@ -229,6 +345,9 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         onClick={() => {
                                                             console.log(
                                                                 "Subscript to price id",
+                                                                product.price.id
+                                                            );
+                                                            initiateSpaceSubscription(
                                                                 product.price.id
                                                             );
                                                         }}
@@ -313,11 +432,8 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         {product.name}
                                                     </h2>
                                                     <p className="mt-4 text-gray-500">
-                                                        毎月
-                                                        <span className="text-gray-700">
-                                                            {product.unit}泊
-                                                        </span>
-                                                        を使う
+                                                        毎月{product.unit}
+                                                        時間を使う
                                                     </p>
                                                     <p className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
@@ -333,7 +449,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     <button
                                                         onClick={() => {
                                                             console.log(
-                                                                "Subscribe to price id",
+                                                                "Subscript to price id",
                                                                 product.price.id
                                                             );
                                                         }}
