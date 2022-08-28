@@ -125,75 +125,81 @@ const UserSettings = ({ userSession }) => {
                 </h2>
                 <div className="w-full overflow-hidden bg-white rounded-lg shadow">
                     <div className="divide-y">
-                        {mySubscriptions.map((subscription) => {
-                            const {
-                                id,
-                                name,
-                                priceType,
-                                type,
-                                remainingUnit,
-                                unit,
-                                amount,
-                                isCanceled,
-                            } = subscription;
-                            return (
-                                <div
-                                    key={id}
-                                    className="py-4 px-4 sm:px-6 space-y-3"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="text-lg font-bold">
-                                            {type === "hotel"
-                                                ? "宿泊"
-                                                : "レンタルスペース"}
-                                            {" - "}
-                                            {name} {priceType}
+                        {mySubscriptions.length > 0 &&
+                            mySubscriptions.map((subscription) => {
+                                const {
+                                    id,
+                                    name,
+                                    priceType,
+                                    type,
+                                    remainingUnit,
+                                    unit,
+                                    amount,
+                                    isCanceled,
+                                } = subscription;
+                                return (
+                                    <div
+                                        key={id}
+                                        className="py-4 px-4 sm:px-6 space-y-3"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-lg font-bold">
+                                                {type === "hotel"
+                                                    ? "宿泊"
+                                                    : "レンタルスペース"}
+                                                {" - "}
+                                                {name} {priceType}
+                                            </div>
+                                            <div>
+                                                <span className="font-bold text-lg">
+                                                    {PriceFormatter(amount)}
+                                                </span>
+                                                /月
+                                            </div>
                                         </div>
                                         <div>
-                                            <span className="font-bold text-lg">
-                                                {PriceFormatter(amount)}
-                                            </span>
-                                            /月
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="text-right text-gray-600">
-                                            {remainingUnit}/{unit}
-                                            {type === "hotel" ? "泊" : "時間"}
-                                        </div>
-                                        <div className="relative w-full h-3 bg-gray-100 rounded overflow-hidden">
-                                            <div
-                                                className={`h-3 bg-primary`}
-                                                style={{
-                                                    width: `${
-                                                        (remainingUnit / unit) *
-                                                        100
-                                                    }%`,
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-end justify-between">
-                                        <div>{renderStatus(subscription)}</div>
-                                        <div>
-                                            {!isCanceled && (
-                                                <button
-                                                    type="button"
-                                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                                    onClick={() => {
-                                                        _cancelSubscription(
-                                                            subscription
-                                                        );
+                                            <div className="text-right text-gray-600">
+                                                {remainingUnit}/{unit}
+                                                {type === "hotel"
+                                                    ? "泊"
+                                                    : "時間"}
+                                            </div>
+                                            <div className="relative w-full h-3 bg-gray-100 rounded overflow-hidden">
+                                                <div
+                                                    className={`h-3 bg-primary`}
+                                                    style={{
+                                                        width: `${
+                                                            (remainingUnit /
+                                                                unit) *
+                                                            100
+                                                        }%`,
                                                     }}
-                                                >
-                                                    キャンセル
-                                                </button>
-                                            )}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-end justify-between">
+                                            <div>
+                                                {renderStatus(subscription)}
+                                            </div>
+                                            <div>
+                                                {!isCanceled && (
+                                                    <button
+                                                        type="button"
+                                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                                        onClick={() => {
+                                                            _cancelSubscription(
+                                                                subscription
+                                                            );
+                                                        }}
+                                                    >
+                                                        キャンセル
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
                     </div>
                 </div>
             </Container>
