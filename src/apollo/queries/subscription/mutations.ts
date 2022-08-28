@@ -5,7 +5,7 @@ export const CREATE_SUBSCRIPTION = gql`
     mutation CreateSubscription($priceId:ID!){
         createSubscription(priceId:$priceId){
         message
-        subcription {
+        subscription {
             ${SUBSCRIPTION_OBJECT}
         }
         }

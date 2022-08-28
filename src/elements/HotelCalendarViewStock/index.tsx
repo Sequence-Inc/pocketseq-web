@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Calendar } from "antd";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
 
@@ -11,9 +11,7 @@ const HotelCalendarViewStock = ({
     deleteStockOverride,
 }) => {
     const arr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-    const dow = [0, 1, 2, 3, 4, 5, 6];
 
-    const [basicPriceRank, setBasicPriceRank] = useState([]);
     const [overrides, setOverrides] = useState([]);
 
     const [selectedDates, setSelectedDates] = useState([]);
@@ -187,10 +185,12 @@ const HotelCalendarViewStock = ({
             return;
         }
 
-        const startDate = moment(selectedDates[0]).valueOf();
-        const endDate = moment(
-            selectedDates[selectedDates.length - 1]
-        ).valueOf();
+        const startDate = moment(selectedDates[0]).startOf("day").valueOf();
+        const endDate = moment(selectedDates[selectedDates.length - 1])
+            .endOf("day")
+            .valueOf();
+
+        console.log(startDate, endDate);
 
         addStockOverride({
             startDate,

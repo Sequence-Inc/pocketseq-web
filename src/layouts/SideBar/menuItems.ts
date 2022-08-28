@@ -7,7 +7,6 @@ import {
     UsersIcon,
     MailIcon,
     UserCircleIcon,
-    BadgeCheckIcon,
     IdentificationIcon,
     OfficeBuildingIcon,
     AdjustmentsIcon,
@@ -27,13 +26,13 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Accounts",
+        name: "アカウント管理",
         href: "/admin/accounts",
         Icon: UsersIcon,
         roles: ["admin"],
     },
     {
-        name: "ホスト",
+        name: "ホスト管理",
         href: "/admin/hosts",
         Icon: UsersIcon,
         roles: ["admin"],
@@ -48,6 +47,12 @@ export const navigation = [
         name: "プロフィール",
         href: "/user/profile",
         Icon: UserCircleIcon,
+        roles: ["user"],
+    },
+    {
+        name: "サブスクリプション",
+        href: "/user/subscriptions",
+        Icon: CalendarIcon,
         roles: ["user"],
     },
     {
@@ -76,19 +81,19 @@ export const navigation = [
         roles: ["host"],
     },
     {
-        name: "Cancel Policies",
+        name: "キャンセルポリシー管理",
         href: "/host/cancelPolicies",
         Icon: CalendarIcon,
         roles: ["host"],
     },
     {
-        name: "Hotel Space Management",
+        name: "宿泊管理",
         href: "/host/hotel-space",
         Icon: OfficeBuildingIcon,
         roles: ["host"],
     },
     {
-        name: "Options",
+        name: "オプション管理",
         href: "/host/options",
         Icon: AdjustmentsIcon,
         roles: ["host"],
@@ -106,7 +111,7 @@ export const navigation = [
     //     roles: ["host"],
     // },
     {
-        name: "Licenses",
+        name: "ライセンス管理",
         href: "/host/license",
         Icon: IdentificationIcon,
         roles: ["host"],

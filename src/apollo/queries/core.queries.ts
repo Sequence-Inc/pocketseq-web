@@ -300,6 +300,7 @@ export const PAYMENT_SOURCE = `
         brand
         country
         customer
+        isDefault
     }
 `;
 

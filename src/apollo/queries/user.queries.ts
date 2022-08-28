@@ -29,6 +29,14 @@ export const UPDATE_USER_PROFILE = gql`
     }
 `;
 
+export const MAKE_DEFAULT_PAYMENT_SOURCE = gql`
+    mutation MakeDefaultPaymentSource($paymentMethodId: ID) {
+        setDefaultPaymentMethod(paymentMethodId: $paymentMethodId) {
+            message
+        }
+    }
+`;
+
 export const GET_PAYMENT_SOURCES = gql`
     query GetPaymentSources {
         ${PAYMENT_SOURCE}

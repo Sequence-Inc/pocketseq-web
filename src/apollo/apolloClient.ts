@@ -4,34 +4,6 @@ import { clientTypeDefs, cache } from "./cache";
 import { getSession } from "next-auth/react";
 import { onError } from "apollo-link-error";
 
-// const errorLink = onError(
-//     ({ graphQLErrors, networkError, operation, forward }) => {
-//         if (graphQLErrors) {
-//             graphQLErrors.forEach(({ action }) => {
-//                 if (action === "refresh-token") {
-//                     logout();
-//                     // return fromPromise(
-//                     //     getNewToken()
-//                     //         .then(({ accessToken, refreshToken }) => {
-//                     //             // cookies.set('token', refreshToken);
-//                     //             // accessTokenVAR(accessToken);
-//                     //             return token;
-//                     //         })
-//                     //         .catch(error => {
-//                     //             console.log(error)
-//                     //             return;
-//                     //         })
-//                     // ).filter(value => Boolean(value))
-//                     //     .flatMap(() => {
-//                     //         // retry the request, returning the new observable
-//                     //         return forward(operation);
-//                     //     });
-//                 }
-//             });
-//         }
-//     }
-// );
-
 const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
         graphQLErrors.map(({ message, locations, path }) =>
@@ -75,7 +47,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL,
-    // uri: "http://6c02-2400-1a00-b010-2b61-a9f2-a6f1-9317-8c84.ngrok.io/dev/graphql",
+    // uri: "http://68ab-2400-1a00-b010-98bf-1951-459d-bee2-1b8c.ngrok.io/dev/graphql",
 });
 
 const authLink = (token: string = undefined) => {
