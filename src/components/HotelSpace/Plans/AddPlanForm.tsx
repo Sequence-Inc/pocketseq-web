@@ -49,6 +49,8 @@ const Plans = (props: IPlanFormProps) => {
     const { hotelId, toggleForm, selectedPlan } = props;
     const { addAlert } = useToast();
     const router = useRouter();
+
+    const redirectToOptions = () => router.push("/host/options");
     // const {
     //     loading: packageLoading,
     //     data: packageDetails,
@@ -94,6 +96,7 @@ const Plans = (props: IPlanFormProps) => {
         handleAdditionalOptionFieldChange,
         fetchingPlanDetails,
         cancelPolicies,
+        watchSubscriptionPrice,
     } = usePlans({
         hotelId,
         addAlert,
@@ -196,11 +199,7 @@ const Plans = (props: IPlanFormProps) => {
                             )}
                         />
                     </div>
-                    <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
-                            Breakfast included
-                        </p>
-
+                    <div className="w-full flex items-center md:w-8/12 lg:w-6/12 space-y-2">
                         <Controller
                             name="isBreakfastIncluded"
                             control={control}
@@ -211,7 +210,13 @@ const Plans = (props: IPlanFormProps) => {
                             render={({ field }) => {
                                 return (
                                     <SwitchField
-                                        label=""
+                                        label={
+                                            <>
+                                                <span className="text-sm leading-5 font-medium">
+                                                    Breakfast Included
+                                                </span>
+                                            </>
+                                        }
                                         {...field}
                                         defaultValue={getValues(
                                             "isBreakfastIncluded"
@@ -684,6 +689,7 @@ const Plans = (props: IPlanFormProps) => {
                             </p>
                             <Button
                                 type="button"
+                                onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
                                 Manage Options
@@ -736,6 +742,7 @@ const Plans = (props: IPlanFormProps) => {
                             </p>
                             <Button
                                 type="button"
+                                onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
                                 Manage Options
@@ -777,6 +784,40 @@ const Plans = (props: IPlanFormProps) => {
                                 <span className="text-sm text-red-500">
                                     {errors?.options?.message}
                                 </span>
+                            </div>
+                        )}
+                    </div>
+                    <div className=" lg:w-6/12 md:w-3/4 sm:w-full  border-t"></div>
+
+                    <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
+                        <SwitchField
+                            label={
+                                <>
+                                    <span className="text-sm leading-5 font-medium">
+                                        Subscritpion Price
+                                    </span>
+                                </>
+                            }
+                            defaultValue={getValues("subscriptionPriceEnabled")}
+                            onChange={(val) =>
+                                setValue("subscriptionPriceEnabled", val)
+                            }
+                        />
+                        {watchSubscriptionPrice && (
+                            <div className="flex items-center space-x-2 ">
+                                <TextField
+                                    disabled={loading}
+                                    label=""
+                                    {...register("subcriptionPrice", {
+                                        required: watchSubscriptionPrice,
+                                        min: 0,
+                                        valueAsNumber: true,
+                                    })}
+                                    type="number"
+                                    placeholder="Subscription Price"
+                                    errorMessage="Invalid subscription price."
+                                    error={errors.subcriptionPrice && true}
+                                />
                             </div>
                         )}
                     </div>

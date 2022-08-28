@@ -5,7 +5,7 @@ import {
     SpaceInfoReviews,
     LoadingSpinner,
 } from "@comp";
-import { Button, Container, Rating, Tag } from "@element";
+import { Button, Container, Rating, Spinner, Tag } from "@element";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
 import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
@@ -27,7 +27,12 @@ import {
     GET_HOTEL_BY_ID,
     RESERVE_HOTEL,
 } from "src/apollo/queries/hotel.queries";
-import { LocationMarkerIcon, CurrencyYenIcon } from "@heroicons/react/outline";
+import {
+    LocationMarkerIcon,
+    CurrencyYenIcon,
+    CheckIcon,
+    ExclamationIcon,
+} from "@heroicons/react/outline";
 import { Rooms } from "src/components/HotelSpace";
 import { Dialog, Transition } from "@headlessui/react";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
@@ -37,6 +42,7 @@ import RequestReservationModal from "src/components/ReservationModal";
 import PaymentMethods from "src/components/PaymentMethods";
 import { useReserveHotel } from "@hooks/reserveHotel";
 import AlertModal from "src/components/AlertModal";
+import ProgressModal from "src/components/ProgressModal";
 
 const ContentSection = ({
     title,
@@ -57,21 +63,24 @@ const ContentSection = ({
 };
 
 const SpaceDetail = ({ hotelId, hotel, userSession }) => {
+    console.log({ hotel });
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [reservationData, setReservationData] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [reservationLoading, setReservationLoading] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-    const [result, setResult] = useState(null);
-    const [reservationError, setReservationError] = useState(null);
     const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
-    const { handleHotelReservation, reservingHotel } = useReserveHotel();
 
-    const [alertModalOpen, setAlertModal] = useState(false);
-    const toggleAlertModal = () => {
-        console.log("toggler clled");
-        setAlertModal((prev) => !prev);
-    };
+    const [showProgressModal, setProgressModalVisibility] =
+        useState<boolean>(false);
+    const toggleProgressModal = () =>
+        setProgressModalVisibility((prev) => !prev);
+
+    const {
+        handleHotelReservation,
+        reservingHotel,
+        reservedHotelSuccessData,
+        reserveHotelError,
+    } = useReserveHotel();
 
     const handleAdditionalOptionsChange = useCallback((options) => {
         setAdditionalOptions(
@@ -92,20 +101,6 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         },
     ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
 
-    const [reserveHotel] = useMutation(RESERVE_HOTEL, {
-        onCompleted(data) {
-            alert("Reservation successful.");
-            console.log("Reservation successful", data);
-            setResult(data.reserveHotelroom);
-            setReservationLoading(false);
-        },
-        onError(error) {
-            alert(`Error: ${error.message}`);
-            setReservationError(error.message);
-            setReservationLoading(false);
-        },
-    });
-
     useEffect(() => {
         if (userSession) {
             fetchPaymentMethods();
@@ -113,6 +108,8 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     }, []);
 
     const handleReservation = useCallback(async () => {
+        setProgressModalVisibility(true);
+
         const input = {
             paymentSourceId: selectedPaymentMethod,
             roomPlanId: reservationData?.roomPlanId,
@@ -122,11 +119,6 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
             nChild: reservationData?.noOfChild,
             additionalOptions: selectedAdditionalOptions,
         };
-        // return reserveHotel({
-        //     variables: {
-        //         input,
-        //     },
-        // });
 
         await handleHotelReservation(input);
         setShowModal(false);
@@ -158,16 +150,11 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
     const {
         name,
         description,
-        checkInTime,
-        checkOutTime,
-        status,
         address,
         nearestStations,
         photos,
         rooms,
         packagePlans,
-        createdAt,
-        updatedAt,
     } = hotel;
 
     const location: string = FormatShortAddress(address);
@@ -246,36 +233,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                     content={`${publicImage(photos[0], "large")}`}
                 />
             </Head>
-            <AlertModal
-                isOpen={reservingHotel}
-                title="Reserving Hotel"
-                Icon={CurrencyYenIcon}
-                iconClass="h-6 w-6 text-green-600"
-            >
-                <div className="flex items-center justify-center h-20">
-                    <svg
-                        className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
-                        <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                        ></circle>
-                        <path
-                            className="opacity-50"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                    </svg>
-                    <span className="text-gray-400 text-lg">Please Wait</span>
-                </div>
-            </AlertModal>
+
             <RequestReservationModal
                 showModal={showModal}
                 setShowModal={setShowModal}
@@ -324,6 +282,73 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 </div>
             </RequestReservationModal>
             <Container className="mt-16">
+                <ProgressModal
+                    isOpen={showProgressModal}
+                    progressing={reservingHotel}
+                    title="Space reservation"
+                    progressContent={
+                        <>
+                            <div className="flex items-center justify-center space-x-2">
+                                <Spinner message="Reserving Hotel." />
+                            </div>
+                        </>
+                    }
+                    succeeded={!!reservedHotelSuccessData}
+                    succeededContent={
+                        <>
+                            <div className="flex items-center justify-center space-x-2">
+                                <CheckIcon className="text-green-600 w-10" />
+                                <p className="text-xl font-medium text-green-600">
+                                    Success
+                                </p>
+                            </div>
+                            <div className="mt-4  space-x-2 space-y-2 ">
+                                <p className="text-gray-500 text-base text-center">
+                                    Successfully reserved hotel room.
+                                </p>
+                                <span className="flex items-center justify-center space-x-2">
+                                    <p className="text-gray-600   text-sm text-center">
+                                        Transaction Id :
+                                    </p>
+                                    {reservedHotelSuccessData?.reserveHotelRoom && (
+                                        <p className="text-gray-500  font-bold text-center">
+                                            {
+                                                reservedHotelSuccessData
+                                                    ?.reserveHotelRoom
+                                                    ?.reservationId
+                                            }
+                                        </p>
+                                    )}
+                                </span>
+                            </div>
+                        </>
+                    }
+                    failed={!!reserveHotelError}
+                    failedContent={
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-center space-x-3">
+                                <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
+                                <p className="text-xl font-medium text-red-600">
+                                    Error
+                                </p>
+                            </div>
+                            <div className="mt-2 space-x-2 space-y-2 ">
+                                <p className="text-gray-500 text-base ">
+                                    Could not reserve space. Please try again
+                                    later!!!
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    toggle={toggleProgressModal}
+                    actionButtonClassName={
+                        !!reservedHotelSuccessData
+                            ? "bg-green-300 hover:bg-green-400 disabled:bg-green-200 focus:ring-green-400"
+                            : !!reserveHotelError
+                            ? "bg-red-300 hover:bg-red-400 disabled:bg-red-200 focus:ring-red-400"
+                            : "bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400"
+                    }
+                />
                 <div className="relative flex space-x-12">
                     <div className="w-full lg:w-2/3">
                         <>

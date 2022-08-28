@@ -514,6 +514,7 @@ export const SearchBoxNew = ({
                                                                 value={
                                                                     noOfAdults
                                                                 }
+                                                                min={1}
                                                                 onChange={(
                                                                     event
                                                                 ) => {
@@ -603,6 +604,7 @@ export const SearchBoxNew = ({
                                                             </button>
                                                             <input
                                                                 type="number"
+                                                                min={0}
                                                                 value={
                                                                     noOfChild
                                                                 }
@@ -834,6 +836,7 @@ export const SearchBoxNew = ({
                                                             </button>
                                                             <input
                                                                 type="number"
+                                                                min={1}
                                                                 value={
                                                                     noOfAdults
                                                                 }
@@ -929,6 +932,7 @@ export const SearchBoxNew = ({
                                                                 value={
                                                                     noOfChild
                                                                 }
+                                                                min={0}
                                                                 onChange={(
                                                                     event
                                                                 ) => {

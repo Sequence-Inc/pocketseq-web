@@ -2,7 +2,6 @@ import { useCallback, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { RESERVE_SPACE } from "src/apollo/queries/user.queries";
-import { useToast } from "@hooks/useToasts";
 
 const GET_SPACE_BY_ID = gql`
     query spaceById($id: ID!) {
@@ -59,24 +58,19 @@ const useReserveSpace = (spaceId) => {
         },
     });
 
-    const { addAlert } = useToast();
-    const [reserveSpace, { loading: reservingSpace }] = useMutation(
-        RESERVE_SPACE,
+    const [
+        reserveSpace,
         {
-            onCompleted: (data) => {
-                console.log(data);
-                addAlert({ type: "success", message: "Reserved space" });
-            },
-            onError: (err) => {
-                addAlert({
-                    type: "error",
-                    message: "Could not reserve space.",
-                });
-            },
-        }
-    );
+            loading: reservingSpace,
+            data: reservationSuccessData,
+            error: reservationFailure,
+        },
+    ] = useMutation(RESERVE_SPACE, {
+        ignoreResults: false,
+    });
 
     const { control } = useForm();
+
     const {
         fields: additionalOptionsFields,
         update: updateAdditionalOptionsFields,
@@ -85,9 +79,9 @@ const useReserveSpace = (spaceId) => {
         name: "additionalOptions",
         control,
     });
+
     const initializeAdditionalOptions = useCallback(() => {
         if (!spaceDetails?.spaceById?.additionalOptions?.length) return;
-
         spaceDetails?.spaceById.additionalOptions?.forEach(
             (additionalOption, index) => {
                 const stockOptions = Array.from(
@@ -153,6 +147,8 @@ const useReserveSpace = (spaceId) => {
         includedOptions: spaceDetails?.spaceById?.includedOptions,
         reservingSpace,
         handleSpaceReservation,
+        reservationSuccessData,
+        reservationFailure,
     };
 };
 

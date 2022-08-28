@@ -442,6 +442,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             {...register("stock", {
                                 required: true,
                                 valueAsNumber: true,
+                                min: 0,
                             })}
                             type="number"
                             error={errors.stock && true}

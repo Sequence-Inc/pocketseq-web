@@ -255,6 +255,7 @@ const HotelCalendarViewStock = ({
                         <div className="flex flex-row space-x-4">
                             <input
                                 type="number"
+                                min={0}
                                 className="rounded w-40 border border-gray-200 shadow-sm"
                                 onChange={(event) => {
                                     setSelectedStock(event.target.value);

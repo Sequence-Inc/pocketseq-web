@@ -34,3 +34,4 @@ export * from "./PageHeader";
 export * from "./ReserveSpaceModal";
 export * from "./AlertModal";
 export * from "./Toast";
+export * from "./ProgressModal";

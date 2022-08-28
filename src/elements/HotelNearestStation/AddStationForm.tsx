@@ -159,7 +159,10 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                     errorMessage="時間 is required"
                     type="number"
                     disabled={loading}
-                    onChange={(event) => setTime(event.target.value)}
+                    onChange={(event) => {
+                        if (event.target.value < 0) return;
+                        setTime(event.target.value);
+                    }}
                     value={time}
                 />
             </div>

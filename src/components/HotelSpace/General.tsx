@@ -397,14 +397,14 @@ const General = ({
                         </p>
                         <TextField
                             {...register("addressLine2", {
-                                required: true,
+                                required: false,
                             })}
                             // defaultValue={
                             //     initialValue?.address?.addressLine2
                             // }
                             label={""}
                             error={errors.addressLine2 && true}
-                            errorMessage="Address Line 2 is required"
+                            errorMessage="Invalid Address Line 2"
                             disabled={loading}
                         />
                     </div>

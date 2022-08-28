@@ -40,13 +40,9 @@ const useCalculateSpacePrice = () => {
 
     const fetchCalculatedPrice = useCallback(
         async (props: TUseCalculateSpacePriceProps) => {
-            console.log({ props });
-
             const { additionalOptionsFields, ...rest } = props;
 
             const input = useReduceObject(rest, Calculate_Price_Inputs);
-
-            console.log({ input });
             const isValid = await CALCULATE_PRICE_SCHEME.isValid(input);
             if (!isValid) return;
             let calculatePriceInput = {

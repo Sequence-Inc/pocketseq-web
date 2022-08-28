@@ -44,18 +44,17 @@ IOtherSpacesProps) => {
     const [openForm, setOpenForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activePlan, setActivePlan] = useState(-1);
-
+    const router = useRouter();
+    const { id } = router.query;
     const {
         initialValue,
         spaceDetailLoading,
         refetchSpaceDetail: refetch,
-    } = useGetInitialSpace(selectedSpaceId);
+    } = useGetInitialSpace(id || spaceId || selectedSpaceId);
     const [addPricePlan, { error: addPricePlanError }] =
         useMutation(ADD_PRICING_PLAN);
     const [mutateRemovePrice, { error: removePricePlanError }] =
         useMutation(REMOVE_PRICING_PLAN);
-    const router = useRouter();
-    const { id } = router.query;
 
     const { t } = useTranslation("adminhost");
 
@@ -90,7 +89,7 @@ IOtherSpacesProps) => {
     const addPlan = async (plan) => {
         const { data, errors } = await addPricePlan({
             variables: {
-                spaceId: initialValue ? id : spaceId,
+                spaceId: id || selectedSpaceId || spaceId,
                 pricePlan: plan,
             },
         });
@@ -255,7 +254,7 @@ IOtherSpacesProps) => {
                 {renderPricePlans()}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue?.pricePlans ? null : (
+                {id ? null : (
                     <>
                         <Button
                             className="w-auto px-8"

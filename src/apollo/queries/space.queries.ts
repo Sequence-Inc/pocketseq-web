@@ -295,6 +295,14 @@ export const GET_UPLOAD_TOKEN = gql`
     }
 `;
 
+export const REMOVE_SPACE_PHOTO = gql`
+    mutation RemoveSpacePhoto($photoId: ID!) {
+        removeSpacePhoto(photoId: $photoId) {
+            message
+        }
+    }
+`;
+
 export const GET_LICENSE_UPLOAD_TOKEN = gql`
     mutation addLicense($input: AddLicenseInput!) {
         addLicense(input: $input) {
