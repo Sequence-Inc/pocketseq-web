@@ -17,7 +17,7 @@ const useCreateSubscriptions = (props: CreateSubscriptionProps) => {
 
     const { addAlert } = useToast();
 
-    const [createSubscription] = useMutation(
+    const [createSubscription, { data, error, reset }] = useMutation(
         SubscriptionMutation.CREATE_SUBSCRIPTION,
         {
             onCompleted: (data) => {
@@ -55,7 +55,10 @@ const useCreateSubscriptions = (props: CreateSubscriptionProps) => {
 
     return {
         creatingSubscription,
+        subscriptionSuccessful: data?.createSubscription,
+        subscriptionFailed: error,
         onSubmit,
+        resetSubscription: reset,
     };
 };
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Tab } from "@headlessui/react";
 import {
+    CheckCircleIcon,
     HandIcon,
     ShieldExclamationIcon,
     ShoppingBagIcon,
@@ -10,7 +11,7 @@ import {
 import { Container } from "@element";
 import { Header, Footer } from "@layout";
 
-import { getSession, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { config, FormatPrice, PriceFormatter } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 import { ALL_SUBSCRIPTION_PRODUCTS } from "src/apollo/queries/subscriptions/queries";
@@ -22,6 +23,8 @@ import {
 import { useFetchPaymentSources } from "@hooks/paymentSource";
 import AlertModal from "src/components/AlertModal";
 import { useRouter } from "next/router";
+import { useCreateSubscriptions } from "@hooks/subscriptions";
+import { CheckIcon, CogIcon, ExclamationIcon } from "@heroicons/react/solid";
 
 const tiers = [
     {
@@ -68,12 +71,28 @@ export default function Home({ userSession, allSubscriptionProducts }) {
         useState<SubscriptionProduct[]>(null);
     const [hotelProducts, setHotelProducts] =
         useState<SubscriptionProduct[]>(null);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+    const [selectedPriceId, setSelectedPriceId] = useState<string>();
+    const {
+        creatingSubscription,
+        subscriptionSuccessful,
+        subscriptionFailed,
+        onSubmit,
+        resetSubscription,
+    } = useCreateSubscriptions({});
+
+    useEffect(() => {
+        if (!modalOpen) {
+            setSelectedPriceId(null);
+        }
+    }, [modalOpen]);
 
     const router = useRouter();
-    const redirectAuth = () => router.push("/auth/login");
+    const redirectAuth = () => signIn();
     const redirectPaymentSource = () => router.push("/user/settings");
+    const redirectManageSubscription = () => router.push("/user/subscription");
 
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const { paymentSource, paymentSourcefetchError, loadingPaymentSources } =
         useFetchPaymentSources();
 
@@ -82,6 +101,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return paymentSource.find((src) => !!src.isDefault);
         }
     }, [paymentSource]);
+
+    const handleSubscribe = useCallback(() => {
+        console.log({ selectedPriceId });
+        onSubmit(selectedPriceId);
+    }, [selectedPriceId]);
 
     const modalContent = useMemo(() => {
         if (!userSession) {
@@ -104,6 +128,46 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             onClick={redirectAuth}
                         >
                             Login
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (loadingPaymentSources) {
+            return (
+                <div className="">
+                    <div className="flex items-center justify-center space-x-2">
+                        <HandIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 " />
+                        <p className=" text-base font-semibold  text-blue-600">
+                            Please Wait
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (paymentSourcefetchError) {
+            return (
+                <div>
+                    <div className="flex items-center justify-center space-x-2">
+                        <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
+                        <p className=" text-base font-semibold  text-gray-600">
+                            Oops !
+                        </p>
+                    </div>
+                    <div className=" mt-4 text-center  space-y-4">
+                        <p className="text-sm">
+                            Could not load payment sources. Please try again
+                            later.
+                        </p>
+
+                        <button
+                            type="button"
+                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                            onClick={() => setModalOpen(false)}
+                        >
+                            Close
                         </button>
                     </div>
                 </div>
@@ -137,6 +201,90 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             );
         }
 
+        if (!!subscriptionSuccessful) {
+            return (
+                <div className="">
+                    <div className="flex items-center justify-center space-x-2">
+                        <CheckIcon className="text-green-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-green-500" />
+                        <p className=" text-base font-semibold  text-gray-600">
+                            Success
+                        </p>
+                    </div>
+                    <div className=" mt-4 text-center space-y-4">
+                        <p className="text-sm">Subscription successful</p>
+
+                        <button
+                            type="button"
+                            className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                            onClick={() => {
+                                setModalOpen(false);
+                            }}
+                        >
+                            Done
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (creatingSubscription) {
+            return (
+                <div className="">
+                    <div className="flex items-center justify-center space-x-2">
+                        <CogIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 animate-spin" />
+                        <p className=" text-base font-semibold  text-blue-600">
+                            Subscribing
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (!!subscriptionFailed) {
+            console.log({ failedMsg: subscriptionFailed?.message });
+            return (
+                <div className="">
+                    <div className="flex items-center justify-center space-x-2">
+                        <ExclamationIcon className="text-red-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-600" />
+                        <p className=" text-base font-semibold  text-red-600">
+                            Already Subscribed
+                        </p>
+                    </div>
+                    <div className=" mt-4 text-center space-y-4">
+                        {subscriptionFailed?.message ===
+                        "You have already subscribed to rental-space subscription" ? (
+                            <>
+                                <p>Already subscribed to this subscription.</p>
+                                <button
+                                    className="bg-purple-500 p-3 rounded-md text-sm text-white"
+                                    onClick={redirectManageSubscription}
+                                >
+                                    Manage Subscription
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-sm">
+                                    Subscription failed. Try again later.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="relative w-1/2 mt-3 text-base  bg-red-400 border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                                    onClick={() => {
+                                        setModalOpen(false);
+                                        resetSubscription();
+                                    }}
+                                >
+                                    Ok
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="">
                 <div className="flex items-center justify-center space-x-2">
@@ -153,21 +301,24 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <button
                         type="button"
                         className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                        onClick={handleSubscribe}
                     >
                         Confirm
                     </button>
                 </div>
             </div>
         );
-    }, [useSession, defaultPaymentSource]);
-
-    console.log({
-        userSession,
-        paymentSource,
-        paymentSourcefetchError,
-        loadingPaymentSources,
+    }, [
+        useSession,
         defaultPaymentSource,
-    });
+        subscriptionSuccessful,
+        subscriptionFailed,
+        creatingSubscription,
+        loadingPaymentSources,
+        paymentSourcefetchError,
+        resetSubscription,
+        handleSubscribe,
+    ]);
 
     useEffect(() => {
         const typeSpace: SubscriptionProduct[] = [];
@@ -208,7 +359,8 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     }, [currentSpaceCategory, currentHotelCategory]);
 
     const initiateSpaceSubscription = (priceId) => {
-        console.log({ priceId });
+        setModalOpen(true);
+        setSelectedPriceId(priceId);
     };
 
     if (!spaceProducts || !hotelProducts) {
@@ -249,7 +401,8 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             <Header userSession={userSession} />
             <main>
                 <AlertModal
-                    isOpen={true}
+                    isOpen={modalOpen}
+                    setOpen={() => setModalOpen(false)}
                     disableTitle
                     disableDefaultIcon
                     // title="Subscription Process"
