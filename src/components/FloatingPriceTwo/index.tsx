@@ -23,10 +23,12 @@ const options = {
 type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
 export const FloatingPriceTwo = ({
+    availableHours = [...Array(25).keys()],
     pricePlans,
     space,
     handleReserve,
 }: {
+    availableHours?: number[];
     pricePlans: ISpacePricePlan[];
     space: ISpace;
     handleReserve: (data: TUseCalculateSpacePriceProps) => void;
@@ -351,7 +353,7 @@ export const FloatingPriceTwo = ({
                                 }
                                 className="border-0 py-1"
                             >
-                                <option value="6">6</option>
+                                {/* <option value="6">6</option>
                                 <option value="7">7</option>
                                 <option value="8">8</option>
                                 <option value="9">9</option>
@@ -369,7 +371,10 @@ export const FloatingPriceTwo = ({
                                 <option value="21">21</option>
                                 <option value="22">22</option>
                                 <option value="23">23</option>
-                                <option value="24">24</option>
+                                <option value="24">24</option> */}
+                                {availableHours?.map((value) => (
+                                    <option value={`${value}`}>{value}</option>
+                                ))}
                             </select>
                             時
                             <select

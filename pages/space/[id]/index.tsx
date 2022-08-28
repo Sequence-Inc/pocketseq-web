@@ -8,13 +8,14 @@ import {
     ISpaceInfoTitleProps,
     LoadingSpinner,
 } from "@comp";
-import { Button, Container, Tag } from "@element";
+import { Button, Container, Spinner, Tag } from "@element";
 import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
 import {
     StarIcon,
     ShieldCheckIcon,
-    CurrencyYenIcon,
+    ExclamationIcon,
+    CheckIcon,
 } from "@heroicons/react/solid";
 import Link from "next/link";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
@@ -42,6 +43,21 @@ import {
 } from "@hooks/reserveSpace";
 import { useLazyQuery } from "@apollo/client";
 import AlertModal from "src/components/AlertModal";
+import ProgressModal from "src/components/ProgressModal";
+
+type TDefaultSettings = {
+    id?: string;
+    totalStock?: string;
+    isDefault?: string;
+    closed?: string;
+    businessDays?: string;
+    openingHr?: string;
+    closingHr?: string;
+    breakFromHr?: string;
+    breakToHr?: string;
+    fromDate?: string;
+    toDate?: string;
+};
 
 const ContentSection = ({
     title,
@@ -63,9 +79,14 @@ const ContentSection = ({
 
 const SpaceDetail = ({ spaceId, space, userSession }) => {
     const id = spaceId;
-    const router = useRouter();
 
+    const [defaultSettings, setDefaultSettings] = useState<TDefaultSettings>();
+    const [wantedHours, setWantedHours] = useState<number[]>();
+    const router = useRouter();
     const [showModal, setShowModal] = useState(false);
+    const [showProgressModal, setProgressModalVisibility] =
+        useState<boolean>(false);
+
     const [reservationData, setReservationData] =
         useState<TUseCalculateSpacePriceProps>({
             fromDateTime: null,
@@ -76,6 +97,9 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
     const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
+    const toggleProgressModal = () =>
+        setProgressModalVisibility((prev) => !prev);
+
     const [
         fetchPaymentMethods,
         {
@@ -84,8 +108,12 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             error: paymentMethodsError,
         },
     ] = useLazyQuery(GET_PAYMENT_SOURCES, { fetchPolicy: "network-only" });
-    const { handleSpaceReservation, reservingSpace } = useReserveSpace(id);
-
+    const {
+        handleSpaceReservation,
+        reservingSpace,
+        reservationSuccessData,
+        reservationFailure,
+    } = useReserveSpace(id);
     const {
         name,
         description,
@@ -161,6 +189,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
     }, []);
 
     const handleReservation = useCallback(async () => {
+        setProgressModalVisibility(true);
         const input = {
             ...reservationData,
             paymentSourceId: selectedPaymentMethod,
@@ -179,7 +208,42 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         if (userSession) {
             fetchPaymentMethods();
         }
+
+        return () => {
+            setProgressModalVisibility(false);
+        };
     }, []);
+
+    useEffect(() => {
+        if (space?.settings?.length) {
+            setDefaultSettings(
+                space.settings.find((setting) => !!setting.isDefault)
+            );
+        }
+    }, [space]);
+
+    useEffect(() => {
+        if (defaultSettings) {
+            const unwantedHours = [
+                defaultSettings?.breakFromHr,
+                defaultSettings?.breakToHr,
+            ].filter((item) => !!item);
+            let tempWantedHours = [];
+
+            for (
+                let i = Number(defaultSettings?.openingHr || 0);
+                i < Number(defaultSettings?.closingHr || 24);
+                i++
+            ) {
+                tempWantedHours.push(i);
+            }
+
+            tempWantedHours = tempWantedHours.filter(
+                (item) => !unwantedHours.includes(item)
+            );
+            setWantedHours([...tempWantedHours]);
+        }
+    }, [defaultSettings]);
 
     if (paymentMethodsError) {
         return (
@@ -251,38 +315,74 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             </Head>
 
             <Container className="mt-16">
-                <AlertModal
-                    isOpen={reservingSpace}
-                    title="Reserving Hotel"
-                    Icon={CurrencyYenIcon}
-                    iconClass="h-6 w-6 text-green-600"
-                >
-                    <div className="flex items-center justify-center h-20">
-                        <svg
-                            className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                            ></circle>
-                            <path
-                                className="opacity-50"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                        </svg>
-                        <span className="text-gray-400 text-lg">
-                            Please Wait
-                        </span>
-                    </div>
-                </AlertModal>
+                <ProgressModal
+                    isOpen={showProgressModal}
+                    progressing={reservingSpace}
+                    title="Space reservation"
+                    progressContent={
+                        <>
+                            <div className="flex items-center justify-center space-x-2">
+                                <Spinner message="Reserving Space." />
+                            </div>
+                        </>
+                    }
+                    succeeded={!!reservationSuccessData}
+                    succeededContent={
+                        <>
+                            <div className="flex items-center justify-center space-x-2">
+                                <CheckIcon className="text-green-600 w-10" />
+                                <p className="text-xl font-medium text-green-600">
+                                    Success
+                                </p>
+                            </div>
+                            <div className="mt-4  space-x-2 space-y-2 ">
+                                <p className="text-gray-500 text-base text-center">
+                                    Successfully reserved space.
+                                </p>
+                                <span className="flex items-center justify-center space-x-2">
+                                    <p className="text-gray-600   text-sm text-center">
+                                        Transaction Id :
+                                    </p>
+                                    {reservationSuccessData?.reserveSpace && (
+                                        <p className="text-gray-500  font-bold text-center">
+                                            {
+                                                reservationSuccessData
+                                                    ?.reserveSpace
+                                                    ?.reservationId
+                                            }
+                                        </p>
+                                    )}
+                                </span>
+                            </div>
+                        </>
+                    }
+                    failed={!!reservationFailure}
+                    failedContent={
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-center space-x-3">
+                                <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
+                                <p className="text-xl font-medium text-red-600">
+                                    Error
+                                </p>
+                            </div>
+                            <div className="mt-2 space-x-2 space-y-2 ">
+                                <p className="text-gray-500 text-base ">
+                                    Could not reserve space. Please try again
+                                    later!!!
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    toggle={toggleProgressModal}
+                    actionButtonClassName={
+                        !!reservationSuccessData
+                            ? "bg-green-300 hover:bg-green-400 disabled:bg-green-200 focus:ring-green-400"
+                            : !!reservationFailure
+                            ? "bg-red-300 hover:bg-red-400 disabled:bg-red-200 focus:ring-red-400"
+                            : "bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 focus:ring-gray-400"
+                    }
+                />
+
                 <ReserceSpaceModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -439,6 +539,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     </div>
                     <div className="hidden md:block">
                         <FloatingPriceTwo
+                            availableHours={wantedHours}
                             pricePlans={pricePlans}
                             space={space}
                             handleReserve={handleReserve}

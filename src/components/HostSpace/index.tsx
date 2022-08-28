@@ -1,7 +1,7 @@
-import { Select, TextField } from '@element'
-import useAddSpace from '@hooks/useAddSpace'
-import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Select, TextField } from "@element";
+import useAddSpace from "@hooks/useAddSpace";
+import React from "react";
+import { Controller } from "react-hook-form";
 
 const HostSpace = ({ register, control, errors, loading }) => {
     const { spaceTypes } = useAddSpace();
@@ -25,13 +25,11 @@ const HostSpace = ({ register, control, errors, loading }) => {
                 <TextField
                     {...register("maximumCapacity", {
                         required: true,
-                        setValueAs: (val) =>
-                            parseInt(val),
+                        setValueAs: (val) => parseInt(val),
+                        min: 0,
                     })}
                     label="Maximum Capacity"
-                    error={
-                        errors.maximumCapacity && true
-                    }
+                    error={errors.maximumCapacity && true}
                     errorMessage="Maximum Capacity is required"
                     type="number"
                     disabled={loading}
@@ -43,8 +41,8 @@ const HostSpace = ({ register, control, errors, loading }) => {
                 <TextField
                     {...register("numberOfSeats", {
                         required: true,
-                        setValueAs: (val) =>
-                            parseInt(val),
+                        setValueAs: (val) => parseInt(val),
+                        min: 0,
                     })}
                     label="Number Of seats"
                     error={errors.numberOfSeats && true}
@@ -59,8 +57,8 @@ const HostSpace = ({ register, control, errors, loading }) => {
                 <TextField
                     {...register("spaceSize", {
                         required: true,
-                        setValueAs: (val) =>
-                            parseFloat(val),
+                        setValueAs: (val) => parseFloat(val),
+                        min: 1,
                     })}
                     label="Space Size"
                     error={errors.spaceSize && true}
@@ -80,14 +78,8 @@ const HostSpace = ({ register, control, errors, loading }) => {
                         <Select
                             {...field}
                             label="Space Types"
-                            options={
-                                spaceTypes?.allSpaceTypes ||
-                                []
-                            }
-                            error={
-                                errors.spaceTypes &&
-                                true
-                            }
+                            options={spaceTypes?.allSpaceTypes || []}
+                            error={errors.spaceTypes && true}
                             errorMessage="Space Types is required"
                             labelKey="title"
                             valueKey="id"
@@ -98,7 +90,7 @@ const HostSpace = ({ register, control, errors, loading }) => {
                 />
             </div>
         </>
-    )
-}
+    );
+};
 
-export default HostSpace
+export default HostSpace;

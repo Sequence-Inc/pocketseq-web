@@ -74,7 +74,6 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
             const { data } = await updateWithPhoto({
                 variables: { basicInput, photoInput },
             });
-            console.log(data);
             if (data?.updateSpaceTypePhoto) {
                 console.log("finished request");
                 const { url, mime } = data.updateSpaceTypePhoto;

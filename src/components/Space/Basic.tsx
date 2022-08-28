@@ -1,6 +1,16 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
-import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
+import {
+    Button,
+    GoogleMap,
+    Select,
+    SwitchField,
+    TextArea,
+    TextField,
+} from "@element";
+import useAddSpace, {
+    useBasicSpace,
+    useGetInitialSpace,
+} from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 import axios from "axios";
@@ -14,6 +24,7 @@ import {
     StockManager,
 } from "@page/host/my-space/edit/[id]/days-of-week";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { useRouter } from "next/router";
 
 interface IBasicSpace {
     activeStep: number;
@@ -34,6 +45,17 @@ const Basic = ({
 }: IBasicSpace) => {
     const [change, setChange] = useState<boolean>(false);
     const { spaceTypes } = useAddSpace();
+    const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const router = useRouter();
+    const redirectToOptions = () => router.push("/host/options");
+
+    const handleNext = (id): void => {
+        console.log({ id });
+        setSpaceId(id);
+        if (hasNext) setActiveStep(activeStep + 1);
+    };
+
     const {
         prefectures,
         loading,
@@ -57,16 +79,10 @@ const Basic = ({
         cancelPolicies,
         initialValue,
         spaceDetailLoading,
+        watchSubscriptionPrice,
     } = useBasicSpace(handleNext, selectedSpaceId);
 
-    const hasNext: boolean = activeStep < steps.length - 1 && true;
-
     const { t } = useTranslation("adminhost");
-
-    function handleNext(id): void {
-        if (hasNext) setActiveStep(activeStep + 1);
-        setSpaceId(id);
-    }
 
     useEffect(() => {
         const api = async () => {
@@ -151,6 +167,7 @@ const Basic = ({
                             <TextField
                                 {...register("maximumCapacity", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("max-capacity")}
@@ -166,6 +183,7 @@ const Basic = ({
                             <TextField
                                 {...register("numberOfSeats", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("space-number-of-seats")}
@@ -181,6 +199,7 @@ const Basic = ({
                             <TextField
                                 {...register("spaceSize", {
                                     required: true,
+                                    min: 0,
                                     setValueAs: (val) => parseFloat(val),
                                 })}
                                 label={t("space-size")}
@@ -265,10 +284,29 @@ const Basic = ({
                             />
                         </div>
 
+                        <div className="pb-1">
+                            <div className="border-t border-gray-200 my-8"></div>
+                            <div className="md:ml-60 md:pl-4  flex items-center space-x-4">
+                                <h3 className="font-bold text-primary text-xl">
+                                    Options
+                                </h3>
+
+                                <Button
+                                    type="button"
+                                    onClick={redirectToOptions}
+                                    className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                >
+                                    Manage Options
+                                </Button>
+                            </div>
+                        </div>
+
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
-                            <p className="font-bold text-base">
-                                Included options
-                            </p>
+                            <div className="flex justify-between items-center pb-4 space-x-4">
+                                <p className="font-bold text-base">
+                                    Included options
+                                </p>
+                            </div>
                             <div className="flex flex-wrap">
                                 {includedOptions?.map((option: any, index) => (
                                     <div
@@ -413,14 +451,14 @@ const Basic = ({
                         <div className="">
                             <TextField
                                 {...register("addressLine2", {
-                                    required: true,
+                                    required: false,
                                 })}
                                 defaultValue={
                                     initialValue?.address?.addressLine2
                                 }
                                 label={t("address-line-2")}
-                                error={errors.zipCode && true}
-                                errorMessage="Address Line 2 is required"
+                                error={errors.addressLine2 && true}
+                                errorMessage="Invalid address Line 2 "
                                 disabled={loading}
                                 singleRow
                             />
@@ -477,10 +515,9 @@ const Basic = ({
                                     } = value;
                                     setValue("openingHr", openingHr);
                                     setValue("closingHr", closingHr);
-                                    if (breakFromHr && breakToHr) {
-                                        setValue("breakFromHr", breakFromHr);
-                                        setValue("breakToHr", breakToHr);
-                                    }
+
+                                    setValue("breakFromHr", breakFromHr);
+                                    setValue("breakToHr", breakToHr);
                                 }}
                             />
                             <StockManager
@@ -493,6 +530,54 @@ const Basic = ({
                                 defaultValue={getValues("pricePlan")}
                                 onSave={(value) => setValue("pricePlan", value)}
                             />
+                        </div>
+                    </div>
+
+                    <div className="pb-1  ">
+                        <div className="border-t border-gray-200 my-8"></div>
+
+                        <h3 className="font-bold md:ml-60 md:pl-4  text-primary text-xl">
+                            Subscription
+                        </h3>
+                        <div className="md:ml-60 md:pl-4 mt-4 ">
+                            <SwitchField
+                                label={
+                                    <>
+                                        <span className="text-sm leading-5 font-medium">
+                                            Subscritpion Price
+                                        </span>
+                                    </>
+                                }
+                                defaultValue={getValues(
+                                    "subscriptionPriceEnabled"
+                                )}
+                                onChange={(val) =>
+                                    setValue("subscriptionPriceEnabled", val)
+                                }
+                            />
+
+                            <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2 ">
+                                {watchSubscriptionPrice && (
+                                    <div className="flex items-center space-x-2  mt-4 ">
+                                        <TextField
+                                            disabled={loading}
+                                            label=""
+                                            {...register("subcriptionPrice", {
+                                                required:
+                                                    watchSubscriptionPrice,
+                                                min: 0,
+                                                valueAsNumber: true,
+                                            })}
+                                            type="number"
+                                            placeholder="Subscription Price"
+                                            errorMessage="Invalid subscription price."
+                                            error={
+                                                errors.subcriptionPrice && true
+                                            }
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 

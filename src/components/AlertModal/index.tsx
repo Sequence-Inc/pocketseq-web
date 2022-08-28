@@ -6,12 +6,24 @@ interface IAlertModalProps {
     isOpen?: boolean;
     children: React.ReactElement;
     title?: string;
+    disableTitle?: boolean;
+    disableDefaultIcon?: boolean;
+
     Icon?: React.ComponentType<{ className: string }>;
     iconClass?: string;
 }
 
 const AlertModal = (props: IAlertModalProps) => {
-    const { isOpen, toggle, children, title, Icon, iconClass } = props;
+    const {
+        isOpen,
+        toggle,
+        children,
+        title,
+        disableDefaultIcon,
+        disableTitle,
+        Icon,
+        iconClass,
+    } = props;
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => {}}>
@@ -40,24 +52,37 @@ const AlertModal = (props: IAlertModalProps) => {
                         >
                             <Dialog.Overlay className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-sm sm:w-full sm:p-6">
                                 <div>
-                                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                                        {!!Icon && (
-                                            <Icon className={`${iconClass}`} />
+                                    {!disableDefaultIcon && (
+                                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                                            {!!Icon && (
+                                                <Icon
+                                                    className={`${iconClass}`}
+                                                />
+                                            )}
+                                            {!Icon && (
+                                                <ExclamationIcon
+                                                    className="h-6 w-6 text-red-600"
+                                                    aria-hidden="true"
+                                                />
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <div
+                                        className={
+                                            !disableTitle
+                                                ? "mt-3 text-center sm:mt-5"
+                                                : ""
+                                        }
+                                    >
+                                        {!disableTitle && (
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg leading-6 font-medium text-gray-900"
+                                            >
+                                                {title || "Alert"}
+                                            </Dialog.Title>
                                         )}
-                                        {!Icon && (
-                                            <ExclamationIcon
-                                                className="h-6 w-6 text-red-600"
-                                                aria-hidden="true"
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="mt-3 text-center sm:mt-5">
-                                        <Dialog.Title
-                                            as="h3"
-                                            className="text-lg leading-6 font-medium text-gray-900"
-                                        >
-                                            {title || "Alert"}
-                                        </Dialog.Title>
                                         <div className="mt-2">{children}</div>
                                     </div>
                                 </div>

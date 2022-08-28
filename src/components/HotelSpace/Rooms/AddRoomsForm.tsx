@@ -297,6 +297,7 @@ const AddRoomForm = ({
                     label=""
                     {...register("stock", {
                         required: true,
+                        min: 0,
                     })}
                     className="w-full md:w-3/12 "
                     errorMessage="Stock is required"
