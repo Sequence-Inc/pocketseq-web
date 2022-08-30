@@ -27,6 +27,7 @@ export type TUseCalculateSpacePriceProps = {
     durationType?: any;
     spaceId?: any;
     additionalOptionsFields?: any[];
+    useSubscription?: boolean;
 };
 const useCalculateSpacePrice = () => {
     const [

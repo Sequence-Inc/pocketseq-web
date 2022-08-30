@@ -1,25 +1,50 @@
-import { Select } from "@element";
+import { Select, SwitchField } from "@element";
 import { Transition } from "@headlessui/react";
 import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { PriceFormatter } from "src/utils";
+import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
+import { useQuery } from "@apollo/client";
 
 const RequestReservationModal = ({
     showModal,
     reservationData,
     setShowModal,
     setAdditionalOptions,
+    setReservationData,
     children,
 }) => {
     const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
         useCalculatePrice();
+
+    const setSubscription = useCallback(
+        (val) => {
+            setReservationData((prev) => ({
+                ...prev,
+                useSubscription: val,
+            }));
+        },
+        [setReservationData]
+    );
+    const { data: subscription, loading: fetchingSubscriptions } =
+        useQuery(MY_SUBSCRIPTIONS);
+
+    const hasHotelSubscriptions = useMemo(() => {
+        if (subscription?.mySubscriptions?.length) {
+            return subscription?.mySubscriptions?.find(
+                (subscription) => subscription?.type === "hotel"
+            );
+        }
+    }, [subscription]);
+
     const {
         additionalOptionsFields,
         onAdditionalOptionsCheckboxAction,
         onAdditionalFieldChangeQuantity,
         includedOptions,
+        setValue,
     } = useReserveHotel({
         plan: reservationData?.plan.id,
         roomPlanId: reservationData?.roomPlanId,
@@ -394,6 +419,15 @@ const RequestReservationModal = ({
                                             </div>
 
                                             <div className="mt-2 ml-6  w-1/3 relative">
+                                                {hasHotelSubscriptions && (
+                                                    <SwitchField
+                                                        className="my-2"
+                                                        label="Use Subsciption"
+                                                        onChange={(val) =>
+                                                            setSubscription(val)
+                                                        }
+                                                    />
+                                                )}
                                                 {calculatingPrice && (
                                                     <div className="bg-gray-200 h-full w-full  absolute flex items-center justify-center rounded-lg opacity-75">
                                                         <div className="flex items-center justify-center h-content">

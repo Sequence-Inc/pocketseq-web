@@ -62,6 +62,7 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
             },
         }
     );
+
     const [loading, setLoading] = useState(false);
 
     const { addAlert } = useToast();
@@ -91,7 +92,9 @@ const useReserveHotel = (formData?: TReserveHotelProps) => {
     const handleHotelReservation = useCallback(async (reservationData) => {
         return reserveHotelSpace({
             variables: {
-                input: reservationData,
+                input: {
+                    ...reservationData,
+                },
             },
         });
     }, []);

@@ -14,6 +14,8 @@ export const ALL_SUBSCRIPTION_PRODUCTS = gql`
 
 export const MY_SUBSCRIPTIONS = gql`
     query MySubscriptions{
+        mySubscriptions{
         ${SUBSCRIPTION_OBJECT}
+        }
     }
 `;

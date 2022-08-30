@@ -63,7 +63,6 @@ const ContentSection = ({
 };
 
 const SpaceDetail = ({ hotelId, hotel, userSession }) => {
-    console.log({ hotel });
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [reservationData, setReservationData] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -109,7 +108,6 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
     const handleReservation = useCallback(async () => {
         setProgressModalVisibility(true);
-
         const input = {
             paymentSourceId: selectedPaymentMethod,
             roomPlanId: reservationData?.roomPlanId,
@@ -118,6 +116,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
             nAdult: reservationData?.noOfAdults,
             nChild: reservationData?.noOfChild,
             additionalOptions: selectedAdditionalOptions,
+            useSubscription: !!reservationData?.useSubscription,
         };
 
         await handleHotelReservation(input);
@@ -239,6 +238,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 setShowModal={setShowModal}
                 reservationData={reservationData}
                 setAdditionalOptions={handleAdditionalOptionsChange}
+                setReservationData={setReservationData}
             >
                 <div className="space-y-6">
                     {userSession ? (
@@ -285,7 +285,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 <ProgressModal
                     isOpen={showProgressModal}
                     progressing={reservingHotel}
-                    title="Space reservation"
+                    title="Hotel room reservation"
                     progressContent={
                         <>
                             <div className="flex items-center justify-center space-x-2">
@@ -317,6 +317,38 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                     ?.reserveHotelRoom
                                                     ?.reservationId
                                             }
+                                        </p>
+                                    )}
+                                </span>
+
+                                <span className="flex items-center justify-center space-x-2">
+                                    <p className="text-gray-600   text-sm text-center">
+                                        Subscriptions utilized (Units) :
+                                    </p>
+                                    {reservedHotelSuccessData?.reserveHotelRoom
+                                        ?.subscriptionUnit && (
+                                        <p className="text-gray-500  font-bold text-center">
+                                            {
+                                                reservedHotelSuccessData
+                                                    ?.reserveHotelRoom
+                                                    ?.subscriptionUnit
+                                            }
+                                            /night
+                                        </p>
+                                    )}
+                                </span>
+
+                                <span className="flex items-center justify-center space-x-2">
+                                    <p className="text-gray-600   text-sm text-center">
+                                        Price not covered by subscription
+                                    </p>
+                                    {reservedHotelSuccessData?.reserveHotelRoom
+                                        ?.amount && (
+                                        <p className="text-gray-500  font-bold text-center">
+                                            {PriceFormatter(
+                                                reservedHotelSuccessData
+                                                    ?.reserveHotelRoom?.amount
+                                            )}
                                         </p>
                                     )}
                                 </span>
