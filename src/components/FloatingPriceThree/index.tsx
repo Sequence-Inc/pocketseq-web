@@ -14,6 +14,7 @@ import moment, { Moment } from "moment";
 import { useLazyQuery } from "@apollo/client";
 import { Listbox, Transition } from "@headlessui/react";
 import { CALCULATE_ROOM_PLAN_PRICE } from "src/apollo/queries/hotel.queries";
+import { PriceFormatter } from "src/utils";
 
 // type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
@@ -599,16 +600,26 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             x {noOfNight}泊
                                         </div>
                                         <div>
-                                            {price && <div>￥ {price}</div>}
+                                            {price && (
+                                                <div>
+                                                    {PriceFormatter(
+                                                        price / 1.1
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div>税金</div>
-                                        <div>￥ {price * 0.1}</div>
+                                        <div>
+                                            {PriceFormatter(
+                                                price - price / 1.1
+                                            )}
+                                        </div>
                                     </div>
                                     <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
                                         <div>合計（税込）</div>
-                                        <div>￥ {price * 0.1 + price}</div>
+                                        <div>{PriceFormatter(price)}</div>
                                     </div>
                                 </>
                             )}

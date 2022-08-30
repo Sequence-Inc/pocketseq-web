@@ -417,7 +417,8 @@ const ReserveSpaceModal = ({
                                                             {calculatedPrice?.spaceAmount && (
                                                                 <p>
                                                                     {PriceFormatter(
-                                                                        calculatedPrice?.spaceAmount
+                                                                        calculatedPrice?.spaceAmount /
+                                                                            1.1
                                                                     )}
                                                                 </p>
                                                             )}
@@ -438,8 +439,9 @@ const ReserveSpaceModal = ({
                                                                     ) => {
                                                                         const optionsCharge =
                                                                             PriceFormatter(
-                                                                                additionalfield?.additionalPrice *
-                                                                                    additionalfield?.quantity
+                                                                                (additionalfield?.additionalPrice *
+                                                                                    additionalfield?.quantity) /
+                                                                                    1.1
                                                                             ) ||
                                                                             "No Charge";
                                                                         return (

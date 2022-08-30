@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, TextField } from "@element";
@@ -11,8 +10,6 @@ import {
     REMOVE_PAYMENT_SOURCE,
     UPDATE_USER_PROFILE,
 } from "src/apollo/queries/user.queries";
-import DashboardCard from "src/components/DashboardCard";
-import withAuth from "src/utils/withAuth";
 import { IPaymentMethod } from "src/types/timebookTypes";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
