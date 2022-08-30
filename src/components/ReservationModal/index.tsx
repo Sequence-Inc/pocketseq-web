@@ -4,6 +4,7 @@ import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useEffect } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
+import { PriceFormatter } from "src/utils";
 
 const RequestReservationModal = ({
     showModal,
@@ -296,12 +297,11 @@ const RequestReservationModal = ({
                                                                                 </p>
 
                                                                                 {paymentTerm && (
-                                                                                    <span className="font-normal leading-5 font-base flex space-x-1">
+                                                                                    <span className="font-normal leading-5 text-sm flex space-x-1">
                                                                                         <p>
-                                                                                            ￥
-                                                                                            {
+                                                                                            {PriceFormatter(
                                                                                                 additionalField?.additionalPrice
-                                                                                            }
+                                                                                            )}
                                                                                         </p>
                                                                                         <p>
                                                                                             /
@@ -454,10 +454,10 @@ const RequestReservationModal = ({
                                                         <div>
                                                             {reservationData?.price && (
                                                                 <div>
-                                                                    ￥{" "}
-                                                                    {
-                                                                        reservationData?.price
-                                                                    }
+                                                                    {PriceFormatter(
+                                                                        reservationData?.price /
+                                                                            1.1
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </div>
@@ -509,8 +509,10 @@ const RequestReservationModal = ({
                                                                                 {optionsCharge ===
                                                                                 "No Charge"
                                                                                     ? optionsCharge
-                                                                                    : "￥" +
-                                                                                      optionsCharge}
+                                                                                    : PriceFormatter(
+                                                                                          optionsCharge /
+                                                                                              1.1
+                                                                                      )}
                                                                             </p>
                                                                         </div>
                                                                     );
@@ -521,31 +523,35 @@ const RequestReservationModal = ({
                                                         <div>
                                                             {!priceCalculation &&
                                                                 !calculatingPrice &&
-                                                                "￥" +
-                                                                    reservationData?.price *
-                                                                        0.1}
+                                                                PriceFormatter(
+                                                                    reservationData?.price -
+                                                                        reservationData?.price /
+                                                                            1.1
+                                                                )}
                                                             {!calculatingPrice &&
                                                                 priceCalculation &&
-                                                                "￥" +
+                                                                PriceFormatter(
                                                                     (priceCalculation
                                                                         ?.calculateRoomPlanPrice
                                                                         ?.totalAmount ||
-                                                                        0) *
-                                                                        0.1}
+                                                                        0) -
+                                                                        (priceCalculation
+                                                                            ?.calculateRoomPlanPrice
+                                                                            ?.totalAmount ||
+                                                                            0) /
+                                                                            1.1
+                                                                )}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
                                                         <div>合計（税込）</div>
                                                         <div>
                                                             {!calculatingPrice &&
-                                                                "￥" +
-                                                                    (priceCalculation
+                                                                PriceFormatter(
+                                                                    priceCalculation
                                                                         ?.calculateRoomPlanPrice
-                                                                        ?.totalAmount *
-                                                                        0.1 +
-                                                                        priceCalculation
-                                                                            ?.calculateRoomPlanPrice
-                                                                            ?.totalAmount)}
+                                                                        ?.totalAmount
+                                                                )}
                                                         </div>
                                                     </div>
                                                 </div>

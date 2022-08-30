@@ -37,6 +37,14 @@ export const MAKE_DEFAULT_PAYMENT_SOURCE = gql`
     }
 `;
 
+export const REMOVE_PAYMENT_SOURCE = gql`
+    mutation RemovePaymentSource($paymentMethodId: String!) {
+        removePaymentMethod(paymentMethodId: $paymentMethodId) {
+            message
+        }
+    }
+`;
+
 export const GET_PAYMENT_SOURCES = gql`
     query GetPaymentSources {
         ${PAYMENT_SOURCE}

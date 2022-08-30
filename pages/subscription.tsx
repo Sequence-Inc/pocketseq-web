@@ -15,7 +15,7 @@ import { getSession, signIn, useSession } from "next-auth/react";
 import { config, FormatPrice, PriceFormatter } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 import { ALL_SUBSCRIPTION_PRODUCTS } from "src/apollo/queries/subscriptions/queries";
-import { LoadingSpinner } from "@comp";
+import { LoadingSpinner, SubscriptionItemsList } from "@comp";
 import {
     SubscriptionCategoryType,
     SubscriptionProduct,
@@ -492,6 +492,13 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                             >
                                                 Category C
                                             </button>
+                                        </div>
+                                        <div>
+                                            <SubscriptionItemsList
+                                                type="rental-space"
+                                                category={currentSpaceCategory}
+                                                numbers={4}
+                                            />
                                         </div>
                                     </div>
                                     <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-1 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">

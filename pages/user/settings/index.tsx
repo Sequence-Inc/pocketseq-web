@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, TextField } from "@element";
@@ -8,10 +7,9 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
     GET_PROFILE_FOR_SETTINGS,
     MAKE_DEFAULT_PAYMENT_SOURCE,
+    REMOVE_PAYMENT_SOURCE,
     UPDATE_USER_PROFILE,
 } from "src/apollo/queries/user.queries";
-import DashboardCard from "src/components/DashboardCard";
-import withAuth from "src/utils/withAuth";
 import { IPaymentMethod } from "src/types/timebookTypes";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -55,6 +53,17 @@ const UserSettings = ({ userSession }) => {
             },
         }
     );
+    const [removePaymentSource] = useMutation(REMOVE_PAYMENT_SOURCE, {
+        onCompleted: (data) => {
+            refetchProfile();
+            alert(data.removePaymentMethod.message);
+            setIsLoading(false);
+        },
+        onError: (error) => {
+            alert(`Error: ${error.message}`);
+            setIsLoading(false);
+        },
+    });
 
     useEffect(() => {
         if (data?.myProfile) {
@@ -96,10 +105,6 @@ const UserSettings = ({ userSession }) => {
         paymentSource,
     }: { myProfile: any; paymentSource: IPaymentMethod[] } = data;
 
-    const removePaymentMethod = (id) => {
-        return null;
-    };
-
     const cardIcon = (brand) => {
         if (
             brand === "visa" ||
@@ -117,16 +122,34 @@ const UserSettings = ({ userSession }) => {
         }
     };
 
-    const makeDefault = (card) => {
+    const makeDefault = ({ last4, token }) => {
         if (
             confirm(
-                `Are you sure you want to make this card ending with ${card.last4} your default source of payment?`
+                `Are you sure you want to make this card ending with ${last4} your default source of payment?`
             )
         ) {
             setIsLoading(true);
             makeDefaultPaymentSource({
                 variables: {
-                    paymentMethodId: card.token,
+                    paymentMethodId: token,
+                },
+            });
+        }
+    };
+    const removePaymentMethod = ({ token, last4, isDefault }) => {
+        if (isDefault) {
+            alert("You can not remove default card from your account.");
+            return;
+        }
+        if (
+            confirm(
+                `Are you sure you want to delete this card ending with ${last4}?`
+            )
+        ) {
+            setIsLoading(true);
+            removePaymentSource({
+                variables: {
+                    paymentMethodId: token,
                 },
             });
         }
@@ -176,7 +199,7 @@ const UserSettings = ({ userSession }) => {
                             disabled={isLoading}
                             onClick={(e) => {
                                 e.preventDefault();
-                                removePaymentMethod(card.id);
+                                removePaymentMethod(card);
                             }}
                             className="font-bold text-red-500 hover:text-red-700"
                         >
