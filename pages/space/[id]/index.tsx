@@ -93,6 +93,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             duration: null,
             spaceId: spaceId,
             durationType: null,
+            useSubscription: false,
         });
     const [selectedAdditionalOptions, setAdditionalOptions] = useState([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
@@ -197,6 +198,8 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 optionId: option?.id,
                 quantity: option?.quantity || 1,
             })),
+
+            useSubscription: !!reservationData?.useSubscription,
         };
         await handleSpaceReservation(input);
         setShowModal(false);
@@ -354,6 +357,36 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                     )}
                                 </span>
                             </div>
+                            <span className="flex items-center justify-center space-x-2">
+                                <p className="text-gray-600   text-sm text-center">
+                                    Subscriptions utilized (Units) :
+                                </p>
+                                {reservationSuccessData?.reserveSpace
+                                    ?.subscriptionUnit && (
+                                    <p className="text-gray-500  font-bold text-center">
+                                        {
+                                            reservationSuccessData?.reserveSpace
+                                                ?.subscriptionUnit
+                                        }
+                                        /night
+                                    </p>
+                                )}
+                            </span>
+
+                            <span className="flex items-center justify-center space-x-2">
+                                <p className="text-gray-600   text-sm text-center">
+                                    Price not covered by subscription
+                                </p>
+                                {reservationSuccessData?.reserveSpace
+                                    ?.amount && (
+                                    <p className="text-gray-500  font-bold text-center">
+                                        {PriceFormatter(
+                                            reservationSuccessData?.reserveSpace
+                                                ?.amount
+                                        )}
+                                    </p>
+                                )}
+                            </span>
                         </>
                     }
                     failed={!!reservationFailure}
@@ -388,6 +421,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     setShowModal={setShowModal}
                     reservationData={reservationData}
                     setAdditionalOptions={setAdditionalOptions}
+                    setReservationData={setReservationData}
                 >
                     <div className="space-y-6">
                         {userSession ? (

@@ -1,16 +1,18 @@
-import { Select } from "@element";
+import { Select, SwitchField } from "@element";
 import { Transition } from "@headlessui/react";
 import {
     useCalculateSpacePrice,
     TUseCalculateSpacePriceProps,
     useReserveSpace,
 } from "@hooks/reserveSpace";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo } from "react";
 import { OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import moment from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { PriceFormatter } from "src/utils";
+import { useQuery } from "@apollo/client";
+import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 
 interface IReserveSpaceModal {
     reservationData: TUseCalculateSpacePriceProps;
@@ -18,6 +20,7 @@ interface IReserveSpaceModal {
     setShowModal: Function;
     setAdditionalOptions: Function;
     children?: React.ReactNode;
+    setReservationData?: any;
 }
 
 const ReserveSpaceModal = ({
@@ -26,6 +29,7 @@ const ReserveSpaceModal = ({
     setShowModal,
     children,
     setAdditionalOptions,
+    setReservationData,
 }: IReserveSpaceModal) => {
     const {
         spaceDetails,
@@ -36,6 +40,27 @@ const ReserveSpaceModal = ({
         onAdditionalOptionsCheckboxAction,
         includedOptions,
     } = useReserveSpace(reservationData?.spaceId);
+
+    const setSubscription = useCallback(
+        (val) => {
+            setReservationData((prev) => ({
+                ...prev,
+                useSubscription: val,
+            }));
+        },
+        [setReservationData]
+    );
+
+    const { data: subscription, loading: fetchingSubscriptions } =
+        useQuery(MY_SUBSCRIPTIONS);
+
+    const hasSpaceSubscriptions = useMemo(() => {
+        if (subscription?.mySubscriptions?.length) {
+            return subscription?.mySubscriptions?.find(
+                (subscription) => subscription?.type === "rental-space"
+            );
+        }
+    }, [subscription]);
 
     const {
         fetchCalculatedPrice,
@@ -403,6 +428,18 @@ const ReserveSpaceModal = ({
                                                                 </span>
                                                             </div>
                                                         </div>
+                                                    )}
+
+                                                    {hasSpaceSubscriptions && (
+                                                        <SwitchField
+                                                            className="my-2"
+                                                            label="Use Subsciption"
+                                                            onChange={(val) =>
+                                                                setSubscription(
+                                                                    val
+                                                                )
+                                                            }
+                                                        />
                                                     )}
                                                     <div
                                                         className={`border  border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5`}

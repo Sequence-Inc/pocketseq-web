@@ -11,6 +11,8 @@ export const RESERVE_HOTEL_ROOM = gql`
             paymentMethodTypes
             reservationId
             transactionId
+            subscriptionPrice
+            subscriptionUnit
         }
     }
 `;
