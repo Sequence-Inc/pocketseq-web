@@ -1,7 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 
-import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
+import {
+    GET_PRICE_PLANS,
+    GET_PRICE_PLANS_WITH_AUTH,
+} from "src/apollo/queries/space.queries";
 import useReduceObject from "@hooks/useFilterObject";
 import * as yup from "yup";
 
@@ -29,7 +32,11 @@ export type TUseCalculateSpacePriceProps = {
     additionalOptionsFields?: any[];
     useSubscription?: boolean;
 };
+
 const useCalculateSpacePrice = () => {
+    const [loading, setLoading] = useState(false);
+
+    const [priceData, setPriceData] = useState(null);
     const [
         calculatePrice,
         {
@@ -38,6 +45,8 @@ const useCalculateSpacePrice = () => {
             error: priceCalculationError,
         },
     ] = useLazyQuery(GET_PRICE_PLANS);
+
+    const [calculatePriceWithAuth] = useLazyQuery(GET_PRICE_PLANS_WITH_AUTH);
 
     const fetchCalculatedPrice = useCallback(
         async (props: TUseCalculateSpacePriceProps) => {
@@ -55,20 +64,70 @@ const useCalculateSpacePrice = () => {
                         quantity: field.quantity,
                     })),
             };
-            await calculatePrice({
-                variables: {
-                    input: calculatePriceInput,
-                },
-            });
+
+            setLoading(true);
+            try {
+                const data = await calculatePrice({
+                    variables: {
+                        input: calculatePriceInput,
+                    },
+                });
+
+                if (data?.data?.getApplicablePricePlans) {
+                    setPriceData(data.data.getApplicablePricePlans);
+                }
+            } catch (error) {}
+
+            setLoading(false);
         },
         []
     );
 
+    const fetchCalculatedPriceWithAuth = useCallback(
+        async (props: TUseCalculateSpacePriceProps) => {
+            const { additionalOptionsFields, useSubscription, ...rest } = props;
+
+            const input = useReduceObject(rest, Calculate_Price_Inputs);
+            const isValid = await CALCULATE_PRICE_SCHEME.isValid(input);
+            if (!isValid) return;
+            let calculatePriceInput = {
+                ...input,
+                useSubscription,
+                additionalOptions: props?.additionalOptionsFields
+                    ?.filter((item) => item?.isChecked)
+                    ?.map((field) => ({
+                        optionId: field?.id,
+                        quantity: field.quantity,
+                    })),
+            };
+
+            setLoading(true);
+
+            const data = await calculatePriceWithAuth({
+                variables: {
+                    input: calculatePriceInput,
+                },
+            });
+
+            if (data?.data?.getApplicablePricePlansWithAuth) {
+                setPriceData(data.data.getApplicablePricePlansWithAuth);
+            }
+            console.log("with auth", {
+                data: data.data.getApplicablePricePlansWithAuth,
+            });
+
+            setLoading(false);
+        },
+        []
+    );
     return {
         fetchCalculatedPrice,
+        fetchCalculatedPriceWithAuth,
+        loading,
         calculatingPrice,
         calculatedPrice: applicablePP?.getApplicablePricePlans,
         priceCalculationError,
+        priceData,
     };
 };
 

@@ -2,11 +2,12 @@ import { Select, SwitchField } from "@element";
 import { Transition } from "@headlessui/react";
 import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useCallback, useEffect, useMemo } from "react";
-import { OPTION_PAYMENT_TERMS } from "@config";
+import { HOTEL_SUBSCRIPTION_CATEGORIES, OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { PriceFormatter } from "src/utils";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 import { useQuery } from "@apollo/client";
+import SubsciptionBox from "./SubscriptionBox";
 
 const RequestReservationModal = ({
     showModal,
@@ -15,9 +16,15 @@ const RequestReservationModal = ({
     setAdditionalOptions,
     setReservationData,
     children,
+    userSession,
 }) => {
-    const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
-        useCalculatePrice();
+    const {
+        fetchCalculatedPrice,
+        priceCalculation,
+        calculatingPrice,
+        fetchCalculatePriceWithAuth,
+        priceData,
+    } = useCalculatePrice();
 
     const setSubscription = useCallback(
         (val) => {
@@ -65,14 +72,27 @@ const RequestReservationModal = ({
             additionalOptionsFields: additionalOptionsFields,
         };
         setAdditionalOptions(additionalOptionsFields);
-        fetchCalculatedPrice(calculatePriceInput);
+
+        if (
+            userSession &&
+            (hasHotelSubscriptions?.amount > HOTEL_SUBSCRIPTION_CATEGORIES.B ||
+                hasHotelSubscriptions?.amount >
+                    reservationData?.subcriptionPrice)
+        ) {
+            fetchCalculatePriceWithAuth({
+                ...calculatePriceInput,
+                useSubscription: reservationData?.useSubscription,
+            });
+        } else {
+            fetchCalculatedPrice(calculatePriceInput);
+        }
     }, [
         reservationData,
         additionalOptionsFields,
         setAdditionalOptions,
         fetchCalculatedPrice,
+        fetchCalculatePriceWithAuth,
     ]);
-
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -419,15 +439,6 @@ const RequestReservationModal = ({
                                             </div>
 
                                             <div className="mt-2 ml-6  w-1/3 relative">
-                                                {hasHotelSubscriptions && (
-                                                    <SwitchField
-                                                        className="my-2"
-                                                        label="Use Subsciption"
-                                                        onChange={(val) =>
-                                                            setSubscription(val)
-                                                        }
-                                                    />
-                                                )}
                                                 {calculatingPrice && (
                                                     <div className="bg-gray-200 h-full w-full  absolute flex items-center justify-center rounded-lg opacity-75">
                                                         <div className="flex items-center justify-center h-content">
@@ -555,7 +566,7 @@ const RequestReservationModal = ({
                                                     <div className="flex items-center justify-between">
                                                         <div>税金</div>
                                                         <div>
-                                                            {!priceCalculation &&
+                                                            {!priceData &&
                                                                 !calculatingPrice &&
                                                                 PriceFormatter(
                                                                     reservationData?.price -
@@ -563,15 +574,11 @@ const RequestReservationModal = ({
                                                                             1.1
                                                                 )}
                                                             {!calculatingPrice &&
-                                                                priceCalculation &&
+                                                                priceData &&
                                                                 PriceFormatter(
-                                                                    (priceCalculation
-                                                                        ?.calculateRoomPlanPrice
-                                                                        ?.totalAmount ||
+                                                                    (priceData?.totalAmount ||
                                                                         0) -
-                                                                        (priceCalculation
-                                                                            ?.calculateRoomPlanPrice
-                                                                            ?.totalAmount ||
+                                                                        (priceData?.totalAmount ||
                                                                             0) /
                                                                             1.1
                                                                 )}
@@ -582,13 +589,23 @@ const RequestReservationModal = ({
                                                         <div>
                                                             {!calculatingPrice &&
                                                                 PriceFormatter(
-                                                                    priceCalculation
-                                                                        ?.calculateRoomPlanPrice
-                                                                        ?.totalAmount
+                                                                    priceData?.totalAmount
                                                                 )}
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <SubsciptionBox
+                                                    hasHotelSubscriptions={
+                                                        hasHotelSubscriptions
+                                                    }
+                                                    spaceDetails={
+                                                        reservationData
+                                                    }
+                                                    setSubscription={
+                                                        setSubscription
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     </div>

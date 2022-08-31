@@ -62,3 +62,17 @@ export const OPTION_PAYMENT_TERMS = [
     // TOdo
     // { label: "Per Day", value: "PER_DAY" },
 ];
+
+export const SPACE_SUBSCRIPTION_CATEGORIES = {
+    // per hour subscription price
+    A: 300,
+    B: 500,
+    C: 800,
+};
+
+export const HOTEL_SUBSCRIPTION_CATEGORIES = {
+    // per hour subscription price
+    A: 7000,
+    B: 10000,
+    C: 12000,
+};

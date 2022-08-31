@@ -6,13 +6,14 @@ import {
     useReserveSpace,
 } from "@hooks/reserveSpace";
 import React, { Fragment, useCallback, useEffect, useMemo } from "react";
-import { OPTION_PAYMENT_TERMS } from "@config";
+import { OPTION_PAYMENT_TERMS, SPACE_SUBSCRIPTION_CATEGORIES } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import moment from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { PriceFormatter } from "src/utils";
 import { useQuery } from "@apollo/client";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
+import SubsciptionBox from "./SubscriptionBox";
 
 interface IReserveSpaceModal {
     reservationData: TUseCalculateSpacePriceProps;
@@ -21,6 +22,7 @@ interface IReserveSpaceModal {
     setAdditionalOptions: Function;
     children?: React.ReactNode;
     setReservationData?: any;
+    userSession?: any;
 }
 
 const ReserveSpaceModal = ({
@@ -29,6 +31,7 @@ const ReserveSpaceModal = ({
     setShowModal,
     children,
     setAdditionalOptions,
+    userSession,
     setReservationData,
 }: IReserveSpaceModal) => {
     const {
@@ -67,7 +70,11 @@ const ReserveSpaceModal = ({
         calculatingPrice,
         calculatedPrice,
         priceCalculationError,
+        fetchCalculatedPriceWithAuth,
+        loading,
+        priceData,
     } = useCalculateSpacePrice();
+
     const addressText = `〒${spaceDetails?.address?.postalCode} ${spaceDetails?.address?.prefecture.name} ${spaceDetails?.address?.addressLine1} ${spaceDetails?.address?.addressLine2}`;
 
     useEffect(() => {
@@ -77,12 +84,23 @@ const ReserveSpaceModal = ({
             additionalOptionsFields: additionalOptionsFields,
         };
         setAdditionalOptions(additionalOptionsFields);
-        fetchCalculatedPrice(calculatePriceInput);
+
+        if (
+            userSession &&
+            (hasSpaceSubscriptions?.amount > SPACE_SUBSCRIPTION_CATEGORIES.B ||
+                hasSpaceSubscriptions?.amount > spaceDetails?.subcriptionPrice)
+        ) {
+            fetchCalculatedPriceWithAuth(calculatePriceInput);
+        } else {
+            fetchCalculatedPrice(calculatePriceInput);
+        }
     }, [
         reservationData,
         additionalOptionsFields,
         setAdditionalOptions,
         fetchCalculatedPrice,
+        fetchCalculatedPriceWithAuth,
+        userSession,
     ]);
     const taxCalculated = calculatedPrice?.total
         ? Math.ceil(
@@ -399,48 +417,6 @@ const ReserveSpaceModal = ({
                                                 </div>
 
                                                 <div className="mt-2 ml-6  w-1/3 relative">
-                                                    {calculatingPrice && (
-                                                        <div className="bg-gray-200 h-full w-full  absolute flex items-center justify-center rounded-lg opacity-75">
-                                                            <div className="flex items-center justify-center h-content">
-                                                                <svg
-                                                                    className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <circle
-                                                                        className="opacity-25"
-                                                                        cx="12"
-                                                                        cy="12"
-                                                                        r="10"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="4"
-                                                                    ></circle>
-                                                                    <path
-                                                                        className="opacity-50"
-                                                                        fill="currentColor"
-                                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                                    ></path>
-                                                                </svg>
-                                                                <span className="text-gray-400 text-lg">
-                                                                    Calculating
-                                                                    Price
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    )}
-
-                                                    {hasSpaceSubscriptions && (
-                                                        <SwitchField
-                                                            className="my-2"
-                                                            label="Use Subsciption"
-                                                            onChange={(val) =>
-                                                                setSubscription(
-                                                                    val
-                                                                )
-                                                            }
-                                                        />
-                                                    )}
                                                     <div
                                                         className={`border  border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5`}
                                                     >
@@ -461,61 +437,62 @@ const ReserveSpaceModal = ({
                                                             )}
                                                         </div>
 
-                                                        {!calculatingPrice &&
-                                                            additionalOptionsFields
-                                                                ?.filter(
-                                                                    (
-                                                                        item: any
-                                                                    ) =>
-                                                                        !!item?.isChecked
-                                                                )
-                                                                ?.map(
-                                                                    (
-                                                                        additionalfield: any,
-                                                                        index
-                                                                    ) => {
-                                                                        const optionsCharge =
-                                                                            PriceFormatter(
-                                                                                (additionalfield?.additionalPrice *
-                                                                                    additionalfield?.quantity) /
-                                                                                    1.1
-                                                                            ) ||
-                                                                            "No Charge";
-                                                                        return (
-                                                                            <div
-                                                                                className="flex items-center justify-between"
-                                                                                key={
-                                                                                    index
-                                                                                }
-                                                                            >
-                                                                                <span className="flex space-x-2 items-end">
-                                                                                    <p>
-                                                                                        {
-                                                                                            additionalfield?.name
-                                                                                        }
-                                                                                    </p>
-
-                                                                                    <p className="text-gray-400 text-sm">
-                                                                                        {
-                                                                                            additionalfield?.quantity
-                                                                                        }
-                                                                                    </p>
-                                                                                </span>
-                                                                                <p
-                                                                                    className={`${
-                                                                                        optionsCharge ===
-                                                                                            "No Charge" &&
-                                                                                        "text-sm text-grey-400"
-                                                                                    }`}
-                                                                                >
-                                                                                    {
-                                                                                        optionsCharge
+                                                        {!calculatingPrice ||
+                                                            (loading &&
+                                                                additionalOptionsFields
+                                                                    ?.filter(
+                                                                        (
+                                                                            item: any
+                                                                        ) =>
+                                                                            !!item?.isChecked
+                                                                    )
+                                                                    ?.map(
+                                                                        (
+                                                                            additionalfield: any,
+                                                                            index
+                                                                        ) => {
+                                                                            const optionsCharge =
+                                                                                PriceFormatter(
+                                                                                    (additionalfield?.additionalPrice *
+                                                                                        additionalfield?.quantity) /
+                                                                                        1.1
+                                                                                ) ||
+                                                                                "No Charge";
+                                                                            return (
+                                                                                <div
+                                                                                    className="flex items-center justify-between"
+                                                                                    key={
+                                                                                        index
                                                                                     }
-                                                                                </p>
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                )}
+                                                                                >
+                                                                                    <span className="flex space-x-2 items-end">
+                                                                                        <p>
+                                                                                            {
+                                                                                                additionalfield?.name
+                                                                                            }
+                                                                                        </p>
+
+                                                                                        <p className="text-gray-400 text-sm">
+                                                                                            {
+                                                                                                additionalfield?.quantity
+                                                                                            }
+                                                                                        </p>
+                                                                                    </span>
+                                                                                    <p
+                                                                                        className={`${
+                                                                                            optionsCharge ===
+                                                                                                "No Charge" &&
+                                                                                            "text-sm text-grey-400"
+                                                                                        }`}
+                                                                                    >
+                                                                                        {
+                                                                                            optionsCharge
+                                                                                        }
+                                                                                    </p>
+                                                                                </div>
+                                                                            );
+                                                                        }
+                                                                    ))}
                                                         <div className="flex items-center justify-between">
                                                             <div>税金</div>
 
@@ -530,15 +507,77 @@ const ReserveSpaceModal = ({
                                                                 合計（税込）
                                                             </div>
 
-                                                            {calculatedPrice?.total && (
+                                                            {priceData?.total && (
                                                                 <p>
                                                                     {PriceFormatter(
-                                                                        calculatedPrice?.total
+                                                                        priceData?.total
                                                                     )}
                                                                 </p>
                                                             )}
                                                         </div>
                                                     </div>
+                                                    {calculatingPrice ||
+                                                        (loading && (
+                                                            <div className=" h-14 my-2  flex items-center justify-center rounded-lg opacity-75">
+                                                                <div className="flex items-center justify-center h-content">
+                                                                    <svg
+                                                                        className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <circle
+                                                                            className="opacity-25"
+                                                                            cx="12"
+                                                                            cy="12"
+                                                                            r="10"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="4"
+                                                                        ></circle>
+                                                                        <path
+                                                                            className="opacity-50"
+                                                                            fill="currentColor"
+                                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                                        ></path>
+                                                                    </svg>
+                                                                    <span className="text-gray-400 text-lg">
+                                                                        Calculating
+                                                                        Price
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+
+                                                    <SubsciptionBox
+                                                        hasSpaceSubscriptions={
+                                                            hasSpaceSubscriptions
+                                                        }
+                                                        spaceDetails={
+                                                            spaceDetails
+                                                        }
+                                                        setSubscription={
+                                                            setSubscription
+                                                        }
+                                                        fetchingSpace={
+                                                            fetchingSpace
+                                                        }
+                                                    />
+
+                                                    {/* {hasSpaceSubscriptions && (
+                                                        <div className="border border-gray-300 shadow-sm px-3 rounded-lg space-y-5 mt-4">
+                                                            <SwitchField
+                                                                className="my-2"
+                                                                label="Use Subsciption"
+                                                                onChange={(
+                                                                    val
+                                                                ) =>
+                                                                    setSubscription(
+                                                                        val
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    )} */}
                                                 </div>
                                             </div>
                                         )}

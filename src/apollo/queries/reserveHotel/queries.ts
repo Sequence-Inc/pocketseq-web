@@ -9,3 +9,17 @@ export const CALCULATE_ROOM_PRICE_PLAN = gql`
         }
     }
 `;
+
+export const CALCULATE_ROOM_PRICE_PLAN_WITH_AUTH = gql`
+    query CalculateRoomPlanPriceWithAuthInput(
+        $input: CalculateRoomPlanPriceWithAuthInput!
+    ) {
+        calculateRoomPlanPriceWithAuth(input: $input) {
+            appliedRoomPlanPriceSettings
+            appliedRoomPlanPriceOverrides
+            subscriptionUnit
+            subscriptionAmount
+            totalAmount
+        }
+    }
+`;

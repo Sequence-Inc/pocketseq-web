@@ -126,7 +126,7 @@ const UserSettings = ({ userSession }) => {
                 <div className="w-full overflow-hidden bg-white rounded-lg shadow">
                     <div className="divide-y">
                         {mySubscriptions.length > 0 &&
-                            mySubscriptions.map((subscription) => {
+                            mySubscriptions.map((subscription, index) => {
                                 const {
                                     id,
                                     name,
@@ -139,7 +139,7 @@ const UserSettings = ({ userSession }) => {
                                 } = subscription;
                                 return (
                                     <div
-                                        key={id}
+                                        key={index}
                                         className="py-4 px-4 sm:px-6 space-y-3"
                                     >
                                         <div className="flex items-center justify-between">

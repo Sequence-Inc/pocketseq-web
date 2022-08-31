@@ -239,6 +239,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 reservationData={reservationData}
                 setAdditionalOptions={handleAdditionalOptionsChange}
                 setReservationData={setReservationData}
+                userSession={userSession}
             >
                 <div className="space-y-6">
                     {userSession ? (
