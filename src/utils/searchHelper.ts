@@ -1,4 +1,5 @@
 import algoliasearch, { SearchClient } from "algoliasearch";
+import { SubscriptionCategoryType } from "src/apollo/queries/subscriptions/core.schema";
 
 export type AlgoliaClient = SearchClient;
 
@@ -23,6 +24,7 @@ type SpaceSearchFilterOptions = {
         radius: number;
     };
     boundingBox?: number[];
+    subscriptionRank?: SubscriptionCategoryType;
 };
 type HotelSearchFilterOptions = {
     city?: string;
@@ -37,13 +39,16 @@ type HotelSearchFilterOptions = {
         radius: number;
     };
     boundingBox?: number[];
+    subscriptionRank?: SubscriptionCategoryType;
 };
 
 export const searchSpace = async (
     searchText: string,
-    filterOptions?: SpaceSearchFilterOptions
+    filterOptions?: SpaceSearchFilterOptions,
+    hitsPerPage?: number
 ) => {
     if (!filterOptions) return spaceIndex.search(searchText);
+    if (!hitsPerPage) hitsPerPage = 40;
     const {
         spaceType,
         geoloc,
@@ -53,6 +58,7 @@ export const searchSpace = async (
         price,
         minPrice,
         boundingBox,
+        subscriptionRank,
     } = filterOptions;
 
     let filters: string = "";
@@ -82,28 +88,47 @@ export const searchSpace = async (
         if (minPrice) {
             filters =
                 filters === ""
-                    ? `AND price.amount:${minPrice - 1} TO ${price}`
+                    ? `price.amount:${minPrice - 1} TO ${price}`
                     : `${filters} AND price.amount:${minPrice - 1} TO ${price}`;
         }
+    }
+
+    if (subscriptionRank) {
+        let max = "";
+        if (subscriptionRank === "A") {
+            max = "<301";
+        } else if (subscriptionRank === "B") {
+            max = "<501";
+        } else {
+            max = ">500";
+        }
+        filters =
+            filters === ""
+                ? `subcriptionPrice${max}`
+                : `${filters} AND subcriptinoPrice${max}`;
     }
 
     if (boundingBox) {
         return await spaceIndex.search(searchText, {
             filters,
             insideBoundingBox: [boundingBox],
+            hitsPerPage,
         });
     } else {
         return await spaceIndex.search(searchText, {
             filters,
+            hitsPerPage,
         });
     }
 };
 
 export const searchHotel = async (
     searchText: string,
-    filterOptions?: HotelSearchFilterOptions
+    filterOptions?: HotelSearchFilterOptions,
+    hitsPerPage?: number
 ) => {
     if (!filterOptions) return hotelIndex.search(searchText);
+    if (!hitsPerPage) hitsPerPage = 40;
     const {
         geoloc,
         city,
@@ -113,6 +138,7 @@ export const searchHotel = async (
         pet,
         buildingType,
         boundingBox,
+        subscriptionRank,
     } = filterOptions;
     let filters: string = "";
 
@@ -147,14 +173,31 @@ export const searchHotel = async (
                 ? `maxChild >= ${child}`
                 : `${filters} AND maxChild >= ${child}`;
 
+    if (subscriptionRank) {
+        let max = "";
+        if (subscriptionRank === "A") {
+            max = "<7001";
+        } else if (subscriptionRank === "B") {
+            max = "<10001";
+        } else {
+            max = ">10000";
+        }
+        filters =
+            filters === ""
+                ? `subcriptionPrice${max}`
+                : `${filters} AND subcriptinoPrice${max}`;
+    }
+
     if (boundingBox) {
         return await hotelIndex.search(searchText, {
             filters,
             insideBoundingBox: [boundingBox],
+            hitsPerPage,
         });
     } else {
         return await hotelIndex.search(searchText, {
             filters,
+            hitsPerPage,
         });
     }
 };

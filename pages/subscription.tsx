@@ -493,15 +493,15 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                 Category C
                                             </button>
                                         </div>
-                                        <div>
+                                        <div className="mt-8">
                                             <SubscriptionItemsList
-                                                type="rental-space"
+                                                type="space"
                                                 category={currentSpaceCategory}
                                                 numbers={4}
                                             />
                                         </div>
                                     </div>
-                                    <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-1 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+                                    <div className="mt-6 space-y-4 sm:mt-6 sm:space-y-0 sm:grid sm:grid-cols-1 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
                                         {spaceProducts.map((product) => (
                                             <div
                                                 key={product.name}
@@ -605,8 +605,15 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                 Category C
                                             </button>
                                         </div>
+                                        <div className="mt-8">
+                                            <SubscriptionItemsList
+                                                type="hotel"
+                                                category={currentHotelCategory}
+                                                numbers={4}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-1 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+                                    <div className="mt-6 space-y-4 sm:mt-6 sm:space-y-0 sm:grid sm:grid-cols-1 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
                                         {hotelProducts.map((product) => (
                                             <div
                                                 key={product.name}
