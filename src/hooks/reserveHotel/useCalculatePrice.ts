@@ -49,6 +49,8 @@ const useCalculatePrice = () => {
                         quantity: field.quantity,
                     })),
             };
+            setPriceData(null);
+
             setLoading(true);
             const data = await calculatePrice({
                 variables: {
@@ -59,9 +61,6 @@ const useCalculatePrice = () => {
             if (data?.data?.calculateRoomPlanPrice) {
                 setPriceData(data.data.calculateRoomPlanPrice);
             }
-            console.log("without auth", {
-                data: data.data.calculateRoomPlanPrice,
-            });
             setLoading(false);
         },
         []
@@ -70,7 +69,7 @@ const useCalculatePrice = () => {
     const fetchCalculatePriceWithAuth = useCallback(
         async (props: TCalculatePriceProps & { useSubscription?: boolean }) => {
             const { additionalOptionsFields, useSubscription, ...rest } = props;
-
+            setPriceData(null);
             let calculatePriceInput = {
                 roomPlanId: props?.roomPlanId,
                 nAdult: props?.nAdult,
@@ -98,9 +97,6 @@ const useCalculatePrice = () => {
             if (data?.data?.calculateRoomPlanPriceWithAuth) {
                 setPriceData(data.data.calculateRoomPlanPriceWithAuth);
             }
-            console.log("with auth", {
-                data: data.data.calculateRoomPlanPriceWithAuth,
-            });
 
             setLoading(false);
         },

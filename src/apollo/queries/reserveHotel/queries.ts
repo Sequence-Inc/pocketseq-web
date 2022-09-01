@@ -6,6 +6,7 @@ export const CALCULATE_ROOM_PRICE_PLAN = gql`
             appliedRoomPlanPriceSettings
             appliedRoomPlanPriceOverrides
             totalAmount
+            planAmount
         }
     }
 `;
@@ -20,6 +21,7 @@ export const CALCULATE_ROOM_PRICE_PLAN_WITH_AUTH = gql`
             subscriptionUnit
             subscriptionAmount
             totalAmount
+            planAmount
         }
     }
 `;

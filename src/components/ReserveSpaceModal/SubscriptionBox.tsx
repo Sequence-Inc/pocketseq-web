@@ -1,6 +1,6 @@
 import { SPACE_SUBSCRIPTION_CATEGORIES } from "@config";
 import { SwitchField } from "@element";
-import React from "react";
+import React, { useMemo } from "react";
 import { LoadingSpinner } from "../LoadingSpinner";
 
 type SubscriptionBoxProps = {
@@ -8,6 +8,8 @@ type SubscriptionBoxProps = {
     spaceDetails?: any;
     hasSpaceSubscriptions?: any;
     setSubscription?: Function;
+    priceData?: any;
+    useSubscription?: boolean;
 };
 
 const SubsciptionBox = React.memo(function MemoizedComponent({
@@ -15,7 +17,42 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     spaceDetails,
     hasSpaceSubscriptions,
     setSubscription,
+    priceData,
+    useSubscription,
 }: SubscriptionBoxProps) {
+    const progressBar = useMemo(() => {
+        if (useSubscription && priceData?.subscriptionUnit) {
+            return (
+                ((hasSpaceSubscriptions.unit -
+                    hasSpaceSubscriptions.remainingUnit +
+                    priceData.subscriptionUnit) /
+                    hasSpaceSubscriptions.unit) *
+                100
+            );
+        } else {
+            return (
+                ((hasSpaceSubscriptions.unit -
+                    hasSpaceSubscriptions.remainingUnit) /
+                    hasSpaceSubscriptions.unit) *
+                100
+            );
+        }
+    }, [priceData?.subscriptionUnit, hasSpaceSubscriptions, useSubscription]);
+
+    const utilizedUnits = useMemo(() => {
+        if (useSubscription && priceData?.subscriptionUnit) {
+            return (
+                hasSpaceSubscriptions.unit -
+                priceData.subscriptionUnit +
+                hasSpaceSubscriptions.remainingUnit
+            );
+        } else {
+            return (
+                hasSpaceSubscriptions.unit - hasSpaceSubscriptions.remainingUnit
+            );
+        }
+    }, [priceData, hasSpaceSubscriptions, useSubscription]);
+
     if (fetchingSpace) {
         return <LoadingSpinner />;
     }
@@ -47,9 +84,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
 
                 <div>
                     <div className="text-right text-gray-600">
-                        {hasSpaceSubscriptions.unit -
-                            hasSpaceSubscriptions.remainingUnit}
-                        /{hasSpaceSubscriptions.unit}
+                        {utilizedUnits}/{hasSpaceSubscriptions.unit}
                         {hasSpaceSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -58,12 +93,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasSpaceSubscriptions.unit -
-                                        hasSpaceSubscriptions.remainingUnit) /
-                                        hasSpaceSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>
@@ -79,9 +109,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                 <div>
                     <div className="text-right text-sm text-gray-600">
-                        {hasSpaceSubscriptions.unit -
-                            hasSpaceSubscriptions.remainingUnit}
-                        /{hasSpaceSubscriptions.unit}
+                        {utilizedUnits}/{hasSpaceSubscriptions.unit}
                         {hasSpaceSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -90,12 +118,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasSpaceSubscriptions.unit -
-                                        hasSpaceSubscriptions.remainingUnit) /
-                                        hasSpaceSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>
@@ -121,9 +144,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                 <div>
                     <div className="text-right text-sm text-gray-600">
-                        {hasSpaceSubscriptions.unit -
-                            hasSpaceSubscriptions.remainingUnit}
-                        /{hasSpaceSubscriptions.unit}
+                        {utilizedUnits}/{hasSpaceSubscriptions.unit}
                         {hasSpaceSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -132,12 +153,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasSpaceSubscriptions.unit -
-                                        hasSpaceSubscriptions.remainingUnit) /
-                                        hasSpaceSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>

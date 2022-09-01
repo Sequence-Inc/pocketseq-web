@@ -1,6 +1,6 @@
 import { HOTEL_SUBSCRIPTION_CATEGORIES } from "@config";
 import { SwitchField } from "@element";
-import React from "react";
+import React, { useMemo } from "react";
 import { LoadingSpinner } from "../LoadingSpinner";
 
 type SubscriptionBoxProps = {
@@ -8,6 +8,8 @@ type SubscriptionBoxProps = {
     spaceDetails?: any;
     hasHotelSubscriptions?: any;
     setSubscription?: Function;
+    priceData?: any;
+    useSubscription?: boolean;
 };
 
 const SubsciptionBox = React.memo(function MemoizedComponent({
@@ -15,12 +17,47 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     spaceDetails,
     hasHotelSubscriptions,
     setSubscription,
+    priceData,
+    useSubscription,
 }: SubscriptionBoxProps) {
+    const progressBar = useMemo(() => {
+        if (useSubscription && priceData?.subscriptionUnit) {
+            return (
+                ((hasHotelSubscriptions.unit -
+                    hasHotelSubscriptions.remainingUnit +
+                    priceData.subscriptionUnit) /
+                    hasHotelSubscriptions.unit) *
+                100
+            );
+        } else {
+            return (
+                ((hasHotelSubscriptions.unit -
+                    hasHotelSubscriptions.remainingUnit) /
+                    hasHotelSubscriptions.unit) *
+                100
+            );
+        }
+    }, [priceData?.subscriptionUnit, hasHotelSubscriptions, useSubscription]);
+
+    const utilizedUnits = useMemo(() => {
+        if (useSubscription && priceData?.subscriptionUnit) {
+            return (
+                hasHotelSubscriptions.unit -
+                hasHotelSubscriptions.remainingUnit +
+                priceData.subscriptionUnit
+            );
+        } else {
+            return (
+                hasHotelSubscriptions.unit - hasHotelSubscriptions.remainingUnit
+            );
+        }
+    }, [priceData, hasHotelSubscriptions, useSubscription]);
+
     if (fetchingSpace) {
         return <LoadingSpinner />;
     }
 
-    if (!spaceDetails?.subcriptionPrice)
+    if (!spaceDetails?.plan?.subcriptionPrice)
         return (
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
                 <p className="text-sm">
@@ -41,15 +78,9 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     if (hasHotelSubscriptions?.remainingUnit < 1)
         return (
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
-                <p className="text-sm">
-                    You subscription is already fully utilized.
-                </p>
-
                 <div>
                     <div className="text-right text-gray-600">
-                        {hasHotelSubscriptions.unit -
-                            hasHotelSubscriptions.remainingUnit}
-                        /{hasHotelSubscriptions.unit}
+                        {utilizedUnits}
                         {hasHotelSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -58,30 +89,27 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasHotelSubscriptions.unit -
-                                        hasHotelSubscriptions.remainingUnit) /
-                                        hasHotelSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>
                 </div>
+
+                <p className="text-sm">
+                    You subscription is already fully utilized.
+                </p>
             </div>
         );
 
     if (
         hasHotelSubscriptions?.amount > HOTEL_SUBSCRIPTION_CATEGORIES.B ||
-        hasHotelSubscriptions?.amount > spaceDetails?.subcriptionPrice
+        hasHotelSubscriptions?.amount > spaceDetails?.plan?.subcriptionPrice
     ) {
         return (
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                 <div>
                     <div className="text-right text-sm text-gray-600">
-                        {hasHotelSubscriptions.unit -
-                            hasHotelSubscriptions.remainingUnit}
-                        /{hasHotelSubscriptions.unit}
+                        {utilizedUnits}/{hasHotelSubscriptions.unit}
                         {hasHotelSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -90,12 +118,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasHotelSubscriptions.unit -
-                                        hasHotelSubscriptions.remainingUnit) /
-                                        hasHotelSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>
@@ -116,14 +139,12 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
         );
     }
 
-    if (hasHotelSubscriptions?.amount < spaceDetails?.subcriptionPrice) {
+    if (hasHotelSubscriptions?.amount < spaceDetails?.plan?.subcriptionPrice) {
         return (
             <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                 <div>
                     <div className="text-right text-sm text-gray-600">
-                        {hasHotelSubscriptions.unit -
-                            hasHotelSubscriptions.remainingUnit}
-                        /{hasHotelSubscriptions.unit}
+                        {utilizedUnits}/{hasHotelSubscriptions.unit}
                         {hasHotelSubscriptions.type === "rental-space"
                             ? "泊"
                             : "時間"}
@@ -132,12 +153,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                         <div
                             className={`h-3 bg-primary`}
                             style={{
-                                width: `${
-                                    ((hasHotelSubscriptions.unit -
-                                        hasHotelSubscriptions.remainingUnit) /
-                                        hasHotelSubscriptions.unit) *
-                                    100
-                                }%`,
+                                width: `${progressBar}%`,
                             }}
                         ></div>
                     </div>

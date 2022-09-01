@@ -102,10 +102,9 @@ const ReserveSpaceModal = ({
         fetchCalculatedPriceWithAuth,
         userSession,
     ]);
-    const taxCalculated = calculatedPrice?.total
-        ? Math.ceil(
-              calculatedPrice?.total - Math.ceil(calculatedPrice?.total / 1.1)
-          )
+
+    const taxCalculated = priceData?.total
+        ? Math.ceil(priceData?.total - Math.ceil(priceData?.total / 1.1))
         : 0;
     return (
         <Transition.Root show={showModal} as={Fragment}>
@@ -427,72 +426,72 @@ const ReserveSpaceModal = ({
                                                         <div className="flex items-center justify-between">
                                                             <div>Space Fee</div>
 
-                                                            {calculatedPrice?.spaceAmount && (
+                                                            {priceData?.spaceAmount && (
                                                                 <p>
                                                                     {PriceFormatter(
-                                                                        calculatedPrice?.spaceAmount /
+                                                                        priceData?.spaceAmount /
                                                                             1.1
                                                                     )}
                                                                 </p>
                                                             )}
                                                         </div>
 
-                                                        {!calculatingPrice ||
-                                                            (loading &&
-                                                                additionalOptionsFields
-                                                                    ?.filter(
-                                                                        (
-                                                                            item: any
-                                                                        ) =>
-                                                                            !!item?.isChecked
-                                                                    )
-                                                                    ?.map(
-                                                                        (
-                                                                            additionalfield: any,
-                                                                            index
-                                                                        ) => {
-                                                                            const optionsCharge =
-                                                                                PriceFormatter(
-                                                                                    (additionalfield?.additionalPrice *
-                                                                                        additionalfield?.quantity) /
-                                                                                        1.1
-                                                                                ) ||
-                                                                                "No Charge";
-                                                                            return (
-                                                                                <div
-                                                                                    className="flex items-center justify-between"
-                                                                                    key={
-                                                                                        index
-                                                                                    }
-                                                                                >
-                                                                                    <span className="flex space-x-2 items-end">
-                                                                                        <p>
-                                                                                            {
-                                                                                                additionalfield?.name
-                                                                                            }
-                                                                                        </p>
-
-                                                                                        <p className="text-gray-400 text-sm">
-                                                                                            {
-                                                                                                additionalfield?.quantity
-                                                                                            }
-                                                                                        </p>
-                                                                                    </span>
-                                                                                    <p
-                                                                                        className={`${
-                                                                                            optionsCharge ===
-                                                                                                "No Charge" &&
-                                                                                            "text-sm text-grey-400"
-                                                                                        }`}
-                                                                                    >
+                                                        {(!calculatingPrice ||
+                                                            !loading) &&
+                                                            additionalOptionsFields
+                                                                ?.filter(
+                                                                    (
+                                                                        item: any
+                                                                    ) =>
+                                                                        !!item?.isChecked
+                                                                )
+                                                                ?.map(
+                                                                    (
+                                                                        additionalfield: any,
+                                                                        index
+                                                                    ) => {
+                                                                        const optionsCharge =
+                                                                            PriceFormatter(
+                                                                                (additionalfield?.additionalPrice *
+                                                                                    additionalfield?.quantity) /
+                                                                                    1.1
+                                                                            ) ||
+                                                                            "No Charge";
+                                                                        return (
+                                                                            <div
+                                                                                className="flex items-center justify-between"
+                                                                                key={
+                                                                                    index
+                                                                                }
+                                                                            >
+                                                                                <span className="flex space-x-2 items-end">
+                                                                                    <p>
                                                                                         {
-                                                                                            optionsCharge
+                                                                                            additionalfield?.name
                                                                                         }
                                                                                     </p>
-                                                                                </div>
-                                                                            );
-                                                                        }
-                                                                    ))}
+
+                                                                                    <p className="text-gray-400 text-sm">
+                                                                                        {
+                                                                                            additionalfield?.quantity
+                                                                                        }
+                                                                                    </p>
+                                                                                </span>
+                                                                                <p
+                                                                                    className={`${
+                                                                                        optionsCharge ===
+                                                                                            "No Charge" &&
+                                                                                        "text-sm text-grey-400"
+                                                                                    }`}
+                                                                                >
+                                                                                    {
+                                                                                        optionsCharge
+                                                                                    }
+                                                                                </p>
+                                                                            </div>
+                                                                        );
+                                                                    }
+                                                                )}
                                                         <div className="flex items-center justify-between">
                                                             <div>税金</div>
 
@@ -561,6 +560,10 @@ const ReserveSpaceModal = ({
                                                         fetchingSpace={
                                                             fetchingSpace
                                                         }
+                                                        useSubscription={
+                                                            reservationData?.useSubscription
+                                                        }
+                                                        priceData={priceData}
                                                     />
 
                                                     {/* {hasSpaceSubscriptions && (

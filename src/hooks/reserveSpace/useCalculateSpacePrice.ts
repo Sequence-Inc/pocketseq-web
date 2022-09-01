@@ -51,7 +51,7 @@ const useCalculateSpacePrice = () => {
     const fetchCalculatedPrice = useCallback(
         async (props: TUseCalculateSpacePriceProps) => {
             const { additionalOptionsFields, ...rest } = props;
-
+            setPriceData(null);
             const input = useReduceObject(rest, Calculate_Price_Inputs);
             const isValid = await CALCULATE_PRICE_SCHEME.isValid(input);
             if (!isValid) return;
@@ -66,17 +66,16 @@ const useCalculateSpacePrice = () => {
             };
 
             setLoading(true);
-            try {
-                const data = await calculatePrice({
-                    variables: {
-                        input: calculatePriceInput,
-                    },
-                });
 
-                if (data?.data?.getApplicablePricePlans) {
-                    setPriceData(data.data.getApplicablePricePlans);
-                }
-            } catch (error) {}
+            const data = await calculatePrice({
+                variables: {
+                    input: calculatePriceInput,
+                },
+            });
+
+            if (data?.data?.getApplicablePricePlans) {
+                setPriceData(data.data.getApplicablePricePlans);
+            }
 
             setLoading(false);
         },
@@ -86,7 +85,7 @@ const useCalculateSpacePrice = () => {
     const fetchCalculatedPriceWithAuth = useCallback(
         async (props: TUseCalculateSpacePriceProps) => {
             const { additionalOptionsFields, useSubscription, ...rest } = props;
-
+            setPriceData(null);
             const input = useReduceObject(rest, Calculate_Price_Inputs);
             const isValid = await CALCULATE_PRICE_SCHEME.isValid(input);
             if (!isValid) return;
@@ -112,9 +111,6 @@ const useCalculateSpacePrice = () => {
             if (data?.data?.getApplicablePricePlansWithAuth) {
                 setPriceData(data.data.getApplicablePricePlansWithAuth);
             }
-            console.log("with auth", {
-                data: data.data.getApplicablePricePlansWithAuth,
-            });
 
             setLoading(false);
         },

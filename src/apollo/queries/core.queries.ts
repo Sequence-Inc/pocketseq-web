@@ -450,6 +450,7 @@ endReservation
 cutOffBeforeDays
 cutOffTillTime
 hotelId
+subcriptionPrice
 photos {
     ${PHOTO}
 }
