@@ -546,25 +546,33 @@ const ReserveSpaceModal = ({
                                                                 </div>
                                                             </div>
                                                         ))}
-
-                                                    <SubsciptionBox
-                                                        hasSpaceSubscriptions={
-                                                            hasSpaceSubscriptions
-                                                        }
-                                                        spaceDetails={
-                                                            spaceDetails
-                                                        }
-                                                        setSubscription={
-                                                            setSubscription
-                                                        }
-                                                        fetchingSpace={
-                                                            fetchingSpace
-                                                        }
-                                                        useSubscription={
-                                                            reservationData?.useSubscription
-                                                        }
-                                                        priceData={priceData}
-                                                    />
+                                                    <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
+                                                        <p className="font-bold">
+                                                            Applicable
+                                                            Subscription :
+                                                        </p>
+                                                        <hr />
+                                                        <SubsciptionBox
+                                                            hasSpaceSubscriptions={
+                                                                hasSpaceSubscriptions
+                                                            }
+                                                            spaceDetails={
+                                                                spaceDetails
+                                                            }
+                                                            setSubscription={
+                                                                setSubscription
+                                                            }
+                                                            fetchingSpace={
+                                                                fetchingSpace
+                                                            }
+                                                            useSubscription={
+                                                                reservationData?.useSubscription
+                                                            }
+                                                            priceData={
+                                                                priceData
+                                                            }
+                                                        />
+                                                    </div>
 
                                                     {/* {hasSpaceSubscriptions && (
                                                         <div className="border border-gray-300 shadow-sm px-3 rounded-lg space-y-5 mt-4">

@@ -543,7 +543,9 @@ const RequestReservationModal = ({
                                                     <div className="flex items-center justify-between">
                                                         <div>税金</div>
                                                         <div>
-                                                            {taxCalculated}
+                                                            {PriceFormatter(
+                                                                taxCalculated
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
@@ -587,21 +589,29 @@ const RequestReservationModal = ({
                                                         </div>
                                                     </div>
                                                 )}
-                                                <SubsciptionBox
-                                                    hasHotelSubscriptions={
-                                                        hasHotelSubscriptions
-                                                    }
-                                                    spaceDetails={
-                                                        reservationData
-                                                    }
-                                                    setSubscription={
-                                                        setSubscription
-                                                    }
-                                                    priceData={priceData}
-                                                    useSubscription={
-                                                        reservationData?.useSubscription
-                                                    }
-                                                />
+
+                                                <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
+                                                    <p className="font-bold">
+                                                        Applicable Subscription
+                                                        :
+                                                    </p>
+                                                    <hr />
+                                                    <SubsciptionBox
+                                                        hasHotelSubscriptions={
+                                                            hasHotelSubscriptions
+                                                        }
+                                                        spaceDetails={
+                                                            reservationData
+                                                        }
+                                                        setSubscription={
+                                                            setSubscription
+                                                        }
+                                                        priceData={priceData}
+                                                        useSubscription={
+                                                            reservationData?.useSubscription
+                                                        }
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
