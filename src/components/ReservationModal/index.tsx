@@ -2,11 +2,12 @@ import { Select, SwitchField } from "@element";
 import { Transition } from "@headlessui/react";
 import { useReserveHotel, useCalculatePrice } from "@hooks/reserveHotel";
 import React, { Fragment, useCallback, useEffect, useMemo } from "react";
-import { OPTION_PAYMENT_TERMS } from "@config";
+import { HOTEL_SUBSCRIPTION_CATEGORIES, OPTION_PAYMENT_TERMS } from "@config";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { PriceFormatter } from "src/utils";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 import { useQuery } from "@apollo/client";
+import SubsciptionBox from "./SubscriptionBox";
 
 const RequestReservationModal = ({
     showModal,
@@ -15,9 +16,16 @@ const RequestReservationModal = ({
     setAdditionalOptions,
     setReservationData,
     children,
+    userSession,
 }) => {
-    const { fetchCalculatedPrice, priceCalculation, calculatingPrice } =
-        useCalculatePrice();
+    const {
+        fetchCalculatedPrice,
+        priceCalculation,
+        calculatingPrice,
+        fetchCalculatePriceWithAuth,
+        priceData,
+        loading,
+    } = useCalculatePrice();
 
     const setSubscription = useCallback(
         (val) => {
@@ -65,14 +73,33 @@ const RequestReservationModal = ({
             additionalOptionsFields: additionalOptionsFields,
         };
         setAdditionalOptions(additionalOptionsFields);
-        fetchCalculatedPrice(calculatePriceInput);
+
+        if (
+            userSession &&
+            (hasHotelSubscriptions?.amount > HOTEL_SUBSCRIPTION_CATEGORIES.B ||
+                hasHotelSubscriptions?.amount >
+                    reservationData?.plan?.subcriptionPrice)
+        ) {
+            fetchCalculatePriceWithAuth({
+                ...calculatePriceInput,
+                useSubscription: reservationData?.useSubscription,
+            });
+        } else {
+            fetchCalculatedPrice(calculatePriceInput);
+        }
     }, [
         reservationData,
         additionalOptionsFields,
         setAdditionalOptions,
         fetchCalculatedPrice,
+        fetchCalculatePriceWithAuth,
     ]);
 
+    const taxCalculated = priceData?.totalAmount
+        ? Math.ceil(
+              priceData?.totalAmount - Math.ceil(priceData?.totalAmount / 1.1)
+          )
+        : 0;
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -419,45 +446,6 @@ const RequestReservationModal = ({
                                             </div>
 
                                             <div className="mt-2 ml-6  w-1/3 relative">
-                                                {hasHotelSubscriptions && (
-                                                    <SwitchField
-                                                        className="my-2"
-                                                        label="Use Subsciption"
-                                                        onChange={(val) =>
-                                                            setSubscription(val)
-                                                        }
-                                                    />
-                                                )}
-                                                {calculatingPrice && (
-                                                    <div className="bg-gray-200 h-full w-full  absolute flex items-center justify-center rounded-lg opacity-75">
-                                                        <div className="flex items-center justify-center h-content">
-                                                            <svg
-                                                                className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                            >
-                                                                <circle
-                                                                    className="opacity-25"
-                                                                    cx="12"
-                                                                    cy="12"
-                                                                    r="10"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth="4"
-                                                                ></circle>
-                                                                <path
-                                                                    className="opacity-50"
-                                                                    fill="currentColor"
-                                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                                ></path>
-                                                            </svg>
-                                                            <span className="text-gray-400 text-lg">
-                                                                Calculating
-                                                                Price
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                )}
                                                 <div
                                                     className={`border  border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5`}
                                                 >
@@ -486,10 +474,10 @@ const RequestReservationModal = ({
                                                             泊
                                                         </div>
                                                         <div>
-                                                            {reservationData?.price && (
+                                                            {priceData && (
                                                                 <div>
                                                                     {PriceFormatter(
-                                                                        reservationData?.price /
+                                                                        priceData.planAmount /
                                                                             1.1
                                                                     )}
                                                                 </div>
@@ -497,7 +485,7 @@ const RequestReservationModal = ({
                                                         </div>
                                                     </div>
 
-                                                    {!calculatingPrice &&
+                                                    {!loading &&
                                                         additionalOptionsFields
                                                             ?.filter(
                                                                 (item: any) =>
@@ -555,39 +543,74 @@ const RequestReservationModal = ({
                                                     <div className="flex items-center justify-between">
                                                         <div>税金</div>
                                                         <div>
-                                                            {!priceCalculation &&
-                                                                !calculatingPrice &&
-                                                                PriceFormatter(
-                                                                    reservationData?.price -
-                                                                        reservationData?.price /
-                                                                            1.1
-                                                                )}
-                                                            {!calculatingPrice &&
-                                                                priceCalculation &&
-                                                                PriceFormatter(
-                                                                    (priceCalculation
-                                                                        ?.calculateRoomPlanPrice
-                                                                        ?.totalAmount ||
-                                                                        0) -
-                                                                        (priceCalculation
-                                                                            ?.calculateRoomPlanPrice
-                                                                            ?.totalAmount ||
-                                                                            0) /
-                                                                            1.1
-                                                                )}
+                                                            {PriceFormatter(
+                                                                taxCalculated
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
                                                         <div>合計（税込）</div>
                                                         <div>
-                                                            {!calculatingPrice &&
+                                                            {!loading &&
                                                                 PriceFormatter(
-                                                                    priceCalculation
-                                                                        ?.calculateRoomPlanPrice
-                                                                        ?.totalAmount
+                                                                    priceData?.totalAmount
                                                                 )}
                                                         </div>
                                                     </div>
+                                                </div>
+
+                                                {loading && (
+                                                    <div className=" h-14 my-2  flex items-center justify-center rounded-lg opacity-75">
+                                                        <div className="flex items-center justify-center h-content">
+                                                            <svg
+                                                                className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-50"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                                ></path>
+                                                            </svg>
+                                                            <span className="text-gray-400 text-lg">
+                                                                Calculating
+                                                                Price
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
+                                                    <p className="font-bold">
+                                                        Applicable Subscription
+                                                        :
+                                                    </p>
+                                                    <hr />
+                                                    <SubsciptionBox
+                                                        hasHotelSubscriptions={
+                                                            hasHotelSubscriptions
+                                                        }
+                                                        spaceDetails={
+                                                            reservationData
+                                                        }
+                                                        setSubscription={
+                                                            setSubscription
+                                                        }
+                                                        priceData={priceData}
+                                                        useSubscription={
+                                                            reservationData?.useSubscription
+                                                        }
+                                                    />
                                                 </div>
                                             </div>
                                         </div>

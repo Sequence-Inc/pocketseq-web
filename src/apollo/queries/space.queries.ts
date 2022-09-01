@@ -483,6 +483,34 @@ export const GET_PRICE_PLANS = gql`
     }
 `;
 
+export const GET_PRICE_PLANS_WITH_AUTH = gql`
+    query ApplicablePricePlansWithAuth(
+        $input: GetApplicablePricePlansWithAuthInput
+    ) {
+        getApplicablePricePlansWithAuth(input: $input) {
+            total
+            duration
+            durationType
+            spaceAmount
+            optionAmount
+            applicablePricePlans {
+                id
+                title
+                duration
+                type
+                isDefault
+                isOverride
+                fromDate
+                toDate
+                amount
+                appliedTimes
+            }
+            subscriptionUnit
+            subscriptionAmount
+        }
+    }
+`;
+
 export const GET_RESERVATION_BY_ID = gql`
     query reservationById($id: ID!){
         reservationById(id: $id){

@@ -42,6 +42,7 @@ const GET_SPACE_BY_ID = gql`
                 paymentTerm
                 stock
             }
+            subcriptionPrice
         }
     }
 `;
