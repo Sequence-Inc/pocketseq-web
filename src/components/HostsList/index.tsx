@@ -6,7 +6,7 @@ import { classNames } from "src/utils";
 import Link from "next/link";
 import { NetworkHelper } from "@comp";
 
-const RecordsPerPage = 20;
+const RecordsPerPage = 50;
 
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
@@ -53,6 +53,7 @@ export const HostsList = ({ filterOptions }) => {
             paginate: { take: RecordsPerPage, skip: RecordsPerPage * page },
         },
         fetchPolicy: "network-only",
+        errorPolicy: "ignore",
     });
 
     if (loading) return <NetworkHelper type="loading" />;

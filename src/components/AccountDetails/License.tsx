@@ -7,7 +7,6 @@ import {
 import React from "react";
 
 export const LicenseInfo = ({ account }) => {
-    console.log(account);
     const { license } = account.host;
     if (!license) {
         return (

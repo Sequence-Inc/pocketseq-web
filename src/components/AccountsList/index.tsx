@@ -6,7 +6,7 @@ import { classNames } from "src/utils";
 import Link from "next/link";
 import { NetworkHelper } from "@comp";
 
-const RecordsPerPage = 20;
+const RecordsPerPage = 50;
 
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
@@ -53,20 +53,19 @@ export const AccountsList = ({ filterOptions }) => {
             paginate: { take: RecordsPerPage, skip: RecordsPerPage * page },
         },
         fetchPolicy: "network-only",
+        errorPolicy: "ignore",
     });
-
-    console.log(data, loading, error);
 
     if (loading) return <NetworkHelper type="loading" />;
 
     if (error) return <NetworkHelper type="error" message={error.message} />;
 
-    if (data.allAccounts.data.length === 0) {
+    if (data?.allAccounts?.data.length === 0) {
         return <NetworkHelper type="no-data" />;
     }
 
     // return null;
-    const normalizedForm = data.allAccounts.data.map((account) => {
+    const normalizedForm = data?.allAccounts?.data.map((account) => {
         const newAccountData = { ...account };
         if (account.__typename === "UserProfile") {
             newAccountData.name = `${account.lastName} ${account.firstName}`;
