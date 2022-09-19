@@ -352,21 +352,21 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                             : "opacity-50 cursor-not-allowed"
                     }`}
                 >
-                    Clear Selection
+                    選択解除
                 </button>
             </div>
             <div className="w-full">
                 <div className="py-4 w-full">
                     <div className="flex items-center justify-between w-full">
                         <h2 className="flex-grow text-lg font-bold text-gray-600">
-                            Settings override
+                            設定上書き
                         </h2>
                         <div>
                             <button
                                 onClick={() => setShowAddSettingsForm(true)}
                                 className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary}`}
                             >
-                                Add settings override
+                                設定上書きの追加
                             </button>
                         </div>
                     </div>
@@ -391,14 +391,14 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 <div className="py-4 w-full">
                     <div className="flex items-center justify-between w-full">
                         <h2 className="flex-grow text-lg font-bold text-gray-600">
-                            Price override
+                            価格上書き
                         </h2>
                         <div>
                             <button
                                 onClick={() => setShowAddPriceForm(true)}
                                 className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary}`}
                             >
-                                Add price override
+                                価格上書きの追加
                             </button>
                         </div>
                     </div>

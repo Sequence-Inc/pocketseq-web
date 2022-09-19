@@ -22,11 +22,11 @@ import { GET_LICENSE_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 export const licenseTypes = [
     {
         id: "type1",
-        title: "License type 1",
+        title: "ライセンスタイプ 1",
     },
     {
         id: "type2",
-        title: "License type 2",
+        title: "ライセンスタイプ 2",
     },
 ];
 
@@ -239,8 +239,8 @@ const LicenseUpload = ({ userSession }) => {
                                     </div>
                                 </div>
                                 <p className="mt-4 text-gray-600">
-                                    Select image(s) of {licenseTypeTitle} to
-                                    upload.
+                                    アップロードする{licenseTypeTitle}
+                                    の画像を選択します。
                                 </p>
                                 <div className="mt-8 mr-8 sm:max-w-md">
                                     {content}

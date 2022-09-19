@@ -70,7 +70,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
         const keys: TTableKey[] = [
             { name: "", key: "name" },
-            { name: "Room Charge", key: "roomCharge" },
+            { name: "部屋料金", key: "roomCharge" },
         ];
 
         for (
@@ -190,7 +190,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                     onClick={addNewScheme}
                     loading={loading || pricingLoading}
                 >
-                    Add Price Scheme
+                    料金設定の追加
                 </Button>
             )}
         </div>

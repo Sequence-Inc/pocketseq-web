@@ -159,9 +159,7 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">
-                            Description
-                        </p>
+                        <p className="text-sm leading-5 font-medium">概要</p>
                         <TextArea
                             label=""
                             {...register("description", {
@@ -176,7 +174,7 @@ const General = ({
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
                         <p className="text-sm leading-5 font-medium">
-                            Building Type
+                            施設のタイプ
                         </p>
 
                         <Controller
@@ -202,7 +200,7 @@ const General = ({
 
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
                         <p className="text-sm leading-5 font-medium">
-                            Pets allowed
+                            ペット許可
                         </p>
                         <Controller
                             name="isPetAllowed"
@@ -220,7 +218,7 @@ const General = ({
                     </div>
                     <div className="w-full sm:w-80">
                         <p className="text-sm leading-5 font-medium">
-                            Check in time
+                            チェックイン時間
                         </p>
                         <Controller
                             rules={{ required: true }}
@@ -245,7 +243,7 @@ const General = ({
                     </div>
                     <div className="w-full sm:w-80">
                         <p className="text-sm leading-5 font-medium">
-                            Check out time
+                            チェックアウト時間
                         </p>
                         <Controller
                             rules={{ required: true }}
@@ -279,7 +277,7 @@ const General = ({
                             </p>
                         </div>
                         <p className="text-sm text-gray-700 font-medium">
-                            Upload Photos
+                            アップロードフォト
                         </p>
 
                         <Controller
@@ -446,7 +444,7 @@ const General = ({
                             loading={loading}
                             loadingText={"Please wait"}
                         >
-                            Save
+                            保存
                         </Button>
                         <Button
                             variant="secondary"
@@ -455,7 +453,7 @@ const General = ({
                             disabled={loading}
                             onClick={() => router.push("/host/hotel-space")}
                         >
-                            Cancel
+                            キャンセル
                         </Button>
                     </div>
                 </div>

@@ -126,7 +126,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="w-full md:w-8/12 lg:w-6/12">
                         <p className="text-sm leading-5 font-medium">
-                            Options Name
+                            オプションの名前
                         </p>
                         <TextField
                             disabled={loading}
@@ -141,9 +141,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">
-                            Description
-                        </p>
+                        <p className="text-sm leading-5 font-medium">概要</p>
                         <TextArea
                             disabled={loading}
                             label={""}
@@ -161,7 +159,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Usage Period
+                                        利用期間
                                     </span>
                                 </>
                             }
@@ -212,7 +210,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Reservation Period
+                                        予約期間
                                     </span>
                                 </>
                             }
@@ -267,7 +265,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Cut Off Period
+                                        手仕舞い期間
                                     </span>
                                 </>
                             }
@@ -338,7 +336,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             </p>
                         </div>
                         <p className="text-sm text-gray-700 font-medium">
-                            Upload Photos
+                            アップロードフォト
                         </p>
                         <Controller
                             rules={{
@@ -373,7 +371,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Additional Price
+                                        追加料金
                                     </span>
                                 </>
                             }
@@ -433,7 +431,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">Stock</p>
+                        <p className="text-sm leading-5 font-medium">在庫</p>
                         <TextField
                             disabled={loading}
                             label={""}
@@ -456,7 +454,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             type="submit"
                             disabled={loading}
                         >
-                            Save
+                            保存
                         </Button>
 
                         {initialValue && (
@@ -477,7 +475,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             disabled={loading}
                             onClick={() => router.back()}
                         >
-                            Cancel
+                            キャンセル
                         </Button>
                     </div>
                 </div>

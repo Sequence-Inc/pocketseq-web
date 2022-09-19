@@ -1,29 +1,29 @@
 export const PRICE_SCHEME_ADULTS = [
-    { key: "oneAdultCharge", name: "1 Adult" },
-    { key: "twoAdultCharge", name: "2 Adult" },
-    { key: "threeAdultCharge", name: "3 Adult" },
-    { key: "fourAdultCharge", name: "4 Adult" },
-    { key: "fiveAdultCharge", name: "5 Adult" },
-    { key: "sixAdultCharge", name: "6 Adult" },
-    { key: "sevenAdultCharge", name: "7 Adult" },
-    { key: "eightAdultCharge", name: "8 Adult" },
-    { key: "nineAdultCharge", name: "9 Adult" },
-    { key: "tenAdultCharge", name: "10 Adult" },
+    { key: "oneAdultCharge", name: "大人1人" },
+    { key: "twoAdultCharge", name: "大人2人" },
+    { key: "threeAdultCharge", name: "大人3人" },
+    { key: "fourAdultCharge", name: "大人4人" },
+    { key: "fiveAdultCharge", name: "大人5人" },
+    { key: "sixAdultCharge", name: "大人6人" },
+    { key: "sevenAdultCharge", name: "大人7人" },
+    { key: "eightAdultCharge", name: "大人8人" },
+    { key: "nineAdultCharge", name: "大人9人" },
+    { key: "tenAdultCharge", name: "大人10人" },
 ];
 
 export const ROOM_CHARGE_KEY = "roomCharge";
 
 export const PRICE_SCHEME_CHILD = [
-    { key: "oneChildCharge", name: "1 Child" },
-    { key: "twoChildCharge", name: "2 Child" },
-    { key: "threeChildCharge", name: "3 Child" },
-    { key: "fourChildCharge", name: "4 Child" },
-    { key: "fiveChildCharge", name: "5 Child" },
-    { key: "sixChildCharge", name: "6 Child" },
-    { key: "sevenChildCharge", name: "7 Child" },
-    { key: "eightChildCharge", name: "8 Child" },
-    { key: "nineChildCharge", name: "9 Child" },
-    { key: "tenChildCharge", name: "10 Child" },
+    { key: "oneChildCharge", name: "子供1人" },
+    { key: "twoChildCharge", name: "子供2人" },
+    { key: "threeChildCharge", name: "子供3人" },
+    { key: "fourChildCharge", name: "子供4人" },
+    { key: "fiveChildCharge", name: "子供5人" },
+    { key: "sixChildCharge", name: "子供6人" },
+    { key: "sevenChildCharge", name: "子供7人" },
+    { key: "eightChildCharge", name: "子供8人" },
+    { key: "nineChildCharge", name: "子供9人" },
+    { key: "tenChildCharge", name: "子供10人" },
 ];
 
 export const BUILDING_TYPE_OPTIONS = [
@@ -34,29 +34,29 @@ export const BUILDING_TYPE_OPTIONS = [
 ];
 
 export const DAY_OF_WEEK = [
-    { name: "Sun", value: 0 },
-    { name: "Mon", value: 1 },
-    { name: "Tue", value: 2 },
-    { name: "Wed", value: 3 },
-    { name: "Thu", value: 4 },
-    { name: "Fri", value: 5 },
-    { name: "Sat", value: 6 },
+    { name: "日", value: 0 },
+    { name: "月", value: 1 },
+    { name: "火", value: 2 },
+    { name: "水", value: 3 },
+    { name: "木", value: 4 },
+    { name: "金", value: 5 },
+    { name: "土", value: 6 },
 ];
 
 export const PAYMENT_TYPES = [
     {
         value: "PER_ROOM",
-        label: "Per Room Basis",
+        label: "部屋ごと",
     },
     {
         value: "PER_PERSON",
-        label: "Per Person Basis",
+        label: "人数ごと",
     },
 ];
 
 export const OPTION_PAYMENT_TERMS = [
-    { label: "Per Person", value: "PER_PERSON" },
-    { label: "Per Room", value: "PER_ROOM" },
+    { label: "人数ごと", value: "PER_PERSON" },
+    { label: "部屋ごと", value: "PER_ROOM" },
     { label: "Per Use", value: "PER_USE" },
     { label: "Flat", value: "PER_FLAT" },
     // TOdo

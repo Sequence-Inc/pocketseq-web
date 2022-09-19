@@ -15,7 +15,7 @@ const AddCancelPolicies = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <PageLayout
-                pageTitle="Add Cancel Policy"
+                pageTitle="キャンセルポリシー追加"
                 BannerIcon={AdjustmentsIcon}
             >
                 <CancelPolicyForm />

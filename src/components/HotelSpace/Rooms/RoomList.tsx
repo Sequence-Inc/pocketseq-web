@@ -23,7 +23,7 @@ const RoomList = (props: IRoomListProps) => {
 
     const keys: TTableKey[] = [
         { name: t("space-name"), key: "name" },
-        { name: "Stock", key: "stock" },
+        { name: "在庫", key: "stock" },
     ];
 
     const columnClassName = (key): string | undefined => {

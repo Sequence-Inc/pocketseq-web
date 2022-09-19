@@ -19,7 +19,7 @@ function AddHotelSpace({ userSession }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Hotel Space</title>
+                <title>宿泊管理</title>
             </Head>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>

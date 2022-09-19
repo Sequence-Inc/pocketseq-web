@@ -113,7 +113,7 @@ const OptionList = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <PageLayout
-                pageTitle="Options"
+                pageTitle="オプション管理"
                 BannerIcon={AdjustmentsIcon}
                 BannerActionButton={() => (
                     <Button
@@ -121,7 +121,7 @@ const OptionList = ({ userSession }) => {
                         Icon={PlusIcon}
                         onClick={() => router.push("/host/options/add")}
                     >
-                        Add Options
+                        オプションの追加
                     </Button>
                 )}
             >
