@@ -138,6 +138,7 @@ export type TStationTypes = {
     stationId: string;
     accessType: string;
     time: number;
+    exit?: string | null;
 };
 
 export type TImageUploadResult = {

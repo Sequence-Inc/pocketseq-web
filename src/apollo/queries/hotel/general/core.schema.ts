@@ -19,6 +19,7 @@ nearestStations {
     }
     time
     accessType
+    exit
 }
 photos {
     ${PHOTO}
