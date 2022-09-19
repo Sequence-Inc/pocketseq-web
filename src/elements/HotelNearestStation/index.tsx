@@ -97,7 +97,7 @@ export const HotelNearestStation = React.forwardRef<
                         onClick={showForm}
                         className="bg-indigo-100 w-28 text-indigo-700"
                     >
-                        Add Station
+                        駅の追加
                     </Button>
                 </div>
             )}

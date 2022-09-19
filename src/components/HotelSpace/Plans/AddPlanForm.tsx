@@ -147,7 +147,7 @@ const Plans = (props: IPlanFormProps) => {
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
                         <p className="text-sm leading-5 font-medium">
-                            Plan Name
+                            プラン名
                         </p>
                         <TextField
                             disabled={loading}
@@ -161,9 +161,7 @@ const Plans = (props: IPlanFormProps) => {
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
-                        <p className="text-sm leading-5 font-medium">
-                            Description
-                        </p>
+                        <p className="text-sm leading-5 font-medium">概要</p>
                         <TextArea
                             disabled={loading}
                             label=""
@@ -178,7 +176,7 @@ const Plans = (props: IPlanFormProps) => {
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full space-y-2">
                         <p className="text-sm leading-5 font-medium">
-                            Cancel Policy
+                            キャンセルポリシー
                         </p>
                         <Controller
                             name="cancelPolicyId"
@@ -213,7 +211,7 @@ const Plans = (props: IPlanFormProps) => {
                                         label={
                                             <>
                                                 <span className="text-sm leading-5 font-medium">
-                                                    Breakfast Included
+                                                    朝食込
                                                 </span>
                                             </>
                                         }
@@ -235,7 +233,7 @@ const Plans = (props: IPlanFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Usage Period
+                                        利用期間
                                     </span>
                                 </>
                             }
@@ -286,7 +284,7 @@ const Plans = (props: IPlanFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Reservation Period
+                                        予約期間
                                     </span>
                                 </>
                             }
@@ -340,7 +338,7 @@ const Plans = (props: IPlanFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Cut Off Period
+                                        手仕舞い
                                     </span>
                                 </>
                             }
@@ -410,7 +408,7 @@ const Plans = (props: IPlanFormProps) => {
                             </p>
                         </div>
                         <p className="text-sm text-gray-700 font-medium">
-                            Upload Photos
+                            アップロードフォト
                         </p>
                         <Controller
                             rules={{ required: !initialValue?.photos?.length }}
@@ -438,7 +436,7 @@ const Plans = (props: IPlanFormProps) => {
                         <div className="pb-2 flex space-x-4 ">
                             <div>
                                 <h3 className="font-medium text-lg text-gray-900">
-                                    Room Types
+                                    部屋の種類
                                 </h3>
                                 <p className="text-gray-500">
                                     このプランに付いてる部屋を選択してください。
@@ -598,7 +596,7 @@ const Plans = (props: IPlanFormProps) => {
                                                             }
                                                             className="w-36 h-10 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                                                         >
-                                                            Plan Overide
+                                                            料金の上書き
                                                         </Button>
                                                     )}
                                                 </div>
@@ -616,7 +614,7 @@ const Plans = (props: IPlanFormProps) => {
                                                             }
                                                             className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                                                         >
-                                                            Update Plan
+                                                            保存
                                                         </Button>
                                                     )}
                                             </div>

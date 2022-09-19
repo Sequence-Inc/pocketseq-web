@@ -109,7 +109,7 @@ const AddRoomForm = ({
             className="px-2 py-3 space-y-6 sm:py-6"
         >
             <div className="w-full lg:w-6/12 md:w-8/12">
-                <p className="text-sm leading-5 font-medium">Room Type Name</p>
+                <p className="text-sm leading-5 font-medium">ルームタイプ</p>
                 <TextField
                     label={""}
                     {...register("name", {
@@ -122,7 +122,7 @@ const AddRoomForm = ({
                 />
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
-                <p className="text-sm leading-5 font-medium">Description</p>
+                <p className="text-sm leading-5 font-medium">概要</p>
                 <TextArea
                     label=""
                     {...register("description", {
@@ -144,7 +144,7 @@ const AddRoomForm = ({
                     </p>
                 </div>
                 <p className="text-sm text-gray-700 font-medium">
-                    Upload Photos
+                    アップロードフォト
                 </p>
 
                 <Controller
@@ -171,9 +171,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <p className="text-lg font-medium leading-6">
-                        Payment Terms
-                    </p>
+                    <p className="text-lg font-medium leading-6">支払い種類</p>
                 </div>
                 <Controller
                     rules={{ required: true }}
@@ -190,11 +188,11 @@ const AddRoomForm = ({
                             options={[
                                 {
                                     value: "PER_ROOM",
-                                    label: "Per Room Basis",
+                                    label: "部屋ごと",
                                 },
                                 {
                                     value: "PER_PERSON",
-                                    label: "Per Person Basis",
+                                    label: "人数ごと",
                                 },
                             ]}
                         />
@@ -203,9 +201,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <p className="text-lg font-medium leading-6">
-                        Maximum Capacity
-                    </p>
+                    <p className="text-lg font-medium leading-6">最大人数</p>
                 </div>
                 <div className="flex flex-col sm:flex-row space-x-0 space-y-2 sm:space-x-4 sm:space-y-0 ">
                     <div className="w-full">
@@ -216,7 +212,7 @@ const AddRoomForm = ({
                             render={({ field }) => (
                                 <>
                                     <p className="text-sm leading-5 font-medium text-gray-700">
-                                        Adult
+                                        大人
                                     </p>
                                     <Select
                                         {...field}
@@ -249,7 +245,7 @@ const AddRoomForm = ({
                             render={({ field }) => (
                                 <>
                                     <p className="text-sm leading-5 font-medium text-gray-700">
-                                        Child
+                                        子供
                                     </p>
                                     <Select
                                         {...field}
@@ -278,7 +274,7 @@ const AddRoomForm = ({
 
             <div className="w-full  md:w-6/12">
                 <div className="w-full pb-2 flex items-center justify-between">
-                    <p className="text-lg font-medium leading-6">Stock</p>
+                    <p className="text-lg font-medium leading-6">在庫</p>
 
                     <Button
                         type="button"
@@ -290,7 +286,7 @@ const AddRoomForm = ({
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
                         className="max-w-min whitespace-nowrap  lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                     >
-                        Stock Overrides
+                        在庫の上書き
                     </Button>
                 </div>
                 <TextField
@@ -309,7 +305,7 @@ const AddRoomForm = ({
             <div className="w-full lg:w-6/12 md:w-8/12 space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
                     <p className="text-lg font-medium leading-6">
-                        Basic Pricing Setting
+                        基本料金設定
                     </p>
                     <Button
                         type="button"
@@ -321,7 +317,7 @@ const AddRoomForm = ({
                         // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
                         className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                     >
-                        Pricing Overrides
+                        料金の上書き
                     </Button>
                 </div>
                 {priceSchemes?.myPriceSchemes?.length < 1 && (
@@ -397,7 +393,7 @@ const AddRoomForm = ({
                     loadingText="Adding Room"
                     className="bg-indigo-600 font-medium text-sm w-16 hover:bg-indigo-400"
                 >
-                    Save
+                    保存
                 </Button>
                 <Button
                     type="button"
@@ -406,7 +402,7 @@ const AddRoomForm = ({
                     onClick={toggleForm}
                     className="font-medium border-l text-sm w-16"
                 >
-                    Cancel
+                    キャンセル
                 </Button>
             </div>
         </form>

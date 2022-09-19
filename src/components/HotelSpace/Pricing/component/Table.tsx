@@ -67,7 +67,7 @@ const Table = ({ columns, data, refetchPricings, ...rest }: ITableProps) => {
                                         scope="col"
                                         className={`px-4 py-3 font-bold text-sm tracking-wider uppercase`}
                                     >
-                                        Action
+                                        動作
                                     </th>
                                 </tr>
                             </thead>

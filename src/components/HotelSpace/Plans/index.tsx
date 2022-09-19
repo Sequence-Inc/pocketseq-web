@@ -59,7 +59,7 @@ const Plans = (props: IPlanFormProps) => {
                             Icon={PlusIcon}
                             onClick={toggleForm}
                         >
-                            Add Plan
+                            プランの追加
                         </Button>
                     )}
                 </div>

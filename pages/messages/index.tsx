@@ -250,7 +250,7 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                 </span> */}
                                 <input
                                     type="text"
-                                    placeholder="Write Something"
+                                    placeholder="何か書く"
                                     autoFocus
                                     className="w-full px-6 py-3 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full focus:outline-none focus:placeholder-gray-400"
                                     value={message}

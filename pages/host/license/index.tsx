@@ -38,10 +38,10 @@ const Licenses = ({ userSession }) => {
     });
 
     const keys = [
-        { name: "License", key: "type" },
-        { name: "Approved", key: "approved" },
-        { name: "Uploaded", key: "createdAt" },
-        { name: "Remarks", key: "remarks" },
+        { name: "ライセンス", key: "type" },
+        { name: "承認", key: "approved" },
+        { name: "アップロード", key: "createdAt" },
+        { name: "備考", key: "remarks" },
     ];
     const columnClassName = (key) => {
         if (key === "type" || key === "createdAt" || key === "approved")
@@ -132,7 +132,7 @@ const Licenses = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Host license - {config.appName}</title>
+                <title>ライセンス管理 - {config.appName}</title>
             </Head>
             {/* Page header */}
             <div className="bg-white shadow mb-3 sm:mb-5">
@@ -148,7 +148,7 @@ const Licenses = ({ userSession }) => {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Licenses
+                                            ライセンス管理
                                         </h1>
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@ const Licenses = ({ userSession }) => {
                             <Link href="/host/license/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
-                                        Add license
+                                        ライセンスの追加
                                     </Button>
                                 </a>
                             </Link>

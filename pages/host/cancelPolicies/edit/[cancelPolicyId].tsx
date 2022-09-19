@@ -17,7 +17,7 @@ const EditCancelPolicies = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <PageLayout
-                pageTitle="Edit Cancel Policy"
+                pageTitle="キャンセルポリシー編集"
                 BannerIcon={AdjustmentsIcon}
             >
                 <CancelPolicyForm cancelPolicyId={cancelPolicyId} />

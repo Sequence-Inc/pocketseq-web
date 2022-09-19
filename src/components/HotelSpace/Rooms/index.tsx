@@ -59,7 +59,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             Icon={PlusIcon}
                             onClick={toggleForm}
                         >
-                            {t("add-hotel")}
+                            ルームの追加
                         </Button>
                     )}
                 </div>
@@ -81,7 +81,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             onClick={handleNext}
                             className="font-medium border-l text-sm w-16 bg-indigo-500 hover:bg-indigo-300"
                         >
-                            Next
+                            次へ
                         </Button>
                     </div>
                 </div>

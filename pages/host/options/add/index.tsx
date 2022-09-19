@@ -12,8 +12,8 @@ const AddOptions = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <PageLayout
-                pageTitle="Add Option"
-                bannerTitle="Add Options"
+                pageTitle="オプションの追加"
+                bannerTitle="オプションの追加"
                 BannerIcon={AdjustmentsIcon}
                 childrenWrapperClassName="bg-white"
             >

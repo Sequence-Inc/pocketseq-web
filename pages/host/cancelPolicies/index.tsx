@@ -121,7 +121,7 @@ const CancelPolicies = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Cancel Policies</title>
+                <title>キャンセルポリシー管理</title>
             </Head>
             <div className="bg-white shadow mb-3 sm:mb-5">
                 <Container>
@@ -136,7 +136,7 @@ const CancelPolicies = ({ userSession }) => {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Cancel Policies
+                                            キャンセルポリシー管理
                                         </h1>
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@ const CancelPolicies = ({ userSession }) => {
                             <Link href="/host/cancelPolicies/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
-                                        Add
+                                        追加
                                     </Button>
                                 </a>
                             </Link>
