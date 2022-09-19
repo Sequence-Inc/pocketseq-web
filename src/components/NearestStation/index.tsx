@@ -14,6 +14,7 @@ export const NearestStation = ({ onAdd, closeForm }) => {
     const [stationId, setStationId] = useState(null);
     const [via, setVia] = useState("");
     const [time, setTime] = useState(0);
+    const [exit, setExit] = useState("");
 
     const {
         data: prefectureData,
@@ -44,13 +45,14 @@ export const NearestStation = ({ onAdd, closeForm }) => {
             !lineId ||
             !stationId ||
             via.trim() === "" ||
-            !time
+            !time ||
+            !exit
         ) {
             alert("All information are required.");
             setLoading(false);
             return;
         }
-        await onAdd({ prefectureId, lineId, stationId, via, time });
+        await onAdd({ prefectureId, lineId, stationId, via, time, exit });
         setLoading(false);
     };
 
@@ -153,6 +155,22 @@ export const NearestStation = ({ onAdd, closeForm }) => {
                         setTime(event.target.value);
                     }}
                     value={time}
+                    singleRow
+                />
+            </div>
+
+            <div>
+                <TextField
+                    // defaultValue={}
+                    label="Exit"
+                    // error={}
+                    errorMessage="Exit is required"
+                    type="text"
+                    disabled={loading}
+                    onChange={(event) => {
+                        setExit(event.target.value);
+                    }}
+                    value={exit}
                     singleRow
                 />
             </div>

@@ -45,7 +45,6 @@ const NearestStationStep = ({
     const [activeStation, setActiveStation] = useState(-1);
     const router = useRouter();
     const { id } = router.query;
-
     useEffect(() => {
         if (initialValue?.nearestStations) {
             const newValue = initialValue.nearestStations?.map((res) => ({
@@ -69,11 +68,11 @@ const NearestStationStep = ({
         setToggleForm(false);
     };
 
-    const addStation = async ({ stationId, via, time }) => {
+    const addStation = async ({ stationId, via, time, exit }) => {
         const { data } = await mutate({
             variables: {
                 spaceId: id || spaceId,
-                stations: [{ stationId, via, time: parseInt(time) }],
+                stations: [{ stationId, via, time: parseInt(time), exit }],
             },
         });
         if (data) {

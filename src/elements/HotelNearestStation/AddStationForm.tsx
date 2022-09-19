@@ -16,6 +16,8 @@ const AddStationForm = ({ onAdd, closeForm }) => {
     const [stationId, setStationId] = useState(null);
     const [accessType, setAccessType] = useState("");
     const [time, setTime] = useState(0);
+    const [exit, setExit] = useState("");
+
     const [alertModalOpen, setAlertModal] = useState(false);
     const toggleAlertModal = () => {
         console.log("toggler clled");
@@ -50,13 +52,21 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             !lineId ||
             !stationId ||
             accessType.trim() === "" ||
-            !time
+            !time ||
+            !exit
         ) {
             toggleAlertModal();
             setLoading(false);
             return;
         }
-        await onAdd({ prefectureId, lineId, stationId, accessType, time });
+        await onAdd({
+            prefectureId,
+            lineId,
+            stationId,
+            accessType,
+            time,
+            exit,
+        });
         setLoading(false);
     };
 
@@ -164,6 +174,21 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                         setTime(event.target.value);
                     }}
                     value={time}
+                />
+            </div>
+            <div>
+                <p className="text-sm leading-5 font-medium">Exit</p>
+                <TextField
+                    // defaultValue={}
+                    label=""
+                    // error={}
+                    errorMessage="Exit is required"
+                    type="text"
+                    disabled={loading}
+                    onChange={(event) => {
+                        setExit(event.target.value);
+                    }}
+                    value={exit}
                 />
             </div>
             <div className="flex border-t mt-4 py-4 items-center justify-end space-x-3">

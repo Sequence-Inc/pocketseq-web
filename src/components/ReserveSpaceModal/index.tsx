@@ -44,6 +44,8 @@ const ReserveSpaceModal = ({
         includedOptions,
     } = useReserveSpace(reservationData?.spaceId);
 
+    console.log({ spaceDetails });
+
     const setSubscription = useCallback(
         (val) => {
             setReservationData((prev) => ({
@@ -426,7 +428,7 @@ const ReserveSpaceModal = ({
                                                         <div className="flex items-center justify-between">
                                                             <div>Space Fee</div>
 
-                                                            {priceData?.spaceAmount && (
+                                                            {priceData && (
                                                                 <p>
                                                                     {PriceFormatter(
                                                                         priceData?.spaceAmount /

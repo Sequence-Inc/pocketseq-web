@@ -27,21 +27,22 @@ export const HotelNearestStation = React.forwardRef<
     };
     const closeForm = () => setToggleForm(false);
 
-    const addStation = async ({ stationId, accessType, time }) => {
+    const addStation = async ({ stationId, accessType, time, exit }) => {
         closeForm();
         setStations([
             ...stations,
-            { stationId, accessType, time: parseInt(time) },
+            { stationId, accessType, time: parseInt(time), exit },
         ]);
         onChange([
             ...stations,
-            { stationId, accessType, time: parseInt(time) },
+            { stationId, accessType, time: parseInt(time), exit },
         ]);
 
         await onAddHotelStation({
             stationId,
             accessType,
             time: parseInt(time),
+            exit,
         });
     };
 
@@ -58,6 +59,7 @@ export const HotelNearestStation = React.forwardRef<
                 stationId: item.station.id,
                 accessType: item.accessType,
                 time: item.time,
+                exit: item?.exit || "",
                 ...item,
             }));
             setStations(defVals);

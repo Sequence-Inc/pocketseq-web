@@ -72,6 +72,8 @@ const RequestReservationModal = ({
             checkOutDate: reservationData?.endDate,
             additionalOptionsFields: additionalOptionsFields,
         };
+
+        console.log({ calculatePriceInput });
         setAdditionalOptions(additionalOptionsFields);
 
         if (
