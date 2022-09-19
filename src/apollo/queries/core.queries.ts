@@ -233,6 +233,7 @@ export const NEAREST_STATIONS = `
         }
         time
         via
+        exit
     }
 `;
 
