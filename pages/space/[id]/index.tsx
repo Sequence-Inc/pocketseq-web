@@ -446,7 +446,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                         }
                                         onClick={handleReservation}
                                     >
-                                        Pay and Reserve
+                                        支払い＆予約
                                     </Button>
                                 </div>
                             </div>

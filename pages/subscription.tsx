@@ -193,8 +193,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
                         <p className="text-sm">
-                            Default Payment source not found. Please add default
-                            payment source first in your settings page.
+                            既存の支払い方法が見つかりません。最初の設定画面で支払い方法を追加してください。
                         </p>
 
                         <button
@@ -442,12 +441,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                 <div>
                                     <div className="sm:flex sm:flex-col sm:align-center">
                                         <h1 className="text-5xl tracking-tight font-bold text-primary sm:text-center">
-                                            Space Subscription Plans
+                                            スペース・サブスクリプション・プラン
                                         </h1>
                                         <p className="mt-5 text-xl text-gray-500 sm:text-center">
-                                            Start building for free, then add a
-                                            site plan to go live. Account plans
-                                            unlock additional features.
+                                            スペースを定額制でご利用いただけます。アカウントプランでは、さらに多くの機能を利用できます。
                                         </p>
                                         <div className="relative self-center mt-6 bg-gray-100 rounded-lg p-0.5 flex sm:mt-8">
                                             <button
@@ -462,7 +459,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category A
+                                                カテゴリーA
                                             </button>
                                             <button
                                                 type="button"
@@ -476,7 +473,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category B
+                                                カテゴリーB
                                             </button>
                                             <button
                                                 type="button"
@@ -490,7 +487,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category C
+                                                カテゴリーC
                                             </button>
                                         </div>
                                         <div className="mt-8">
@@ -554,12 +551,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                 <div>
                                     <div className="sm:flex sm:flex-col sm:align-center">
                                         <h1 className="text-5xl tracking-tight font-bold text-primary sm:text-center">
-                                            Hotel Subscription Plans
+                                            ホテル・サブスクリプション・プラン
                                         </h1>
                                         <p className="mt-5 text-xl text-gray-500 sm:text-center">
-                                            Start building for free, then add a
-                                            site plan to go live. Account plans
-                                            unlock additional features.
+                                            スペースを定額制でご利用いただけます。アカウントプランでは、さらに多くの機能を利用できます。
                                         </p>
                                         <div className="relative self-center mt-6 bg-gray-100 rounded-lg p-0.5 flex sm:mt-8">
                                             <button
@@ -574,7 +569,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category A
+                                                カテゴリーA
                                             </button>
                                             <button
                                                 type="button"
@@ -588,7 +583,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category B
+                                                カテゴリーB
                                             </button>
                                             <button
                                                 type="button"
@@ -602,7 +597,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     );
                                                 }}
                                             >
-                                                Category C
+                                                カテゴリーC
                                             </button>
                                         </div>
                                         <div className="mt-8">
@@ -640,11 +635,6 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     </p>
                                                     <button
                                                         onClick={() => {
-                                                            console.log(
-                                                                "Subscript to price id",
-                                                                product.price.id
-                                                            );
-
                                                             initiateSpaceSubscription(
                                                                 product.price.id
                                                             );

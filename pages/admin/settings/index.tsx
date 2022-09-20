@@ -15,11 +15,11 @@ import requireAuth from "src/utils/authecticatedRoute";
 function AdminSettings({ userSession }) {
     let [tabs] = useState([
         {
-            title: "Space Types",
+            title: "スペースタイプ",
             component: <SpaceTypesList />,
         },
         {
-            title: "Prefectures",
+            title: "都道府県",
             component: <PrefecturesList />,
         },
     ]);
@@ -30,7 +30,7 @@ function AdminSettings({ userSession }) {
         <HostLayout userSession={userSession}>
             <Head>
                 <title>
-                    {t("settings")} - {config.appName}
+                    システム{t("settings")} - {config.appName}
                 </title>
             </Head>
 
@@ -46,10 +46,10 @@ function AdminSettings({ userSession }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            {t("settings")}
+                                            システム{t("settings")}
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                    {/* <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
                                         <dt className="sr-only">
                                             Total accounts
                                         </dt>
@@ -60,7 +60,7 @@ function AdminSettings({ userSession }) {
                                             />
                                             12 accounts
                                         </dd>
-                                    </dl>
+                                    </dl> */}
                                 </div>
                             </div>
                         </div>

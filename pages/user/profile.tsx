@@ -13,11 +13,7 @@ import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
-const tabs = [
-    { name: "Profile", href: "#", current: true },
-    { name: "Calendar", href: "#", current: false },
-    { name: "Recognition", href: "#", current: false },
-];
+const tabs = [{ name: "プロフィール", href: "#", current: true }];
 const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery(GET_PROFILE, {
         fetchPolicy: "network-only",
@@ -43,15 +39,16 @@ const HostDashboard = ({ userSession }) => {
     const nameKana = `${profile.lastNameKana} ${profile.firstNameKana}`;
 
     const fields = {
-        Phone: "(555) 123-4567",
+        性: profile.lastName,
+        名: profile.firstName,
+        "性（カナ）": profile.lastNameKana,
+        "名（カナ）": profile.firstNameKana,
         Email: profile.email,
-        Name: name,
-        "Name (Kana)": nameKana,
     };
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - {config.appName}</title>
+                <title>プロフィール - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <>
@@ -83,7 +80,9 @@ const HostDashboard = ({ userSession }) => {
                                                         className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                                                         aria-hidden="true"
                                                     />
-                                                    <span>Edit profile</span>
+                                                    <span>
+                                                        プロフィールの編集
+                                                    </span>
                                                 </a>
                                             </Link>
                                         </div>

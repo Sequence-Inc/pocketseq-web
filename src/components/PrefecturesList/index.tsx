@@ -12,7 +12,7 @@ import { NetworkHelper } from "@comp";
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
     {
-        name: "県名",
+        name: "都道府県",
         key: "name",
         headerClass: "text-left",
         cellClass: "text-left",
@@ -24,19 +24,19 @@ const headers = [
         cellClass: "text-left",
     },
     {
-        name: "ロマジ",
+        name: "ローマ字",
         key: "nameRomaji",
         headerClass: "text-left",
         cellClass: "text-left",
     },
     {
-        name: "ステータス",
+        name: "表示",
         key: "available",
         headerClass: "text-center",
         cellClass: "text-center",
     },
     {
-        name: "アクション",
+        name: "動作",
         key: "action",
         headerClass: "text-right",
         cellClass: "text-right",

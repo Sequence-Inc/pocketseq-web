@@ -28,13 +28,13 @@ const headers = [
         cellClass: "text-left",
     },
     {
-        name: "デスクリプション",
+        name: "表示",
         key: "available",
         headerClass: "text-left",
         cellClass: "text-left",
     },
     {
-        name: "アクション",
+        name: "動作",
         key: "action",
         headerClass: "text-right",
         cellClass: "text-right",
@@ -65,7 +65,7 @@ export const SpaceTypesList = () => {
                 return (
                     <Link href={`settings/edit/space-type/${data.id}`}>
                         <a className="font-medium text-gray-500 hover:text-primary">
-                            Modify
+                            変更
                         </a>
                     </Link>
                 );
@@ -90,7 +90,7 @@ export const SpaceTypesList = () => {
                                 `bg-green-500`
                             )}
                         >
-                            AVAILABLE
+                            表示
                         </span>
                     );
                 } else {
@@ -101,7 +101,7 @@ export const SpaceTypesList = () => {
                                 `bg-gray-400`
                             )}
                         >
-                            UNAVAILABLE
+                            非表示
                         </span>
                     );
                 }
@@ -120,7 +120,7 @@ export const SpaceTypesList = () => {
                 <div className="flex mb-4 space-x-4">
                     <Link href="settings/add/space-type">
                         <Button variant="primary" className="w-auto">
-                            Add new space type
+                            スペースタイプの追加
                         </Button>
                     </Link>
                     <Button
@@ -128,7 +128,7 @@ export const SpaceTypesList = () => {
                         className="w-auto"
                         onClick={handleRefresh}
                     >
-                        Refresh List
+                        リストの更新
                     </Button>
                 </div>
                 <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">

@@ -11,7 +11,7 @@ export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
     return (
         <Link href={`/search?searchType=space&spaceType=${title}`}>
             <a>
-                <div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
+                <div className="group relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                     {photo && (
                         <img
                             src={photo}
@@ -19,9 +19,11 @@ export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
                             className="object-cover w-full h-full"
                         />
                     )}
-                    <div className="flex flex-col justify-end p-3 bg-green-700 bg-opacity-25 text-gray-50 hover:bg-opacity-50">
+                    <div className="flex flex-col justify-end p-3 bg-green-700 bg-opacity-25 text-gray-50 group-hover:bg-opacity-5">
                         <h4 className="text-gray-100">{title}</h4>
-                        <span className="text-xs">{subTitle}</span>
+                        <span className="text-xs hidden group-hover:block">
+                            {subTitle}
+                        </span>
                     </div>
                 </div>
             </a>

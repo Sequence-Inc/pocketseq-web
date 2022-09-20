@@ -120,7 +120,7 @@ export const SubscriptionItemsList = ({
     if (items.length === 0) {
         return (
             <div id={category} className="text-center font-bold text-lg">
-                No items under this subscription category yet.
+                このサブスクリプションカテゴリのアイテムはまだありません。
             </div>
         );
     }
@@ -138,10 +138,7 @@ export const SubscriptionItemsList = ({
     };
 
     return (
-        <div
-            id={category}
-            className={`grid grid-cols-${numbers} sm:grid-cols-${numbers} gap-4`}
-        >
+        <div id={category} className={`grid grid-cols-2 sm:grid-cols-4 gap-4`}>
             {items.map(
                 ({
                     id,
