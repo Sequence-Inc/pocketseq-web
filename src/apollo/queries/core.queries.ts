@@ -198,6 +198,20 @@ export const SPACE_PRICE_PLAN = `
     }
 `;
 
+export const SPACE_PRICE_PLAN_LITE = `
+    id
+    title
+    isDefault
+    type
+    duration
+    amount
+    maintenanceFee
+    lastMinuteDiscount
+    cooldownTime
+    fromDate
+    toDate   
+`;
+
 export const STATION = `
     id
     stationName
@@ -274,6 +288,33 @@ export const SPACE = `
     cancelPolicy{
         id
     }
+    subcriptionPrice
+`;
+
+export const SPACE_LITE = `
+    id
+    name
+    description
+    maximumCapacity
+    numberOfSeats
+    spaceSize
+    needApproval
+    published
+    ${SPACE_TYPES}
+    address {
+        ${ADDRESS}
+    }
+    photos {
+        ${PHOTO}
+    }
+    host {
+        accountId
+        name
+        createdAt
+    }
+    pricePlans {
+        ${SPACE_PRICE_PLAN_LITE}
+    }   
     subcriptionPrice
 `;
 
@@ -485,6 +526,36 @@ photos {
 }
 rooms {
     ${HOTLE_ROOM}
+}
+host {
+    accountId
+    name
+    createdAt
+}
+packagePlans {
+    ${PLAN_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const HOTEL_OBJECT_LITE = `
+id
+name
+description
+checkInTime
+checkOutTime
+status
+address {
+    ${ADDRESS}
+}
+photos {
+    ${PHOTO}
+}
+host {
+    accountId
+    name
+    createdAt
 }
 packagePlans {
     ${PLAN_OBJECT}

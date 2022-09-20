@@ -117,11 +117,11 @@ const UserSettings = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Subscriptions - {config.appName}</title>
+                <title>サブスクリプション - {config.appName}</title>
             </Head>
             <Container className="w-full sm:w-2/3 sm:mx-auto py-4 sm:py-6 lg:py-8 space-y-6">
                 <h2 className="text-lg font-bold leading-6 text-gray-900">
-                    Subscriptions
+                    サブスクリプション
                 </h2>
                 <div className="w-full overflow-hidden bg-white rounded-lg shadow">
                     <div className="divide-y">

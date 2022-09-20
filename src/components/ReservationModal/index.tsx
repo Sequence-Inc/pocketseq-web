@@ -258,7 +258,7 @@ const RequestReservationModal = ({
 
                                                         <div className="w-full space-y-3">
                                                             <h5 className="font-bold">
-                                                                Included Options
+                                                                オプション
                                                             </h5>
 
                                                             {includedOptions?.map(
@@ -296,7 +296,7 @@ const RequestReservationModal = ({
                                                 <div className="">
                                                     <div className="mb-8">
                                                         <span className="text-2xl font-bold ">
-                                                            Additional Options
+                                                            オプションの追加
                                                         </span>
                                                     </div>
                                                     <div className="space-y-4">
@@ -594,7 +594,7 @@ const RequestReservationModal = ({
 
                                                 <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
                                                     <p className="font-bold">
-                                                        Applicable Subscription
+                                                        適用されるサブスクリプション
                                                         :
                                                     </p>
                                                     <hr />

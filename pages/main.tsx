@@ -9,6 +9,7 @@ import {
     IExploreItem,
     RegisterCTA,
     HeroSection,
+    SubscriptionCTA,
 } from "@comp";
 import { Header, Footer } from "@layout";
 
@@ -263,6 +264,7 @@ export default function Home({
                         </div>
                     </div>
                     <RegisterCTA />
+                    <SubscriptionCTA />
                 </Container>
             </main>
             <Footer />

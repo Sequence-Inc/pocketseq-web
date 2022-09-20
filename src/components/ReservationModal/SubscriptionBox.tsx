@@ -35,7 +35,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     if (!hasHotelSubscriptions) {
         return (
             <p className="text-sm">
-                You currently are not subscribed to any subscription plan.
+                お客様は現在、いずれのサブスクリプションプランにも加入していません。
             </p>
         );
     }

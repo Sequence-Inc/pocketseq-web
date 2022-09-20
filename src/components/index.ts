@@ -36,3 +36,4 @@ export * from "./AlertModal";
 export * from "./Toast";
 export * from "./ProgressModal";
 export * from "./SubscriptionItemsList";
+export * from "./SubscriptionCTA";

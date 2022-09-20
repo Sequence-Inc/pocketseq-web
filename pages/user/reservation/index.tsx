@@ -29,18 +29,18 @@ const ReservationList = ({ userSession }) => {
     });
 
     const keys = [
-        { name: "Space Name", key: "space" },
+        { name: "施設名", key: "space" },
         { name: "From", key: "fromDateTime" },
         { name: "To", key: "toDateTime" },
-        { name: "Status", key: "status" },
+        { name: "状態", key: "status" },
     ];
 
     const hotelKeys = [
-        { name: "Plan Name", key: "packagePlan" },
+        { name: "プラン名", key: "packagePlan" },
         { name: "Room", key: "hotelRoom" },
         { name: "From", key: "fromDateTime" },
         { name: "To", key: "toDateTime" },
-        { name: "Status", key: "status" },
+        { name: "状態", key: "status" },
     ];
 
     const childClassname = (key) => {

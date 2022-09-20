@@ -628,7 +628,7 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
-                                Payment Terms
+                                支払いの種別
                             </h3>
                         </div>
 
@@ -652,7 +652,7 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex items-center justify-between  pb-2">
                             <h3 className="font-medium text-lg text-gray-900">
-                                Stock
+                                在庫
                             </h3>
                             <Button
                                 type="button"
@@ -663,7 +663,7 @@ const Plans = (props: IPlanFormProps) => {
                                 }
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
-                                Stock Overide
+                                在庫の上書き
                             </Button>
                         </div>
                         <TextField
@@ -683,14 +683,14 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
                             <p className="text-lg font-medium leading-6">
-                                Included Attachment
+                                含まれるオプション
                             </p>
                             <Button
                                 type="button"
                                 onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
-                                Manage Options
+                                オプションの管理
                             </Button>
                         </div>
 
@@ -736,14 +736,14 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
                             <p className="text-lg font-medium leading-6">
-                                Additional Attachment
+                                追加のオプション
                             </p>
                             <Button
                                 type="button"
                                 onClick={redirectToOptions}
                                 className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                             >
-                                Manage Options
+                                オプションの管理
                             </Button>
                         </div>
 
@@ -792,7 +792,7 @@ const Plans = (props: IPlanFormProps) => {
                             label={
                                 <>
                                     <span className="text-sm leading-5 font-medium">
-                                        Subscritpion Price
+                                        サブスクリプションの料金
                                     </span>
                                 </>
                             }
@@ -827,7 +827,7 @@ const Plans = (props: IPlanFormProps) => {
                             type="submit"
                             disabled={loading}
                         >
-                            Save
+                            保存
                         </Button>
                         <Button
                             variant="secondary"
@@ -836,7 +836,7 @@ const Plans = (props: IPlanFormProps) => {
                             disabled={loading}
                             onClick={toggleForm}
                         >
-                            Cancel
+                            キャンセル
                         </Button>
                     </div>
                 </div>

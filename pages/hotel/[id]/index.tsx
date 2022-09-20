@@ -4,6 +4,7 @@ import {
     SpaceInfoAccess,
     SpaceInfoReviews,
     LoadingSpinner,
+    HostProfile,
 } from "@comp";
 import { Button, Container, Rating, Spinner, Tag } from "@element";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
@@ -71,6 +72,9 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
     const [showProgressModal, setProgressModalVisibility] =
         useState<boolean>(false);
+
+    const router = useRouter();
+
     const toggleProgressModal = () =>
         setProgressModalVisibility((prev) => !prev);
 
@@ -154,6 +158,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         photos,
         rooms,
         packagePlans,
+        host,
     } = hotel;
 
     const location: string = FormatShortAddress(address);
@@ -193,6 +198,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 setSelectedPaymentMethod(paymentSourceId);
             }
         }
+    };
+
+    const sendMessage = () => {
+        if (host)
+            router.push(
+                `/messages?name=${host?.name}&recipientIds=${host?.accountId}`
+            );
     };
 
     return (
@@ -431,19 +443,19 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         <div>
                             <div className="space-y-6 sm:flex sm:space-y-0">
                                 <div className="flex-1">
-                                    {/* <HostProfile
+                                    <HostProfile
                                         title={host?.name}
                                         description="2015年8月年からメンバー"
-                                    /> */}
+                                    />
                                 </div>
-                                {/* <Button
+                                <Button
                                     variant="primary"
                                     rounded
                                     className="w-auto px-4 h-9"
                                     onClick={sendMessage}
                                 >
                                     Send Message
-                                </Button> */}
+                                </Button>
                             </div>
                             <div className="flex mt-6 space-x-3">
                                 <Tag
