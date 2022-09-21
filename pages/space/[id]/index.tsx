@@ -126,7 +126,10 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         address,
         photos,
         host,
+        cancelPolicy,
     } = space;
+
+    console.log(cancelPolicy);
 
     const location: string = FormatShortAddress(address);
 
@@ -480,6 +483,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                 pricePlans={pricePlans}
                                 space={space}
                                 handleReserve={handleReserve}
+                                cancelPolicy={cancelPolicy}
                             />
                         </div>
                         <div className="w-full my-6 border-t border-gray-300" />
@@ -578,6 +582,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             pricePlans={pricePlans}
                             space={space}
                             handleReserve={handleReserve}
+                            cancelPolicy={cancelPolicy}
                         />
                     </div>
                 </div>

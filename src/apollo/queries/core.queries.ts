@@ -287,6 +287,12 @@ export const SPACE = `
     }
     cancelPolicy{
         id
+        name
+        description
+        rates {
+            beforeHours
+            percentage
+        }
     }
     subcriptionPrice
 `;
@@ -498,6 +504,15 @@ photos {
 }
 roomTypes  {
     ${PACKAGE_ROOM_TYPE_OBJECT}
+}
+cancelPolicy {
+    id
+    name
+    description
+    rates {
+        beforeHours
+        percentage
+    }
 }
 createdAt
 updatedAt

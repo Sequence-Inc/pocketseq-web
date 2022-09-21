@@ -159,6 +159,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         rooms,
         packagePlans,
         host,
+        cancelPolicy,
     } = hotel;
 
     const location: string = FormatShortAddress(address);
@@ -582,6 +583,38 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
                         {/* divider */}
                         <div className="w-full my-6 border-t border-gray-300" />
+
+                        {/* cancel policy */}
+                        {cancelPolicy && (
+                            <>
+                                <div>
+                                    <h2 className="mb-4 text-lg font-bold text-gray-700">
+                                        {cancelPolicy.name}
+                                    </h2>
+                                    <ul>
+                                        {cancelPolicy.rates.map(
+                                            (policy, index) => {
+                                                return (
+                                                    <li
+                                                        key={index}
+                                                        className="text-lg flex justify-between w-full"
+                                                    >
+                                                        <div>
+                                                            {policy.beforeHours}
+                                                            時間前
+                                                        </div>
+                                                        <div>
+                                                            {policy.percentage}%
+                                                        </div>
+                                                    </li>
+                                                );
+                                            }
+                                        )}
+                                    </ul>
+                                </div>
+                                <div className="w-full my-6 border-t border-gray-300" />
+                            </>
+                        )}
 
                         {/* reviews and comment section */}
                         <div>

@@ -569,10 +569,34 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     予約可能状況を確認する
                 </button>
                 {/* policy row */}
-                <div className="flex items-center justify-center space-x-1.5">
-                    <p className="text-gray-600">48時間キャンセル無料</p>
-                    <InformationCircleIcon className="w-4 h-4 text-gray-400" />
-                </div>
+                {/* cancel policy */}
+                {selectedPlan && selectedPlan.cancelPolicy && (
+                    <div className="flex flex-col justify-center space-x-1.5">
+                        <div className="w-full my-6 border-t border-gray-300"></div>
+                        <h2 className="mb-4 text-base font-bold text-gray-700">
+                            キャンセルポリシー :{" "}
+                            {selectedPlan.cancelPolicy.name}
+                        </h2>
+                        <ul>
+                            {selectedPlan.cancelPolicy.rates
+                                .sort((a, b) => a.beforeHours - b.beforeHours)
+                                .map((policy, index) => {
+                                    return (
+                                        <li
+                                            key={index}
+                                            className="text-base flex justify-between w-full"
+                                        >
+                                            <div>
+                                                {policy.beforeHours}
+                                                時間前
+                                            </div>
+                                            <div>{policy.percentage}%</div>
+                                        </li>
+                                    );
+                                })}
+                        </ul>
+                    </div>
+                )}
                 <div>
                     {calculatingPrice && (
                         <div className="flex items-center justify-center">

@@ -27,11 +27,13 @@ export const FloatingPriceTwo = ({
     pricePlans,
     space,
     handleReserve,
+    cancelPolicy,
 }: {
     availableHours?: number[];
     pricePlans: ISpacePricePlan[];
     space: ISpace;
     handleReserve: (data: TUseCalculateSpacePriceProps) => void;
+    cancelPolicy: any;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -393,11 +395,33 @@ export const FloatingPriceTwo = ({
                     予約可能状況を確認する
                 </Button>
                 {/* </Link> */}
-                {/* policy row */}
-                <div className="flex items-center justify-center space-x-1.5">
-                    <p className="text-gray-600">48時間キャンセル無料</p>
-                    <InformationCircleIcon className="w-4 h-4 text-gray-400" />
-                </div>
+                {/* cancel policy */}
+                {cancelPolicy && (
+                    <div className="flex flex-col justify-center space-x-1.5">
+                        <div className="w-full my-6 border-t border-gray-300"></div>
+                        <h2 className="mb-4 text-base font-bold text-gray-700">
+                            キャンセルポリシー : {cancelPolicy.name}
+                        </h2>
+                        <ul>
+                            {cancelPolicy.rates
+                                .sort((a, b) => a.beforeHours - b.beforeHours)
+                                .map((policy, index) => {
+                                    return (
+                                        <li
+                                            key={index}
+                                            className="text-base flex justify-between w-full"
+                                        >
+                                            <div>
+                                                {policy.beforeHours}
+                                                時間前
+                                            </div>
+                                            <div>{policy.percentage}%</div>
+                                        </li>
+                                    );
+                                })}
+                        </ul>
+                    </div>
+                )}
             </div>
             <div className="flex my-4 space-x-2">
                 <Button>
