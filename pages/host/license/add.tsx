@@ -21,12 +21,36 @@ import { GET_LICENSE_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
 
 export const licenseTypes = [
     {
-        id: "type1",
-        title: "ライセンスタイプ 1",
+        id: "宿泊「旅館業営業許可書」（旅館ホテル営業）",
+        title: "宿泊「旅館業営業許可書」（旅館ホテル営業）",
     },
     {
-        id: "type2",
-        title: "ライセンスタイプ 2",
+        id: "飲食「営業許可書」（飲食店業）",
+        title: "飲食「営業許可書」（飲食店業）",
+    },
+    {
+        id: "防災「適マーク」",
+        title: "防災「適マーク」",
+    },
+    {
+        id: "「理容室・美容室開業届」（保健所から発行）",
+        title: "「理容室・美容室開業届」（保健所から発行）",
+    },
+    {
+        id: "従業員名簿",
+        title: "従業員名簿",
+    },
+    {
+        id: "管理美容師（資格保有者）",
+        title: "管理美容師（資格保有者）",
+    },
+    {
+        id: "病院「診療施設開設届」「獣医師免許」",
+        title: "病院「診療施設開設届」「獣医師免許」",
+    },
+    {
+        id: "営業許可証",
+        title: "営業許可証",
     },
 ];
 
@@ -215,6 +239,44 @@ const LicenseUpload = ({ userSession }) => {
                                 <h3 className="text-xl font-medium text-gray-700">
                                     アップロードする
                                 </h3>
+                                <div className="mt-8 mb-4">
+                                    <div className="w-full">
+                                        必要な資格の種類（免許証や営業許可証）
+                                        <br />
+                                        <strong>■宿泊業、飲食業</strong>
+                                        <br />
+                                        ・宿泊「旅館業営業許可書」（旅館ホテル営業）
+                                        <br />
+                                        ・飲食「営業許可書」（飲食店業）
+                                        <br />
+                                        ・防災「適マーク」
+                                        <br />
+                                        <strong>■美容室</strong>
+                                        <br />
+                                        「理容室・美容室開業届」（保健所から発行）
+                                        <br />
+                                        ※上記を提出する際に、従業員名簿、管理美容師（資格保有者）の提出が必要
+                                        <br />
+                                        <strong>
+                                            ■ペット取り扱い・トリマーサロン等ペットを取り扱う業者全般に必要　「動物取扱業」
+                                        </strong>
+                                        <br />
+                                        以下7種類の項目があるのでどれに当てはまるかチェックを入れてもらうようにしたい
+                                        <br />
+                                        （１，販売・２，保管・３，貸出し・４，訓練・５，展示・６，競りあっせん・７，譲受飼養）
+                                        <br />
+                                        ・病院「診療施設開設届」「獣医師免許」
+                                        <br />
+                                        <strong>■アスレチック等:</strong>
+                                        <br />
+                                        「営業許可証」
+                                        <br />
+                                        <strong>■レンタルスペース:</strong>
+                                        <br />
+                                        「営業許可証」
+                                        <br />
+                                    </div>
+                                </div>
                                 <div className="mt-8 mb-4">
                                     <div className="w-full">
                                         <select

@@ -15,36 +15,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-// const getNewToken = async () => {
-//     const token = await "ss";
-//     return token;
-// }
-
-// const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
-//     if (graphQLErrors)
-
-//         graphQLErrors.forEach(async ({ message, locations, path }) => {
-//             if (message === "Token expired") {
-//                 const authorization = await getNewToken();
-//                 // modify the operation context with a new token
-//                 const oldHeaders = operation.getContext().headers;
-//                 operation.setContext({
-//                     headers: {
-//                         ...oldHeaders,
-//                         authorization,
-//                     },
-//                 });
-//                 // retry the request, returning the new observable
-//                 return forward(operation);
-//             }
-//             console.log(
-//                 `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-//             )
-//         }
-//         );
-//     if (networkError) console.log(`[Network error]: ${networkError}`);
-// });
-
 const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL,
 });

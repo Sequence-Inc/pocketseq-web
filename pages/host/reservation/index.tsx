@@ -6,6 +6,7 @@ import { IColumns } from "src/elements/Table";
 import HostLayout from "src/layouts/HostLayout";
 import { format } from "date-fns";
 import {
+    APPROVE_HOTEL_RESERVATION,
     APPROVE_RESERVATION,
     RESERVATIONS,
 } from "src/apollo/queries/host.queries";
@@ -37,6 +38,7 @@ const ReservationList = ({ userSession }) => {
     });
 
     const [approveReservation] = useMutation(APPROVE_RESERVATION);
+    const [approveHotelReservation] = useMutation(APPROVE_HOTEL_RESERVATION);
 
     const keys = [
         { name: "Space Name", key: "space" },
@@ -65,10 +67,21 @@ const ReservationList = ({ userSession }) => {
             const resp = await approveReservation({
                 variables: { reservationId },
             });
-            alert("Approved");
+            alert(resp.data?.approveReservation.message);
             refetch();
         } catch (err) {
             console.log(err);
+        }
+    };
+    const handleHotelApprove = async (reservationId: string) => {
+        try {
+            const resp = await approveHotelReservation({
+                variables: { reservationId },
+            });
+            alert(resp.data?.approveRoomReservation.message);
+            refetch();
+        } catch (err) {
+            alert("Error: " + err?.message);
         }
     };
 
@@ -188,7 +201,7 @@ const ReservationList = ({ userSession }) => {
                     <Button
                         type="button"
                         className="flex mx-auto focus:outline-none"
-                        onClick={() => handleApprove(row.original.id)}
+                        onClick={() => handleHotelApprove(row.original.id)}
                     >
                         承認する
                     </Button>

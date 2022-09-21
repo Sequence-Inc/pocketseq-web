@@ -131,6 +131,15 @@ export const APPROVE_RESERVATION = gql`
     }
 `;
 
+export const APPROVE_HOTEL_RESERVATION = gql`
+    mutation ApproveHotelReservation($reservationId: ID!) {
+        approveRoomReservation(reservationId: $reservationId) {
+            message
+            action
+        }
+    }
+`;
+
 export const CANCEL_RESERVATION_HOST = gql`
     mutation CancelReservationHost($input: CancelReservationInput!) {
         cancelReservation(input: $input) {
