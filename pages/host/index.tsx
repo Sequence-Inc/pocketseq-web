@@ -122,6 +122,8 @@ const HostDashboard = ({ userSession }) => {
     const dashboardContent = (host) => {
         if (!host) return null;
 
+        console.log(host);
+
         return (
             <>
                 <h2 className="text-lg font-medium leading-6 text-gray-900">
@@ -131,18 +133,18 @@ const HostDashboard = ({ userSession }) => {
                     <DashboardCard
                         Icon={ScaleIcon}
                         name="Available Balance"
-                        amount={`${host?.account?.balance?.available[0].currency?.toUpperCase()} ${
-                            host?.account?.balance?.available[0].amount
+                        amount={`${host?.stripeAccount?.balance?.available[0].currency?.toUpperCase()} ${
+                            host?.stripeAccount?.balance?.available[0].amount
                         }`}
-                        url={host?.account?.url}
+                        url={host?.stripeAccount?.url}
                     />
                     <DashboardCard
                         Icon={ScaleIcon}
                         name="Pending Balance"
-                        amount={`${host?.account?.balance?.pending[0].currency?.toUpperCase()} ${
-                            host?.account?.balance?.pending[0].amount
+                        amount={`${host?.stripeAccount?.balance?.pending[0].currency?.toUpperCase()} ${
+                            host?.stripeAccount?.balance?.pending[0].amount
                         }`}
-                        url={host?.account?.url}
+                        url={host?.stripeAccount?.url}
                     />
                 </div>
             </>
