@@ -69,6 +69,7 @@ const HotelReservationById = ({ userSession, id }) => {
             }
         } catch (err) {
             console.log(err);
+            alert(`${err.message}`);
         }
     };
 
@@ -82,11 +83,12 @@ const HotelReservationById = ({ userSession, id }) => {
                 await denyReservation({
                     variables: { reservationId },
                 });
-                alert("Reservertaion Cancelled successfully.");
                 refetch();
+                alert("Reservertaion Cancelled successfully.");
             }
         } catch (err) {
             console.log(err);
+            alert(`Could not cancel reservation. ${err?.message || ""}`);
         }
     };
 
@@ -517,7 +519,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                             // );
                                         }}
                                     >
-                                        Cancel seservation
+                                        Cancel reservation
                                     </button>
                                     <button
                                         type="button"
