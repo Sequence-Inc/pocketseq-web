@@ -406,8 +406,8 @@ export const APPROVE_HOTEL_ROOM_RESERVATION = gql`
 `;
 
 export const DENY_HOTEL_ROOM_RESERVATION = gql`
-    mutation DenyRoomReservation($reservationId: ID!) {
-        denyRoomReservation(reservationId: $reservationId) {
+    mutation DenyRoomReservation($input: CancelRoomReservationInput!) {
+        cancelRoomReservation(input: $input) {
             message
             action
         }

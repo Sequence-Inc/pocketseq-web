@@ -73,7 +73,7 @@ const HotelReservationById = ({ userSession, id }) => {
         }
     };
 
-    const handleDeny = async (reservationId: string) => {
+    const handleDeny = async (hotelRoomReservationId: string) => {
         try {
             if (
                 confirm(
@@ -81,7 +81,7 @@ const HotelReservationById = ({ userSession, id }) => {
                 )
             ) {
                 await denyReservation({
-                    variables: { reservationId },
+                    variables: { input: { hotelRoomReservationId } },
                 });
                 refetch();
                 alert("Reservertaion Cancelled successfully.");
