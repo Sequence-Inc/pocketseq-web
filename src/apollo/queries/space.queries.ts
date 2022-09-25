@@ -555,6 +555,16 @@ export const CANCEL_RESERVATION = gql`
         }
     }
 `;
+
+export const CANCEL_ROOM_RESERVATION = gql`
+    mutation CancelRoomReservation($input: CancelRoomReservationInput!) {
+        cancelRoomReservation(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const ADD_REVIEW = gql`
     mutation addReview($input: GiveRatingInput!) {
         giveRating(input: $input) {

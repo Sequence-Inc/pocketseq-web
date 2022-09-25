@@ -13,6 +13,7 @@ import Head from "next/head";
 import {
     ADD_REVIEW,
     CANCEL_RESERVATION,
+    CANCEL_ROOM_RESERVATION,
     GET_RESERVATION_BY_ID,
 } from "src/apollo/queries/space.queries";
 import { useMutation, useQuery } from "@apollo/client";
@@ -41,7 +42,7 @@ const ReservationById = ({ userSession, id }) => {
         },
     });
 
-    const [cancelReservation] = useMutation(CANCEL_RESERVATION);
+    const [cancelRoomReservation] = useMutation(CANCEL_ROOM_RESERVATION);
     const [addReview, { loading: addReviewLoading }] = useMutation(ADD_REVIEW);
 
     if (reservationLoading) {
@@ -77,10 +78,9 @@ const ReservationById = ({ userSession, id }) => {
         );
         if (choice) {
             try {
-                // const { data } = await cancelReservation({
-                //     variables: { input: { reservationId: id } },
-                // });
-                // alert(`${data.cancelReservation.message}`);
+                const { data } = await cancelRoomReservation({
+                    variables: { input: { hotelRoomReservationId: id } },
+                });
                 alert(`Reservation cancelled!`);
             } catch (error) {
                 alert(`Error! ${error.message}`);

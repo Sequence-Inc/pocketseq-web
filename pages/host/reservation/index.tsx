@@ -216,33 +216,63 @@ const ReservationList = ({ userSession }) => {
         setLoadComplete(true);
     }, []);
 
-    // const handleNextPrev = (type: "next" | "prev") => {
-    //     const hasNext = data?.reservations?.paginationInfo?.hasNext;
-    //     const hasPrevious = data?.reservations?.paginationInfo?.hasNext;
-    //     if (type === "next" && hasNext) {
-    //         refetch({
-    //             paginate: {
-    //                 take: noOfItems,
-    //                 skip: skip + noOfItems,
-    //             },
-    //             filter: {},
-    //         });
-    //         setSkip(skip + noOfItems);
-    //     } else if (type === "prev" && hasPrevious) {
-    //         refetch({
-    //             paginate: {
-    //                 take: noOfItems,
-    //                 skip: skip - noOfItems,
-    //             },
-    //             filter: {},
-    //         });
-    //         setSkip(skip - noOfItems);
-    //     }
-    // };
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.reservations?.paginationInfo?.hasNext;
+            const hasPrevious = data?.reservations?.paginationInfo?.hasPrevious;
 
-    const handleNextPrev = () => {
-        return null;
-    };
+            if (type === "next" && hasNext) {
+                refetch({
+                    spacePaginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    spacePaginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
+    const handlePaginateHotels = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext =
+                data?.hotelRoomReservations?.paginationInfo?.hasNext;
+            const hasPrevious =
+                data?.hotelRoomReservations?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    hotelPaginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    hotelPaginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
+    // const handleNextPrev = () => {
+    //     return null;
+    // };
 
     let content;
     if (loading) {
@@ -263,7 +293,7 @@ const ReservationList = ({ userSession }) => {
                         columns={columns}
                         data={data?.reservations?.data || []}
                         paginate={data?.reservations?.paginationInfo}
-                        handlePaginate={handleNextPrev}
+                        handlePaginate={handlePaginateSpaces}
                     />
                 </div>
                 <div className="space-y-4">
@@ -274,7 +304,7 @@ const ReservationList = ({ userSession }) => {
                         columns={hotelColumns}
                         data={data?.hotelRoomReservations?.data || []}
                         paginate={data?.hotelRoomReservations?.paginationInfo}
-                        handlePaginate={handleNextPrev}
+                        handlePaginate={handlePaginateHotels}
                     />
                 </div>
             </div>

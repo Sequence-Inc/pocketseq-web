@@ -69,10 +69,11 @@ const HotelReservationById = ({ userSession, id }) => {
             }
         } catch (err) {
             console.log(err);
+            alert(`${err.message}`);
         }
     };
 
-    const handleDeny = async (reservationId: string) => {
+    const handleDeny = async (hotelRoomReservationId: string) => {
         try {
             if (
                 confirm(
@@ -80,13 +81,14 @@ const HotelReservationById = ({ userSession, id }) => {
                 )
             ) {
                 await denyReservation({
-                    variables: { reservationId },
+                    variables: { input: { hotelRoomReservationId } },
                 });
-                alert("Reservertaion Cancelled successfully.");
                 refetch();
+                alert("Reservertaion Cancelled successfully.");
             }
         } catch (err) {
             console.log(err);
+            alert(`Could not cancel reservation. ${err?.message || ""}`);
         }
     };
 
@@ -178,7 +180,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                     variant={
                                         approved ? "disabled" : "secondary"
                                     }
-                                    disabled={approved}
+                                    // disabled={approved}
                                     onClick={() => {
                                         handleDeny(id);
                                     }}
@@ -517,7 +519,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                             // );
                                         }}
                                     >
-                                        Cancel seservation
+                                        Cancel reservation
                                     </button>
                                     <button
                                         type="button"

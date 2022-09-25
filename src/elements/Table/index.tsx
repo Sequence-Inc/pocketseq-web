@@ -103,7 +103,7 @@ const Table = ({
                                         disabled={!paginate?.hasPrevious}
                                         type="button"
                                         onClick={() => {
-                                            handlePaginate("next");
+                                            handlePaginate("prev");
                                         }}
                                     >
                                         {t("previous-page")}
@@ -113,7 +113,7 @@ const Table = ({
                                         disabled={!paginate?.hasNext}
                                         type="button"
                                         onClick={() => {
-                                            handlePaginate("prev");
+                                            handlePaginate("next");
                                         }}
                                     >
                                         {t("next-page")}
