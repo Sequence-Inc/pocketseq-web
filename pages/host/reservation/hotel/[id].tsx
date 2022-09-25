@@ -180,7 +180,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                     variant={
                                         approved ? "disabled" : "secondary"
                                     }
-                                    disabled={approved}
+                                    // disabled={approved}
                                     onClick={() => {
                                         handleDeny(id);
                                     }}
