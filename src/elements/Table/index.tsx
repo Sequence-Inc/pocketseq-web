@@ -99,7 +99,10 @@ const Table = ({
                             >
                                 <div className="flex justify-between flex-1 sm:justify-end">
                                     <button
-                                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        className={`relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${
+                                            !paginate?.hasPrevious &&
+                                            `disabled:bg-gray-100 disabled:cursor-not-allowed`
+                                        }`}
                                         disabled={!paginate?.hasPrevious}
                                         type="button"
                                         onClick={() => {
@@ -109,7 +112,12 @@ const Table = ({
                                         {t("previous-page")}
                                     </button>
                                     <button
-                                        className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        className={`relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50
+                                        ${
+                                            !paginate?.hasNext &&
+                                            `disabled:bg-gray-100 disabled:cursor-not-allowed`
+                                        }
+                                        `}
                                         disabled={!paginate?.hasNext}
                                         type="button"
                                         onClick={() => {

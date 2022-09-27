@@ -12,6 +12,7 @@ import {
     USER_ACCOUNT,
     COMPANY_ACCOUNT,
     HOTEL_OBJECT,
+    PAGINATION_INFO,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -112,37 +113,46 @@ export const UPDATE_SPACE = gql`
 `;
 
 export const MY_SPACES = gql`
-    query MySpaces {
-        mySpaces {
-            id
-            name
-            maximumCapacity
-            numberOfSeats
-            spaceSize
-            needApproval
-            photos {
-                ${PHOTO}
-            }
-            nearestStations {
-                station {
-                    ${STATION}
-                }
-                via
-                time
-            }
-            spaceTypes {
+    query MySpaces(
+        $paginate: PaginationOption
+    ) {
+        mySpaces(paginate:$paginate){
+            data {
                 id
-                title
-                description
-                photo {
+                name
+                maximumCapacity
+                numberOfSeats
+                spaceSize
+                needApproval
+                photos {
                     ${PHOTO}
                 }
+                nearestStations {
+                    station {
+                        ${STATION}
+                    }
+                    via
+                    time
+                }
+                spaceTypes {
+                    id
+                    title
+                    description
+                    photo {
+                        ${PHOTO}
+                    }
+                }
+                address {
+                    ${ADDRESS}
+                }
+                published 
             }
-            address {
-                ${ADDRESS}
+            paginationInfo{
+                ${PAGINATION_INFO}
             }
-            published
+        
         }
+
     }
 `;
 
