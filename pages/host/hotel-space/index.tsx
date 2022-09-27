@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 
 import { getSession } from "next-auth/react";
@@ -20,15 +20,23 @@ import { IColumns, TTableKey } from "src/types/timebookTypes";
 import { General } from "src/apollo/queries/hotel";
 
 const { query: generalQueries } = General;
+const noOfItems = 10;
 
 const HotelSpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
+    const [skip, setSkip] = useState<number>(0);
 
     const { t } = useTranslation("adminhost");
-    const { data, loading, error } = useQuery(generalQueries.MY_HOTELS, {
-        fetchPolicy: "network-only",
-    });
+    const { data, loading, error, refetch } = useQuery(
+        generalQueries.MY_HOTELS,
+        {
+            fetchPolicy: "network-only",
+            variables: {
+                paginate: { take: noOfItems, skip: 0 },
+            },
+        }
+    );
 
     const keys: TTableKey[] = [
         { name: t("space-name"), key: "name" },
@@ -136,6 +144,32 @@ const HotelSpace = ({ userSession }) => {
         setLoadComplete(true);
     }, []);
 
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.myHotels?.paginationInfo?.hasNext;
+            const hasPrevious = data?.myHotels?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
     let content;
 
     if (loading) {
@@ -146,7 +180,14 @@ const HotelSpace = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data.myHotels} />;
+        content = (
+            <Table
+                columns={columns}
+                data={data?.myHotels?.data}
+                handlePaginate={handlePaginateSpaces}
+                paginate={data?.myHotels?.paginationInfo}
+            />
+        );
     }
 
     return (

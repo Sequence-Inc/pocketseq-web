@@ -157,17 +157,23 @@ export const MY_SPACES = gql`
 `;
 
 export const GET_MY_LICENSE = gql`
-    query MyLicense{
-        getMyLicenses {
-            id
-            type
-            approved
-            remarks
-            photos {
-                ${PHOTO}
-            }
-            createdAt
-            updatedAt
+    query MyLicense($paginate:paginationInfo){
+        getMyLicenses(paginate:$paginate) {
+            data{ 
+                id
+                type
+                approved
+                remarks
+                photos {
+                    ${PHOTO}
+                }
+                createdAt
+                updatedAt
+                }
+                paginationInfo{
+                ${PAGINATION_INFO}
+                }
+
         }
     }
 `;

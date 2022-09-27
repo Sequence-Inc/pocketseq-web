@@ -16,12 +16,49 @@ import useTranslation from "next-translate/useTranslation";
 import { IColumns, TTableKey } from "src/types/timebookTypes";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
+const noOfItems = 10;
+
 const OptionList = ({ userSession }) => {
     const router = useRouter();
     const { t } = useTranslation("adminhost");
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
-    const { data, error, loading } = useQuery(OptionQueires.MY_OPTIONS);
+    const [skip, setSkip] = useState<number>(0);
+
+    const { data, error, loading, refetch } = useQuery(
+        OptionQueires.MY_OPTIONS,
+        {
+            variables: {
+                paginate: { take: noOfItems, skip: 0 },
+            },
+        }
+    );
+
+    const handlePaginate = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.myOptions?.paginationInfo?.hasNext;
+            const hasPrevious = data?.myOptions?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
 
     const keys: TTableKey[] = [{ name: "Name", key: "name" }];
 
@@ -108,7 +145,14 @@ const OptionList = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data?.myOptions} />;
+        content = (
+            <Table
+                columns={columns}
+                data={data?.myOptions?.data}
+                handlePaginate={handlePaginate}
+                paginate={data?.myoptions?.paginationInfo}
+            />
+        );
     }
     return (
         <HostLayout userSession={userSession}>

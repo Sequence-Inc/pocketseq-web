@@ -1,25 +1,21 @@
 import { gql } from "@apollo/client";
 import {
-    ADDRESS,
-    PHOTO,
-    STATION,
+    PAGINATION_INFO,
     HOTLE_ROOM,
-    IMAGE_UPLOAD_RESULT,
     PRICE_SCHEME_OBJECT,
     PRICE_OVERRIDE_OBJECT,
     STOCK_OVERRIDE_OBJECT,
-    PLAN_OBJECT,
-    PACKAGE_PLAN,
-    HOTEL_OBJECT,
-    USER_ACCOUNT,
-    COMPANY_ACCOUNT,
-    BASIC_PRICE_SETTING_OBJECT,
 } from "../../core.queries";
 
 export const ROOMS_BY_HOTEL_ID = gql`
-    query HotelRoomsByHotelId($hotelId:ID!){
-        myHotelRooms(hotelId:$hotelId){
-            ${HOTLE_ROOM}
+    query HotelRoomsByHotelId($hotelId:ID!,$paginate:PaginationOption){
+        myHotelRooms(hotelId:$hotelId,paginate:$paginate){
+            data{
+                ${HOTLE_ROOM}
+            }
+            paginationInfo{
+            ${PAGINATION_INFO}
+            }
         }
     }
 `;
