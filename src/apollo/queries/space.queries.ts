@@ -157,7 +157,7 @@ export const MY_SPACES = gql`
 `;
 
 export const GET_MY_LICENSE = gql`
-    query MyLicense($paginate:paginationInfo){
+    query MyLicense($paginate:PaginationOption){
         getMyLicenses(paginate:$paginate) {
             data{ 
                 id
@@ -169,10 +169,10 @@ export const GET_MY_LICENSE = gql`
                 }
                 createdAt
                 updatedAt
-                }
-                paginationInfo{
+            }
+            paginationInfo{
                 ${PAGINATION_INFO}
-                }
+            }
 
         }
     }
