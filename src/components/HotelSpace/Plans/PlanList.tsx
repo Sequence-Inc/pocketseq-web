@@ -11,11 +11,12 @@ interface IPlanListProps {
     loading?: boolean;
     refetching?: boolean;
     setFormData?: any;
+    handlePaginate?: (val: string) => void;
+    pagination?: Record<any, any>;
 }
 
 const RoomList = (props: IPlanListProps) => {
-    const { data, loading, setFormData } = props;
-
+    const { data, loading, setFormData, handlePaginate, pagination } = props;
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
@@ -94,7 +95,14 @@ const RoomList = (props: IPlanListProps) => {
     }
 
     if (loadComplete && data?.length) {
-        content = <Table columns={columns} data={[...data]} />;
+        content = (
+            <Table
+                columns={columns}
+                data={[...data]}
+                handlePaginate={handlePaginate}
+                paginate={pagination}
+            />
+        );
     }
 
     return <div className="py-4 text-gray-700">{content}</div>;

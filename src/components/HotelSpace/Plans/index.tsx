@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import AddPlanForm from "./AddPlanForm";
 import { TAddHotelProps } from "@appTypes/timebookTypes";
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { PlusIcon } from "@heroicons/react/outline";
 import PlanList from "./PlanList";
-import { Button, Container } from "@element";
-import { useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
+import { Button } from "@element";
+import { useQuery, NetworkStatus } from "@apollo/client";
 
 import { Plans as PlanQueries } from "src/apollo/queries/hotel";
 
@@ -12,16 +12,21 @@ const { queries: planQueries } = PlanQueries;
 interface IPlanFormProps extends TAddHotelProps {
     hotelId: string;
 }
+
+const noOfItems = 10;
+
 const Plans = (props: IPlanFormProps) => {
     const { hotelId } = props;
     const [showForm, setForm] = useState<boolean>(false);
     const defaultFormData = useRef(null);
+    const [skip, setSkip] = useState<number>(0);
 
-    const { data, loading, error, networkStatus } = useQuery(
+    const { data, loading, networkStatus, refetch } = useQuery(
         planQueries.PACKAGE_PLAN_BY_HOTEL,
         {
             variables: {
                 hotelId,
+                paginate: { take: noOfItems, skip: 0 },
             },
             skip: !hotelId,
         }
@@ -41,6 +46,33 @@ const Plans = (props: IPlanFormProps) => {
             defaultFormData.current = data;
         },
         [defaultFormData]
+    );
+
+    const handlePaginate = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.myPackagePlans?.paginationInfo?.hasNext;
+            const hasPrevious =
+                data?.myPackagePlans?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
     );
 
     useEffect(() => {
@@ -66,10 +98,12 @@ const Plans = (props: IPlanFormProps) => {
             </div>
             {!showForm && (
                 <PlanList
-                    data={data?.myPackagePlans}
+                    data={data?.myPackagePlans?.data}
                     loading={loading}
                     refetching={networkStatus === NetworkStatus.refetch}
                     setFormData={setFormData}
+                    handlePaginate={handlePaginate}
+                    pagination={data?.myPackagePlans?.paginationInfo}
                 />
             )}
             {showForm && (

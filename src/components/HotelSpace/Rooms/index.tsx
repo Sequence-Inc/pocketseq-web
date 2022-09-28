@@ -108,7 +108,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             type="button"
                             variant="primary"
                             onClick={handleNext}
-                            className="font-medium border-l text-sm w-16 bg-indigo-500 hover:bg-indigo-300"
+                            className="font-medium border-l text-sm w-auto flex bg-indigo-500 hover:bg-indigo-300"
                         >
                             次へ
                         </Button>
