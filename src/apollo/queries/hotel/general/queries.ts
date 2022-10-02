@@ -1,35 +1,47 @@
 import { gql } from "@apollo/client";
 
 import { HOTEL_GENERAL_SCHEME } from "./core.schema";
-import { ADDRESS, PHOTO, STATION, HOTLE_ROOM } from "../../core.queries";
+import {
+    ADDRESS,
+    PHOTO,
+    STATION,
+    HOTLE_ROOM,
+    PAGINATION_INFO,
+} from "../../core.queries";
 
 export const MY_HOTELS = gql`
-    query MyHotels {
-        myHotels {
-            id
-            name
-            description
-            checkInTime
-            checkOutTime
-            status
-            address {
-                ${ADDRESS}
-            }
-            nearestStations {
-                station {
-                    ${STATION}
+    query MyHotels($paginate:PaginationOption) {
+        myHotels(paginate:$paginate) {
+            data{
+                id
+                name
+                description
+                checkInTime
+                checkOutTime
+                status
+                address {
+                    ${ADDRESS}
                 }
-                accessType
-                time
-            }  
-            photos {
-                ${PHOTO}
+                nearestStations {
+                    station {
+                        ${STATION}
+                    }
+                    accessType
+                    time
+                }  
+                photos {
+                    ${PHOTO}
+                }
+                rooms{
+                    ${HOTLE_ROOM}
+                }
+                createdAt
+                updatedAt
             }
-            rooms{
-                ${HOTLE_ROOM}
+            paginationInfo{
+            ${PAGINATION_INFO}
             }
-            createdAt
-            updatedAt
+
         }
     }
 `;

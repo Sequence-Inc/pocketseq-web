@@ -1,13 +1,19 @@
 import { gql } from "@apollo/client";
 import * as SCHEMA from "./core.schema";
+import { PAGINATION_INFO } from "../core.queries";
 
 export const MY_CANCEL_POLICIES = gql`
-    query MyCancelPolicies {
-        myCancelPolicies {
-            id
-            name
-            createdAt
-            updatedAt
+    query MyCancelPolicies($paginate:PaginationOption){
+        myCancelPolicies(paginate:$paginate) {
+            data{
+                id
+                name
+                createdAt
+                updatedAt
+            }
+            paginationInfo{
+            ${PAGINATION_INFO}
+            }
         }
     }
 `;

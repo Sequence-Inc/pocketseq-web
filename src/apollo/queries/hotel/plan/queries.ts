@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { PACKAGE_PLAN } from "./core.schema";
-import { PHOTO, PRICE_SCHEME_OBJECT } from "../../core.queries";
+import { PAGINATION_INFO } from "../../core.queries";
 
 export const MY_PACKGAE_PLANS = gql`
     query MyPackagePlans {
@@ -13,11 +13,16 @@ export const MY_PACKGAE_PLANS = gql`
 export const PACKAGE_PLAN_BY_HOTEL = gql`
     query PackagePlanByHotel($hotelId: ID!) {
         myPackagePlans(hotelId: $hotelId) {
+            data {
             id
             name
             description
             paymentTerm
             stock
+            }
+            paginationInfo {
+                ${PAGINATION_INFO}
+            }
         }
     }
 `;

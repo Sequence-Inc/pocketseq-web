@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
@@ -25,15 +25,20 @@ interface IColumns {
     childClassName?: string;
     Cell?: any;
 }
+const noOfItems = 10;
 
 const MySpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const { t } = useTranslation("adminhost");
+    const [skip, setSkip] = useState<number>(0);
 
-    const { data, loading, error } = useQuery(MY_SPACES, {
+    const { data, loading, error, refetch } = useQuery(MY_SPACES, {
         fetchPolicy: "network-only",
+        variables: {
+            paginate: { take: noOfItems, skip: 0 },
+        },
     });
 
     const keys = [
@@ -130,6 +135,32 @@ const MySpace = ({ userSession }) => {
         setLoadComplete(true);
     }, []);
 
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.mySpaces?.paginationInfo?.hasNext;
+            const hasPrevious = data?.mySpaces?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
     let content;
     if (loading) {
         content = <LoadingSpinner loadingText="Loading spaces..." />;
@@ -138,8 +169,14 @@ const MySpace = ({ userSession }) => {
         content = <div>An error occurred: {error.message}</div>;
     }
     if (loadComplete && data) {
-        console.log(columns, data);
-        content = <Table columns={columns} data={data.mySpaces} />;
+        content = (
+            <Table
+                columns={columns}
+                data={data.mySpaces.data}
+                handlePaginate={handlePaginateSpaces}
+                paginate={data?.mySpaces?.paginationInfo}
+            />
+        );
     }
 
     return (

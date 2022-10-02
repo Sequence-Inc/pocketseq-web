@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { Button, Container, Table } from "@element";
 import { getSession } from "next-auth/react";
@@ -19,17 +19,54 @@ import * as CancelPoliciesQueries from "src/apollo/queries/cancelPolicies";
 
 const { queries: cancelPolicyQueries } = CancelPoliciesQueries;
 
+const noOfItems = 10;
+
 const CancelPolicies = ({ userSession }) => {
     const { t } = useTranslation("adminhost");
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
+    const [skip, setSkip] = useState<number>(0);
 
-    const { data, loading, error } = useQuery(
+    const { data, loading, error, refetch } = useQuery(
         cancelPolicyQueries.MY_CANCEL_POLICIES,
         {
             fetchPolicy: "network-only",
+            variables: {
+                paginate: {
+                    take: noOfItems,
+                    skip: 0,
+                },
+            },
         }
     );
+
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.myCancelPolicies?.paginationInfo?.hasNext;
+            const hasPrevious =
+                data?.myCancelPolicies?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
     const keys: TTableKey[] = [{ name: "Name", key: "name" }];
 
     const columnClassName = (key): string | undefined => {
@@ -115,7 +152,14 @@ const CancelPolicies = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data?.myCancelPolicies} />;
+        content = (
+            <Table
+                columns={columns}
+                data={data?.myCancelPolicies?.data}
+                handlePaginate={handlePaginateSpaces}
+                paginate={data?.myCancelPolicies?.paginationInfo}
+            />
+        );
     }
 
     return (

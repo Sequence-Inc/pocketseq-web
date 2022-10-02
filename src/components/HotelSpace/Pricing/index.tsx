@@ -52,18 +52,18 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
     const handleCreateTable = useCallback(() => {
         if (pricingLoading) return setTableData([]);
-        if (!hotelRooms?.myHotelRooms?.length) {
+        if (!hotelRooms?.myHotelRooms?.data?.length) {
             return;
         }
 
         const maxAdultCapacity = Math.max(
-            ...hotelRooms?.myHotelRooms?.map(
+            ...hotelRooms?.myHotelRooms?.data?.map(
                 (room) => room?.maxCapacityAdult || 0
             )
         );
 
         const maxChildCapacity = Math.max(
-            ...hotelRooms?.myHotelRooms?.map(
+            ...hotelRooms?.myHotelRooms?.data?.map(
                 (room) => room?.maxCapacityChild || 0
             )
         );
@@ -96,7 +96,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
         return () => {};
     }, [
-        hotelRooms?.myHotelRooms,
+        hotelRooms?.myHotelRooms?.data,
         pricingDatas?.myPriceSchemes,
         pricingLoading,
     ]);
@@ -120,7 +120,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         content = <LoadingSpinner loadingText="Loading Rooms..." />;
     }
 
-    if (loadComplete && hotelRooms?.myHotelRooms?.length) {
+    if (loadComplete && hotelRooms?.myHotelRooms?.data?.length) {
         content = (
             <Table
                 columns={columns}
@@ -167,7 +167,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         <div className="px-2 pb-2">
             <div className="py-4 text-gray-700">{content}</div>
 
-            {!hotelRooms?.myHotelRooms?.length && (
+            {!hotelRooms?.myHotelRooms?.data?.length && (
                 <div className="flex flex-col space-y-4">
                     <p className="text-sm font-semibold text-gray-500">
                         Rooms are not added yet!! Please add rooms first.
@@ -183,7 +183,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
                 </div>
             )}
 
-            {hotelRooms?.myHotelRooms?.length > 0 && (
+            {hotelRooms?.myHotelRooms?.data?.length > 0 && (
                 <Button
                     variant="primary"
                     className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"

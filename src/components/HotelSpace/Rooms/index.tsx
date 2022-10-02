@@ -14,20 +14,49 @@ import { Room as RoomQueires } from "src/apollo/queries/hotel";
 const { queries: roomQueries } = RoomQueires;
 interface IRoomFormProps extends TAddHotelProps {}
 
+const noOfItems = 10;
+
 const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
     const { t } = useTranslation("adminhost");
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const { addAlert } = useToast();
+    const [skip, setSkip] = useState<number>(0);
 
     const toggleForm = () => setFormVisible((prev) => !prev);
-    const { data, loading, error, networkStatus } = useQuery(
+    const { data, loading, error, networkStatus, refetch } = useQuery(
         roomQueries.ROOMS_BY_HOTEL_ID,
         {
             variables: {
                 hotelId,
+                paginate: { take: noOfItems, skip: 0 },
             },
             skip: !hotelId,
         }
+    );
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.myHotelRooms?.paginationInfo?.hasNext;
+            const hasPrevious = data?.myHotelRooms?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
     );
 
     const [defaultFormData, setDefaultFormData] = useState(null);
@@ -68,7 +97,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
             {!formVisible && (
                 <div className="mb-5">
                     <RoomList
-                        data={data?.myHotelRooms}
+                        data={data?.myHotelRooms?.data}
                         loading={loading}
                         refetching={networkStatus === NetworkStatus.refetch}
                         setFormData={setFormData}
@@ -79,7 +108,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                             type="button"
                             variant="primary"
                             onClick={handleNext}
-                            className="font-medium border-l text-sm w-16 bg-indigo-500 hover:bg-indigo-300"
+                            className="font-medium border-l text-sm w-auto flex bg-indigo-500 hover:bg-indigo-300"
                         >
                             次へ
                         </Button>

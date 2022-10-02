@@ -73,24 +73,34 @@ const HotelReservationById = ({ userSession, id }) => {
         }
     };
 
-    const handleDeny = async (hotelRoomReservationId: string) => {
-        try {
-            if (
-                confirm(
-                    "Are you sure you want to deny this reservation request?"
-                )
-            ) {
-                await denyReservation({
-                    variables: { input: { hotelRoomReservationId } },
-                });
-                refetch();
-                alert("Reservertaion Cancelled successfully.");
+    const handleDeny = React.useCallback(
+        async (hotelRoomReservationId: string) => {
+            try {
+                if (
+                    confirm(
+                        "Are you sure you want to deny this reservation request?"
+                    )
+                ) {
+                    await denyReservation({
+                        variables: {
+                            input: {
+                                hotelRoomReservationId,
+                                cancelCharge: cancelChargePercent,
+                                remarks: cancelRemarks,
+                            },
+                        },
+                    });
+                    setOpen(false);
+                    refetch();
+                    alert("Reservertaion Cancelled successfully.");
+                }
+            } catch (err) {
+                console.log(err);
+                alert(`Could not cancel reservation. ${err?.message || ""}`);
             }
-        } catch (err) {
-            console.log(err);
-            alert(`Could not cancel reservation. ${err?.message || ""}`);
-        }
-    };
+        },
+        [cancelChargePercent, cancelRemarks]
+    );
 
     // const handleReservationCancel = async (
     //     reservationId,
@@ -131,6 +141,10 @@ const HotelReservationById = ({ userSession, id }) => {
         reservee,
         transaction,
     } = hotelRoomReservationById;
+
+    console.log({
+        transaction: transaction.amount * (cancelChargePercent / 100),
+    });
 
     return (
         <HostLayout userSession={userSession}>
@@ -182,7 +196,9 @@ const HotelReservationById = ({ userSession, id }) => {
                                     }
                                     // disabled={approved}
                                     onClick={() => {
-                                        handleDeny(id);
+                                        // handleDeny(id);
+
+                                        setOpen(true);
                                     }}
                                 >
                                     承認しない
@@ -512,11 +528,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                         disabled={cancelReservationLoading}
                                         className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-bold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                                         onClick={() => {
-                                            // handleReservationCancel(
-                                            //     id,
-                                            //     cancelChargePercent,
-                                            //     cancelRemarks
-                                            // );
+                                            handleDeny(id);
                                         }}
                                     >
                                         Cancel reservation

@@ -4,6 +4,12 @@ export const IMAGE = `
     width
 `;
 
+export const PAGINATION_INFO = `
+    hasNext
+    hasPrevious
+    nextCursor
+    `;
+
 export const PROFILE_PHOTO = `
     id
     mime
