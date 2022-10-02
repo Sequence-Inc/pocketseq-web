@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { PHOTO } from "./core.queries";
 
 export const MY_CHAT = gql`
     query MyChat{
@@ -12,7 +13,7 @@ export const MY_CHAT = gql`
         firstName
         lastName
         profilePhoto {
-          id
+          ${PHOTO}
         }
       }
       ... on CompanyProfile{
@@ -20,7 +21,7 @@ export const MY_CHAT = gql`
         accountId
         name
         profilePhoto {
-          id
+          ${PHOTO}
         }
       }
     }
@@ -29,22 +30,11 @@ export const MY_CHAT = gql`
       message
       sender{
         ... on UserProfile{
-        id
-        accountId
-        firstName
-        lastName
-        profilePhoto {
-          id
+            id
         }
-      }
-      ... on CompanyProfile{
-        id
-        accountId
-        name
-        profilePhoto {
-          id
+        ... on CompanyProfile{
+            id
         }
-      }
       }
       updatedAt
     }
@@ -55,8 +45,8 @@ export const MY_CHAT = gql`
 `;
 
 export const CREATE_NEW_CHAT = gql`
-    mutation CreateNewChat($input: CreateNewChatInput!){
-        createNewChat(input: $input){
+    mutation CreateNewChat($input: CreateNewChatInput!) {
+        createNewChat(input: $input) {
             chatId
             messageId
             delivered
@@ -65,8 +55,8 @@ export const CREATE_NEW_CHAT = gql`
 `;
 
 export const SEND_MESSAGE = gql`
-    mutation SendMessage($input: SendMessageInput!){
-        sendMessage(input: $input){
+    mutation SendMessage($input: SendMessageInput!) {
+        sendMessage(input: $input) {
             chatId
             messageId
             delivered
