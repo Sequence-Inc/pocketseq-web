@@ -44,12 +44,12 @@ const Licenses = ({ userSession }) => {
         { name: "備考", key: "remarks" },
     ];
     const columnClassName = (key) => {
-        if (key === "type" || key === "createdAt" || key === "approved")
+        if (key === "remarks" || key === "createdAt" || key === "approved")
             return "w-40";
     };
     const childClassname = (key) => {
-        if (key === "maximumCapacity" || key === "spaceSize") {
-            return "text-right";
+        if (key === "approved" || key === "createdAt") {
+            return "text-center";
         } else {
             return "text-left";
         }
@@ -126,7 +126,7 @@ const Licenses = ({ userSession }) => {
         content = <div>An error occurred: {error.message}</div>;
     }
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data.getMyLicenses} />;
+        content = <Table columns={columns} data={data.getMyLicenses.data} />;
     }
 
     return (

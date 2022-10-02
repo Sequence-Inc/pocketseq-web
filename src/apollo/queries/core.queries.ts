@@ -226,6 +226,7 @@ export const PAGINATION = `
     paginationInfo{
         hasNext
         hasPrevious
+        nextCursor
     }
 `;
 

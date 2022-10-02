@@ -108,7 +108,7 @@ const OptionList = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data?.myOptions} />;
+        content = <Table columns={columns} data={data?.myOptions.data} />;
     }
     return (
         <HostLayout userSession={userSession}>

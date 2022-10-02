@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { PAGINATION } from "../core.queries";
 import { OPTION_OBJECT } from "./core.scheme";
 
 export const MY_OPTIONS = gql`
@@ -8,9 +9,10 @@ export const MY_OPTIONS = gql`
             packagePlanId: $packagePlanId
             spaceId: $spaceId
         ) {
-            id
-            name
-            createdAt
+            data {
+                 ${OPTION_OBJECT}
+            }
+            ${PAGINATION}
         }
     }
 `;

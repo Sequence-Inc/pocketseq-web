@@ -115,7 +115,9 @@ const CancelPolicies = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data?.myCancelPolicies} />;
+        content = (
+            <Table columns={columns} data={data?.myCancelPolicies.data} />
+        );
     }
 
     return (

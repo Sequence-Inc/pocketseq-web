@@ -146,7 +146,7 @@ const HotelSpace = ({ userSession }) => {
     }
 
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data.myHotels} />;
+        content = <Table columns={columns} data={data.myHotels.data} />;
     }
 
     return (

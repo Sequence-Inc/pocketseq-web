@@ -114,34 +114,37 @@ export const UPDATE_SPACE = gql`
 export const MY_SPACES = gql`
     query MySpaces {
         mySpaces {
-            id
-            name
-            maximumCapacity
-            numberOfSeats
-            spaceSize
-            needApproval
-            photos {
-                ${PHOTO}
-            }
-            nearestStations {
-                station {
-                    ${STATION}
-                }
-                via
-                time
-            }
-            spaceTypes {
+            data {
                 id
-                title
-                description
-                photo {
+                name
+                maximumCapacity
+                numberOfSeats
+                spaceSize
+                needApproval
+                photos {
                     ${PHOTO}
                 }
+                nearestStations {
+                    station {
+                        ${STATION}
+                    }
+                    via
+                    time
+                }
+                spaceTypes {
+                    id
+                    title
+                    description
+                    photo {
+                        ${PHOTO}
+                    }
+                }
+                address {
+                    ${ADDRESS}
+                }
+                published
             }
-            address {
-                ${ADDRESS}
-            }
-            published
+            ${PAGINATION}
         }
     }
 `;
@@ -149,15 +152,18 @@ export const MY_SPACES = gql`
 export const GET_MY_LICENSE = gql`
     query MyLicense{
         getMyLicenses {
-            id
-            type
-            approved
-            remarks
-            photos {
-                ${PHOTO}
+            data {
+                id
+                type
+                approved
+                remarks
+                photos {
+                    ${PHOTO}
+                }
+                createdAt
+                updatedAt
             }
-            createdAt
-            updatedAt
+            ${PAGINATION}
         }
     }
 `;

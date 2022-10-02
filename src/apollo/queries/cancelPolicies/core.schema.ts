@@ -13,7 +13,6 @@ export const CANCEL_POLICY = `
 export const FORM_MY_SPACES = `
     id
     name
-  
 `;
 
 export const FORM_MY_HOTELS = `

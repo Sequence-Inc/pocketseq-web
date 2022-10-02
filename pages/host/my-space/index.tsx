@@ -139,7 +139,7 @@ const MySpace = ({ userSession }) => {
     }
     if (loadComplete && data) {
         console.log(columns, data);
-        content = <Table columns={columns} data={data.mySpaces} />;
+        content = <Table columns={columns} data={data.mySpaces.data} />;
     }
 
     return (
