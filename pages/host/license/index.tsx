@@ -77,7 +77,8 @@ const Licenses = ({ userSession }) => {
         { name: "備考", key: "remarks" },
     ];
     const columnClassName = (key) => {
-        if (key === "createdAt" || key === "approved") return "w-40";
+        if (key === "createdAt" || key === "approved" || key === "remarks")
+            return "w-40";
     };
     const childClassname = (key) => {
         if (key === "maximumCapacity" || key === "spaceSize") {
