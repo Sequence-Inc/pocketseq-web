@@ -327,10 +327,6 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                                                                 onChange={(
                                                                     value
                                                                 ) => {
-                                                                    console.log(
-                                                                        value
-                                                                    );
-
                                                                     setSearchParams(
                                                                         {
                                                                             ...searchParams,

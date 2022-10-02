@@ -95,6 +95,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 }))
         );
     }, []);
+
     const [
         fetchPaymentMethods,
         {
@@ -444,10 +445,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         <div>
                             <div className="space-y-6 sm:flex sm:space-y-0">
                                 <div className="flex-1">
-                                    <HostProfile
-                                        title={host?.name}
-                                        description="2015年8月年からメンバー"
-                                    />
+                                    <HostProfile host={host} />
                                 </div>
                                 <Button
                                     variant="primary"

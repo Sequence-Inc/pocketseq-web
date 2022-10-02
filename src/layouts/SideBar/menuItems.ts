@@ -50,6 +50,12 @@ export const navigation = [
         roles: ["user"],
     },
     {
+        name: "プロフィール",
+        href: "/host/profile",
+        Icon: UserCircleIcon,
+        roles: ["host"],
+    },
+    {
         name: "サブスクリプション",
         href: "/user/subscriptions",
         Icon: CalendarIcon,
@@ -73,19 +79,19 @@ export const navigation = [
         Icon: CalendarIcon,
         roles: ["host"],
     },
-
+    {
+        name: "メッセージ",
+        href: "/messages",
+        Icon: MailIcon,
+        roles: ["user", "host"],
+    },
     {
         name: "施設管理",
         href: "/host/my-space",
         Icon: ViewListIcon,
         roles: ["host"],
     },
-    {
-        name: "キャンセルポリシー管理",
-        href: "/host/cancelPolicies",
-        Icon: CalendarIcon,
-        roles: ["host"],
-    },
+
     {
         name: "宿泊管理",
         href: "/host/hotel-space",
@@ -99,17 +105,11 @@ export const navigation = [
         roles: ["host"],
     },
     {
-        name: "メッセージ",
-        href: "/messages",
-        Icon: MailIcon,
-        roles: ["user", "host"],
+        name: "キャンセルポリシー管理",
+        href: "/host/cancelPolicies",
+        Icon: CalendarIcon,
+        roles: ["host"],
     },
-    // {
-    //     name: "設定",
-    //     href: "#",
-    //     Icon: CogIcon,
-    //     roles: ["host"],
-    // },
     {
         name: "ライセンス管理",
         href: "/host/license",

@@ -51,7 +51,6 @@ const Basic = ({
     const redirectToOptions = () => router.push("/host/options");
 
     const handleNext = (id): void => {
-        console.log({ id });
         setSpaceId(id);
         if (hasNext) setActiveStep(activeStep + 1);
     };

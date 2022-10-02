@@ -578,7 +578,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                             {selectedPlan.cancelPolicy.name}
                         </h2>
                         <ul>
-                            {selectedPlan.cancelPolicy.rates
+                            {[...selectedPlan.cancelPolicy.rates]
                                 .sort((a, b) => a.beforeHours - b.beforeHours)
                                 .map((policy, index) => {
                                     return (

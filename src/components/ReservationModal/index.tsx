@@ -73,7 +73,6 @@ const RequestReservationModal = ({
             additionalOptionsFields: additionalOptionsFields,
         };
 
-        console.log({ calculatePriceInput });
         setAdditionalOptions(additionalOptionsFields);
 
         if (

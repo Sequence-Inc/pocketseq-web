@@ -8,7 +8,6 @@ import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Container } from "@element";
 import { useMutation } from "@apollo/client";
-import withAuth from "src/utils/withAuth";
 import { ADD_PHOTO_ID, HOST } from "../../../src/apollo/queries/host.queries";
 import axios from "axios";
 import router from "next/router";
@@ -38,7 +37,7 @@ const PhotoIdUpload = ({ userSession }) => {
                         "Content-Type": mime,
                     },
                 };
-                const photoUpload = await axios.put(url, photo, options);
+                await axios.put(url, photo, options);
                 setLoading(false);
                 setPhoto(null);
                 alert("Photo ID successfully uploaded.");

@@ -14,11 +14,11 @@ export const PACKAGE_PLAN_BY_HOTEL = gql`
     query PackagePlanByHotel($hotelId: ID!) {
         myPackagePlans(hotelId: $hotelId) {
             data {
-            id
-            name
-            description
-            paymentTerm
-            stock
+                id
+                name
+                description
+                paymentTerm
+                stock
             }
             paginationInfo {
                 ${PAGINATION_INFO}

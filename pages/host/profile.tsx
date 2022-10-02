@@ -32,7 +32,7 @@ const HostDashboard = ({ userSession }) => {
 
     let profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
     if (profile.profilePhoto) {
-        profilePhoto = profile.profilePhoto.small.url;
+        profilePhoto = profile.profilePhoto.medium.url;
     }
 
     const name = `${profile.lastName} ${profile.firstName}`;

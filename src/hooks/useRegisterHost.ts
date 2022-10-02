@@ -93,7 +93,6 @@ const useRegisterHost = () => {
         formModel.user && delete formModel.user.confirmPassword;
         formModel.company && delete formModel.company.confirmPassword;
         delete formModel.terms;
-        console.log(formModel);
         registerHost({ variables: { input: formModel } });
     };
 

@@ -129,8 +129,6 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
         cancelPolicy,
     } = space;
 
-    console.log(cancelPolicy);
-
     const location: string = FormatShortAddress(address);
 
     const rating: IRating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
@@ -493,10 +491,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <div>
                             <div className="space-y-6 sm:flex sm:space-y-0">
                                 <div className="flex-1">
-                                    <HostProfile
-                                        title={host?.name}
-                                        description="2015年8月年からメンバー"
-                                    />
+                                    <HostProfile host={host} />
                                 </div>
                                 <Button
                                     variant="primary"

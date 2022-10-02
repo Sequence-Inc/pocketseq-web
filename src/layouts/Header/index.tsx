@@ -112,7 +112,6 @@ const Header = ({ userSession }) => {
         isLoggedIn = true;
         currentUser = profile.name;
         if (profile.profilePhoto) {
-            console.log(profile.profilePhoto);
             profilePhoto = profile.profilePhoto.thumbnail?.url;
         } else {
             profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
