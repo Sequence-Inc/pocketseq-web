@@ -44,8 +44,6 @@ const ReserveSpaceModal = ({
         includedOptions,
     } = useReserveSpace(reservationData?.spaceId);
 
-    console.log({ spaceDetails });
-
     const setSubscription = useCallback(
         (val) => {
             setReservationData((prev) => ({

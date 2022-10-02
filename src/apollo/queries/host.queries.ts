@@ -28,6 +28,14 @@ export const ADD_PHOTO_ID = gql`
     }
 `;
 
+export const ADD_PROFILE_PHOTO = gql`
+    mutation AddProfilePhoto($input: ImageUploadInput!) {
+        addProfilePhoto(input: $input) {
+            ${IMAGE_UPLOAD_RESULT}
+        }
+    }
+`;
+
 export const RESERVATIONS = gql`
     query Reservations(
         $spaceId: ID

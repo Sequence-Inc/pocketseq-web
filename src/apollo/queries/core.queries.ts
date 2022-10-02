@@ -278,6 +278,9 @@ export const SPACE = `
     host {
         accountId
         name
+        profilePhoto {
+           ${PHOTO} 
+        }
         createdAt
     }
     pricePlans {
@@ -551,6 +554,9 @@ rooms {
 host {
     accountId
     name
+    profilePhoto {
+        ${PHOTO}
+    }
     createdAt
 }
 packagePlans {

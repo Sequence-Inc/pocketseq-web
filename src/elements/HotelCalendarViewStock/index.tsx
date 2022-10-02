@@ -190,8 +190,6 @@ const HotelCalendarViewStock = ({
             .endOf("day")
             .valueOf();
 
-        console.log(startDate, endDate);
-
         addStockOverride({
             startDate,
             endDate,

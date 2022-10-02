@@ -449,7 +449,6 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                 ...spaceSettingModel,
                 id: defaultSetting.id,
             };
-            console.log(spaceSetting);
             const updateMutations = [
                 updateSpaceAddress({
                     variables: {
@@ -738,7 +737,6 @@ export const usePriceSpace = () => {
     const loading = false;
 
     const onSubmit = handleSubmit((formData) => {
-        console.log(formData);
         // mutate({ variables: { input: formData } })
     });
 

@@ -311,7 +311,6 @@ const useAddPlans = (props: AddPlansProps) => {
     }, [watchShowCutOff]);
 
     useEffect(() => {
-        console.log({ watchSubscriptionPrice });
         if (!watchSubscriptionPrice) {
             reset({
                 ...getValues(),
@@ -838,7 +837,7 @@ const useAddPlans = (props: AddPlansProps) => {
         fields,
         includedOptions,
         additionalOptions,
-        cancelPolicies: cancelPolicies?.myCancelPolicies || [],
+        cancelPolicies: cancelPolicies?.myCancelPolicies?.data || [],
         handleRoomFieldUpdate,
         updateRoomPlan,
         onRemovePackagePhotos,
