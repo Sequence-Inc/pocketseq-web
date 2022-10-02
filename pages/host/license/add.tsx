@@ -52,6 +52,10 @@ export const licenseTypes = [
         id: "営業許可証",
         title: "営業許可証",
     },
+    {
+        id: "その他",
+        title: "その他",
+    },
 ];
 
 const LicenseUpload = ({ userSession }) => {
