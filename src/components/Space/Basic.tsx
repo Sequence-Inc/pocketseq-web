@@ -242,7 +242,7 @@ const Basic = ({
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        label={"cancelPolicyId"}
+                                        label={"キャンセルポリシー"}
                                         options={cancelPolicies || []}
                                         error={errors.cancelPolicyId && true}
                                         errorMessage="Cancel Policy is required"
@@ -287,7 +287,7 @@ const Basic = ({
                             <div className="border-t border-gray-200 my-8"></div>
                             <div className="md:ml-60 md:pl-4  flex items-center space-x-4">
                                 <h3 className="font-bold text-primary text-xl">
-                                    Options
+                                    オプション
                                 </h3>
 
                                 <Button
@@ -295,7 +295,7 @@ const Basic = ({
                                     onClick={redirectToOptions}
                                     className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
                                 >
-                                    Manage Options
+                                    オプションの管理
                                 </Button>
                             </div>
                         </div>
@@ -303,7 +303,7 @@ const Basic = ({
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
                             <div className="flex justify-between items-center pb-4 space-x-4">
                                 <p className="font-bold text-base">
-                                    Included options
+                                    含まれるオプション
                                 </p>
                             </div>
                             <div className="flex flex-wrap">
@@ -338,7 +338,7 @@ const Basic = ({
 
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
                             <p className="font-bold text-base">
-                                Additional Options
+                                追加のオプション
                             </p>
                             <div className="flex flex-wrap">
                                 {additionalOptions?.map(
@@ -596,7 +596,6 @@ const Basic = ({
                             {/* <Button className="w-auto px-8" disabled={true}>
                                 {t("previous-page")}
                             </Button> */}
-                            <div></div>
                             <Button
                                 type="submit"
                                 variant="primary"

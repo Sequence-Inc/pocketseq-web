@@ -716,7 +716,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         getValues,
         includedOptions,
         additionalOptions,
-        cancelPolicies: cancelPolicies?.myCancelPolicies || [],
+        cancelPolicies: cancelPolicies?.myCancelPolicies?.data || [],
         handleIncludedOptionFieldChange,
         handleAdditionalOptionFieldChange,
         initialValue,
