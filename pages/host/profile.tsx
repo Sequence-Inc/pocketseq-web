@@ -15,6 +15,8 @@ import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const tabs = [{ name: "プロフィール", href: "#", current: true }];
 const HostDashboard = ({ userSession }) => {
+    const isHost = userSession.user.roles.includes("host");
+
     const { data, loading, error } = useQuery(GET_PROFILE, {
         fetchPolicy: "network-only",
     });
@@ -31,8 +33,15 @@ const HostDashboard = ({ userSession }) => {
     const { myProfile: profile } = data;
 
     let profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
-    if (profile.profilePhoto) {
-        profilePhoto = profile.profilePhoto.medium.url;
+
+    if (isHost) {
+        if (profile.host.profilePhoto) {
+            profilePhoto = profile.host.profilePhoto.medium.url;
+        }
+    } else {
+        if (profile.profilePhoto) {
+            profilePhoto = profile.profilePhoto.medium.url;
+        }
     }
 
     const name = `${profile.lastName} ${profile.firstName}`;

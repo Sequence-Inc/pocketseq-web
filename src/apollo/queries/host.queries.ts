@@ -29,8 +29,8 @@ export const ADD_PHOTO_ID = gql`
 `;
 
 export const ADD_PROFILE_PHOTO = gql`
-    mutation AddProfilePhoto($input: ImageUploadInput!) {
-        addProfilePhoto(input: $input) {
+    mutation AddProfilePhoto($input: ImageUploadInput!, $uploadInHost: Boolean) {
+        addProfilePhoto(input: $input, uploadInHost: $uploadInHost) {
             ${IMAGE_UPLOAD_RESULT}
         }
     }

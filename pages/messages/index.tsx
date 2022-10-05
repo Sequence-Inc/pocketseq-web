@@ -33,6 +33,10 @@ const availableStyles = {
     ],
 };
 
+const urlCheck = new RegExp(
+    "([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_])?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?"
+);
+
 const Messages = ({ userSession, name, recipientIds, userId }) => {
     const [newChat, setNewChat] = useState<
         { name: string; recipientIds: string | string[] } | undefined
@@ -180,6 +184,17 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                     ? availableStyles.self
                                     : availableStyles.naself;
 
+                                let htmlMessage = message.message;
+
+                                if (urlCheck.test(htmlMessage)) {
+                                    htmlMessage = htmlMessage.replaceAll(
+                                        urlCheck.exec(htmlMessage)[0],
+                                        `<a class="underline" target="_blank" href="${
+                                            urlCheck.exec(htmlMessage)[0]
+                                        }">${urlCheck.exec(htmlMessage)[0]}</a>`
+                                    );
+                                }
+
                                 return (
                                     <div
                                         className="chat-message"
@@ -188,9 +203,12 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                         <div className={style[0]}>
                                             <div className={style[1]}>
                                                 <div>
-                                                    <span className={style[2]}>
-                                                        {message.message}
-                                                    </span>
+                                                    <span
+                                                        className={style[2]}
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: htmlMessage,
+                                                        }}
+                                                    ></span>
                                                 </div>
                                                 <div className={style[3]}>
                                                     {moment(

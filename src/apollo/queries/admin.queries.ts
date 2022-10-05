@@ -64,6 +64,22 @@ export const ACCOUNT_BY_ID = gql`
         }
     }
 `;
+export const APPROVE_LICENSE = gql`
+    mutation ApproveLicense($id: ID!) {
+        approveLicense(id: $id) {
+            message
+            action
+        }
+    }
+`;
+export const REJECT_LICENSE = gql`
+    mutation RejectLicense($id: ID!, $remarks: String) {
+        rejectLicense(id: $id, remarks: $remarks) {
+            message
+            action
+        }
+    }
+`;
 
 export const UPDATE_PREFECTURE = gql`
     mutation updatePrefecture($input: UpdatePrefectureInput!){

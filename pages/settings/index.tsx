@@ -32,6 +32,8 @@ const UserSettings = ({ userSession }) => {
 
     const { t } = useTranslation("adminhost");
 
+    const isHost = userSession.user.roles.includes("host");
+
     const {
         register,
         handleSubmit,
@@ -87,11 +89,12 @@ const UserSettings = ({ userSession }) => {
                     },
                 };
                 await axios.put(url, photo, options);
-                setIsLoading(false);
-                setPhoto(null);
-                alert("Profile photo successfully uploaded.");
-                router.replace("/host");
-                refetchProfile();
+                setTimeout(() => {
+                    setIsLoading(false);
+                    setPhoto(null);
+                    alert("Profile photo successfully uploaded.");
+                    refetchProfile();
+                }, 1000);
             } catch (error) {
                 alert(`Error: ${error.message}`);
             }
@@ -124,7 +127,9 @@ const UserSettings = ({ userSession }) => {
             return;
         }
         setIsLoading(true);
-        addProfilePhoto({ variables: { input: { mime: photo.type } } });
+        addProfilePhoto({
+            variables: { input: { mime: photo.type }, uploadInHost: isHost },
+        });
     };
 
     const onSubmit = handleSubmit(async (formData) => {
@@ -346,10 +351,17 @@ const UserSettings = ({ userSession }) => {
     };
 
     let photoURL = `https://avatars.dicebear.com/api/identicon/${data?.myProfile?.id}.svg`;
+    if (isHost) {
+        if (data?.myProfile?.host.profilePhoto) {
+            photoURL = data?.myProfile?.host.profilePhoto?.medium?.url;
+        }
+    } else {
+        if (data?.myProfile?.profilePhoto) {
+            photoURL = data?.myProfile?.profilePhoto?.medium?.url;
+        }
+    }
     if (photo) {
         photoURL = URL.createObjectURL(photo);
-    } else if (data?.myProfile?.profilePhoto) {
-        photoURL = data?.myProfile?.profilePhoto?.medium.url;
     }
 
     return (
