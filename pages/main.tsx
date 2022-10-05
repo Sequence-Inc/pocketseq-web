@@ -79,24 +79,24 @@ export default function Home({
         <div className="bg-gray-50">
             <Head>
                 <title>
-                    {config.appName} | 「人×場所×体験」を繋げる
-                    目的に合った場所を検索しよう
+                    {config.appName} ({config.appNameEnglish}) |
+                    「人×場所×体験」を繋げる 目的に合った場所を検索しよう
                 </title>
                 <meta
                     name="description"
-                    content={`${config.appName}は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 <meta
                     name="keywords"
-                    content={`${config.appName},レンタルスペース, ペット可`}
+                    content={`${config.appName} (${config.appNameEnglish}),レンタルスペース, ペット可`}
                 />
                 <meta
                     property="og:title"
-                    content={`${config.appName} | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
+                    content={`${config.appName} (${config.appNameEnglish}) | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
                 />
                 <meta
                     property="og:description"
-                    content={`${config.appName}は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 {/* <meta
                     property="og:image"

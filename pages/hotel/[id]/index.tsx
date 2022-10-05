@@ -213,25 +213,25 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
         <MainLayout userSession={userSession}>
             <Head>
                 <title>
-                    {name} | 「人 × 場所 × 体験」を繋げる
-                    目的に合った場所を検索しよう
+                    {name} | {config.appName} ({config.appNameEnglish}) | 「人 ×
+                    場所 × 体験」を繋げる 目的に合った場所を検索しよう
                 </title>
                 <meta
                     name="description"
-                    content={`${config.appName} タイムブックは、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部
 見つかる`}
                 />
                 <meta
                     name="keywords"
-                    content={`${config.appName}, タイムブック, レンタルスペース, ペット可`}
+                    content={`${config.appName} (${config.appNameEnglish}), レンタルスペース, ペット可`}
                 />
                 <meta
                     property="og:title"
-                    content={`${name} | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
+                    content={`${name} | ${config.appName} (${config.appNameEnglish}) | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
                 />
                 <meta
                     property="og:description"
-                    content={`${config.appName} タイムブックは、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やParty の場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 <meta
                     property="og:image"
@@ -239,7 +239,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                 />
                 <meta
                     name="twitter:title"
-                    content={`${name} | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
+                    content={`${name} | ${config.appName} (${config.appNameEnglish}) | 「人 × 場所 × 体験」を繋げる 目的に合った場所を検索しよう`}
                 />
                 <meta
                     property="twitter:image"
