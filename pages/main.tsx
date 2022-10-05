@@ -84,11 +84,11 @@ export default function Home({
                 </title>
                 <meta
                     name="description"
-                    content={`${config.appName} タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName}は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 <meta
                     name="keywords"
-                    content={`${config.appName},タイムブック,レンタルスペース, ペット可`}
+                    content={`${config.appName},レンタルスペース, ペット可`}
                 />
                 <meta
                     property="og:title"
@@ -96,7 +96,7 @@ export default function Home({
                 />
                 <meta
                     property="og:description"
-                    content={`${config.appName} タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName}は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 {/* <meta
                     property="og:image"
