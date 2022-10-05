@@ -400,134 +400,161 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
 
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
+        try {
+            // check if formData contains default price
+            const {
+                dailyAmount,
+                hourlyAmount,
+                fiveMinuteAmount,
+                tenMinuteAmount,
+                fifteenMinuteAmount,
+                thirtyMinuteAmount,
+                fortyFiveMinuteAmount,
+            } = formData.pricePlan;
+            if (
+                dailyAmount === 0 &&
+                hourlyAmount === 0 &&
+                fiveMinuteAmount === 0 &&
+                tenMinuteAmount === 0 &&
+                fifteenMinuteAmount === 0 &&
+                thirtyMinuteAmount === 0 &&
+                fortyFiveMinuteAmount === 0
+            ) {
+                alert("Please select at least one price plan.");
+                setLoading(false);
+                return;
+            }
 
-        const reducedIncludecOptions = includedOptions
-            ?.filter((item: any) => !!item?.isChecked)
-            ?.map((option) => option.id);
+            const reducedIncludecOptions = includedOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
 
-        const reducedAdditionalOptions = additionalOptions
-            ?.filter((item: any) => !!item?.isChecked)
-            ?.map((option) => option.id);
+            const reducedAdditionalOptions = additionalOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
 
-        const basicModel = {
-            name: formData.name,
-            description: formData.description,
-            maximumCapacity: formData.maximumCapacity,
-            numberOfSeats: formData.numberOfSeats,
-            spaceSize: formData.spaceSize,
-            needApproval: formData.needApproval,
-            includedOptions: reducedIncludecOptions,
-            additionalOptions: reducedAdditionalOptions,
-            cancelPolicyId: formData.cancelPolicyId,
-            subcriptionPrice: formData.subcriptionPrice || undefined,
-        };
-
-        const addressModel = {
-            postalCode: formData.zipCode,
-            prefectureId: formData.prefecture,
-            city: formData.city,
-            addressLine1: formData.addressLine1,
-            addressLine2: formData.addressLine2,
-        };
-
-        const spaceSettingModel = {
-            totalStock: formData.totalStock,
-            businessDays: formData.businessDays,
-            openingHr: formData.openingHr,
-            closingHr: formData.closingHr,
-            breakFromHr: formData.breakFromHr,
-            breakToHr: formData.breakToHr,
-        };
-
-        // check if need to update
-        if (initialValue) {
-            // update
-            const defaultSetting = filterDefaultSpaceSetting(
-                initialValue.settings
-            );
-            const spaceSetting = {
-                ...spaceSettingModel,
-                id: defaultSetting.id,
+            const basicModel = {
+                name: formData.name,
+                description: formData.description,
+                maximumCapacity: formData.maximumCapacity,
+                numberOfSeats: formData.numberOfSeats,
+                spaceSize: formData.spaceSize,
+                needApproval: formData.needApproval,
+                includedOptions: reducedIncludecOptions,
+                additionalOptions: reducedAdditionalOptions,
+                cancelPolicyId: formData.cancelPolicyId,
+                subcriptionPrice: formData.subcriptionPrice || undefined,
             };
-            const updateMutations = [
-                updateSpaceAddress({
-                    variables: {
-                        spaceId: initialValue.id,
-                        address: {
-                            ...addressModel,
-                            id: initialValue.address?.id,
-                        },
-                    },
-                }),
-                updateSpace({
-                    variables: {
-                        input: { ...basicModel, id: initialValue.id },
-                    },
-                }),
-                mutateSpaceTypes({
-                    variables: {
-                        input: {
+
+            const addressModel = {
+                postalCode: formData.zipCode,
+                prefectureId: formData.prefecture,
+                city: formData.city,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+            };
+
+            const spaceSettingModel = {
+                totalStock: formData.totalStock,
+                businessDays: formData.businessDays,
+                openingHr: formData.openingHr,
+                closingHr: formData.closingHr,
+                breakFromHr: formData.breakFromHr,
+                breakToHr: formData.breakToHr,
+            };
+
+            // check if need to update
+            if (initialValue) {
+                // update
+                const defaultSetting = filterDefaultSpaceSetting(
+                    initialValue.settings
+                );
+                const spaceSetting = {
+                    ...spaceSettingModel,
+                    id: defaultSetting.id,
+                };
+                const updateMutations = [
+                    updateSpaceAddress({
+                        variables: {
                             spaceId: initialValue.id,
-                            spaceTypeIds: [formData.spaceTypes],
+                            address: {
+                                ...addressModel,
+                                id: initialValue.address?.id,
+                            },
                         },
-                    },
-                }),
-                updateSpaceDefaultPrice({
-                    variables: {
-                        spaceId: initialValue.id,
-                        input: formData.pricePlan,
-                    },
-                }),
-                updateSpaceSetting({
-                    variables: {
-                        input: {
-                            ...spaceSettingModel,
-                            id: defaultSetting.id,
+                    }),
+                    updateSpace({
+                        variables: {
+                            input: { ...basicModel, id: initialValue.id },
                         },
-                    },
-                }),
-            ];
+                    }),
+                    mutateSpaceTypes({
+                        variables: {
+                            input: {
+                                spaceId: initialValue.id,
+                                spaceTypeIds: [formData.spaceTypes],
+                            },
+                        },
+                    }),
+                    updateSpaceDefaultPrice({
+                        variables: {
+                            spaceId: initialValue.id,
+                            input: formData.pricePlan,
+                        },
+                    }),
+                    updateSpaceSetting({
+                        variables: {
+                            input: {
+                                ...spaceSettingModel,
+                                id: defaultSetting.id,
+                            },
+                        },
+                    }),
+                ];
 
-            await Promise.all(updateMutations);
-            alert("successfully updated!!");
-        } else {
-            // add new!
-            const addSpacesData = await mutate({
-                variables: { input: basicModel },
-            });
+                await Promise.all(updateMutations);
+                alert("successfully updated!!");
+            } else {
+                // add new!
+                const addSpacesData = await mutate({
+                    variables: { input: basicModel },
+                });
 
-            await Promise.all([
-                mutateSpaceAddress({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        address: addressModel,
-                    },
-                }),
-                mutateSpaceTypes({
-                    variables: {
-                        input: {
+                await Promise.all([
+                    mutateSpaceAddress({
+                        variables: {
                             spaceId: addSpacesData.data.addSpace.space.id,
-                            spaceTypeIds: [formData.spaceTypes],
+                            address: addressModel,
                         },
-                    },
-                }),
-                mutateSpaceSettings({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        spaceSetting: spaceSettingModel,
-                    },
-                }),
-                mutateSpaceDefaultPrice({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        input: formData.pricePlan,
-                    },
-                }),
-            ]);
-            addSpacesData.data.addSpace.space.id &&
-                fn(addSpacesData.data.addSpace.space.id);
+                    }),
+                    mutateSpaceTypes({
+                        variables: {
+                            input: {
+                                spaceId: addSpacesData.data.addSpace.space.id,
+                                spaceTypeIds: [formData.spaceTypes],
+                            },
+                        },
+                    }),
+                    mutateSpaceSettings({
+                        variables: {
+                            spaceId: addSpacesData.data.addSpace.space.id,
+                            spaceSetting: spaceSettingModel,
+                        },
+                    }),
+                    mutateSpaceDefaultPrice({
+                        variables: {
+                            spaceId: addSpacesData.data.addSpace.space.id,
+                            input: formData.pricePlan,
+                        },
+                    }),
+                ]);
+                addSpacesData.data.addSpace.space.id &&
+                    fn(addSpacesData.data.addSpace.space.id);
+            }
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
         }
-        setLoading(false);
     });
 
     const handleIncludedOptionFieldChange = useCallback(

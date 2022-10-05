@@ -403,7 +403,7 @@ export const FloatingPriceTwo = ({
                             キャンセルポリシー : {cancelPolicy.name}
                         </h2>
                         <ul>
-                            {cancelPolicy.rates
+                            {[...cancelPolicy.rates]
                                 .sort((a, b) => a.beforeHours - b.beforeHours)
                                 .map((policy, index) => {
                                     return (
