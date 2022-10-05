@@ -64,6 +64,8 @@ export const HostsList = ({ filterOptions }) => {
         return <NetworkHelper type="no-data" />;
     }
 
+    console.log(data.allAccounts);
+
     // return null;
     const normalizedForm = data.allAccounts.data.map((account) => {
         const newAccountData = { ...account };
@@ -80,6 +82,9 @@ export const HostsList = ({ filterOptions }) => {
             let profilePhoto = `https://avatars.dicebear.com/api/identicon/${data.id}.svg`;
             if (data.profilePhoto) {
                 profilePhoto = data.profilePhoto.thumbnail.url;
+            }
+            if (data.host?.profilePhoto) {
+                profilePhoto = data.host.profilePhoto.thumbnail.url;
             }
             return (
                 <div className="flex items-center">
@@ -116,7 +121,7 @@ export const HostsList = ({ filterOptions }) => {
                 );
             }
         } else if (key === "action") {
-            return <Link href={`hosts/${data.id}`}>Detail</Link>;
+            return <Link href={`hosts/${data.accountId}`}>Detail</Link>;
         } else {
             return data[key];
         }

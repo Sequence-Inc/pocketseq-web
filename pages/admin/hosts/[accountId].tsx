@@ -18,16 +18,15 @@ import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 
 function AdminDashboard({ userSession, accountId }) {
-    const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
+    const { data, loading, error, refetch } = useQuery(ACCOUNT_BY_ID, {
         variables: { accountId },
-        fetchPolicy: "cache-only",
+        fetchPolicy: "network-only",
     });
 
     if (loading) return <NetworkHelper type="loading" />;
 
     if (error) return <NetworkHelper type="error" message={error.message} />;
-
-    const account = data.accountById;
+    const account = data?.accountById;
 
     if (account.length === 0) {
         return <NetworkHelper type="no-data" />;
@@ -35,7 +34,7 @@ function AdminDashboard({ userSession, accountId }) {
 
     // get data for accountID this
 
-    let [tabs] = useState([
+    let tabs = [
         {
             title: "Host information",
             component: <HostAccountInfo account={account} />,
@@ -46,9 +45,11 @@ function AdminDashboard({ userSession, accountId }) {
         },
         {
             title: "Licenses",
-            component: <LicenseInfo account={account} />,
+            component: (
+                <LicenseInfo account={account} refetchAccount={refetch} />
+            ),
         },
-    ]);
+    ];
 
     return (
         <HostLayout userSession={userSession}>
