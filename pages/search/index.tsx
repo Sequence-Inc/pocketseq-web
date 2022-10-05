@@ -260,7 +260,9 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
     return (
         <MainLayout userSession={userSession}>
             <Head>
-                <title>Search | {config.appName}</title>
+                <title>
+                    Search | {config.appName} ({config.appNameEnglish})
+                </title>
             </Head>
             <div className="">
                 <div className="pt-16 space-y-10 grid grid-cols-1 lg:grid-cols-9">

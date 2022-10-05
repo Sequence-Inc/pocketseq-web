@@ -9,4 +9,5 @@ export * from "./searchHelper";
 
 export const config = {
     appName: "ポケットシーク",
+    appNameEnglish: "PocketseQ",
 };
