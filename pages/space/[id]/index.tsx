@@ -401,8 +401,9 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             </div>
                             <div className="mt-2 space-x-2 space-y-2 ">
                                 <p className="text-gray-500 text-base ">
-                                    Could not reserve space. Please try again
-                                    later!
+                                    {reservationFailure?.message ||
+                                        `Could not reserve space. Please try again
+                                    later!`}
                                 </p>
                             </div>
                         </div>
