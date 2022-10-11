@@ -51,8 +51,10 @@ const { queries: planQueries, mutations: planMutations } = Plans;
 const MY_ROOMS_BY_HOTEL_ID = gql`
     query HotelRoomsByHotelId($hotelId: ID!) {
         myHotelRooms(hotelId: $hotelId) {
-            id
-            name
+            data {
+                id
+                name
+            }
         }
     }
 `;
@@ -379,13 +381,13 @@ const useAddPlans = (props: AddPlansProps) => {
 
     useEffect(() => {
         if (
-            !hotelRooms?.myHotelRooms?.length ||
+            !hotelRooms?.myHotelRooms?.data?.length ||
             !initialValue?.roomTypes?.length
         ) {
             return;
         }
 
-        hotelRooms?.myHotelRooms?.forEach((room, index) => {
+        hotelRooms?.myHotelRooms?.data?.forEach((room, index) => {
             const initValRoomIndex = initialValue.roomTypes.findIndex(
                 (roomType) => room.id === roomType.hotelRoom.id
             );

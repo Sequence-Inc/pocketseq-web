@@ -456,7 +456,7 @@ const Plans = (props: IPlanFormProps) => {
                             )}
                         </div>
                         <div className="space-y-4">
-                            {!hotelRooms?.myHotelRooms?.length ? (
+                            {!hotelRooms?.myHotelRooms?.data?.length ? (
                                 <span className="text-base  font-semibold text-gray-700 ">
                                     Rooms are not added yet. Please add them
                                     first.
@@ -465,7 +465,7 @@ const Plans = (props: IPlanFormProps) => {
                                 ""
                             )}
 
-                            {hotelRooms?.myHotelRooms?.map(
+                            {hotelRooms?.myHotelRooms?.data?.map(
                                 (room, index) => {
                                     const fieldIndex = roomTypeFields.findIndex(
                                         (item: IFields) =>
