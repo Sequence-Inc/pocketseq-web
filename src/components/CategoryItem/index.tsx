@@ -9,7 +9,16 @@ export interface ICategoryItem {
 
 export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
     return (
-        <Link href={`/search?searchType=space&spaceType=${title}`}>
+        <Link
+            href={{
+                pathname: `/search`,
+                query: {
+                    searchType: "space",
+                    spaceType: title,
+                    spaceDescription: subTitle,
+                },
+            }}
+        >
             <a>
                 <div className="group relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
                     {photo && (

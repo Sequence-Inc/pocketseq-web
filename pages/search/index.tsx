@@ -16,6 +16,7 @@ import { Slider } from "antd";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { ILocationMarker } from "src/types/timebookTypes";
 import { config, PriceFormatter, searchHotel, searchSpace } from "src/utils";
+import { useRouter } from "next/router";
 
 type SearchParams = {
     area?: string;
@@ -50,6 +51,8 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
     const [algoliaSearchResults, setAlgoliaSearchResults] = useState<
         SearchResult[]
     >([]);
+    const router = useRouter();
+    const { query } = router;
 
     useEffect(() => {
         const type = searchParams?.searchType;
@@ -282,6 +285,18 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     </div>
                 </div>
                 <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
+                    <div className="pt-8 pb-4 col-span-9 lg:col-span-5">
+                        {query?.searchType && (
+                            <p className="text-3xl font-bold text-gray-700">
+                                {query?.spaceType}
+                            </p>
+                        )}
+                        {query?.spaceDescription && (
+                            <p className="text-sm font-medium text-gray-500">
+                                {query?.spaceDescription}
+                            </p>
+                        )}
+                    </div>
                     <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
                         <div>
                             <h1 className="flex items-center justify-between mb-6">
