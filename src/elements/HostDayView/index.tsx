@@ -506,6 +506,7 @@ const HostDayView = ({ plans, settings, spaceId }) => {
                             onCancel={() => setShowAddSettingsForm(false)}
                             onSave={(value) => addSettingOverride(value)}
                             loading={loading}
+                            type="DATE_TIME"
                         />
                     )}
                     <div className="mt-4 space-y-3">
@@ -513,6 +514,7 @@ const HostDayView = ({ plans, settings, spaceId }) => {
                             <SettingsOverride
                                 setting={setting}
                                 key={setting.id}
+                                deleteSettingOverride={() => {}}
                             />
                         ))}
                     </div>
