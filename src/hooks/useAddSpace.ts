@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useFieldArray, useForm, UseFieldArrayReturn } from "react-hook-form";
 import {
@@ -20,7 +20,6 @@ import {
     GET_UPLOAD_TOKEN,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
-import { queries as OptionQueires } from "src/apollo/queries/options";
 import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
 import handleUpload from "src/utils/uploadImages";
 
@@ -248,6 +247,21 @@ export const useGetInitialSpace = (id) => {
     };
 };
 
+const MY_OPTIONS = gql`
+    query MyOptions($hotelId: ID, $packagePlanId: ID, $spaceId: ID) {
+        myOptions(
+            hotelId: $hotelId
+            packagePlanId: $packagePlanId
+            spaceId: $spaceId
+        ) {
+            data {
+                id
+                name
+                createdAt
+            }
+        }
+    }
+`;
 export const useBasicSpace = (fn, selectedSpaceId) => {
     const [zipCode, setZipCode] = useState("");
     const [freeCoords, setFreeCoords] = useState<
@@ -263,7 +277,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
         data: options,
         loading: optionsLoading,
         error: optionsError,
-    } = useQuery(OptionQueires.MY_OPTIONS);
+    } = useQuery(MY_OPTIONS);
     const {
         data: cancelPolicies,
         loading: cancelPoliciesLoading,
@@ -605,9 +619,9 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
     );
 
     const setInitialIncludedOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.includedOptions?.length) {
@@ -640,9 +654,9 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
     }, [options, initialValue?.includedOptions]);
 
     const setInitialAdditionalOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.additionalOptions?.length) {

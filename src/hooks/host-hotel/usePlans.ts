@@ -1,8 +1,7 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Plans, Room } from "src/apollo/queries/hotel";
-import { queries as OptionQueires } from "src/apollo/queries/options";
+import { Plans } from "src/apollo/queries/hotel";
 import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
 
 import handleUpload from "src/utils/uploadImages";
@@ -15,6 +14,22 @@ import {
     FieldArrayWithId,
 } from "react-hook-form";
 import useReduceObject from "@hooks/useFilterObject";
+
+const MY_OPTIONS = gql`
+    query MyOptions($hotelId: ID, $packagePlanId: ID, $spaceId: ID) {
+        myOptions(
+            hotelId: $hotelId
+            packagePlanId: $packagePlanId
+            spaceId: $spaceId
+        ) {
+            data {
+                id
+                name
+                createdAt
+            }
+        }
+    }
+`;
 
 type AddPlansProps = {
     hotelId: string;
@@ -35,8 +50,10 @@ const { queries: planQueries, mutations: planMutations } = Plans;
 const MY_ROOMS_BY_HOTEL_ID = gql`
     query HotelRoomsByHotelId($hotelId: ID!) {
         myHotelRooms(hotelId: $hotelId) {
-            id
-            name
+            data {
+                id
+                name
+            }
         }
     }
 `;
@@ -106,8 +123,7 @@ const useAddPlans = (props: AddPlansProps) => {
         data: options,
         loading: optionsLoading,
         error: optionsError,
-    } = useQuery(OptionQueires.MY_OPTIONS);
-
+    } = useQuery(MY_OPTIONS);
     const {
         register,
         unregister,
@@ -364,13 +380,13 @@ const useAddPlans = (props: AddPlansProps) => {
 
     useEffect(() => {
         if (
-            !hotelRooms?.myHotelRooms?.length ||
+            !hotelRooms?.myHotelRooms?.data?.length ||
             !initialValue?.roomTypes?.length
         ) {
             return;
         }
 
-        hotelRooms?.myHotelRooms?.forEach((room, index) => {
+        hotelRooms?.myHotelRooms?.data?.forEach((room, index) => {
             const initValRoomIndex = initialValue.roomTypes.findIndex(
                 (roomType) => room.id === roomType.hotelRoom.id
             );
@@ -397,9 +413,9 @@ const useAddPlans = (props: AddPlansProps) => {
     }, [hotelRooms, initialValue?.roomTypes]);
 
     const setInitialIncludedOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.includedOptions?.length) {
@@ -434,9 +450,9 @@ const useAddPlans = (props: AddPlansProps) => {
     useEffect(setInitialIncludedOptions, [setInitialIncludedOptions]);
 
     const setInitialAdditionalOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.additionalOptions?.length) {
