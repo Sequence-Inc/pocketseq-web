@@ -1,8 +1,7 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Plans, Room } from "src/apollo/queries/hotel";
-import { queries as OptionQueires } from "src/apollo/queries/options";
+import { Plans } from "src/apollo/queries/hotel";
 import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
 
 import handleUpload from "src/utils/uploadImages";
