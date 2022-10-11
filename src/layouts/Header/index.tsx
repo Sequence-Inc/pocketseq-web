@@ -28,14 +28,14 @@ const navLinkItems: INavLinkItems[] = [
         name: "スペース掲載",
         link: "/auth/host-register",
     },
-    {
-        name: "初めての方へ",
-        link: "/services",
-    },
-    {
-        name: "ヘルプ",
-        link: "/help",
-    },
+    // {
+    //     name: "初めての方へ",
+    //     link: "/services",
+    // },
+    // {
+    //     name: "ヘルプ",
+    //     link: "/help",
+    // },
     {
         name: "ログイン",
         link: "/api/auth/signin",

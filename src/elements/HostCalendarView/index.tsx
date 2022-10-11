@@ -19,6 +19,7 @@ import {
     ADD_PRICE_OVERRIDE,
     ADD_SETTING_OVERRIDE,
     REMOVE_PRICE_OVERRIDE,
+    REMOVE_SPACE_SETTING_OVERRIDE,
 } from "src/apollo/queries/space.queries";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import { TrashIcon } from "@heroicons/react/outline";
@@ -49,6 +50,10 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
 
     const [settingOverrideMutation] = useMutation(ADD_SETTING_OVERRIDE);
     const [priceOverrideMutation] = useMutation(ADD_PRICE_OVERRIDE);
+    const [removeSpacePriceOverride] = useMutation(REMOVE_PRICE_OVERRIDE);
+    const [removeSpaceSettingOverride] = useMutation(
+        REMOVE_SPACE_SETTING_OVERRIDE
+    );
 
     useHotkeys("esc", () => {
         onClearRangeSelection();
@@ -86,7 +91,11 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 };
             });
             setDefaultSetting(setting.filter((_) => _.isDefault === true)[0]);
-            setSettingOverrides(setting.filter((_) => _.isDefault === false));
+            setSettingOverrides(
+                setting.filter(
+                    (_) => _.isDefault === false && _.businessDays.length === 0
+                )
+            );
         }
         setInitialLoadComplete(true);
     }, []);
@@ -148,7 +157,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
 
     const fullCellRenderer = (value: Moment) => {
         let cellClass =
-            "ant-picker-cell-inner ant-picker-calendar-date rounded";
+            "ant-picker-cell-inner ant-picker-calendar-date rounded text-xs";
         let dateClass = "ant-picker-calendar-date-value pr-2";
         let selectedStyle = {};
         let selectedStyleText = {};
@@ -258,7 +267,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                         </div>
                     )}
                     <div>在庫: {setting?.totalStock}</div>
-                    <div className="font-bold">
+                    <div className="font-bold text-sm">
                         {price && `${PriceFormatter(price)}/日`}
                     </div>
                 </div>
@@ -329,6 +338,36 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
         }
     };
 
+    const handleDeleteSettingOverride = async (id) => {
+        if (confirm("設定上書きを消す？")) {
+            try {
+                const { data } = await removeSpaceSettingOverride({
+                    variables: {
+                        id,
+                    },
+                });
+                alert(data.removeSpaceSetting.message);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    };
+
+    const handleDeletePriceOverride = async (id) => {
+        if (confirm("価格上書きを消す？")) {
+            try {
+                const { data } = await removeSpacePriceOverride({
+                    variables: {
+                        id,
+                    },
+                });
+                alert(data.removePricePlanOverride.message);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    };
+
     const currentSelection =
         selectedDates.length > 1
             ? [selectedDates[0], selectedDates[selectedDates.length - 1]]
@@ -377,13 +416,22 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                             onCancel={() => setShowAddSettingsForm(false)}
                             onSave={(value) => addSettingOverride(value)}
                             loading={loading}
+                            type="DATE_TIME"
                         />
                     )}
                     <div className="mt-4 space-y-3">
-                        {settings.map((setting) => (
+                        <SettingsOverride
+                            setting={defaultSetting}
+                            key={1}
+                            deleteSettingOverride={() => {}}
+                        />
+                        {settingOverrides.map((setting) => (
                             <SettingsOverride
                                 setting={setting}
                                 key={setting.id}
+                                deleteSettingOverride={
+                                    handleDeleteSettingOverride
+                                }
                             />
                         ))}
                     </div>
@@ -440,7 +488,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
 
 export default HostCalendarView;
 
-export const SettingsOverride = ({ setting }) => {
+export const SettingsOverride = ({ setting, deleteSettingOverride }) => {
     const {
         id,
         totalStock,
@@ -458,10 +506,11 @@ export const SettingsOverride = ({ setting }) => {
     const from = fromDate ? moment(fromDate) : null;
     const to = toDate ? moment(toDate) : null;
 
-    const title =
-        from || to
-            ? `${from.format("YYYY-MM-DD")} 〜 ${to.format("YYYY-MM-DD")}`
-            : "Default";
+    const title = isDefault
+        ? "デフォルト"
+        : `上書き ${from.format("YYYY年MM月DD日")} 〜 ${to.format(
+              "YYYY年MM月DD日"
+          )}`;
     const openingTime = getTimeFromFloat(openingHr);
     const closingTime = getTimeFromFloat(closingHr);
     const breakFromTime = breakFromHr && getTimeFromFloat(breakFromHr);
@@ -520,8 +569,8 @@ export const SettingsOverride = ({ setting }) => {
         <div className="border border-gray-200 shadow-sm rounded">
             <Disclosure>
                 <Disclosure.Button className="px-3 py-2 w-full hover:bg-gray-50 text-left">
-                    {title}
-                    <div className="text-gray-400">{setting.id}</div>
+                    <div className="text-gray-600 font-bold">{title}</div>
+                    <div className="text-gray-400 text-xs">{setting.id}</div>
                 </Disclosure.Button>
 
                 <Disclosure.Panel className="border-t border-gray-200 text-gray-600">
@@ -556,6 +605,17 @@ export const SettingsOverride = ({ setting }) => {
                             </span>{" "}
                             {totalStock}
                         </div>
+                        {!isDefault && (
+                            <div>
+                                <button
+                                    onClick={() => deleteSettingOverride(id)}
+                                    className="flex items-center  text-red-500 hover:text-red-600 font-bold"
+                                >
+                                    消す
+                                    <TrashIcon className="w-4 h-4 ml-2" />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </Disclosure.Panel>
             </Disclosure>
@@ -569,17 +629,23 @@ export const SettingsOverrideForm = ({
     onSave,
     onCancel,
     loading,
+    type,
 }: {
     currentSelection?: any;
     defaultSetting: any;
     onSave: any;
     onCancel: any;
     loading: boolean;
+    type: "DATE_TIME" | "DAYS_OF_WEEK";
 }) => {
     const [settings, setSettings] = useState(defaultSetting);
     const [selectedRange, setSelectedRange] = useState<[Moment, Moment]>([
-        moment().add(1, "d"),
-        moment().add(8, "d"),
+        currentSelection && currentSelection[0]
+            ? moment(currentSelection[0])
+            : moment().add(1, "d"),
+        currentSelection && currentSelection[1]
+            ? moment(currentSelection[1])
+            : moment().add(8, "d"),
     ]);
 
     useEffect(() => {
@@ -649,6 +715,7 @@ export const SettingsOverrideForm = ({
             breakToHr,
             closed,
             totalStock,
+            businessDays,
         } = settings;
         onSave({
             closingHr,
@@ -657,40 +724,57 @@ export const SettingsOverrideForm = ({
             breakToHr,
             closed,
             totalStock,
-            fromDate: selectedRange[0],
-            toDate: selectedRange[1],
+            businessDays: type === "DAYS_OF_WEEK" ? businessDays : null,
+            fromDate: type === "DATE_TIME" ? selectedRange[0] : null,
+            toDate: type === "DATE_TIME" ? selectedRange[1] : null,
         });
     };
 
     return (
         <div className="mt-4 space-y-3 border border-gray-200 rounded-lg py-4 px-4">
             <div>
-                <div className="items-start flex-none px-4 py-2 sm:space-x-8 sm:flex sm:px-10">
-                    <div className="block text-sm font-bold text-gray-700 sm:text-right w-60 pt-1">
-                        予定
-                    </div>
-                    <div className="w-full">
-                        <RangePicker
-                            disabledDate={disabledDate}
-                            format="YYYY-MM-DD"
-                            defaultValue={selectedRange}
-                            value={selectedRange}
-                            onChange={(value) => handleDateChange(value)}
-                        />
-                    </div>
-                </div>
+                {type === "DATE_TIME" && (
+                    <>
+                        <div className="items-start flex-none px-4 py-2 sm:space-x-8 sm:flex sm:px-10">
+                            <div className="block text-sm font-bold text-gray-700 sm:text-right w-60 pt-1">
+                                予定
+                            </div>
+                            <div className="w-full">
+                                <RangePicker
+                                    disabledDate={disabledDate}
+                                    format="YYYY-MM-DD"
+                                    defaultValue={selectedRange}
+                                    value={selectedRange}
+                                    onChange={(value) =>
+                                        handleDateChange(value)
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
+                {type === "DAYS_OF_WEEK" && (
+                    <BusinessDaysManager
+                        defaultValue={getValues("businessDays")}
+                        onSave={(value) => {
+                            setValue("businessDays", value);
+                        }}
+                    />
+                )}
                 <HolidayManager
                     defaultValue={getValues("closed")}
                     onSave={(value) => setValue("closed", value)}
                 />
                 {!settings.closed && (
                     <>
-                        <BusinessDaysManager
-                            defaultValue={getValues("businessDays")}
-                            onSave={(value) => {
-                                setValue("businessDays", value);
-                            }}
-                        />
+                        {type === "DATE_TIME" && (
+                            <BusinessDaysManager
+                                defaultValue={getValues("businessDays")}
+                                onSave={(value) => {
+                                    setValue("businessDays", value);
+                                }}
+                            />
+                        )}
 
                         <BusinessHourManager
                             defaultValue={{
@@ -873,11 +957,11 @@ export const PriceOverrideForm = ({
                 type: overrideType,
                 fromDate:
                     overrideType === "DATE_TIME"
-                        ? selectedRange[0].format("YYYY-MM-DD")
+                        ? selectedRange[0].startOf("day").format("YYYY-MM-DD")
                         : null,
                 toDate:
                     overrideType === "DATE_TIME"
-                        ? selectedRange[1].format("YYYY-MM-DD")
+                        ? selectedRange[1].endOf("day").format("YYYY-MM-DD")
                         : null,
                 daysOfWeek: overrideType === "DAY_OF_WEEK" ? daysOfWeek : null,
             },
@@ -988,8 +1072,10 @@ export const OverrideItem = ({ override }) => {
 
     const [removePriceOverride] = useMutation(REMOVE_PRICE_OVERRIDE);
 
-    const from = fromDate ? moment(fromDate).format("YYYY-MM-DD HH:MM") : null;
-    const to = toDate ? moment(toDate).format("YYYY-MM-DD HH:MM") : null;
+    const from = fromDate
+        ? moment(fromDate).format("YYYY年MM月DD日 HH:MM")
+        : null;
+    const to = toDate ? moment(toDate).format("YYYY年MM月DD日 HH:MM") : null;
 
     let fromToText = <>無し</>;
 
@@ -1036,11 +1122,17 @@ export const OverrideItem = ({ override }) => {
     return (
         <div className="px-3 py-3 hover:bg-gray-50 space-y-2">
             <div className="flex items-start">
-                <span className="inline-block w-20 font-bold">予定:</span>{" "}
+                <span className="inline-block w-16 text-gray-400 text-xs">
+                    上書きID
+                </span>
+                <div className="inline-block text-xs text-gray-400">{id}</div>
+            </div>
+            <div className="flex items-start">
+                <span className="inline-block w-16 font-bold">予定</span>
                 <div className="inline-block">{fromToText}</div>
             </div>
             <div className="flex items-start">
-                <span className="inline-block w-20 font-bold">料金:</span>{" "}
+                <span className="inline-block w-16 font-bold">料金</span>
                 <span className="font-bold">{PriceFormatter(amount)}</span>
             </div>
             <div className="flex justify-center w-full text-center border-t pt-3">

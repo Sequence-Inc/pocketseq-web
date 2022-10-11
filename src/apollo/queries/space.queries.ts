@@ -448,6 +448,14 @@ export const ADD_PRICE_OVERRIDE = gql`
     }
 `;
 
+export const REMOVE_SPACE_SETTING_OVERRIDE = gql`
+    mutation RemoveSpaceSettingOverride($id: ID!) {
+        removeSpaceSetting(id: $id) {
+            message
+            action
+        }
+    }
+`;
 export const REMOVE_PRICE_OVERRIDE = gql`
     mutation RemoveSpacePriceOverride($id: ID!) {
         removePricePlanOverride(id: $id) {

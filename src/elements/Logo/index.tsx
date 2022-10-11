@@ -26,7 +26,9 @@ const Logo = ({ variant, className }: LogoProps) => {
                 alt="time book logo"
                 className="w-10 h-10"
             />
-            <span className="ml-3 text-lg font-bold h-7">{config.appName}</span>
+            <span className="ml-3 text-lg font-bold h-7">
+                {config.appNameEnglish}
+            </span>
         </div>
     );
 };
