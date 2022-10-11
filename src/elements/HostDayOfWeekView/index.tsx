@@ -8,6 +8,8 @@ import { useMutation } from "@apollo/client";
 import {
     ADD_PRICE_OVERRIDE,
     ADD_SETTING_OVERRIDE,
+    REMOVE_PRICE_OVERRIDE,
+    REMOVE_SPACE_SETTING_OVERRIDE,
 } from "src/apollo/queries/space.queries";
 import {
     PriceOverride,
@@ -43,6 +45,10 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
 
     const [settingOverrideMutation] = useMutation(ADD_SETTING_OVERRIDE);
     const [priceOverrideMutation] = useMutation(ADD_PRICE_OVERRIDE);
+    const [removeSpacePriceOverride] = useMutation(REMOVE_PRICE_OVERRIDE);
+    const [removeSpaceSettingOverride] = useMutation(
+        REMOVE_SPACE_SETTING_OVERRIDE
+    );
 
     useHotkeys("esc", () => {
         onClearRangeSelection();
@@ -66,7 +72,11 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
                 return _;
             });
             setDefaultSetting(setting.filter((_) => _.isDefault === true)[0]);
-            setSettingOverrides(setting.filter((_) => _.isDefault === false));
+            setSettingOverrides(
+                setting.filter(
+                    (_) => _.isDefault === false && _.businessDays.length > 0
+                )
+            );
         }
         setInitialLoadComplete(true);
     }, []);
@@ -140,6 +150,8 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
 
     const addSettingOverride = async (setting) => {
         try {
+            console.log(setting);
+            return;
             const { data } = await settingOverrideMutation({
                 variables: {
                     spaceId,
@@ -320,6 +332,36 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
         return finalData;
     };
 
+    const handleDeleteSettingOverride = async (id) => {
+        if (confirm("設定上書きを消す？")) {
+            try {
+                const { data } = await removeSpaceSettingOverride({
+                    variables: {
+                        id,
+                    },
+                });
+                alert(data.removeSpaceSetting.message);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    };
+
+    const handleDeletePriceOverride = async (id) => {
+        if (confirm("価格上書きを消す？")) {
+            try {
+                const { data } = await removeSpacePriceOverride({
+                    variables: {
+                        id,
+                    },
+                });
+                alert(data.removePricePlanOverride.message);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    };
+
     return (
         <div className="select-none space-y-4">
             <div>
@@ -355,18 +397,27 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
                     </div>
                     {showAddSettingsForm && (
                         <SettingsOverrideForm
-                            currentSelection={currentSelection}
+                            currentSelection={currentSelection || null}
                             defaultSetting={defaultSetting}
                             onCancel={() => setShowAddSettingsForm(false)}
                             onSave={(value) => addSettingOverride(value)}
                             loading={loading}
+                            type="DAYS_OF_WEEK"
                         />
                     )}
                     <div className="mt-4 space-y-3">
-                        {settings.map((setting) => (
+                        <SettingsOverride
+                            setting={defaultSetting}
+                            key={1}
+                            deleteSettingOverride={() => {}}
+                        />
+                        {settingOverrides.map((setting) => (
                             <SettingsOverride
                                 setting={setting}
                                 key={setting.id}
+                                deleteSettingOverride={
+                                    handleDeleteSettingOverride
+                                }
                             />
                         ))}
                     </div>
