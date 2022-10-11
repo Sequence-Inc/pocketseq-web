@@ -16,6 +16,22 @@ import {
 } from "react-hook-form";
 import useReduceObject from "@hooks/useFilterObject";
 
+const MY_OPTIONS = gql`
+    query MyOptions($hotelId: ID, $packagePlanId: ID, $spaceId: ID) {
+        myOptions(
+            hotelId: $hotelId
+            packagePlanId: $packagePlanId
+            spaceId: $spaceId
+        ) {
+            data {
+                id
+                name
+                createdAt
+            }
+        }
+    }
+`;
+
 type AddPlansProps = {
     hotelId: string;
     addAlert: any;
@@ -106,8 +122,7 @@ const useAddPlans = (props: AddPlansProps) => {
         data: options,
         loading: optionsLoading,
         error: optionsError,
-    } = useQuery(OptionQueires.MY_OPTIONS);
-
+    } = useQuery(MY_OPTIONS);
     const {
         register,
         unregister,
@@ -397,9 +412,9 @@ const useAddPlans = (props: AddPlansProps) => {
     }, [hotelRooms, initialValue?.roomTypes]);
 
     const setInitialIncludedOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.includedOptions?.length) {
@@ -434,9 +449,9 @@ const useAddPlans = (props: AddPlansProps) => {
     useEffect(setInitialIncludedOptions, [setInitialIncludedOptions]);
 
     const setInitialAdditionalOptions = useCallback(() => {
-        if (!options?.myOptions?.length) return;
+        if (!options?.myOptions?.data?.length) return;
 
-        [...options?.myOptions]
+        [...options?.myOptions?.data]
             .sort((a, b) => a.createdAt - b.createdAt)
             .forEach((option, index) => {
                 if (!initialValue?.additionalOptions?.length) {
