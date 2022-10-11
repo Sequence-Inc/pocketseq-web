@@ -285,19 +285,19 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     </div>
                 </div>
                 <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
-                    <div className="pt-8 pb-4 col-span-9 lg:col-span-5">
-                        {query?.searchType && (
-                            <p className="text-3xl font-bold text-gray-700">
-                                {query?.spaceType}
-                            </p>
-                        )}
-                        {query?.spaceDescription && (
-                            <p className="text-sm font-medium text-gray-500">
-                                {query?.spaceDescription}
-                            </p>
-                        )}
-                    </div>
                     <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
+                        <div className="mb-10 space-y-2">
+                            {query?.searchType && (
+                                <p className="text-3xl font-bold text-gray-700">
+                                    {query?.spaceType}
+                                </p>
+                            )}
+                            {query?.spaceDescription && (
+                                <p className=" text-base font-medium text-gray-500">
+                                    {query?.spaceDescription}
+                                </p>
+                            )}
+                        </div>
                         <div>
                             <h1 className="flex items-center justify-between mb-6">
                                 <span className="text-3xl font-bold text-gray-700">
