@@ -33,3 +33,5 @@ export { default as HotelCalendarViewStock } from "./HotelCalendarViewStock";
 export { default as FormConfirmModal } from "./FormConfirmModal";
 export { default as PageLayout } from "./PageLayout";
 export { default as Spinner } from "./Spinner";
+
+export { default as FormLabel } from "./FormLabel";
