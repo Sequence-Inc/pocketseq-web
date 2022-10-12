@@ -11,114 +11,36 @@ import { getSession } from "next-auth/react";
 import { Header, Footer } from "@layout";
 import Head from "next/head";
 import { config } from "src/utils";
-import { useMutation } from "@apollo/client";
-import { CONTACT_FORM } from "src/apollo/queries/contact.queries";
+import { useContactForm } from "@hooks/contact";
+import { Controller } from "react-hook-form";
 
-type ContactFormDataType = {
-    customerType:
-        | "ー"
-        | "未登録の方はこちら"
-        | "ホスト（スペース・宿泊施設を貸す方）はこちら"
-        | "ゲスト（スペース・宿泊施設を借りる方）はこちら";
-    email: string;
-    inquiryType: string;
-    subject: string;
-    description: string;
-};
-
-const defaultValue: ContactFormDataType = {
-    customerType: "ー",
-    email: "",
-    inquiryType: "",
-    subject: "",
-    description: "",
-};
-
-const defaultErrorValue = {
-    customerType: false,
-    email: false,
-    inquiryType: false,
-    subject: false,
-    description: false,
-};
+export const CUSTOMER_TYPES = [
+    { label: "ー", value: "ー" },
+    { label: "未登録の方はこちら", value: "未登録の方はこちら" },
+    {
+        label: "ホスト（スペース・宿泊施設を貸す方）はこちら",
+        value: "ホスト（スペース・宿泊施設を貸す方）はこちら",
+    },
+    {
+        label: "ゲスト（スペース・宿泊施設を借りる方）はこちら",
+        value: "ゲスト（スペース・宿泊施設を借りる方）はこちら",
+    },
+];
 
 const Contact = ({ userSession }) => {
-    const [formData, setFormData] = useState(defaultValue);
-    const [errors, setErrors] = useState(defaultErrorValue);
-
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-
-    const [sendMessage] = useMutation(CONTACT_FORM, {
-        onCompleted: (data) => {
+    const { onSubmit, register, errors, control, loading } = useContactForm({
+        onSuccess: (data) => {
             setErrorMessage("");
-            setFormData(defaultValue);
-            setErrors(defaultErrorValue);
             setSuccessMessage(data.contactForm.message);
-            setLoading(false);
         },
-        onError: (error) => {
+        onError: (err) => {
             setSuccessMessage("");
-            setErrorMessage(error.message);
-            setLoading(false);
+            setErrorMessage(err.message);
         },
     });
 
-    const updateData = (key, value) => {
-        const newData = { ...formData, [key]: value };
-        setFormData(newData);
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setErrors(defaultErrorValue);
-
-        // perform validation
-        const { customerType, email, inquiryType, subject, description } =
-            formData;
-
-        let error = [];
-        if (email.trim() === "") {
-            error.push("email");
-        }
-        if (inquiryType.trim() === "") {
-            error.push("inquiryType");
-        }
-        if (subject.trim() === "") {
-            error.push("subject");
-        }
-        if (description.trim() === "") {
-            error.push("description");
-        }
-
-        if (error.length > 0) {
-            const e = defaultErrorValue;
-            error.map((key) => {
-                e[key] = true;
-            });
-            setErrors(e);
-            return;
-        }
-
-        // no errors
-        // make api request
-        try {
-            setLoading(true);
-            await sendMessage({
-                variables: {
-                    customerType,
-                    email,
-                    inquiryType,
-                    subject,
-                    description,
-                },
-            });
-        } catch (error) {
-            setErrorMessage(error.message);
-            setLoading(false);
-        }
-    };
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     return (
         <div className="bg-gray-50">
@@ -152,30 +74,34 @@ const Contact = ({ userSession }) => {
             <main>
                 <Container className="py-20 align-middle space-y-4 ">
                     <form
-                        onSubmit={handleSubmit}
+                        onSubmit={onSubmit}
                         className="w-full sm:w-1/2 mx-auto py-4 px-4 bg-gray-100 rounded-md"
                     >
                         <h3 className="text-lg font-black mb-4">お問合せ</h3>
 
                         <div className="px-0 space-y-6">
-                            <div className=" sm:w-full">
+                            <div className="sm:w-full">
                                 <FormLabel
                                     className="text-xs leading-5 font-bold"
                                     value="お客様種別をお選びください"
                                 />
 
-                                <Select
-                                    options={[
-                                        "ー",
-                                        "未登録の方はこちら",
-                                        "ホスト（スペース・宿泊施設を貸す方）はこちら",
-                                        "ゲスト（スペース・宿泊施設を借りる方）はこちら",
-                                    ]}
-                                    value={formData.customerType}
-                                    onChange={(value) => {
-                                        updateData("customerType", value);
-                                    }}
-                                    disabled={loading}
+                                <Controller
+                                    name={`customerType`}
+                                    control={control}
+                                    rules={{ required: false }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            label=""
+                                            options={CUSTOMER_TYPES}
+                                            error={errors?.customerType && true}
+                                            labelKey="label"
+                                            valueKey="value"
+                                            disabled={loading}
+                                            className="sm:w-full"
+                                        />
+                                    )}
                                 />
                             </div>
                             <div className=" sm:w-full">
@@ -188,13 +114,11 @@ const Contact = ({ userSession }) => {
                                 <TextField
                                     label={""}
                                     errorMessage="メールアドレス is required"
-                                    autoFocus
-                                    onChange={(event) => {
-                                        updateData("email", event.target.value);
-                                    }}
-                                    value={formData.email}
+                                    {...register("email", {
+                                        required: true,
+                                    })}
                                     type="email"
-                                    error={errors.email}
+                                    error={errors?.email && true}
                                     disabled={loading}
                                 />
                             </div>
@@ -209,14 +133,9 @@ const Contact = ({ userSession }) => {
                                 <TextField
                                     label={""}
                                     errorMessage="問い合わせ種別 is required"
-                                    autoFocus
-                                    onChange={(event) => {
-                                        updateData(
-                                            "inquiryType",
-                                            event.target.value
-                                        );
-                                    }}
-                                    value={formData.inquiryType}
+                                    {...register("inquiryType", {
+                                        required: true,
+                                    })}
                                     error={errors.inquiryType}
                                     disabled={loading}
                                 />
@@ -235,14 +154,9 @@ const Contact = ({ userSession }) => {
                                 <TextField
                                     label={""}
                                     errorMessage="件名 is required"
-                                    autoFocus
-                                    onChange={(event) => {
-                                        updateData(
-                                            "subject",
-                                            event.target.value
-                                        );
-                                    }}
-                                    value={formData.subject}
+                                    {...register("subject", {
+                                        required: true,
+                                    })}
                                     error={errors.subject}
                                     disabled={loading}
                                 />
@@ -259,14 +173,9 @@ const Contact = ({ userSession }) => {
                                     label={""}
                                     rows={6}
                                     errorMessage="お問い合わせ内容 is required"
-                                    autoFocus
-                                    onChange={(event) => {
-                                        updateData(
-                                            "description",
-                                            event.target.value
-                                        );
-                                    }}
-                                    value={formData.description}
+                                    {...register("description", {
+                                        required: true,
+                                    })}
                                     error={errors.description}
                                     disabled={loading}
                                 />
