@@ -217,6 +217,26 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
         return <LoadingSpinner />;
     }
 
+    const { searchTitle, searchDescription } = query;
+
+    let titleDescription = null;
+    if (searchTitle || searchDescription) {
+        titleDescription = (
+            <div className="mb-10 space-y-2">
+                {searchTitle && (
+                    <div className="text-3xl font-bold text-gray-700">
+                        {searchTitle}
+                    </div>
+                )}
+                {searchDescription && (
+                    <div className=" text-base font-medium text-gray-500">
+                        {searchDescription}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     const locationMarkers: ILocationMarker[] = algoliaSearchResults.map(
         (result) => {
             const { id, lat, lng, name, price, priceUnit, thumbnail, type } =
@@ -286,18 +306,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 </div>
                 <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
                     <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
-                        <div className="mb-10 space-y-2">
-                            {query?.searchType && (
-                                <p className="text-3xl font-bold text-gray-700">
-                                    {query?.spaceType}
-                                </p>
-                            )}
-                            {query?.spaceDescription && (
-                                <p className=" text-base font-medium text-gray-500">
-                                    {query?.spaceDescription}
-                                </p>
-                            )}
-                        </div>
+                        {titleDescription}
                         <div>
                             <h1 className="flex items-center justify-between mb-6">
                                 <span className="text-3xl font-bold text-gray-700">
