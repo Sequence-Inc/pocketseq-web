@@ -14,8 +14,8 @@ export const CategoryItem = ({ title, subTitle, photo }: ICategoryItem) => {
                 pathname: `/search`,
                 query: {
                     searchType: "space",
-                    spaceType: title,
-                    spaceDescription: subTitle,
+                    searchTitle: title,
+                    searchDescription: subTitle,
                 },
             }}
         >
