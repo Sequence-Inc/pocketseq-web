@@ -42,7 +42,6 @@ const useContactForm = ({
     } = useForm();
     const [mutate] = useMutation(CONTACT_FORM, {
         onCompleted: (data) => {
-            console.log({ data });
             onSuccess && onSuccess(data);
             setLoading(false);
         },
@@ -56,9 +55,10 @@ const useContactForm = ({
         setLoading(true);
         const { customerType, email, inquiryType, subject, description } =
             formData;
+
         return mutate({
             variables: {
-                customerType,
+                customerType: customerType || "ー",
                 email,
                 inquiryType,
                 subject,
