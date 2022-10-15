@@ -3,7 +3,6 @@ import GoogleMapReact from "google-map-react";
 import Marker from "./marker";
 import { useState } from "react";
 import SingleMarker from "./singleMarker";
-import { useEffect } from "react";
 import { ILocationMarker } from "src/types/timebookTypes";
 
 interface GoogleMapProps {
@@ -106,8 +105,79 @@ const GoogleMap = ({
                     options={(maps) => ({
                         styles: [
                             {
-                                featureType: "administrative.land_parcel",
-                                elementType: "labels",
+                                featureType: "administrative",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#d6e2e6",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "administrative",
+                                elementType: "geometry.stroke",
+                                stylers: [
+                                    {
+                                        color: "#cfd4d5",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "administrative",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#7492a8",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "administrative.neighborhood",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        lightness: 25,
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "landscape.man_made",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#dde2e3",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "landscape.man_made",
+                                elementType: "geometry.stroke",
+                                stylers: [
+                                    {
+                                        color: "#cfd4d5",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "landscape.natural",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#dde2e3",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "landscape.natural",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#7492a8",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "landscape.natural.terrain",
                                 stylers: [
                                     {
                                         visibility: "off",
@@ -116,62 +186,199 @@ const GoogleMap = ({
                             },
                             {
                                 featureType: "poi",
-                                elementType: "labels.text",
+                                elementType: "geometry.fill",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        color: "#dde2e3",
                                     },
                                 ],
                             },
                             {
-                                featureType: "poi.business",
+                                featureType: "poi",
+                                elementType: "labels.icon",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        saturation: -100,
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#588ca4",
                                     },
                                 ],
                             },
                             {
                                 featureType: "poi.park",
-                                elementType: "labels.text",
+                                elementType: "geometry.fill",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        color: "#a9de83",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.park",
+                                elementType: "geometry.stroke",
+                                stylers: [
+                                    {
+                                        color: "#bae6a1",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.sports_complex",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#c6e8b3",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "poi.sports_complex",
+                                elementType: "geometry.stroke",
+                                stylers: [
+                                    {
+                                        color: "#bae6a1",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road",
+                                elementType: "labels.icon",
+                                stylers: [
+                                    {
+                                        saturation: -45,
+                                    },
+                                    {
+                                        lightness: 10,
+                                    },
+                                    {
+                                        visibility: "on",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#41626b",
                                     },
                                 ],
                             },
                             {
                                 featureType: "road.arterial",
-                                elementType: "labels",
+                                elementType: "geometry.fill",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        color: "#ffffff",
                                     },
                                 ],
                             },
                             {
                                 featureType: "road.highway",
-                                elementType: "labels",
+                                elementType: "geometry.fill",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        color: "#c1d1d6",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.highway",
+                                elementType: "geometry.stroke",
+                                stylers: [
+                                    {
+                                        color: "#a6b5bb",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.highway",
+                                elementType: "labels.icon",
+                                stylers: [
+                                    {
+                                        visibility: "on",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "road.highway.controlled_access",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#9fb6bd",
                                     },
                                 ],
                             },
                             {
                                 featureType: "road.local",
+                                elementType: "geometry.fill",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        color: "#ffffff",
                                     },
                                 ],
                             },
                             {
-                                featureType: "road.local",
-                                elementType: "labels",
+                                featureType: "transit",
+                                elementType: "labels.icon",
                                 stylers: [
                                     {
-                                        visibility: "off",
+                                        saturation: -70,
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "transit.line",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#b4cbd4",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "transit.line",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#588ca4",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "transit.station",
+                                elementType: "labels.text.fill",
+                                stylers: [
+                                    {
+                                        color: "#008cb5",
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "transit.station.airport",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        saturation: -100,
+                                    },
+                                    {
+                                        lightness: -5,
+                                    },
+                                ],
+                            },
+                            {
+                                featureType: "water",
+                                elementType: "geometry.fill",
+                                stylers: [
+                                    {
+                                        color: "#a6cbe3",
                                     },
                                 ],
                             },

@@ -305,7 +305,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     </div>
                 </div>
                 <Container className="relative pb-12 gap-10 grid grid-cols-1 lg:grid-cols-9">
-                    <div className="pt-8 pb-16 col-span-9 lg:col-span-5">
+                    <div className="pt-8 pb-16 col-span-9 lg:col-span-4">
                         {titleDescription}
                         <div>
                             <h1 className="flex items-center justify-between mb-6">
@@ -711,7 +711,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="sticky top-12 hidden pt-8 pb-16 lg:block w-full h-screen col-span-4">
+                    <div className="sticky top-12 hidden pt-8 pb-16 lg:block w-full h-screen col-span-5">
                         <div className="w-full h-full rounded-lg shadow-lg overflow-hidden">
                             <GoogleMap
                                 markers={locationMarkers}
