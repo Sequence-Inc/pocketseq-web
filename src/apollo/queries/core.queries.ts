@@ -4,6 +4,12 @@ export const IMAGE = `
     width
 `;
 
+export const PAGINATION_INFO = `
+    hasNext
+    hasPrevious
+    nextCursor
+    `;
+
 export const PROFILE_PHOTO = `
     id
     mime
@@ -198,6 +204,20 @@ export const SPACE_PRICE_PLAN = `
     }
 `;
 
+export const SPACE_PRICE_PLAN_LITE = `
+    id
+    title
+    isDefault
+    type
+    duration
+    amount
+    maintenanceFee
+    lastMinuteDiscount
+    cooldownTime
+    fromDate
+    toDate   
+`;
+
 export const STATION = `
     id
     stationName
@@ -205,6 +225,7 @@ export const STATION = `
     address
     longitude
     latitude
+    prefectureCode
 `;
 
 export const PAGINATION = `
@@ -232,6 +253,7 @@ export const NEAREST_STATIONS = `
         }
         time
         via
+        exit
     }
 `;
 
@@ -256,11 +278,59 @@ export const SPACE = `
     host {
         accountId
         name
+        profilePhoto {
+           ${PHOTO} 
+        }
         createdAt
     }
     pricePlans {
         ${SPACE_PRICE_PLAN}
-    }    
+    }   
+    includedOptions{
+        id
+        name
+    } 
+    additionalOptions{
+        id
+        name
+    }
+    cancelPolicy{
+        id
+        name
+        description
+        rates {
+            beforeHours
+            percentage
+        }
+    }
+    subcriptionPrice
+`;
+
+export const SPACE_LITE = `
+    id
+    name
+    description
+    maximumCapacity
+    numberOfSeats
+    spaceSize
+    needApproval
+    published
+    ${SPACE_TYPES}
+    address {
+        ${ADDRESS}
+    }
+    photos {
+        ${PHOTO}
+    }
+    host {
+        accountId
+        name
+        createdAt
+    }
+    pricePlans {
+        ${SPACE_PRICE_PLAN_LITE}
+    }   
+    subcriptionPrice
 `;
 
 export const SPACE_SETTING = `
@@ -287,5 +357,236 @@ export const PAYMENT_SOURCE = `
         brand
         country
         customer
+        isDefault
     }
+`;
+
+export const PRICE_SCHEME_OBJECT = `
+id
+name
+roomCharge
+oneAdultCharge
+twoAdultCharge
+threeAdultCharge
+fourAdultCharge
+fiveAdultCharge
+sixAdultCharge
+sevenAdultCharge
+eightAdultCharge
+nineAdultCharge
+tenAdultCharge
+oneChildCharge
+twoChildCharge
+threeChildCharge
+fourChildCharge
+fiveChildCharge
+sixChildCharge
+sevenChildCharge
+eightChildCharge
+nineChildCharge
+tenChildCharge
+hotelId
+createdAt
+updatedAt
+`;
+
+export const PRICE_OVERRIDE_OBJECT = `
+id
+startDate
+endDate
+priceScheme {
+    ${PRICE_SCHEME_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const STOCK_OVERRIDE_OBJECT = `
+id
+startDate
+endDate
+stock
+createdAt
+updatedAt
+`;
+
+export const BASIC_PRICE_SETTING_OBJECT = `
+id
+dayOfWeek
+priceScheme{
+    ${PRICE_SCHEME_OBJECT}
+}
+hotelRoomId
+createdAt
+updatedAt`;
+
+// Todo add packagePlanId in basicPriceSettings later
+export const HOTLE_ROOM = `
+    id
+    name
+    description
+    paymentTerm
+    maxCapacityAdult
+    maxCapacityChild
+    stock
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    basicPriceSettings{
+        ${BASIC_PRICE_SETTING_OBJECT}
+    }
+    createdAt
+    updatedAt
+`;
+
+export const BASICE_PRICE_SETTINGS = `
+    id
+    dayOfWeek
+    priceScheme{
+        ${PRICE_SCHEME_OBJECT}
+    }
+    hotelRoomId
+    createdAt
+    updatedAt
+`;
+
+export const PACKAGE_PLAN = `
+    id
+    name
+    description
+    paymentTerm
+    stock
+    startUsage
+    endUsage
+    startReservation
+    endReservation
+    cutOffBeforeDays
+    cutOffTillTime
+    hotelId
+    photos{
+        ${PHOTO}
+    }
+    roomTypes{
+        id
+        hotelRoom {
+            ${HOTLE_ROOM}
+        }
+        priceSettings{
+            ${BASICE_PRICE_SETTINGS}
+        }
+        createdAt
+        updatedAt
+    }
+    createdAt
+    updatedAt
+`;
+
+export const PACKAGE_ROOM_TYPE_OBJECT = `
+id
+hotelRoom {
+    ${HOTLE_ROOM}
+}
+priceSettings {
+    ${BASIC_PRICE_SETTING_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const PLAN_OBJECT = `
+id
+name
+description
+paymentTerm
+stock
+startUsage
+endUsage
+startReservation
+endReservation
+cutOffBeforeDays
+cutOffTillTime
+hotelId
+subcriptionPrice
+photos {
+    ${PHOTO}
+}
+roomTypes  {
+    ${PACKAGE_ROOM_TYPE_OBJECT}
+}
+cancelPolicy {
+    id
+    name
+    description
+    rates {
+        beforeHours
+        percentage
+    }
+}
+createdAt
+updatedAt
+`;
+
+export const HOTEL_OBJECT = `
+id
+name
+description
+checkInTime
+checkOutTime
+status
+address {
+    ${ADDRESS}
+}
+nearestStations {
+    station {
+        id
+        stationName
+    }
+    time
+    accessType
+}
+photos {
+    ${PHOTO}
+}
+rooms {
+    ${HOTLE_ROOM}
+}
+host {
+    accountId
+    name
+    profilePhoto {
+        ${PHOTO}
+    }
+    createdAt
+}
+packagePlans {
+    ${PLAN_OBJECT}
+}
+createdAt
+updatedAt
+`;
+
+export const HOTEL_OBJECT_LITE = `
+id
+name
+description
+checkInTime
+checkOutTime
+status
+address {
+    ${ADDRESS}
+}
+photos {
+    ${PHOTO}
+}
+host {
+    accountId
+    name
+    createdAt
+}
+packagePlans {
+    ${PLAN_OBJECT}
+}
+createdAt
+updatedAt
 `;

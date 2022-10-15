@@ -6,6 +6,7 @@ import { IColumns } from "src/elements/Table";
 import HostLayout from "src/layouts/HostLayout";
 import { format } from "date-fns";
 import {
+    APPROVE_HOTEL_RESERVATION,
     APPROVE_RESERVATION,
     RESERVATIONS,
 } from "src/apollo/queries/host.queries";
@@ -20,15 +21,24 @@ const noOfItems = 10;
 
 const ReservationList = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
+    const [hotelColumns, setHotelColumns] = useState<IColumns[] | undefined>();
+
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
 
     const [skip, setSkip] = useState<number>(0);
+
     const { data, loading, error, refetch } = useQuery(RESERVATIONS, {
         fetchPolicy: "network-only",
-        variables: { paginate: { take: noOfItems, skip: 0 }, filter: {} },
+        variables: {
+            spacePaginate: { take: noOfItems, skip: 0 },
+            spaceFilter: {},
+            hotelPaginate: { take: noOfItems, skip: 0 },
+            hotelFilter: {},
+        },
     });
 
     const [approveReservation] = useMutation(APPROVE_RESERVATION);
+    const [approveHotelReservation] = useMutation(APPROVE_HOTEL_RESERVATION);
 
     const keys = [
         { name: "Space Name", key: "space" },
@@ -37,8 +47,15 @@ const ReservationList = ({ userSession }) => {
         { name: "Status", key: "status" },
     ];
 
+    const hotelKeys = [
+        { name: "Plan Name", key: "packagePlan" },
+        { name: "From", key: "fromDateTime" },
+        { name: "To", key: "toDateTime" },
+        { name: "Status", key: "status" },
+    ];
+
     const childClassname = (key) => {
-        if (key === "space") {
+        if (key === "space" || key === "packagePlan") {
             return "text-left overflow-hidden overflow-ellipsis";
         } else {
             return "text-center";
@@ -50,10 +67,21 @@ const ReservationList = ({ userSession }) => {
             const resp = await approveReservation({
                 variables: { reservationId },
             });
-            alert("Approved");
+            alert(resp.data?.approveReservation.message);
             refetch();
         } catch (err) {
             console.log(err);
+        }
+    };
+    const handleHotelApprove = async (reservationId: string) => {
+        try {
+            const resp = await approveHotelReservation({
+                variables: { reservationId },
+            });
+            alert(resp.data?.approveRoomReservation.message);
+            refetch();
+        } catch (err) {
+            alert("Error: " + err?.message);
         }
     };
 
@@ -116,32 +144,135 @@ const ReservationList = ({ userSession }) => {
         });
         const filteredNewData = newData.filter((res) => res !== undefined);
         setColumns(filteredNewData);
+
+        // Hotel Data Preparation
+        const newHotelData: IColumns[] = hotelKeys.map(
+            ({ name, key }: any) => ({
+                Header: name.toUpperCase(),
+                accessor: key,
+                childClassName: childClassname(key),
+                Cell: ({ column, value, row }) => {
+                    if (!value) return "";
+                    if (column.id === "packagePlan") {
+                        return (
+                            <Link
+                                href={`/host/reservation/hotel/${row.original.id}`}
+                            >
+                                <a className="text-gray-700 hover:text-gray-900 font-bold">
+                                    {value.name}
+                                </a>
+                            </Link>
+                        );
+                    } else if (
+                        column.id === "fromDateTime" ||
+                        column.id === "toDateTime"
+                    ) {
+                        return format(new Date(value), "yyyy-MM-dd, HH:mm");
+                    } else if (column.id === "status") {
+                        return (
+                            <div className="text-center">
+                                {reservationStatusJapanify(value)}
+                            </div>
+                        );
+                    } else return value;
+                },
+            })
+        );
+
+        newHotelData.push({
+            Header: "ACTION",
+            accessor: "action",
+            Cell: ({ row }: { row: any }) => {
+                if (
+                    row.original.approved ||
+                    row.original.status === "CANCELED"
+                ) {
+                    return (
+                        <Button
+                            type="button"
+                            className="flex mx-auto focus:outline-none disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            承認済み
+                        </Button>
+                    );
+                }
+                return (
+                    <Button
+                        type="button"
+                        className="flex mx-auto focus:outline-none"
+                        onClick={() => handleHotelApprove(row.original.id)}
+                    >
+                        承認する
+                    </Button>
+                );
+            },
+        });
+        const filteredNewHotelData = newHotelData.filter(
+            (res) => res !== undefined
+        );
+        setHotelColumns(filteredNewHotelData);
+
         setLoadComplete(true);
     }, []);
 
-    const handleNextPrev = (type: "next" | "prev") => {
-        const hasNext = data?.reservations?.paginationInfo?.hasNext;
-        const hasPrevious = data?.reservations?.paginationInfo?.hasNext;
-        if (type === "next" && hasNext) {
-            refetch({
-                paginate: {
-                    take: noOfItems,
-                    skip: skip + noOfItems,
-                },
-                filter: {},
-            });
-            setSkip(skip + noOfItems);
-        } else if (type === "prev" && hasPrevious) {
-            refetch({
-                paginate: {
-                    take: noOfItems,
-                    skip: skip - noOfItems,
-                },
-                filter: {},
-            });
-            setSkip(skip - noOfItems);
-        }
-    };
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.reservations?.paginationInfo?.hasNext;
+            const hasPrevious = data?.reservations?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    spacePaginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    spacePaginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
+    const handlePaginateHotels = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext =
+                data?.hotelRoomReservations?.paginationInfo?.hasNext;
+            const hasPrevious =
+                data?.hotelRoomReservations?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    hotelPaginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    hotelPaginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
+    // const handleNextPrev = () => {
+    //     return null;
+    // };
 
     let content;
     if (loading) {
@@ -153,12 +284,30 @@ const ReservationList = ({ userSession }) => {
 
     if (loadComplete) {
         content = (
-            <Table
-                columns={columns}
-                data={data?.reservations?.data || []}
-                paginate={data?.reservations?.paginationInfo}
-                handlePaginate={handleNextPrev}
-            />
+            <div className="space-y-10">
+                <div className="space-y-4">
+                    <h3 className="text-gray-700 font-bold text-2xl">
+                        スペース予約
+                    </h3>
+                    <Table
+                        columns={columns}
+                        data={data?.reservations?.data || []}
+                        paginate={data?.reservations?.paginationInfo}
+                        handlePaginate={handlePaginateSpaces}
+                    />
+                </div>
+                <div className="space-y-4">
+                    <h3 className="text-gray-700 font-bold text-2xl">
+                        宿泊予約
+                    </h3>
+                    <Table
+                        columns={hotelColumns}
+                        data={data?.hotelRoomReservations?.data || []}
+                        paginate={data?.hotelRoomReservations?.paginationInfo}
+                        handlePaginate={handlePaginateHotels}
+                    />
+                </div>
+            </div>
         );
     }
 
@@ -179,7 +328,7 @@ const ReservationList = ({ userSession }) => {
                                             className="flex-shrink-0 mr-1.5 h-6 w-6 text-gray-700"
                                             aria-hidden="true"
                                         />
-                                        <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
+                                        <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-700 sm:leading-9 sm:truncate">
                                             予約
                                         </h1>
                                     </div>

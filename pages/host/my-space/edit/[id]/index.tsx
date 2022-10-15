@@ -19,21 +19,11 @@ import { config } from "src/utils";
 
 const EditNewSpace = ({ userSession }) => {
     const { loading, confirmRef } = useAddSpace();
-    const [spaceId, setSpaceId] = useState();
+    const [spaceId, setSpaceId] = useState<string | null>(null);
     const [activeStep, setActiveStep] = useState(0);
     const router = useRouter();
-
     const { t } = useTranslation("adminhost");
-
     const { id } = router.query;
-    const {
-        data,
-        loading: spaceLoading,
-        refetch,
-    } = useQuery(GET_SPACE_BY_ID, {
-        variables: { id },
-        fetchPolicy: "network-only",
-    });
 
     const steps = [
         t("space-basic"),
@@ -61,8 +51,7 @@ const EditNewSpace = ({ userSession }) => {
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             setSpaceId={setSpaceId}
-                            initialValue={data?.spaceById}
-                            spaceLoading={spaceLoading}
+                            selectedSpaceId={spaceId || id}
                         />
                     ) : activeStep === 1 ? (
                         <NearestStationStep
@@ -70,16 +59,15 @@ const EditNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.nearestStations}
+                            selectedSpaceId={spaceId || id}
                         />
                     ) : activeStep === 2 ? (
                         <SpacePhotos
                             activeStep={activeStep}
                             setActiveStep={setActiveStep}
                             steps={steps}
-                            refetch={refetch}
-                            spaceId={spaceId || id}
-                            initialValue={data?.spaceById?.photos}
+                            spaceId={spaceId}
+                            selectedSpaceId={spaceId || id}
                         />
                     ) : activeStep === 3 ? (
                         <PricingPlan
@@ -87,8 +75,7 @@ const EditNewSpace = ({ userSession }) => {
                             setActiveStep={setActiveStep}
                             steps={steps}
                             spaceId={spaceId}
-                            initialValue={data?.spaceById?.pricePlans}
-                            refetch={refetch}
+                            selectedSpaceId={spaceId || id}
                         />
                     ) : null}
                 </Stepper>

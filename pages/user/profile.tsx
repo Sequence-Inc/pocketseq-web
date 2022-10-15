@@ -13,11 +13,7 @@ import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
-const tabs = [
-    { name: "Profile", href: "#", current: true },
-    { name: "Calendar", href: "#", current: false },
-    { name: "Recognition", href: "#", current: false },
-];
+const tabs = [{ name: "プロフィール", href: "#", current: true }];
 const HostDashboard = ({ userSession }) => {
     const { data, loading, error } = useQuery(GET_PROFILE, {
         fetchPolicy: "network-only",
@@ -36,22 +32,24 @@ const HostDashboard = ({ userSession }) => {
 
     let profilePhoto = `https://avatars.dicebear.com/api/identicon/${profile.id}.svg`;
     if (profile.profilePhoto) {
-        profilePhoto = profile.profilePhoto.small.url;
+        profilePhoto = profile.profilePhoto.medium.url;
     }
 
     const name = `${profile.lastName} ${profile.firstName}`;
     const nameKana = `${profile.lastNameKana} ${profile.firstNameKana}`;
 
     const fields = {
-        Phone: "(555) 123-4567",
+        性: profile.lastName,
+        名: profile.firstName,
+        "性（カナ）": profile.lastNameKana,
+        "名（カナ）": profile.firstNameKana,
         Email: profile.email,
-        Name: name,
-        "Name (Kana)": nameKana,
     };
+
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Profile - {config.appName}</title>
+                <title>プロフィール - {config.appName}</title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8">
                 <>
@@ -77,13 +75,15 @@ const HostDashboard = ({ userSession }) => {
                                             </h1>
                                         </div>
                                         <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0">
-                                            <Link href="/user/settings">
+                                            <Link href="/settings">
                                                 <a className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                                     <CogIcon
                                                         className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                                                         aria-hidden="true"
                                                     />
-                                                    <span>Edit profile</span>
+                                                    <span>
+                                                        プロフィールの編集
+                                                    </span>
                                                 </a>
                                             </Link>
                                         </div>
@@ -157,7 +157,7 @@ export const getServerSideProps = async (context) => {
     const validation = requireAuth({
         session: userSession,
         pathAfterFailure: "/api/auth/signin",
-        roles: ["user"],
+        roles: ["user", "host"],
     });
     if (validation !== true) {
         return validation;

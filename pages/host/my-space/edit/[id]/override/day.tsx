@@ -51,7 +51,7 @@ const DayOverride = ({ userSession, space }) => {
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8 pt-4">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-4">
-                            Override hourly
+                            Hourly上書き
                         </h2>
                         <div>
                             <HostDayView

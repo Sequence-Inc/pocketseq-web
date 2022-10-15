@@ -28,13 +28,28 @@ export const ADD_PHOTO_ID = gql`
     }
 `;
 
+export const ADD_PROFILE_PHOTO = gql`
+    mutation AddProfilePhoto($input: ImageUploadInput!, $uploadInHost: Boolean) {
+        addProfilePhoto(input: $input, uploadInHost: $uploadInHost) {
+            ${IMAGE_UPLOAD_RESULT}
+        }
+    }
+`;
+
 export const RESERVATIONS = gql`
     query Reservations(
         $spaceId: ID
-        $paginate: PaginationOption
-        $filter: ReservationsFilter
+        $spacePaginate: PaginationOption
+        $spaceFilter: ReservationsFilter
+        $hotelId: ID
+        $hotelPaginate: PaginationOption
+        $hotelFilter: HotelRoomReservationsFilter
     ) {
-        reservations(spaceId: $spaceId, paginate: $paginate, filter: $filter) {
+        reservations(
+            spaceId: $spaceId
+            paginate: $spacePaginate
+            filter: $spaceFilter
+        ) {
             data {
                 id
                 fromDateTime
@@ -55,12 +70,78 @@ export const RESERVATIONS = gql`
                 nextCursor
             }
         }
+
+        hotelRoomReservations(
+            hotelId: $hotelId
+            paginate: $hotelPaginate
+            filter: $hotelFilter
+        ) {
+            data {
+                id
+                reservationId
+                fromDateTime
+                toDateTime
+                status
+                createdAt
+                updatedAt
+                approved
+                approvedOn
+                hotelRoom {
+                    id
+                    name
+                    description
+                    photos {
+                        medium {
+                            url
+                        }
+                    }
+                }
+                packagePlan {
+                    id
+                    name
+                    description
+                }
+                reservee {
+                    ... on UserProfile {
+                        id
+                        firstName
+                        lastName
+                        firstNameKana
+                        lastNameKana
+                    }
+                    ... on CompanyProfile {
+                        id
+                        name
+                        nameKana
+                    }
+                }
+                transaction {
+                    id
+                    amount
+                    currency
+                }
+            }
+            paginationInfo {
+                hasNext
+                hasPrevious
+                nextCursor
+            }
+        }
     }
 `;
 
 export const APPROVE_RESERVATION = gql`
     mutation ApproveReservation($reservationId: ID!) {
         approveReservation(reservationId: $reservationId) {
+            message
+            action
+        }
+    }
+`;
+
+export const APPROVE_HOTEL_RESERVATION = gql`
+    mutation ApproveHotelReservation($reservationId: ID!) {
+        approveRoomReservation(reservationId: $reservationId) {
             message
             action
         }

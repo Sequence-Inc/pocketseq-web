@@ -15,6 +15,7 @@ import { IOtherSpacesProps } from "./NearestStationStep";
 import moment, { Moment } from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { PriceFormatter } from "src/utils";
+import { useGetInitialSpace } from "@hooks/useAddSpace";
 
 const planTypes = [
     { title: "DAILY", label: "日" },
@@ -35,20 +36,25 @@ const PricingPlan = ({
     setActiveStep,
     steps,
     spaceId,
-    initialValue,
-    refetch,
-}: IOtherSpacesProps) => {
+    selectedSpaceId,
+}: // refetch,
+IOtherSpacesProps) => {
     const [defaultPricePlans, setDefaultPricePlans] = useState([]);
     const [pricePlans, setPricePlans] = useState([]);
     const [openForm, setOpenForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activePlan, setActivePlan] = useState(-1);
+    const router = useRouter();
+    const { id } = router.query;
+    const {
+        initialValue,
+        spaceDetailLoading,
+        refetchSpaceDetail: refetch,
+    } = useGetInitialSpace(id || spaceId || selectedSpaceId);
     const [addPricePlan, { error: addPricePlanError }] =
         useMutation(ADD_PRICING_PLAN);
     const [mutateRemovePrice, { error: removePricePlanError }] =
         useMutation(REMOVE_PRICING_PLAN);
-    const router = useRouter();
-    const { id } = router.query;
 
     const { t } = useTranslation("adminhost");
 
@@ -67,10 +73,10 @@ const PricingPlan = ({
     };
 
     useEffect(() => {
-        if (initialValue) {
-            setSeparatePlans(initialValue);
+        if (initialValue?.pricePlans) {
+            setSeparatePlans(initialValue?.pricePlans);
         }
-    }, [initialValue]);
+    }, [initialValue?.pricePlans]);
 
     const showForm = () => {
         setOpenForm(true);
@@ -83,7 +89,7 @@ const PricingPlan = ({
     const addPlan = async (plan) => {
         const { data, errors } = await addPricePlan({
             variables: {
-                spaceId: initialValue ? id : spaceId,
+                spaceId: id || selectedSpaceId || spaceId,
                 pricePlan: plan,
             },
         });
@@ -248,7 +254,7 @@ const PricingPlan = ({
                 {renderPricePlans()}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue ? null : (
+                {id ? null : (
                     <>
                         <Button
                             className="w-auto px-8"

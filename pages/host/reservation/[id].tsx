@@ -69,6 +69,7 @@ const ReservationById = ({ userSession, id }) => {
                 variables: { input: { reservationId, cancelCharge, remarks } },
             });
             setOpen(false);
+            refetch();
             alert(data.cancelReservation.message);
         } catch (error) {
             alert(`Error: ${error.message}`);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
@@ -27,24 +27,57 @@ interface IColumns {
     Cell?: any;
 }
 
+const noOfItems = 10;
+
 const Licenses = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
+    const [skip, setSkip] = useState<number>(0);
 
     const { t } = useTranslation("adminhost");
 
-    const { data, loading, error } = useQuery(GET_MY_LICENSE, {
+    const { data, loading, error, refetch } = useQuery(GET_MY_LICENSE, {
         fetchPolicy: "network-only",
+        variables: {
+            paginate: { take: noOfItems, skip: 0 },
+        },
     });
 
+    const handlePaginateSpaces = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.getMyLicenses?.paginationInfo?.hasNext;
+            const hasPrevious =
+                data?.getMyLicenses?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
+
     const keys = [
-        { name: "License", key: "type" },
-        { name: "Approved", key: "approved" },
-        { name: "Uploaded", key: "createdAt" },
-        { name: "Remarks", key: "remarks" },
+        { name: "ライセンス", key: "type" },
+        { name: "承認", key: "approved" },
+        { name: "アップロード", key: "createdAt" },
+        { name: "備考", key: "remarks" },
     ];
     const columnClassName = (key) => {
-        if (key === "type" || key === "createdAt" || key === "approved")
+        if (key === "createdAt" || key === "approved" || key === "remarks")
             return "w-40";
     };
     const childClassname = (key) => {
@@ -126,13 +159,20 @@ const Licenses = ({ userSession }) => {
         content = <div>An error occurred: {error.message}</div>;
     }
     if (loadComplete && data) {
-        content = <Table columns={columns} data={data.getMyLicenses} />;
+        content = (
+            <Table
+                columns={columns}
+                data={data.getMyLicenses?.data}
+                handlePaginate={handlePaginateSpaces}
+                paginate={data?.getMyLicenses?.paginationInfog}
+            />
+        );
     }
 
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Host license - {config.appName}</title>
+                <title>ライセンス管理 - {config.appName}</title>
             </Head>
             {/* Page header */}
             <div className="bg-white shadow mb-3 sm:mb-5">
@@ -148,7 +188,7 @@ const Licenses = ({ userSession }) => {
                                             aria-hidden="true"
                                         />
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Licenses
+                                            ライセンス管理
                                         </h1>
                                     </div>
                                 </div>
@@ -158,7 +198,7 @@ const Licenses = ({ userSession }) => {
                             <Link href="/host/license/add">
                                 <a>
                                     <Button variant="primary" Icon={PlusIcon}>
-                                        Add license
+                                        ライセンスの追加
                                     </Button>
                                 </a>
                             </Link>

@@ -76,9 +76,7 @@ const HourView = ({ data }: { data: Hour }) => {
             </div>
             <ul className="flex items-center justify-between w-full px-4 py-4 text-gray-600 text-sm bg-gray-100">
                 {dataCategories.map((category, index) => {
-                    console.log(category, index);
                     const categoryData = dailyData[category];
-                    console.log(categoryData, category);
                     if (!categoryData) {
                         return null;
                     }

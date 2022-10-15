@@ -214,7 +214,7 @@ const DayOverride = ({ userSession, currentSpace }) => {
                                                 <Link
                                                     href={`/host/my-space/edit/${id}/override/daily`}
                                                 >
-                                                    Go to Dynamic Pricing
+                                                    ダイナミックプライシングへ
                                                 </Link>
                                             </li>
                                         </ul>

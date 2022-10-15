@@ -50,10 +50,7 @@ export const SearchBox = ({
     const [purpose, setPurpose] = useState<string>("");
     const [date, setDate] = useState<string>("");
 
-    const onPanelChange = (value, mode) => {
-        // console.log(value, mode);
-        console.log(value.format("YYYY-MM-DD"));
-    };
+    const onPanelChange = (value, mode) => {};
 
     const disabledDate = (current) => {
         // Can not select days before today and today

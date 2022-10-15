@@ -38,8 +38,6 @@ export const SingleListItem = ({
 
     const photo: IPhoto = photos[0];
 
-    // console.log(spacePricePlans);
-
     return (
         <div
             className={`flex flex-col sm:flex-row space-x-6 ${
@@ -49,13 +47,7 @@ export const SingleListItem = ({
             onMouseLeave={() => setActiveIndex && setActiveIndex(-1)}
         >
             <div className="w-full overflow-hidden rounded-lg sm:w-60 aspect-w-16 aspect-h-9 sm:aspect-h-1">
-                <Image
-                    src={photo.medium.url}
-                    alt={name}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
-                />
+                <img src={photo.medium?.url} alt={name} />
             </div>
             <div className="w-full space-y-2">
                 <Title>{name}</Title>

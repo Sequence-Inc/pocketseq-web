@@ -43,7 +43,7 @@ export const ItemGrid = ({
 
     const rating = { points: 5, reviews: 1 }; // Todo: implement ratings for each spaces
 
-    const photo: IPhoto = photos[0];
+    const photo: IPhoto = photos.find((item) => !!item?.medium?.url);
 
     return (
         <div
@@ -61,21 +61,17 @@ export const ItemGrid = ({
                     className="object-cover object-left-top w-full h-full z-0"
                 />
             </div>
-            <div className="px-2 space-y-2">
+            <div className="md:px-2 space-y-2">
                 {/* location and rating section */}
-                <div className="flex items-center justify-between">
-                    <Link href="/search">
-                        <a>
-                            <Tag
-                                Icon={LocationMarkerIcon}
-                                iconStyle="text-gray-300"
-                                textStyle="text-sm text-gray-500"
-                                numberOfLines={1}
-                            >
-                                {location}
-                            </Tag>
-                        </a>
-                    </Link>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <Tag
+                        Icon={LocationMarkerIcon}
+                        iconStyle="text-gray-300"
+                        textStyle="text-sm text-gray-500"
+                        numberOfLines={1}
+                    >
+                        {location}
+                    </Tag>
 
                     <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
                         <div className="text-sm font-semibold text-gray-600">
@@ -90,14 +86,19 @@ export const ItemGrid = ({
                 {/* title section */}
                 <Link href={`/space/${encodeURIComponent(id)}`}>
                     <a className="block">
-                        <Title numberOfLines={2}>{name}</Title>
+                        <h3 className="text-gray-800 line-clamp-1 text-lg font-bold">
+                            {name}
+                        </h3>
                     </a>
                 </Link>
                 {/* price section */}
-                <Price amount={FormatPrice("HOURLY", pricePlans, true, true)} />
+                <Price
+                    amount={FormatPrice("HOURLY", pricePlans, true, true)}
+                    amountStyle="font-bold"
+                />
 
                 {/* metadata section */}
-                <div className="flex justify-start space-x-4">
+                <div className="hidden md:flex justify-start space-x-4">
                     <Tag
                         Icon={UserGroupIcon}
                         textStyle="text-sm text-gray-500"
@@ -121,7 +122,7 @@ export const ItemGrid = ({
                 </div>
 
                 {/* action section */}
-                <div className="flex justify-between py-2 space-x-4">
+                <div className="flex flex-col md:flex-row justify-between py-2 space-y-2 md:space-y-0 md:space-x-4">
                     <Button
                         variant="primary"
                         onClick={() => router.push(`/space/${data?.id}`)}

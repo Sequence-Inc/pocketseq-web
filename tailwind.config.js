@@ -20,8 +20,15 @@ module.exports = {
                 sans: ["Inter var", ...fontFamily.sans],
             },
             minWidth: {
-                10: '10rem'
-            }
+                10: "10rem",
+            },
+            boxShadow: {
+                station:
+                    "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
+            },
+            borderRadius: {
+                statiom: "6px",
+            },
         },
     },
     variants: {

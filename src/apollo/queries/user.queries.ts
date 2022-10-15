@@ -29,6 +29,22 @@ export const UPDATE_USER_PROFILE = gql`
     }
 `;
 
+export const MAKE_DEFAULT_PAYMENT_SOURCE = gql`
+    mutation MakeDefaultPaymentSource($paymentMethodId: ID) {
+        setDefaultPaymentMethod(paymentMethodId: $paymentMethodId) {
+            message
+        }
+    }
+`;
+
+export const REMOVE_PAYMENT_SOURCE = gql`
+    mutation RemovePaymentSource($paymentMethodId: String!) {
+        removePaymentMethod(paymentMethodId: $paymentMethodId) {
+            message
+        }
+    }
+`;
+
 export const GET_PAYMENT_SOURCES = gql`
     query GetPaymentSources {
         ${PAYMENT_SOURCE}
@@ -66,16 +82,19 @@ export const RESERVE_SPACE = gql`
             amount
             description
             currency
+            reservationId
         }
     }
 `;
 
 export const MY_RESERVATION = gql`
     query MyReservations(
-        $paginate: PaginationOption
-        $filter: MyReservationFilter
+        $spacePaginate: PaginationOption
+        $spaceFilter: MyReservationFilter
+        $hotelPaginate: PaginationOption
+        $hotelFilter: MyHotelRoomReservationFilter
     ) {
-        myReservations(paginate: $paginate, filter: $filter) {
+        myReservations(paginate: $spacePaginate, filter: $spaceFilter) {
             data {
                 id
                 fromDateTime
@@ -88,6 +107,52 @@ export const MY_RESERVATION = gql`
                 space {
                     id
                     name
+                }
+            }
+            paginationInfo {
+                hasNext
+                hasPrevious
+                nextCursor
+            }
+        }
+
+        myHotelRoomReservation (paginate: $hotelPaginate, filter: $hotelFilter) {
+            data {
+                id
+                reservationId
+                fromDateTime
+                toDateTime
+                status
+                createdAt
+                updatedAt
+                approved
+                approvedOn
+                hotelRoom{
+                    id
+                    name
+                    description
+                }
+                packagePlan{
+                    id
+                    name
+                    description
+                }
+                reservee {
+                    ${USER_ACCOUNT}
+                    ${COMPANY_ACCOUNT}
+                }
+                transaction {
+                    id
+                    amount
+                    currency
+                    status
+                    paymentMethodInfo {
+                        brand
+                        last4
+                        country
+                        expYear
+                        expMonth
+                    }
                 }
             }
             paginationInfo {

@@ -1,6 +1,6 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { useEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useFieldArray, useForm, UseFieldArrayReturn } from "react-hook-form";
 import {
     ADD_DEFAULT_SPACE_PRICE,
     ADD_DEFAULT_SPACE_SETTINGS,
@@ -15,8 +15,13 @@ import {
     UPDATE_SPACE_ADDRESS,
     UPDATE_SPACE_SETTING,
     UPDATE_TYPES_IN_SPACE,
+    GET_SPACE_BY_ID,
+    REMOVE_SPACE_PHOTO,
+    GET_UPLOAD_TOKEN,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
+import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
+import handleUpload from "src/utils/uploadImages";
 
 interface IData {
     id: string;
@@ -58,6 +63,8 @@ interface IFormState {
     city: string;
     addressLine1: string;
     addressLine2?: string;
+    subscriptionPriceEnabled?: boolean;
+    subcriptionPrice?: number;
 }
 
 const defaultPriceObj = {
@@ -80,6 +87,53 @@ const defaultValues = {
     nearestStations: [defaultStationObj],
 };
 
+export const useSpacePhotos = (spaceId) => {
+    const [addSpacePhotos] = useMutation(GET_UPLOAD_TOKEN);
+
+    const handleAddSpacePhotos = useCallback(async (photos) => {
+        const payloadPhotos = Array.from(photos)?.map((res: File) => ({
+            mime: res.type,
+        }));
+
+        const { data, errors } = await addSpacePhotos({
+            variables: {
+                spaceId,
+                imageInputs: payloadPhotos,
+            },
+        });
+
+        if (data) {
+            try {
+                await handleUpload(data.addSpacePhotos, photos);
+                return true;
+            } catch (err) {
+                throw err;
+            }
+        }
+        if (errors) {
+            throw errors;
+        }
+    }, []);
+    const [removeSpacePhoto] = useMutation(REMOVE_SPACE_PHOTO, {
+        refetchQueries: [
+            {
+                query: GET_SPACE_BY_ID,
+                variables: { id: spaceId },
+            },
+        ],
+    });
+
+    const handleRemovePhoto = useCallback(async (photo) => {
+        return removeSpacePhoto({
+            variables: {
+                photoId: photo?.id,
+            },
+        });
+    }, []);
+
+    return { handleRemovePhoto, handleAddSpacePhotos };
+};
+
 const useAddSpace = () => {
     const {
         register,
@@ -89,7 +143,10 @@ const useAddSpace = () => {
         setValue,
         watch,
         handleSubmit,
+        reset,
+        getValues,
     } = useForm<IFormState, IFormState>({ defaultValues });
+
     const { fields, prepend, remove } = useFieldArray({
         name: "spacePricePlan",
         control,
@@ -102,11 +159,14 @@ const useAddSpace = () => {
         name: "nearestStations",
         control,
     });
+
     const [mutateTrainLines, { data: trainLines }] = useLazyQuery(
         GET_LINES_BY_PREFECTURE
     );
+
     const [mutateStationId, { data: stationId }] =
         useLazyQuery(GET_STATIONS_BY_LINE);
+
     const { data: spaceTypes } = useQuery<IAllSpaceType>(
         GET_AVAILABLE_SPACE_TYPES,
         { fetchPolicy: "network-only" }
@@ -166,12 +226,77 @@ const useAddSpace = () => {
 
 export default useAddSpace;
 
-export const useBasicSpace = (fn, initialValue) => {
+export const useGetInitialSpace = (id) => {
+    const {
+        data: initialValue,
+        loading: spaceDetailLoading,
+        error: fetchSpaceDetailsError,
+        refetch: refetchSpaceDetail,
+    } = useQuery(GET_SPACE_BY_ID, {
+        skip: !id,
+        variables: {
+            id,
+        },
+    });
+
+    return {
+        initialValue: initialValue?.spaceById,
+        spaceDetailLoading,
+        refetchSpaceDetail,
+        fetchSpaceDetailsError,
+    };
+};
+
+const MY_OPTIONS = gql`
+    query MyOptions($hotelId: ID, $packagePlanId: ID, $spaceId: ID) {
+        myOptions(
+            hotelId: $hotelId
+            packagePlanId: $packagePlanId
+            spaceId: $spaceId
+        ) {
+            data {
+                id
+                name
+                createdAt
+            }
+        }
+    }
+`;
+export const useBasicSpace = (fn, selectedSpaceId) => {
     const [zipCode, setZipCode] = useState("");
     const [freeCoords, setFreeCoords] = useState<
         { lat: any; lng: any } | undefined
     >();
     const [cache, setCache] = useState({});
+    const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+
+    const { initialValue, spaceDetailLoading } =
+        useGetInitialSpace(selectedSpaceId);
+
+    const {
+        data: options,
+        loading: optionsLoading,
+        error: optionsError,
+    } = useQuery(MY_OPTIONS);
+    const {
+        data: cancelPolicies,
+        loading: cancelPoliciesLoading,
+        error: cancelPoliciesError,
+    } = useQuery(CancelPolicyQueires.MY_CANCEL_POLICIES);
+
+    const [mutate] = useMutation(ADD_SPACE);
+    const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
+    const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
+    const [mutateSpaceSettings] = useMutation(ADD_DEFAULT_SPACE_SETTINGS);
+    const [mutateSpaceDefaultPrice] = useMutation(ADD_DEFAULT_SPACE_PRICE);
+    // update api
+    const [updateSpace] = useMutation(UPDATE_SPACE);
+    const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
+    const [updateSpaceSetting] = useMutation(UPDATE_SPACE_SETTING);
+    const [updateSpaceDefaultPrice] = useMutation(UPDATE_DEFAULT_SPACE_PRICE);
+
+    const [loading, setLoading] = useState(false);
+
     const {
         register,
         unregister,
@@ -181,8 +306,10 @@ export const useBasicSpace = (fn, initialValue) => {
         setValue,
         handleSubmit,
         getValues,
+        reset,
     } = useForm({
         defaultValues: {
+            cancelPolicyId: undefined,
             name: undefined,
             description: undefined,
             maximumCapacity: undefined,
@@ -210,23 +337,42 @@ export const useBasicSpace = (fn, initialValue) => {
                 thirtyMinuteAmount: 0,
                 fortyFiveMinuteAmount: 0,
             },
+            subscriptionPriceEnabled: false,
+            subcriptionPrice: 0,
         },
     });
 
-    const { data: prefectures } = useQuery(AVAILABLE_PREFECTURES);
+    const watchSubscriptionPrice = watch("subscriptionPriceEnabled", false);
 
-    const [mutate] = useMutation(ADD_SPACE);
-    const [mutateSpaceAddress] = useMutation(ADD_SPACE_ADDRESS);
-    const [mutateSpaceTypes] = useMutation(UPDATE_TYPES_IN_SPACE);
-    const [mutateSpaceSettings] = useMutation(ADD_DEFAULT_SPACE_SETTINGS);
-    const [mutateSpaceDefaultPrice] = useMutation(ADD_DEFAULT_SPACE_PRICE);
-    // update api
-    const [updateSpace] = useMutation(UPDATE_SPACE);
-    const [updateSpaceAddress] = useMutation(UPDATE_SPACE_ADDRESS);
-    const [updateSpaceSetting] = useMutation(UPDATE_SPACE_SETTING);
-    const [updateSpaceDefaultPrice] = useMutation(UPDATE_DEFAULT_SPACE_PRICE);
+    useEffect(() => {
+        if (!watchSubscriptionPrice) {
+            reset({
+                ...getValues(),
+                subcriptionPrice: undefined,
+            });
+        }
+        if (watchSubscriptionPrice) {
+            register("subcriptionPrice", { required: true });
+        }
+    }, [watchSubscriptionPrice]);
 
-    const [loading, setLoading] = useState(false);
+    const {
+        fields: includedOptions,
+        update: updateIncludedOptionFields,
+    }: UseFieldArrayReturn & { fields: any[] } = useFieldArray<any, any, any>({
+        keyName: "includedOptionFieldId",
+        name: "includedOptions",
+        control,
+    });
+
+    const {
+        fields: additionalOptions,
+        update: updateAdditionalOptionFields,
+    }: UseFieldArrayReturn & { fields: any[] } = useFieldArray<any, any, any>({
+        keyName: "additionalOptionId",
+        name: "additionalOptions",
+        control,
+    });
 
     const filterDefaultSpaceSetting = (settings) => {
         if (!settings) return null;
@@ -266,6 +412,286 @@ export const useBasicSpace = (fn, initialValue) => {
         return defaultPlan;
     };
 
+    const onSubmit = handleSubmit(async (formData) => {
+        setLoading(true);
+        try {
+            // check if formData contains default price
+            const {
+                dailyAmount,
+                hourlyAmount,
+                fiveMinuteAmount,
+                tenMinuteAmount,
+                fifteenMinuteAmount,
+                thirtyMinuteAmount,
+                fortyFiveMinuteAmount,
+            } = formData.pricePlan;
+            if (
+                dailyAmount === 0 &&
+                hourlyAmount === 0 &&
+                fiveMinuteAmount === 0 &&
+                tenMinuteAmount === 0 &&
+                fifteenMinuteAmount === 0 &&
+                thirtyMinuteAmount === 0 &&
+                fortyFiveMinuteAmount === 0
+            ) {
+                alert("Please select at least one price plan.");
+                setLoading(false);
+                return;
+            }
+
+            const reducedIncludecOptions = includedOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
+
+            const reducedAdditionalOptions = additionalOptions
+                ?.filter((item: any) => !!item?.isChecked)
+                ?.map((option) => option.id);
+
+            const basicModel = {
+                name: formData.name,
+                description: formData.description,
+                maximumCapacity: formData.maximumCapacity,
+                numberOfSeats: formData.numberOfSeats,
+                spaceSize: formData.spaceSize,
+                needApproval: formData.needApproval,
+                includedOptions: reducedIncludecOptions,
+                additionalOptions: reducedAdditionalOptions,
+                cancelPolicyId: formData.cancelPolicyId,
+                subcriptionPrice: formData.subcriptionPrice || undefined,
+            };
+
+            const addressModel = {
+                postalCode: formData.zipCode,
+                prefectureId: formData.prefecture,
+                city: formData.city,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+            };
+
+            const spaceSettingModel = {
+                totalStock: formData.totalStock,
+                businessDays: formData.businessDays,
+                openingHr: formData.openingHr,
+                closingHr: formData.closingHr,
+                breakFromHr: formData.breakFromHr,
+                breakToHr: formData.breakToHr,
+            };
+
+            // check if need to update
+            if (initialValue) {
+                // update
+                const defaultSetting = filterDefaultSpaceSetting(
+                    initialValue.settings
+                );
+                const spaceSetting = {
+                    ...spaceSettingModel,
+                    id: defaultSetting.id,
+                };
+                const updateMutations = [
+                    updateSpaceAddress({
+                        variables: {
+                            spaceId: initialValue.id,
+                            address: {
+                                ...addressModel,
+                                id: initialValue.address?.id,
+                            },
+                        },
+                    }),
+                    updateSpace({
+                        variables: {
+                            input: { ...basicModel, id: initialValue.id },
+                        },
+                    }),
+                    mutateSpaceTypes({
+                        variables: {
+                            input: {
+                                spaceId: initialValue.id,
+                                spaceTypeIds: [formData.spaceTypes],
+                            },
+                        },
+                    }),
+                    updateSpaceDefaultPrice({
+                        variables: {
+                            spaceId: initialValue.id,
+                            input: formData.pricePlan,
+                        },
+                    }),
+                    updateSpaceSetting({
+                        variables: {
+                            input: {
+                                ...spaceSettingModel,
+                                id: defaultSetting.id,
+                            },
+                        },
+                    }),
+                ];
+
+                await Promise.all(updateMutations);
+                alert("successfully updated!!");
+            } else {
+                // add new!
+                const addSpacesData = await mutate({
+                    variables: { input: basicModel },
+                });
+
+                await Promise.all([
+                    mutateSpaceAddress({
+                        variables: {
+                            spaceId: addSpacesData.data.addSpace.space.id,
+                            address: addressModel,
+                        },
+                    }),
+                    mutateSpaceTypes({
+                        variables: {
+                            input: {
+                                spaceId: addSpacesData.data.addSpace.space.id,
+                                spaceTypeIds: [formData.spaceTypes],
+                            },
+                        },
+                    }),
+                    mutateSpaceSettings({
+                        variables: {
+                            spaceId: addSpacesData.data.addSpace.space.id,
+                            spaceSetting: spaceSettingModel,
+                        },
+                    }),
+                    mutateSpaceDefaultPrice({
+                        variables: {
+                            spaceId: addSpacesData.data.addSpace.space.id,
+                            input: formData.pricePlan,
+                        },
+                    }),
+                ]);
+                addSpacesData.data.addSpace.space.id &&
+                    fn(addSpacesData.data.addSpace.space.id);
+            }
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+        }
+    });
+
+    const handleIncludedOptionFieldChange = useCallback(
+        (fieldIndex, value) => {
+            const optionDetails = includedOptions[fieldIndex];
+
+            updateIncludedOptionFields(fieldIndex, {
+                ...includedOptions[fieldIndex],
+                isChecked: value,
+            });
+
+            const targetAdditionalOptionIndex = additionalOptions?.findIndex(
+                (item) => item.id === optionDetails.id
+            );
+            if (targetAdditionalOptionIndex < 0) return;
+
+            if (value) {
+                updateAdditionalOptionFields(targetAdditionalOptionIndex, {
+                    ...additionalOptions[targetAdditionalOptionIndex],
+                    isChecked: !value,
+                });
+            }
+        },
+        [includedOptions, additionalOptions]
+    );
+
+    const handleAdditionalOptionFieldChange = useCallback(
+        (fieldIndex, value) => {
+            const optionDetails = additionalOptions[fieldIndex];
+
+            updateAdditionalOptionFields(fieldIndex, {
+                ...additionalOptions[fieldIndex],
+                isChecked: value,
+            });
+            const targetIncludedOptionIndex = includedOptions?.findIndex(
+                (item) => item.id === optionDetails.id
+            );
+            if (targetIncludedOptionIndex < 0) return;
+
+            if (value) {
+                updateIncludedOptionFields(targetIncludedOptionIndex, {
+                    ...includedOptions[targetIncludedOptionIndex],
+                    isChecked: !value,
+                });
+            }
+        },
+        [additionalOptions, includedOptions]
+    );
+
+    const setInitialIncludedOptions = useCallback(() => {
+        if (!options?.myOptions?.data?.length) return;
+
+        [...options?.myOptions?.data]
+            .sort((a, b) => a.createdAt - b.createdAt)
+            .forEach((option, index) => {
+                if (!initialValue?.includedOptions?.length) {
+                    updateIncludedOptionFields(index, {
+                        ...option,
+                        isChecked: false,
+                    });
+                }
+                if (initialValue?.includedOptions?.length) {
+                    const initValOptionIndex =
+                        initialValue?.includedOptions.findIndex(
+                            (optionAttachment) =>
+                                optionAttachment.id === option.id
+                        );
+
+                    if (initValOptionIndex > -1) {
+                        updateIncludedOptionFields(index, {
+                            ...option,
+                            isChecked: true,
+                        });
+                    }
+                    if (initValOptionIndex < 0) {
+                        updateIncludedOptionFields(index, {
+                            ...option,
+                            isChecked: false,
+                        });
+                    }
+                }
+            });
+    }, [options, initialValue?.includedOptions]);
+
+    const setInitialAdditionalOptions = useCallback(() => {
+        if (!options?.myOptions?.data?.length) return;
+
+        [...options?.myOptions?.data]
+            .sort((a, b) => a.createdAt - b.createdAt)
+            .forEach((option, index) => {
+                if (!initialValue?.additionalOptions?.length) {
+                    updateAdditionalOptionFields(index, {
+                        ...option,
+                        isChecked: false,
+                    });
+                }
+                if (initialValue?.additionalOptions?.length) {
+                    const initValOptionIndex =
+                        initialValue?.additionalOptions.findIndex(
+                            (optionAttachment) =>
+                                optionAttachment.id === option.id
+                        );
+
+                    if (initValOptionIndex > -1) {
+                        updateAdditionalOptionFields(index, {
+                            ...option,
+                            isChecked: true,
+                        });
+                    }
+                    if (initValOptionIndex < 0) {
+                        updateAdditionalOptionFields(index, {
+                            ...option,
+                            isChecked: false,
+                        });
+                    }
+                }
+            });
+    }, [options, initialValue?.additionalOptions]);
+
+    useEffect(setInitialAdditionalOptions, [setInitialAdditionalOptions]);
+
+    useEffect(setInitialIncludedOptions, [setInitialIncludedOptions]);
+
     useEffect(() => {
         if (initialValue) {
             setValue("name", initialValue.name);
@@ -280,6 +706,7 @@ export const useBasicSpace = (fn, initialValue) => {
             setValue("city", initialValue.address?.city);
             setValue("addressLine1", initialValue.address?.addressLine1);
             setValue("addressLine2", initialValue.address?.addressLine2);
+            setValue("cancelPolicyId", initialValue?.cancelPolicy?.id);
             setFreeCoords({
                 lat: initialValue.address?.latitude,
                 lng: initialValue.address?.longitude,
@@ -298,6 +725,10 @@ export const useBasicSpace = (fn, initialValue) => {
                     setValue("totalStock", defaultSetting.totalStock);
                 }
             }
+            if (initialValue?.subcriptionPrice) {
+                setValue("subscriptionPriceEnabled", true);
+                setValue("subcriptionPrice", initialValue?.subcriptionPrice);
+            }
             if (initialValue.pricePlans?.length > 0) {
                 setValue(
                     "pricePlan",
@@ -306,124 +737,6 @@ export const useBasicSpace = (fn, initialValue) => {
             }
         }
     }, [initialValue]);
-
-    const onSubmit = handleSubmit(async (formData) => {
-        setLoading(true);
-        const basicModel = {
-            name: formData.name,
-            description: formData.description,
-            maximumCapacity: formData.maximumCapacity,
-            numberOfSeats: formData.numberOfSeats,
-            spaceSize: formData.spaceSize,
-            needApproval: formData.needApproval,
-        };
-        const addressModel = {
-            postalCode: formData.zipCode,
-            prefectureId: formData.prefecture,
-            city: formData.city,
-            addressLine1: formData.addressLine1,
-            addressLine2: formData.addressLine2,
-        };
-
-        const spaceSettingModel = {
-            totalStock: formData.totalStock,
-            businessDays: formData.businessDays,
-            openingHr: formData.openingHr,
-            closingHr: formData.closingHr,
-            breakFromHr: formData.breakFromHr,
-            breakToHr: formData.breakToHr,
-        };
-
-        // check if need to update
-        if (initialValue) {
-            // update
-            const defaultSetting = filterDefaultSpaceSetting(
-                initialValue.settings
-            );
-            const spaceSetting = {
-                ...spaceSettingModel,
-                id: defaultSetting.id,
-            };
-            console.log(spaceSetting);
-            const updateMutations = [
-                updateSpaceAddress({
-                    variables: {
-                        spaceId: initialValue.id,
-                        address: {
-                            ...addressModel,
-                            id: initialValue.address?.id,
-                        },
-                    },
-                }),
-                updateSpace({
-                    variables: {
-                        input: { ...basicModel, id: initialValue.id },
-                    },
-                }),
-                mutateSpaceTypes({
-                    variables: {
-                        input: {
-                            spaceId: initialValue.id,
-                            spaceTypeIds: [formData.spaceTypes],
-                        },
-                    },
-                }),
-                updateSpaceDefaultPrice({
-                    variables: {
-                        spaceId: initialValue.id,
-                        input: formData.pricePlan,
-                    },
-                }),
-                updateSpaceSetting({
-                    variables: {
-                        input: {
-                            ...spaceSettingModel,
-                            id: defaultSetting.id,
-                        },
-                    },
-                }),
-            ];
-
-            await Promise.all(updateMutations);
-            alert("successfully updated!!");
-        } else {
-            // add new!
-            const addSpacesData = await mutate({
-                variables: { input: basicModel },
-            });
-            await Promise.all([
-                mutateSpaceAddress({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        address: addressModel,
-                    },
-                }),
-                mutateSpaceTypes({
-                    variables: {
-                        input: {
-                            spaceId: addSpacesData.data.addSpace.space.id,
-                            spaceTypeIds: [formData.spaceTypes],
-                        },
-                    },
-                }),
-                mutateSpaceSettings({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        spaceSetting: spaceSettingModel,
-                    },
-                }),
-                mutateSpaceDefaultPrice({
-                    variables: {
-                        spaceId: addSpacesData.data.addSpace.space.id,
-                        input: formData.pricePlan,
-                    },
-                }),
-            ]);
-            addSpacesData.data.addSpace.space.id &&
-                fn(addSpacesData.data.addSpace.space.id);
-        }
-        setLoading(false);
-    });
 
     return {
         zipCode,
@@ -442,6 +755,14 @@ export const useBasicSpace = (fn, initialValue) => {
         loading,
         prefectures,
         getValues,
+        includedOptions,
+        additionalOptions,
+        cancelPolicies: cancelPolicies?.myCancelPolicies?.data || [],
+        handleIncludedOptionFieldChange,
+        handleAdditionalOptionFieldChange,
+        initialValue,
+        spaceDetailLoading,
+        watchSubscriptionPrice,
     };
 };
 
@@ -457,7 +778,6 @@ export const usePriceSpace = () => {
     const loading = false;
 
     const onSubmit = handleSubmit((formData) => {
-        console.log(formData);
         // mutate({ variables: { input: formData } })
     });
 

@@ -8,5 +8,6 @@ export * from "./stringHelper";
 export * from "./searchHelper";
 
 export const config = {
-    appName: "PocketseQ",
+    appName: "ポケットシーク",
+    appNameEnglish: "PocketseQ",
 };

@@ -5,53 +5,49 @@ import { Container, Tag } from "@element";
 import {
     CategoryItem,
     ItemGrid,
+    ItemGridHotel,
     IExploreItem,
     RegisterCTA,
-    SingleExploreItem,
     HeroSection,
+    SubscriptionCTA,
 } from "@comp";
 import { Header, Footer } from "@layout";
 
 import {
     FlagIcon,
     StarIcon,
-    LocationMarkerIcon,
     ChevronRightIcon,
     BookmarkAltIcon,
     FireIcon,
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
-import { useQuery } from "@apollo/client";
-import {
-    GET_AVAILABLE_SPACE_TYPES,
-    GET_TOP_PICK_SPACES,
-} from "src/apollo/queries/space.queries";
+import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 
-const exploreAreas: IExploreItem[] = [
-    {
-        name: "新宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
-    },
-    {
-        name: "渋谷",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
-    },
-    {
-        name: "池袋",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
-    },
-    {
-        name: "原宿",
-        distance: "3.5km",
-        photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
-    },
-];
+// const exploreAreas: IExploreItem[] = [
+//     {
+//         name: "新宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
+//     },
+//     {
+//         name: "渋谷",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
+//     },
+//     {
+//         name: "池袋",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
+//     },
+//     {
+//         name: "原宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
+//     },
+// ];
 
 const features = [
     {
@@ -73,43 +69,34 @@ const features = [
     },
 ];
 
-export default function Home({ userSession, availableSpaceTypes }) {
-    const { data: spaceTypes } = useQuery(GET_AVAILABLE_SPACE_TYPES, {
-        fetchPolicy: "network-only",
-    });
-
-    const { data: topPicks } = useQuery(GET_TOP_PICK_SPACES, {
-        variables: {
-            paginationInfo: {
-                take: 4,
-                skip: 0,
-            },
-        },
-        fetchPolicy: "network-only",
-    });
-
+export default function Home({
+    userSession,
+    availableSpaceTypes,
+    allSpaces,
+    allPublishedHotels,
+}) {
     return (
         <div className="bg-gray-50">
             <Head>
                 <title>
-                    {config.appName} | 「人×場所×体験」を繋げる
-                    目的に合った場所を検索しよう
+                    {config.appName} ({config.appNameEnglish}) |
+                    「人×場所×体験」を繋げる 目的に合った場所を検索しよう
                 </title>
                 <meta
                     name="description"
-                    content={`${config.appName} タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 <meta
                     name="keywords"
-                    content={`${config.appName},タイムブック,レンタルスペース, ペット可`}
+                    content={`${config.appName} (${config.appNameEnglish}),レンタルスペース, ペット可`}
                 />
                 <meta
                     property="og:title"
-                    content={`${config.appName} | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
+                    content={`${config.appName} (${config.appNameEnglish}) | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
                 />
                 <meta
                     property="og:description"
-                    content={`${config.appName} タイムブックは、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
                 />
                 {/* <meta
                     property="og:image"
@@ -131,7 +118,7 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                     ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
                                 </p>
                                 <div className="mt-12">
-                                    <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                                         {features.map((feature) => (
                                             <div
                                                 key={feature.name}
@@ -181,17 +168,15 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                 </a>
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
-                            {spaceTypes?.availableSpaceTypes.map(
-                                (spaceType, index) => (
-                                    <CategoryItem
-                                        key={spaceType.id}
-                                        title={spaceType.title}
-                                        subTitle={spaceType.description}
-                                        photo={spaceType.photo?.medium?.url}
-                                    />
-                                )
-                            )}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-3 md:gap-x-6 md:gap-y-6">
+                            {availableSpaceTypes?.map((spaceType) => (
+                                <CategoryItem
+                                    key={spaceType.id}
+                                    title={spaceType.title}
+                                    subTitle={spaceType.description}
+                                    photo={spaceType.photo?.medium?.url}
+                                />
+                            ))}
                         </div>
                     </div>
                     {/* <div>
@@ -230,22 +215,56 @@ export default function Home({ userSession, availableSpaceTypes }) {
                                 iconStyle="mr-2 text-primary"
                                 textStyle="text-xl text-primary"
                             >
-                                新着ピックアップスペース
+                                新着スペース
                             </Tag>
-                            <Link href="/search">
+                            <Link href="/search?searchType=space">
                                 <a className="flex items-center text-xs text-gray-500 hover:text-primary">
                                     もっと見る
                                     <ChevronRightIcon className="w-4 h-4 ml-1" />
                                 </a>
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {topPicks?.allSpaces?.data.map((item, index) => (
-                                <ItemGrid key={index} data={item} />
-                            ))}
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-4">
+                            {allSpaces?.data.map((item, index) => {
+                                if (index < 4) {
+                                    return <ItemGrid key={index} data={item} />;
+                                }
+                            })}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={StarIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                新着宿泊スペース
+                            </Tag>
+                            <Link href="/search?searchType=hotel">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+                            {allPublishedHotels?.map((item, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <ItemGridHotel
+                                            key={index}
+                                            data={item}
+                                        />
+                                    );
+                                }
+                            })}
                         </div>
                     </div>
                     <RegisterCTA />
+                    <SubscriptionCTA />
                 </Container>
             </main>
             <Footer />
@@ -256,13 +275,21 @@ export default function Home({ userSession, availableSpaceTypes }) {
 export const getServerSideProps = async (context) => {
     const client = createApolloClient();
     const { data } = await client.query({
-        query: GET_AVAILABLE_SPACE_TYPES,
+        query: GET_TOP_PICK_SPACES,
+        variables: {
+            paginationInfo: {
+                take: 4,
+                skip: 0,
+            },
+        },
     });
     const session = await getSession(context);
     return {
         props: {
             userSession: session,
             availableSpaceTypes: data.availableSpaceTypes,
+            allSpaces: data.allSpaces,
+            allPublishedHotels: data.allPublishedHotels,
         },
     };
 };

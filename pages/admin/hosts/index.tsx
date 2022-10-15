@@ -13,7 +13,7 @@ import requireAuth from "src/utils/authecticatedRoute";
 function AdminDashboard({ userSession }) {
     let [tabs] = useState([
         {
-            title: "Approved",
+            title: "承認済",
             component: (
                 <HostsList
                     filterOptions={{
@@ -25,7 +25,7 @@ function AdminDashboard({ userSession }) {
             ),
         },
         {
-            title: "Unapproved",
+            title: "未承認",
             component: (
                 <HostsList
                     filterOptions={{
@@ -37,7 +37,7 @@ function AdminDashboard({ userSession }) {
             ),
         },
         {
-            title: "Suspended",
+            title: "一時停止",
             component: (
                 <HostsList
                     filterOptions={{
@@ -52,7 +52,7 @@ function AdminDashboard({ userSession }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Hosts - {config.appName}</title>
+                <title>ホスト管理 - {config.appName}</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -67,10 +67,10 @@ function AdminDashboard({ userSession }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Hosts
+                                            ホスト管理
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                    {/* <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
                                         <dt className="sr-only">Total hosts</dt>
                                         <dd className="flex items-center mt-3 text-sm font-medium text-gray-500 capitalize sm:mr-6 sm:mt-0">
                                             <UsersIcon
@@ -79,7 +79,7 @@ function AdminDashboard({ userSession }) {
                                             />
                                             12 hosts
                                         </dd>
-                                    </dl>
+                                    </dl> */}
                                 </div>
                             </div>
                         </div>

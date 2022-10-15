@@ -7,8 +7,9 @@ import {
     UsersIcon,
     MailIcon,
     UserCircleIcon,
-    BadgeCheckIcon,
     IdentificationIcon,
+    OfficeBuildingIcon,
+    AdjustmentsIcon,
 } from "@heroicons/react/outline";
 
 export const navigation = [
@@ -25,13 +26,13 @@ export const navigation = [
         roles: ["admin"],
     },
     {
-        name: "Accounts",
+        name: "アカウント管理",
         href: "/admin/accounts",
         Icon: UsersIcon,
         roles: ["admin"],
     },
     {
-        name: "ホスト",
+        name: "ホスト管理",
         href: "/admin/hosts",
         Icon: UsersIcon,
         roles: ["admin"],
@@ -46,6 +47,18 @@ export const navigation = [
         name: "プロフィール",
         href: "/user/profile",
         Icon: UserCircleIcon,
+        roles: ["user"],
+    },
+    {
+        name: "プロフィール",
+        href: "/host/profile",
+        Icon: UserCircleIcon,
+        roles: ["host"],
+    },
+    {
+        name: "サブスクリプション",
+        href: "/user/subscriptions",
+        Icon: CalendarIcon,
         roles: ["user"],
     },
     {
@@ -66,27 +79,39 @@ export const navigation = [
         Icon: CalendarIcon,
         roles: ["host"],
     },
-    
-    {
-        name: "施設管理",
-        href: "/host/my-space",
-        Icon: ViewListIcon,
-        roles: ["host"],
-    },
     {
         name: "メッセージ",
         href: "/messages",
         Icon: MailIcon,
         roles: ["user", "host"],
     },
-    // {
-    //     name: "設定",
-    //     href: "#",
-    //     Icon: CogIcon,
-    //     roles: ["host"],
-    // },
     {
-        name: "Licenses",
+        name: "施設管理",
+        href: "/host/my-space",
+        Icon: ViewListIcon,
+        roles: ["host"],
+    },
+
+    {
+        name: "宿泊管理",
+        href: "/host/hotel-space",
+        Icon: OfficeBuildingIcon,
+        roles: ["host"],
+    },
+    {
+        name: "オプション管理",
+        href: "/host/options",
+        Icon: AdjustmentsIcon,
+        roles: ["host"],
+    },
+    {
+        name: "キャンセルポリシー管理",
+        href: "/host/cancelPolicies",
+        Icon: CalendarIcon,
+        roles: ["host"],
+    },
+    {
+        name: "ライセンス管理",
         href: "/host/license",
         Icon: IdentificationIcon,
         roles: ["host"],

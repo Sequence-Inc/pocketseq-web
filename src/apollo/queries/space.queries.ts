@@ -11,6 +11,8 @@ import {
     SPACE_SETTING,
     USER_ACCOUNT,
     COMPANY_ACCOUNT,
+    HOTEL_OBJECT,
+    PAGINATION_INFO,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -111,52 +113,67 @@ export const UPDATE_SPACE = gql`
 `;
 
 export const MY_SPACES = gql`
-    query MySpaces {
-        mySpaces {
-            id
-            name
-            maximumCapacity
-            numberOfSeats
-            spaceSize
-            needApproval
-            photos {
-                ${PHOTO}
-            }
-            nearestStations {
-                station {
-                    ${STATION}
-                }
-                via
-                time
-            }
-            spaceTypes {
+    query MySpaces(
+        $paginate: PaginationOption
+    ) {
+        mySpaces(paginate:$paginate){
+            data {
                 id
-                title
-                description
-                photo {
+                name
+                maximumCapacity
+                numberOfSeats
+                spaceSize
+                needApproval
+                photos {
                     ${PHOTO}
                 }
+                nearestStations {
+                    station {
+                        ${STATION}
+                    }
+                    via
+                    time
+                }
+                spaceTypes {
+                    id
+                    title
+                    description
+                    photo {
+                        ${PHOTO}
+                    }
+                }
+                address {
+                    ${ADDRESS}
+                }
+                published 
             }
-            address {
-                ${ADDRESS}
+            paginationInfo{
+                ${PAGINATION_INFO}
             }
-            published
+        
         }
+
     }
 `;
 
 export const GET_MY_LICENSE = gql`
-    query MyLicense{
-        getMyLicenses {
-            id
-            type
-            approved
-            remarks
-            photos {
-                ${PHOTO}
+    query MyLicense($paginate:PaginationOption){
+        getMyLicenses(paginate:$paginate) {
+            data{ 
+                id
+                type
+                approved
+                remarks
+                photos {
+                    ${PHOTO}
+                }
+                createdAt
+                updatedAt
             }
-            createdAt
-            updatedAt
+            paginationInfo{
+                ${PAGINATION_INFO}
+            }
+
         }
     }
 `;
@@ -294,6 +311,14 @@ export const GET_UPLOAD_TOKEN = gql`
     }
 `;
 
+export const REMOVE_SPACE_PHOTO = gql`
+    mutation RemoveSpacePhoto($photoId: ID!) {
+        removeSpacePhoto(photoId: $photoId) {
+            message
+        }
+    }
+`;
+
 export const GET_LICENSE_UPLOAD_TOKEN = gql`
     mutation addLicense($input: AddLicenseInput!) {
         addLicense(input: $input) {
@@ -354,11 +379,22 @@ export const GET_SPACE_BY_ID = gql`
 
 export const GET_TOP_PICK_SPACES = gql`
     query top_picks($paginate: PaginationOption){
+        availableSpaceTypes {
+            id
+            title
+            description
+            photo {
+                ${PHOTO}
+            }
+        }
         allSpaces(paginate: $paginate){
             data {
                 ${SPACE}
             }
             ${PAGINATION} 
+        }
+        allPublishedHotels {
+            ${HOTEL_OBJECT}
         }
     }
 `;
@@ -412,6 +448,14 @@ export const ADD_PRICE_OVERRIDE = gql`
     }
 `;
 
+export const REMOVE_SPACE_SETTING_OVERRIDE = gql`
+    mutation RemoveSpaceSettingOverride($id: ID!) {
+        removeSpaceSetting(id: $id) {
+            message
+            action
+        }
+    }
+`;
 export const REMOVE_PRICE_OVERRIDE = gql`
     mutation RemoveSpacePriceOverride($id: ID!) {
         removePricePlanOverride(id: $id) {
@@ -445,7 +489,10 @@ export const GET_PRICE_PLANS = gql`
             total
             duration
             durationType
+            spaceAmount
+            optionAmount
             applicablePricePlans {
+                id
                 title
                 duration
                 type
@@ -456,6 +503,34 @@ export const GET_PRICE_PLANS = gql`
                 amount
                 appliedTimes
             }
+        }
+    }
+`;
+
+export const GET_PRICE_PLANS_WITH_AUTH = gql`
+    query ApplicablePricePlansWithAuth(
+        $input: GetApplicablePricePlansWithAuthInput
+    ) {
+        getApplicablePricePlansWithAuth(input: $input) {
+            total
+            duration
+            durationType
+            spaceAmount
+            optionAmount
+            applicablePricePlans {
+                id
+                title
+                duration
+                type
+                isDefault
+                isOverride
+                fromDate
+                toDate
+                amount
+                appliedTimes
+            }
+            subscriptionUnit
+            subscriptionAmount
         }
     }
 `;
@@ -504,6 +579,16 @@ export const CANCEL_RESERVATION = gql`
         }
     }
 `;
+
+export const CANCEL_ROOM_RESERVATION = gql`
+    mutation CancelRoomReservation($input: CancelRoomReservationInput!) {
+        cancelRoomReservation(input: $input) {
+            message
+            action
+        }
+    }
+`;
+
 export const ADD_REVIEW = gql`
     mutation addReview($input: GiveRatingInput!) {
         giveRating(input: $input) {
@@ -515,5 +600,17 @@ export const ADD_REVIEW = gql`
             createdAt
             updatedAt
         }
+    }
+`;
+
+export const RESERVE_SPACE = gql`
+    mutation reserveSpace($input: ReserveSpaceInput) {
+        transactionId
+        intentId
+        intentCode
+        amount
+        description
+        currency
+        paymentMethodTypes
     }
 `;

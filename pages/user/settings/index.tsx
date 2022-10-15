@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, TextField } from "@element";
@@ -7,10 +6,10 @@ import { useMutation, useQuery } from "@apollo/client";
 
 import {
     GET_PROFILE_FOR_SETTINGS,
+    MAKE_DEFAULT_PAYMENT_SOURCE,
+    REMOVE_PAYMENT_SOURCE,
     UPDATE_USER_PROFILE,
 } from "src/apollo/queries/user.queries";
-import DashboardCard from "src/components/DashboardCard";
-import withAuth from "src/utils/withAuth";
 import { IPaymentMethod } from "src/types/timebookTypes";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -21,9 +20,9 @@ import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 
 const UserSettings = ({ userSession }) => {
-    const [profile, setProfile] = useState();
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
-    const [paymentMethods, setPaymentMethods] = useState<IPaymentMethod[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const {
         register,
         handleSubmit,
@@ -31,10 +30,40 @@ const UserSettings = ({ userSession }) => {
         setValue,
     } = useForm();
 
-    const { data, loading, error } = useQuery(GET_PROFILE_FOR_SETTINGS, {
+    const {
+        data,
+        loading,
+        error,
+        refetch: refetchProfile,
+    } = useQuery(GET_PROFILE_FOR_SETTINGS, {
         fetchPolicy: "network-only",
     });
     const [mutate] = useMutation(UPDATE_USER_PROFILE);
+    const [makeDefaultPaymentSource] = useMutation(
+        MAKE_DEFAULT_PAYMENT_SOURCE,
+        {
+            onCompleted: (data) => {
+                refetchProfile();
+                alert(data.setDefaultPaymentMethod.message);
+                setIsLoading(false);
+            },
+            onError: (error) => {
+                alert(`Error: ${error.message}`);
+                setIsLoading(false);
+            },
+        }
+    );
+    const [removePaymentSource] = useMutation(REMOVE_PAYMENT_SOURCE, {
+        onCompleted: (data) => {
+            refetchProfile();
+            alert(data.removePaymentMethod.message);
+            setIsLoading(false);
+        },
+        onError: (error) => {
+            alert(`Error: ${error.message}`);
+            setIsLoading(false);
+        },
+    });
 
     useEffect(() => {
         if (data?.myProfile) {
@@ -62,10 +91,7 @@ const UserSettings = ({ userSession }) => {
         }
     });
 
-    if (loading)
-        return (
-            <LoadingSpinner />
-        );
+    if (loading) return <LoadingSpinner />;
 
     if (error)
         return (
@@ -79,8 +105,54 @@ const UserSettings = ({ userSession }) => {
         paymentSource,
     }: { myProfile: any; paymentSource: IPaymentMethod[] } = data;
 
-    const removePaymentMethod = (id) => {
-        return null;
+    const cardIcon = (brand) => {
+        if (
+            brand === "visa" ||
+            brand === "mastercard" ||
+            brand === "amex" ||
+            brand === "jcb" ||
+            brand === "discover" ||
+            brand === "unionpay"
+        ) {
+            return (
+                <img src={`/card-icons/${brand}.svg`} className="w-12 h-8" />
+            );
+        } else {
+            return <img src={`/card-icons/generic.svg`} className="w-12 h-8" />;
+        }
+    };
+
+    const makeDefault = ({ last4, token }) => {
+        if (
+            confirm(
+                `Are you sure you want to make this card ending with ${last4} your default source of payment?`
+            )
+        ) {
+            setIsLoading(true);
+            makeDefaultPaymentSource({
+                variables: {
+                    paymentMethodId: token,
+                },
+            });
+        }
+    };
+    const removePaymentMethod = ({ token, last4, isDefault }) => {
+        if (isDefault) {
+            alert("You can not remove default card from your account.");
+            return;
+        }
+        if (
+            confirm(
+                `Are you sure you want to delete this card ending with ${last4}?`
+            )
+        ) {
+            setIsLoading(true);
+            removePaymentSource({
+                variables: {
+                    paymentMethodId: token,
+                },
+            });
+        }
     };
 
     const renderPaymentMethods = () => {
@@ -92,27 +164,47 @@ const UserSettings = ({ userSession }) => {
             );
         } else {
             return paymentSource.map((card, index) => {
+                const expMonth = card.expMonth.toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                });
+                const expYear = `${card.expYear}`.slice(-2);
                 return (
                     <div
                         key={index}
-                        className="flex justify-between px-6 py-4 bg-gray-50 text-gray-700 rounded-lg shadow"
+                        className="flex items-center justify-between px-6 py-4 bg-gray-50 text-gray-700 rounded-lg shadow text-base space-x-4"
                     >
-                        <div>
+                        <div className="flex items-center flex-1 font-mono">
                             <span className="inline-block mr-5">
-                                {card.brand.toUpperCase()}
+                                {cardIcon(card.brand)}
                             </span>
-                            <span>... {card.last4}</span>
+                            **** **** **** {card.last4} ({expMonth}/{expYear})
                         </div>
-                        <a
-                            href="#"
+                        <div>
+                            {card.isDefault ? (
+                                "デフォルトカード"
+                            ) : (
+                                <button
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                        makeDefault(card);
+                                    }}
+                                    className="font-bold text-primary"
+                                >
+                                    デフォルトにする
+                                </button>
+                            )}
+                        </div>
+                        <button
+                            disabled={isLoading}
                             onClick={(e) => {
                                 e.preventDefault();
-                                removePaymentMethod(card.id);
+                                removePaymentMethod(card);
                             }}
-                            className="text-sm text-red-500 hover:text-red-700"
+                            className="font-bold text-red-500 hover:text-red-700"
                         >
                             削除
-                        </a>
+                        </button>
                     </div>
                 );
             });
@@ -138,7 +230,7 @@ const UserSettings = ({ userSession }) => {
                                 type="submit"
                                 variant="primary"
                                 className="inline-block w-auto px-4"
-                                loading={profileLoading}
+                                loading={profileLoading || isLoading}
                             >
                                 アップデート
                             </Button>
@@ -153,7 +245,7 @@ const UserSettings = ({ userSession }) => {
                                         label="性"
                                         error={errors.lastName && true}
                                         errorMessage="Last Name is required"
-                                        disabled={profileLoading}
+                                        disabled={profileLoading || isLoading}
                                         singleRow
                                     />
                                 </div>
@@ -166,7 +258,7 @@ const UserSettings = ({ userSession }) => {
                                         error={errors.firstName && true}
                                         errorMessage="First Name is required"
                                         autoFocus
-                                        disabled={profileLoading}
+                                        disabled={profileLoading || isLoading}
                                         singleRow
                                     />
                                 </div>
@@ -178,7 +270,7 @@ const UserSettings = ({ userSession }) => {
                                         label="性（カナ）"
                                         error={errors.lastNameKana && true}
                                         errorMessage="Last Name Kana is required"
-                                        disabled={profileLoading}
+                                        disabled={profileLoading || isLoading}
                                         singleRow
                                     />
                                 </div>
@@ -190,7 +282,7 @@ const UserSettings = ({ userSession }) => {
                                         label="名（カナ）"
                                         error={errors.firstNameKana && true}
                                         errorMessage="First Name Kana is required"
-                                        disabled={profileLoading}
+                                        disabled={profileLoading || isLoading}
                                         singleRow
                                     />
                                 </div>
@@ -209,7 +301,7 @@ const UserSettings = ({ userSession }) => {
                                         label="お誕生日"
                                         error={errors.dob && true}
                                         errorMessage="Date of birth is required"
-                                        disabled={profileLoading}
+                                        disabled={profileLoading || isLoading}
                                         singleRow
                                     />
                                 </div>

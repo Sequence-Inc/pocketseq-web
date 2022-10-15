@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Price } from "@element";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
@@ -12,6 +12,7 @@ import { PriceFormatter } from "src/utils/priceFormatter";
 import { FormatPrice, toBase64 } from "src/utils/stringHelper";
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
+import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
 
 const options = {
     DAILY: Array.from({ length: 30 }).map((_, index) => index + 1),
@@ -22,11 +23,17 @@ const options = {
 type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
 export const FloatingPriceTwo = ({
+    availableHours = [...Array(25).keys()],
     pricePlans,
     space,
+    handleReserve,
+    cancelPolicy,
 }: {
+    availableHours?: number[];
     pricePlans: ISpacePricePlan[];
     space: ISpace;
+    handleReserve: (data: TUseCalculateSpacePriceProps) => void;
+    cancelPolicy: any;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -248,6 +255,23 @@ export const FloatingPriceTwo = ({
     );
     const url = `?data=${params}`;
 
+    const initiateReserve = useCallback(() => {
+        const start = durationType === "DAILY" ? startDateTime : startDateTime;
+        handleReserve({
+            fromDateTime: start.unix() * 1000,
+            duration,
+            durationType,
+            spaceId: space.id,
+        });
+    }, [
+        handleReserve,
+        startDateTime,
+        endDateTime,
+        duration,
+        durationType,
+        space?.id,
+    ]);
+
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current < moment().endOf("day");
@@ -268,7 +292,7 @@ export const FloatingPriceTwo = ({
                 <div className="flex justify-between">
                     <Price amount={price} />
                     {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
-                    {startDateTime?.format("YYYY-MM-DD HH:mm")}
+                    {/* {startDateTime?.format("YYYY-MM-DD HH:mm")} */}
                 </div>
                 {/* date and time row */}
                 <div className="">
@@ -331,25 +355,9 @@ export const FloatingPriceTwo = ({
                                 }
                                 className="border-0 py-1"
                             >
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                                <option value="15">15</option>
-                                <option value="16">16</option>
-                                <option value="17">17</option>
-                                <option value="18">18</option>
-                                <option value="19">19</option>
-                                <option value="20">20</option>
-                                <option value="21">21</option>
-                                <option value="22">22</option>
-                                <option value="23">23</option>
-                                <option value="24">24</option>
+                                {availableHours?.map((value) => (
+                                    <option value={`${value}`}>{value}</option>
+                                ))}
                             </select>
                             時
                             <select
@@ -378,16 +386,42 @@ export const FloatingPriceTwo = ({
                 )}
                 {okayToBook() && initialPricingDetail()}
                 {/* button row */}
-                <Link href={`/space/${space.id}/reserve${url}`}>
-                    <Button variant="primary" disabled={!okayToBook()}>
-                        予約可能状況を確認する
-                    </Button>
-                </Link>
-                {/* policy row */}
-                <div className="flex items-center justify-center space-x-1.5">
-                    <p className="text-gray-600">48時間キャンセル無料</p>
-                    <InformationCircleIcon className="w-4 h-4 text-gray-400" />
-                </div>
+                {/* <Link href={`/space/${space.id}/reserve${url}`}> */}
+                <Button
+                    variant="primary"
+                    disabled={!okayToBook()}
+                    onClick={initiateReserve}
+                >
+                    予約可能状況を確認する
+                </Button>
+                {/* </Link> */}
+                {/* cancel policy */}
+                {cancelPolicy && (
+                    <div className="flex flex-col justify-center space-x-1.5">
+                        <div className="w-full my-6 border-t border-gray-300"></div>
+                        <h2 className="mb-4 text-base font-bold text-gray-700">
+                            キャンセルポリシー : {cancelPolicy.name}
+                        </h2>
+                        <ul>
+                            {[...cancelPolicy.rates]
+                                .sort((a, b) => a.beforeHours - b.beforeHours)
+                                .map((policy, index) => {
+                                    return (
+                                        <li
+                                            key={index}
+                                            className="text-base flex justify-between w-full"
+                                        >
+                                            <div>
+                                                {policy.beforeHours}
+                                                時間前
+                                            </div>
+                                            <div>{policy.percentage}%</div>
+                                        </li>
+                                    );
+                                })}
+                        </ul>
+                    </div>
+                )}
             </div>
             <div className="flex my-4 space-x-2">
                 <Button>

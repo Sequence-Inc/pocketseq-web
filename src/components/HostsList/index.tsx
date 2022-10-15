@@ -6,7 +6,7 @@ import { classNames } from "src/utils";
 import Link from "next/link";
 import { NetworkHelper } from "@comp";
 
-const RecordsPerPage = 20;
+const RecordsPerPage = 50;
 
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
@@ -53,6 +53,7 @@ export const HostsList = ({ filterOptions }) => {
             paginate: { take: RecordsPerPage, skip: RecordsPerPage * page },
         },
         fetchPolicy: "network-only",
+        errorPolicy: "ignore",
     });
 
     if (loading) return <NetworkHelper type="loading" />;
@@ -62,6 +63,8 @@ export const HostsList = ({ filterOptions }) => {
     if (data.allAccounts.data.length === 0) {
         return <NetworkHelper type="no-data" />;
     }
+
+    console.log(data.allAccounts);
 
     // return null;
     const normalizedForm = data.allAccounts.data.map((account) => {
@@ -79,6 +82,9 @@ export const HostsList = ({ filterOptions }) => {
             let profilePhoto = `https://avatars.dicebear.com/api/identicon/${data.id}.svg`;
             if (data.profilePhoto) {
                 profilePhoto = data.profilePhoto.thumbnail.url;
+            }
+            if (data.host?.profilePhoto) {
+                profilePhoto = data.host.profilePhoto.thumbnail.url;
             }
             return (
                 <div className="flex items-center">
@@ -115,7 +121,7 @@ export const HostsList = ({ filterOptions }) => {
                 );
             }
         } else if (key === "action") {
-            return <Link href={`hosts/${data.id}`}>Detail</Link>;
+            return <Link href={`hosts/${data.accountId}`}>Detail</Link>;
         } else {
             return data[key];
         }

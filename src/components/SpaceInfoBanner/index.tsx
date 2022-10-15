@@ -4,11 +4,12 @@ import React from "react";
 import { IPhoto } from "src/types/timebookTypes";
 
 export const SpaceInfoBanner = ({ photos }: { photos: IPhoto[] }) => {
+    const photo = photos?.find((pic) => !!pic?.large?.url)?.large?.url;
     return (
-        <div className="relative pt-8 mb-8">
-            <div className="relative w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
+        <div className="relative pt-4 mb-8">
+            <div className="relative w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9 bg-gray-200">
                 <img
-                    src={photos[0].large.url}
+                    src={photo}
                     alt="category items"
                     className="object-cover w-full h-full"
                 />

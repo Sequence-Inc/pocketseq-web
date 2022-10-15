@@ -38,14 +38,6 @@ function AccountDetails({ userSession, accountId }) {
             title: "Host information",
             component: <BasicAccountInfo account={account} />,
         },
-        {
-            title: "Payment methods",
-            component: <>Payment methods of {accountId}</>,
-        },
-        {
-            title: "Bookings",
-            component: <>Bookings of {accountId}</>,
-        },
     ];
 
     let accountStatusIcon;

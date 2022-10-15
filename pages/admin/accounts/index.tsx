@@ -13,11 +13,11 @@ import requireAuth from "src/utils/authecticatedRoute";
 function AdminDashboard({ userSession }) {
     let [tabs] = useState([
         {
-            title: "New Registration",
+            title: "新規登録",
             component: <AccountsList filterOptions={{}} />,
         },
         {
-            title: "Approved",
+            title: "承認済",
             component: (
                 <AccountsList
                     filterOptions={{
@@ -28,7 +28,7 @@ function AdminDashboard({ userSession }) {
             ),
         },
         {
-            title: "Unapproved",
+            title: "未承認",
             component: (
                 <AccountsList
                     filterOptions={{
@@ -39,7 +39,7 @@ function AdminDashboard({ userSession }) {
             ),
         },
         {
-            title: "Suspended",
+            title: "一時停止",
             component: (
                 <AccountsList
                     filterOptions={{

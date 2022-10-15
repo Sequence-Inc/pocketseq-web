@@ -243,6 +243,10 @@ export const BusinessHourManager = ({
             businessHours["breakToHr"] =
                 breakEndHour + getMinuteInFloat(breakEndMinute);
         }
+        if (!breakAvailable) {
+            businessHours["breakFromHr"] = null;
+            businessHours["breakToHr"] = null;
+        }
         onSave(businessHours);
     }, [
         hour,
@@ -509,7 +513,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
     }, [defaultValue]);
 
     return (
-        <FormCard title="料金設定">
+        <FormCard title="料金設定（税込）">
             <div className="flex flex-col">
                 <div className="divide-y divide-gray-100 border border-gray-100 rounded-lg shadow">
                     <div className="flex items-center space-x-2 py-3 px-5 hover:bg-gray-50">
@@ -533,6 +537,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                             onChange={(e) => {
                                 setDailyPrice(parseInt(e.target.value, 10));
                             }}
+                            min={1}
                             disabled={!dailyActive}
                             className={`${
                                 dailyActive ? "opacity-100" : "opacity-30"
@@ -558,6 +563,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         <input
                             type="number"
                             value={hourlyPrice}
+                            min={1}
                             onChange={(e) => {
                                 setHourlyPrice(parseInt(e.target.value, 10));
                             }}
@@ -585,6 +591,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fiveMinutesPrice}
                             onChange={(e) => {
                                 setFiveMinutesPrice(
@@ -616,6 +623,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={tenMinutesPrice}
                             onChange={(e) => {
                                 setTenMinutesPrice(
@@ -647,6 +655,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fifteenMinutesPrice}
                             onChange={(e) => {
                                 setFifteenMinutesPrice(
@@ -680,6 +689,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={thirtyMinutesPrice}
                             onChange={(e) => {
                                 setThirtyMinutesPrice(
@@ -715,6 +725,7 @@ export const PricingPlanManager = ({ defaultValue, onSave }) => {
                         </label>
                         <input
                             type="number"
+                            min={1}
                             value={fortyFiveMinutesPrice}
                             onChange={(e) => {
                                 setFortyFiveMinutesPrice(
@@ -747,6 +758,7 @@ export const StockManager = ({ defaultValue, onSave }) => {
                 <div className="w-20">
                     <input
                         type="number"
+                        min={1}
                         value={stock}
                         onChange={(e) => {
                             setStock(parseInt(e.target.value, 10));

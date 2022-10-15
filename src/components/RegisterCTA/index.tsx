@@ -16,11 +16,7 @@ export const RegisterCTA = () => {
     return (
         <div className="relative overflow-hidden bg-gray-800 rounded-2xl">
             <div className="relative h-56 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
-                <Image
-                    layout="fill"
-                    src="/cta-bg.jpg"
-                    className="h-full w-full object-cover"
-                />
+                <img src="/cta-bg.jpg" className="h-full w-full object-cover" />
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t md:bg-gradient-to-l from-gray-800 to-gray-transparent"></div>
             </div>
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">

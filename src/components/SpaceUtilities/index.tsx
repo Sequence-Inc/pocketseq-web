@@ -1,5 +1,10 @@
-import { CheckIcon, LightningBoltIcon, LockOpenIcon, SparklesIcon } from '@heroicons/react/outline'
-import React from 'react'
+import {
+    CheckIcon,
+    LightningBoltIcon,
+    LockOpenIcon,
+    SparklesIcon,
+} from "@heroicons/react/outline";
+import React from "react";
 
 interface SingleSpaceUtilityProps {
     Icon?: React.ComponentType<{ className: string }>;
@@ -7,17 +12,23 @@ interface SingleSpaceUtilityProps {
     description: string;
 }
 
-const SingleSpaceUtility = ({ Icon, title, description }: SingleSpaceUtilityProps) => {
+const SingleSpaceUtility = ({
+    Icon,
+    title,
+    description,
+}: SingleSpaceUtilityProps) => {
     return (
         <div className="flex space-x-4">
-            <Icon className="w-6 h-6 mt-0.5 text-gray-700" />
+            <div className="w-6">
+                <Icon className="w-6 h-6 text-gray-700" />
+            </div>
             <div className="text-gray-600">
-                <h4 className="font-bold mb-1.5">{title}</h4>
+                <h4 className="font-bold mb-2">{title}</h4>
                 <p className="text-sm">{description}</p>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export const SpaceUtilities = () => {
     return (
@@ -43,5 +54,5 @@ export const SpaceUtilities = () => {
                 description="このスペースは利用された後、スタッフが毎回必ず清掃と除菌を行なっています。"
             />
         </div>
-    )
-}
+    );
+};

@@ -15,7 +15,9 @@ const Teaser = () => {
     return (
         <>
             <Head>
-                <title>{config.appName}</title>
+                <title>
+                    {config.appName} ({config.appNameEnglish})
+                </title>
             </Head>
             <div className="w-full h-screen overflow-hidden bg-primary">
                 <div className="relative py-16">

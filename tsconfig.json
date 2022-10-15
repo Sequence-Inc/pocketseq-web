@@ -2,15 +2,37 @@
     "compilerOptions": {
         "target": "es2017",
         "module": "commonjs",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "baseUrl": "./",
         "paths": {
-            "@style/*": ["src/styles/*"],
-            "@page/*": ["pages/*"],
-            "@comp": ["src/components/index.ts"],
-            "@element": ["src/elements/index.ts"],
-            "@layout": ["src/layouts/index.ts"],
-            "@hooks/*": ["src/hooks/*"]
+            "@style/*": [
+                "src/styles/*"
+            ],
+            "@page/*": [
+                "pages/*"
+            ],
+            "@comp": [
+                "src/components/index.ts"
+            ],
+            "@element": [
+                "src/elements/index.ts"
+            ],
+            "@layout": [
+                "src/layouts/index.ts"
+            ],
+            "@hooks/*": [
+                "src/hooks/*"
+            ],
+            "@appTypes/*": [
+                "src/types/*"
+            ],
+            "@config": [
+                "src/config/index.ts"
+            ]
         },
         "allowJs": true,
         "skipLibCheck": true,
@@ -22,10 +44,21 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "typeRoots": ["./types"],
-        "types": ["@types/gtag.js"],
+        "typeRoots": [
+            "./types"
+        ],
+        "types": [
+            "@types/gtag.js"
+        ],
         "incremental": true
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    "exclude": ["node_modules"]
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

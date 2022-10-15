@@ -8,15 +8,17 @@ import {
 } from "src/apollo/queries/space.queries";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { Button } from "@element";
+import { LoadingSpinner } from "@comp";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { RefreshIcon } from "@heroicons/react/solid";
+import { useGetInitialSpace } from "@hooks/useAddSpace";
 
 export interface IOtherSpacesProps {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
-    initialValue?: any;
+    selectedSpaceId?: any;
     spaceId?: any;
     refetch?: any;
 }
@@ -26,27 +28,33 @@ const NearestStationStep = ({
     setActiveStep,
     steps,
     spaceId,
-    initialValue,
+    selectedSpaceId,
 }: IOtherSpacesProps) => {
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [toggleForm, setToggleForm] = useState(false);
-    const [mutate] = useMutation(ADD_NEAREST_STATION);
-    const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION);
+    const [mutate] = useMutation(ADD_NEAREST_STATION, {
+        onCompleted: (data) => refetchSpaceDetail(),
+    });
+    const { initialValue, spaceDetailLoading, refetchSpaceDetail } =
+        useGetInitialSpace(spaceId || selectedSpaceId);
+
+    const [mutateRemoveStation] = useMutation(REMOVE_NEAREST_STATION, {
+        onCompleted: (data) => refetchSpaceDetail(),
+    });
     const [activeStation, setActiveStation] = useState(-1);
     const router = useRouter();
     const { id } = router.query;
-
     useEffect(() => {
-        if (initialValue) {
-            const newValue = initialValue.map((res) => ({
+        if (initialValue?.nearestStations) {
+            const newValue = initialValue.nearestStations?.map((res) => ({
                 stationId: res.station.id,
                 via: res.via,
                 time: res.time,
             }));
             setStations(newValue);
         }
-    }, [initialValue]);
+    }, [initialValue?.nearestStations]);
 
     const handleStation = async () => {
         if (stations.length > 0) handleNext();
@@ -60,11 +68,11 @@ const NearestStationStep = ({
         setToggleForm(false);
     };
 
-    const addStation = async ({ stationId, via, time }) => {
+    const addStation = async ({ stationId, via, time, exit }) => {
         const { data } = await mutate({
             variables: {
-                spaceId: initialValue ? id : spaceId,
-                stations: [{ stationId, via, time: parseInt(time) }],
+                spaceId: id || spaceId,
+                stations: [{ stationId, via, time: parseInt(time), exit }],
             },
         });
         if (data) {
@@ -81,7 +89,10 @@ const NearestStationStep = ({
         try {
             const { data } = await mutateRemoveStation({
                 variables: {
-                    input: { spaceId: initialValue ? id : spaceId, stationId },
+                    input: {
+                        spaceId: id || spaceId,
+                        stationId,
+                    },
                 },
             });
             if (data) {
@@ -107,6 +118,9 @@ const NearestStationStep = ({
     function handleNext(): void {
         if (hasNext) setActiveStep(activeStep + 1);
     }
+
+    if (spaceDetailLoading)
+        return <LoadingSpinner loadingText="Loading nearest stations" />;
 
     return (
         <div className="">
@@ -164,25 +178,24 @@ const NearestStationStep = ({
                 )}
             </div>
             <div className="flex justify-between px-4 py-5 border-t border-gray-100 bg-gray-50 sm:px-6">
-                {initialValue ? null : (
-                    <>
-                        <Button
-                            className="w-auto px-8"
-                            disabled={!hasPrevious || loading}
-                            onClick={handlePrevious}
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="primary"
-                            className="w-auto px-8"
-                            onClick={handleStation}
-                            loading={loading}
-                        >
-                            Next
-                        </Button>
-                    </>
-                )}
+                <>
+                    <Button
+                        className="w-auto px-8"
+                        disabled={!hasPrevious || loading}
+                        onClick={handlePrevious}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        disabled={!stations?.length}
+                        variant="primary"
+                        className="w-auto px-8"
+                        onClick={handleStation}
+                        loading={loading}
+                    >
+                        Next
+                    </Button>
+                </>
             </div>
         </div>
     );

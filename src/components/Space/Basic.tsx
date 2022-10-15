@@ -1,6 +1,16 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { Button, GoogleMap, Select, TextArea, TextField } from "@element";
-import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
+import {
+    Button,
+    GoogleMap,
+    Select,
+    SwitchField,
+    TextArea,
+    TextField,
+} from "@element";
+import useAddSpace, {
+    useBasicSpace,
+    useGetInitialSpace,
+} from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 import axios from "axios";
@@ -14,13 +24,14 @@ import {
     StockManager,
 } from "@page/host/my-space/edit/[id]/days-of-week";
 import { LoadingSpinner } from "../LoadingSpinner";
+import { useRouter } from "next/router";
 
 interface IBasicSpace {
     activeStep: number;
     setActiveStep: Dispatch<SetStateAction<number>>;
     steps: any[];
     setSpaceId: (id: any) => void;
-    initialValue?: any;
+    selectedSpaceId?: any;
     spaceLoading?: boolean;
 }
 
@@ -29,11 +40,21 @@ const Basic = ({
     setActiveStep,
     steps,
     setSpaceId,
-    initialValue,
+    selectedSpaceId,
     spaceLoading,
 }: IBasicSpace) => {
     const [change, setChange] = useState<boolean>(false);
     const { spaceTypes } = useAddSpace();
+    const hasNext: boolean = activeStep < steps.length - 1 && true;
+
+    const router = useRouter();
+    const redirectToOptions = () => router.push("/host/options");
+
+    const handleNext = (id): void => {
+        setSpaceId(id);
+        if (hasNext) setActiveStep(activeStep + 1);
+    };
+
     const {
         prefectures,
         loading,
@@ -50,16 +71,17 @@ const Basic = ({
         setValue,
         onSubmit,
         getValues,
-    } = useBasicSpace(handleNext, initialValue);
-
-    const hasNext: boolean = activeStep < steps.length - 1 && true;
+        includedOptions,
+        additionalOptions,
+        handleIncludedOptionFieldChange,
+        handleAdditionalOptionFieldChange,
+        cancelPolicies,
+        initialValue,
+        spaceDetailLoading,
+        watchSubscriptionPrice,
+    } = useBasicSpace(handleNext, selectedSpaceId);
 
     const { t } = useTranslation("adminhost");
-
-    function handleNext(id): void {
-        if (hasNext) setActiveStep(activeStep + 1);
-        setSpaceId(id);
-    }
 
     useEffect(() => {
         const api = async () => {
@@ -109,7 +131,7 @@ const Basic = ({
                     この情報は公開されますので、有効な情報を入力してください。
                 </p>
             </div>
-            {spaceLoading ? (
+            {spaceDetailLoading ? (
                 <LoadingSpinner />
             ) : (
                 <form onSubmit={onSubmit}>
@@ -144,6 +166,7 @@ const Basic = ({
                             <TextField
                                 {...register("maximumCapacity", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("max-capacity")}
@@ -159,6 +182,7 @@ const Basic = ({
                             <TextField
                                 {...register("numberOfSeats", {
                                     required: true,
+                                    min: 1,
                                     setValueAs: (val) => parseInt(val),
                                 })}
                                 label={t("space-number-of-seats")}
@@ -174,6 +198,7 @@ const Basic = ({
                             <TextField
                                 {...register("spaceSize", {
                                     required: true,
+                                    min: 0,
                                     setValueAs: (val) => parseFloat(val),
                                 })}
                                 label={t("space-size")}
@@ -209,6 +234,27 @@ const Basic = ({
                             />
                         </div>
 
+                        <div className="">
+                            <Controller
+                                name="cancelPolicyId"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label={"キャンセルポリシー"}
+                                        options={cancelPolicies || []}
+                                        error={errors.cancelPolicyId && true}
+                                        errorMessage="Cancel Policy is required"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        disabled={loading}
+                                        singleRow
+                                    />
+                                )}
+                            />
+                        </div>
+
                         <div className="items-center flex-none sm:space-x-4 sm:flex">
                             <div className="w-60" />
                             <Controller
@@ -235,6 +281,95 @@ const Basic = ({
                                     </div>
                                 )}
                             />
+                        </div>
+
+                        <div className="pb-1">
+                            <div className="border-t border-gray-200 my-8"></div>
+                            <div className="md:ml-60 md:pl-4  flex items-center space-x-4">
+                                <h3 className="font-bold text-primary text-xl">
+                                    オプション
+                                </h3>
+
+                                <Button
+                                    type="button"
+                                    onClick={redirectToOptions}
+                                    className="w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                                >
+                                    オプションの管理
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
+                            <div className="flex justify-between items-center pb-4 space-x-4">
+                                <p className="font-bold text-base">
+                                    含まれるオプション
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap">
+                                {includedOptions?.map((option: any, index) => (
+                                    <div
+                                        className="flex items-center space-x-4 py-2 ml-3 "
+                                        key={index}
+                                    >
+                                        <input
+                                            id={`options-${option.id}`}
+                                            aria-describedby="options-description"
+                                            name="option"
+                                            type="checkbox"
+                                            checked={option?.isChecked}
+                                            disabled={loading}
+                                            onChange={(e) =>
+                                                handleIncludedOptionFieldChange(
+                                                    index,
+                                                    e.target.checked
+                                                )
+                                            }
+                                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                        />
+
+                                        <p className="text-sm leading-4 font-medium">
+                                            {option?.name}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
+                            <p className="font-bold text-base">
+                                追加のオプション
+                            </p>
+                            <div className="flex flex-wrap">
+                                {additionalOptions?.map(
+                                    (option: any, index) => (
+                                        <div
+                                            className="flex items-center space-x-4 py-2 ml-3 "
+                                            key={index}
+                                        >
+                                            <input
+                                                id={`options-${option.id}`}
+                                                aria-describedby="options-description"
+                                                name="option"
+                                                type="checkbox"
+                                                checked={option?.isChecked}
+                                                disabled={loading}
+                                                onChange={(e) =>
+                                                    handleAdditionalOptionFieldChange(
+                                                        index,
+                                                        e.target.checked
+                                                    )
+                                                }
+                                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                            />
+
+                                            <p className="text-sm leading-4 font-medium">
+                                                {option?.name}
+                                            </p>
+                                        </div>
+                                    )
+                                )}
+                            </div>
                         </div>
 
                         <div className="pb-1">
@@ -315,32 +450,34 @@ const Basic = ({
                         <div className="">
                             <TextField
                                 {...register("addressLine2", {
-                                    required: true,
+                                    required: false,
                                 })}
                                 defaultValue={
                                     initialValue?.address?.addressLine2
                                 }
                                 label={t("address-line-2")}
-                                error={errors.zipCode && true}
-                                errorMessage="Address Line 2 is required"
+                                error={errors.addressLine2 && true}
+                                errorMessage="Invalid address Line 2 "
                                 disabled={loading}
                                 singleRow
                             />
                         </div>
                     </div>
-                    <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
-                        <label
-                            htmlFor="Map"
-                            className={
-                                "block text-sm font-bold text-gray-700 sm:text-right w-60"
-                            }
-                        >
-                            Map
-                        </label>
-                        <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
-                            <GoogleMap mark={freeCoords} zoom={16} />
+                    {initialValue && (
+                        <div className="items-center flex-none px-4 py-5 sm:space-x-4 sm:flex sm:px-6">
+                            <label
+                                htmlFor="Map"
+                                className={
+                                    "block text-sm font-bold text-gray-700 sm:text-right w-60"
+                                }
+                            >
+                                Map
+                            </label>
+                            <div className="w-full overflow-hidden rounded-md h-80 sm:w-96 sm:h-96">
+                                <GoogleMap mark={freeCoords} zoom={16} />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className="pb-1">
                         <div className="border-t border-gray-200 my-8"></div>
@@ -377,10 +514,9 @@ const Basic = ({
                                     } = value;
                                     setValue("openingHr", openingHr);
                                     setValue("closingHr", closingHr);
-                                    if (breakFromHr && breakToHr) {
-                                        setValue("breakFromHr", breakFromHr);
-                                        setValue("breakToHr", breakToHr);
-                                    }
+
+                                    setValue("breakFromHr", breakFromHr);
+                                    setValue("breakToHr", breakToHr);
                                 }}
                             />
                             <StockManager
@@ -393,6 +529,54 @@ const Basic = ({
                                 defaultValue={getValues("pricePlan")}
                                 onSave={(value) => setValue("pricePlan", value)}
                             />
+                        </div>
+                    </div>
+
+                    <div className="pb-1  ">
+                        <div className="border-t border-gray-200 my-8"></div>
+
+                        <h3 className="font-bold md:ml-60 md:pl-4  text-primary text-xl">
+                            Subscription
+                        </h3>
+                        <div className="md:ml-60 md:pl-4 mt-4 ">
+                            <SwitchField
+                                label={
+                                    <>
+                                        <span className="text-sm leading-5 font-medium">
+                                            Subscritpion Price
+                                        </span>
+                                    </>
+                                }
+                                defaultValue={getValues(
+                                    "subscriptionPriceEnabled"
+                                )}
+                                onChange={(val) =>
+                                    setValue("subscriptionPriceEnabled", val)
+                                }
+                            />
+
+                            <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2 ">
+                                {watchSubscriptionPrice && (
+                                    <div className="flex items-center space-x-2  mt-4 ">
+                                        <TextField
+                                            disabled={loading}
+                                            label=""
+                                            {...register("subcriptionPrice", {
+                                                required:
+                                                    watchSubscriptionPrice,
+                                                min: 0,
+                                                valueAsNumber: true,
+                                            })}
+                                            type="number"
+                                            placeholder="Subscription Price"
+                                            errorMessage="Invalid subscription price."
+                                            error={
+                                                errors.subcriptionPrice && true
+                                            }
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -412,7 +596,6 @@ const Basic = ({
                             {/* <Button className="w-auto px-8" disabled={true}>
                                 {t("previous-page")}
                             </Button> */}
-                            <div></div>
                             <Button
                                 type="submit"
                                 variant="primary"
