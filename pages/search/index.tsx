@@ -475,50 +475,6 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                                                             )}
                                                         </select>
                                                     </div>
-                                                    <div className="flex items-center justify-between px-4 py-3">
-                                                        <span className="text-gray-600 text-base font-bold">
-                                                            会場タイプ
-                                                        </span>
-                                                        <select
-                                                            className="w-32 px-3 py-1 border border-gray-200 rounded text-gray-600"
-                                                            onChange={(
-                                                                event
-                                                            ) => {
-                                                                const {
-                                                                    value,
-                                                                } =
-                                                                    event.target;
-                                                                if (
-                                                                    value ===
-                                                                    "null"
-                                                                ) {
-                                                                    updateSearchParam(
-                                                                        "buildingType",
-                                                                        null
-                                                                    );
-                                                                } else {
-                                                                    updateSearchParam(
-                                                                        "buildingType",
-                                                                        value
-                                                                    );
-                                                                }
-                                                            }}
-                                                        >
-                                                            <option value="null"></option>
-                                                            <option value="whole_house">
-                                                                一棟貸し
-                                                            </option>
-                                                            <option value="accomodation">
-                                                                簡易宿泊
-                                                            </option>
-                                                            <option value="hotel">
-                                                                ホテル
-                                                            </option>
-                                                            <option value="inn">
-                                                                旅館
-                                                            </option>
-                                                        </select>
-                                                    </div>
                                                 </div>
                                             </>
                                         )}
