@@ -87,7 +87,7 @@ const GoogleMap = ({
             {type === "multi" && markers?.length !== 0 ? (
                 <GoogleMapReact
                     bootstrapURLKeys={{
-                        key: "AIzaSyA-jsLh5KLSTf3n9GU8nLcfkr54vjj8KuU",
+                        key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
                         language: "ja",
                         region: "JP",
                     }}
@@ -402,8 +402,7 @@ const GoogleMap = ({
             ) : type === "single" ? (
                 <GoogleMapReact
                     bootstrapURLKeys={{
-                        key: "AIzaSyA-jsLh5KLSTf3n9GU8nLcfkr54vjj8KuU",
-                        // key: "AIzaSyCrDx5Kk6kYplWgaI18NmXwn4FaWthA4uU",
+                        key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
                         language: "ja",
                         region: "JP",
                     }}
