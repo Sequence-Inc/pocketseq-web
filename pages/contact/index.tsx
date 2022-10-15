@@ -26,6 +26,25 @@ export const CUSTOMER_TYPES = [
         value: "ゲスト（スペース・宿泊施設を借りる方）はこちら",
     },
 ];
+export const SUBJECT = [
+    { label: "ー", value: "ー" },
+    {
+        label: "ゲストアカウントの登録について",
+        value: "ゲストアカウントの登録について",
+    },
+    {
+        label: "ホストアカウントの登録について",
+        value: "ホストアカウントの登録について",
+    },
+    {
+        label: "掲載についてのご質問",
+        value: "掲載についてのご質問",
+    },
+    {
+        label: "その他の問い合わせ",
+        value: "その他の問い合わせ",
+    },
+];
 
 const Contact = ({ userSession }) => {
     const { onSubmit, register, errors, control, loading } = useContactForm({
@@ -151,14 +170,22 @@ const Contact = ({ userSession }) => {
                                     required
                                 />
 
-                                <TextField
-                                    label={""}
-                                    errorMessage="件名 is required"
-                                    {...register("subject", {
-                                        required: true,
-                                    })}
-                                    error={errors.subject}
-                                    disabled={loading}
+                                <Controller
+                                    name={`subject`}
+                                    control={control}
+                                    rules={{ required: false }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            label=""
+                                            options={SUBJECT}
+                                            error={errors?.subject && true}
+                                            labelKey="label"
+                                            valueKey="value"
+                                            disabled={loading}
+                                            className="sm:w-full"
+                                        />
+                                    )}
                                 />
                             </div>
 

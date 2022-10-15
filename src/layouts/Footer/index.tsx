@@ -34,7 +34,10 @@ const Footer = () => {
                                 {navigation.guide.map((item) => (
                                     <li key={item.name}>
                                         <Link href={item.href}>
-                                            <a className="flex items-center text-sm text-gray-300 hover:text-white">
+                                            <a
+                                                target="_blank"
+                                                className="flex items-center text-sm text-gray-300 hover:text-white"
+                                            >
                                                 {item.name}
                                                 {item.icon && item.icon}
                                             </a>
@@ -140,12 +143,12 @@ const navigation = {
         // { name: "初めての方へ", href: "/services" },
         {
             name: "ホストの方へ",
-            href: "/host-guide",
+            href: "https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/assets/host_manual.pdf",
             icon: <DocumentTextIcon className="w-4 h-4 ml-2" />,
         },
         {
             name: "ゲストの方へ",
-            href: "/user-guide",
+            href: "https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/assets/user_manual.pdf",
             icon: <DocumentTextIcon className="w-4 h-4 ml-2" />,
         },
         {
@@ -159,7 +162,6 @@ const navigation = {
             name: "プライバシーポリシー",
             href: "/terms/privacy-policy",
         },
-        { name: config.appName + "利用規約", href: "/about/terms" },
         { name: "ゲスト規約", href: "/terms/guest-terms" },
         { name: "ホスト規約", href: "/terms/host-terms" },
 
