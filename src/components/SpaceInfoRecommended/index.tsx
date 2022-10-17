@@ -1,7 +1,5 @@
-import { ItemGrid } from "@comp";
 import { Container } from "@element";
 import { ChevronRightIcon } from "@heroicons/react/solid";
-import { itemGridData } from "@page/index";
 import React from "react";
 
 export const SpaceInfoRecommended = () => {
