@@ -1,227 +1,295 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { Container, Tag } from "@element";
+import {
+    CategoryItem,
+    ItemGrid,
+    ItemGridHotel,
+    IExploreItem,
+    RegisterCTA,
+    HeroSection,
+    SubscriptionCTA,
+} from "@comp";
+import { Header, Footer } from "@layout";
 
 import {
+    FlagIcon,
+    StarIcon,
+    ChevronRightIcon,
     BookmarkAltIcon,
     FireIcon,
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
-
-import { ICategoryItem, IExploreItem } from "@comp";
+import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
+import { getSession } from "next-auth/react";
 import { config } from "src/utils/index";
+import createApolloClient from "src/apollo/apolloClient";
 
-const Teaser = () => {
+// const exploreAreas: IExploreItem[] = [
+//     {
+//         name: "新宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
+//     },
+//     {
+//         name: "渋谷",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
+//     },
+//     {
+//         name: "池袋",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
+//     },
+//     {
+//         name: "原宿",
+//         distance: "3.5km",
+//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
+//     },
+// ];
+
+const features = [
+    {
+        name: "Secure",
+        icon: ShieldCheckIcon,
+        description: `${config.appName}はゲスト・ホストを含めすべてのユーザー様の個人情報保護の重要性を認識したうえで個人情報保護法を遵守いたします。`,
+    },
+    {
+        name: "Save Spaces",
+        icon: BookmarkAltIcon,
+        description:
+            "より多くのゲストがご利用できるようより多くのスペースを確保してまいります。",
+    },
+    {
+        name: "Popular",
+        icon: FireIcon,
+        description:
+            "ホストの皆様の大切なスペースを「こだわり」を持ったユーザーの皆様へご提供できるようそして、より多くのユーザーの皆様が繰り返しご利用いただけるよう営業してまいります。",
+    },
+];
+
+export default function Home({
+    userSession,
+    availableSpaceTypes,
+    allSpaces,
+    allPublishedHotels,
+}) {
     return (
-        <>
+        <div className="bg-gray-50">
             <Head>
                 <title>
-                    {config.appName} ({config.appNameEnglish})
+                    {config.appName} ({config.appNameEnglish}) |
+                    「人×場所×体験」を繋げる 目的に合った場所を検索しよう
                 </title>
+                <meta
+                    name="description"
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                />
+                <meta
+                    name="keywords"
+                    content={`${config.appName} (${config.appNameEnglish}),レンタルスペース, ペット可`}
+                />
+                <meta
+                    property="og:title"
+                    content={`${config.appName} (${config.appNameEnglish}) | 「人×場所×体験」を繋げる 目的に合った場所を検索しよう`}
+                />
+                <meta
+                    property="og:description"
+                    content={`${config.appName} (${config.appNameEnglish})は、会議やPartyの場所を探している人、顧客や技術はあるが提供する場所がない人、そんな人たちのやりたい事場所が全部見つかる`}
+                />
+                {/* <meta
+                    property="og:image"
+                    content="OGP用の紹介画像のパスを指定してください"
+                /> */}
             </Head>
-            <div className="w-full h-screen overflow-hidden bg-primary">
-                <div className="relative py-16">
-                    <div
-                        className="absolute inset-x-0 top-0 hidden h-1/2 lg:block"
-                        aria-hidden="true"
-                    />
-                    <div className="mx-auto max-w-7xl lg:px-8">
-                        <div className="">
-                            <div className="relative bg-primary lg:items-center">
-                                <div
-                                    className="absolute inset-0 hidden overflow-hidden rounded-3xl lg:block"
-                                    aria-hidden="true"
-                                >
-                                    <svg
-                                        className="absolute transform bottom-full left-full translate-y-1/3 -translate-x-2/3 xl:bottom-auto xl:top-0 xl:translate-y-0"
-                                        width={404}
-                                        height={384}
-                                        fill="none"
-                                        viewBox="0 0 404 384"
-                                        aria-hidden="true"
-                                    >
-                                        <defs>
-                                            <pattern
-                                                id="64e643ad-2176-4f86-b3d7-f2c5da3b6a6d"
-                                                x={0}
-                                                y={0}
-                                                width={20}
-                                                height={20}
-                                                patternUnits="userSpaceOnUse"
+            <Header userSession={userSession} />
+            <main>
+                <HeroSection availableSpaceTypes={availableSpaceTypes} />
+                <Container className="py-12 space-y-12 md:py-20 md:space-y-20">
+                    {/* Blob */}
+                    <div>
+                        <div className="relative">
+                            <div className="mx-auto text-center">
+                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
+                                    {config.appName}とは
+                                </p>
+                                <p className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
+                                    ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
+                                </p>
+                                <div className="mt-12">
+                                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+                                        {features.map((feature) => (
+                                            <div
+                                                key={feature.name}
+                                                className="pt-6"
                                             >
-                                                <rect
-                                                    x={0}
-                                                    y={0}
-                                                    width={4}
-                                                    height={4}
-                                                    className="text-green-500"
-                                                    fill="currentColor"
-                                                />
-                                            </pattern>
-                                        </defs>
-                                        <rect
-                                            width={404}
-                                            height={384}
-                                            fill="url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)"
-                                        />
-                                    </svg>
-                                    <svg
-                                        className="absolute transform top-full -translate-y-1/3 -translate-x-1/3 xl:-translate-y-1/2"
-                                        width={404}
-                                        height={384}
-                                        fill="none"
-                                        viewBox="0 0 404 384"
-                                        aria-hidden="true"
-                                    >
-                                        <defs>
-                                            <pattern
-                                                id="64e643ad-2176-4f86-b3d7-f2c5da3b6a6d"
-                                                x={0}
-                                                y={0}
-                                                width={20}
-                                                height={20}
-                                                patternUnits="userSpaceOnUse"
-                                            >
-                                                <rect
-                                                    x={0}
-                                                    y={0}
-                                                    width={4}
-                                                    height={4}
-                                                    className="text-green-500"
-                                                    fill="currentColor"
-                                                />
-                                            </pattern>
-                                        </defs>
-                                        <rect
-                                            width={404}
-                                            height={384}
-                                            fill="url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)"
-                                        />
-                                    </svg>
-                                </div>
-                                <div className="relative max-w-md px-4 py-12 mx-auto space-y-10 text-center sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0">
-                                    <h2
-                                        className="my-10 text-3xl font-extrabold text-white"
-                                        id="join-heading"
-                                    >
-                                        <img
-                                            src="/pocketseq-logo.svg"
-                                            className="w-1/2 mx-auto"
-                                        />
-                                    </h2>
-                                    <div>
-                                        <h2 className="text-5xl font-bold text-white">
-                                            「人×場所×体験」を繋げる
-                                        </h2>
-                                        <p className="mt-4 text-2xl text-green-100">
-                                            さぁ、思い思いの場所と体験を見つけに行こう！
-                                        </p>
+                                                <div className="flow-root px-6 pb-8 bg-white rounded-lg">
+                                                    <div className="-mt-6">
+                                                        <div>
+                                                            <span className="inline-flex items-center justify-center p-3 rounded-md shadow-lg bg-primary">
+                                                                <feature.icon
+                                                                    className="w-6 h-6 text-white"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                        <h3 className="mt-8 text-lg font-medium tracking-tight text-primary">
+                                                            {feature.name}
+                                                        </h3>
+                                                        <p className="mt-5 text-base font-light text-gray-500">
+                                                            {
+                                                                feature.description
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div>
-                                        <Link href="/auth/host-register">
-                                            <a className="block w-full px-5 py-3 text-base font-medium text-center bg-white border border-transparent rounded-md shadow-md text-primary hover:text-primaryHover hover:bg-gray-50 sm:inline-block sm:w-auto">
-                                                施設を掲載する
-                                            </a>
-                                        </Link>
-                                    </div>
-                                    <div>
-                                        <p className="text-white">
-                                            アカウントをお持ちの方
-                                            <Link href="/auth/login">
-                                                <a className="text-base font-medium text-center text-white hover:text-green-50 border border-transparent rounded-md bg-primary hover:underline sm:inline-block sm:w-auto">
-                                                    ログインする
-                                                </a>
-                                            </Link>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <a
-                                            href="https://prtimes.jp/main/html/rd/p/000000002.000089436.html"
-                                            target="_blank"
-                                            className="text-white hover:text-green-50 hover:underline"
-                                        >
-                                            {config.appName}
-                                            についてプレスリリースはこちら
-                                        </a>
-                                    </div>
-                                    <p className="pt-10 text-sm text-green-100">
-                                        &copy; copyright {config.appName} 2022.
-                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </>
+                    <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={FlagIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                目的に応じて探す
+                            </Tag>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-3 md:gap-x-6 md:gap-y-6">
+                            {availableSpaceTypes?.map((spaceType) => (
+                                <CategoryItem
+                                    key={spaceType.id}
+                                    title={spaceType.title}
+                                    subTitle={spaceType.description}
+                                    photo={spaceType.photo?.medium?.url}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    {/* <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={LocationMarkerIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                近くのエリアから探す
+                            </Tag>
+                            <Link href="/search">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-x-6 gap-y-6">
+                            {exploreAreas.map((area, index) => (
+                                <SingleExploreItem
+                                    key={index.toString()}
+                                    name={area.name}
+                                    distance={area.distance}
+                                    photo={area.photo}
+                                />
+                            ))}
+                        </div>
+                    </div> */}
+                    <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={StarIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                新着スペース
+                            </Tag>
+                            <Link href="/search?searchType=space">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-4">
+                            {allSpaces?.data.map((item, index) => {
+                                if (index < 4) {
+                                    return <ItemGrid key={index} data={item} />;
+                                }
+                            })}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between px-1 pb-3 mb-6 border-b border-gray-200">
+                            <Tag
+                                Icon={StarIcon}
+                                iconSize={6}
+                                iconStyle="mr-2 text-primary"
+                                textStyle="text-xl text-primary"
+                            >
+                                新着宿泊スペース
+                            </Tag>
+                            <Link href="/search?searchType=hotel">
+                                <a className="flex items-center text-xs text-gray-500 hover:text-primary">
+                                    もっと見る
+                                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                                </a>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+                            {allPublishedHotels?.map((item, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <ItemGridHotel
+                                            key={index}
+                                            data={item}
+                                        />
+                                    );
+                                }
+                            })}
+                        </div>
+                    </div>
+                    <RegisterCTA />
+                    <SubscriptionCTA />
+                </Container>
+            </main>
+            <Footer />
+        </div>
     );
+}
+
+export const getServerSideProps = async (context) => {
+    const client = createApolloClient();
+    const { data } = await client.query({
+        query: GET_TOP_PICK_SPACES,
+        variables: {
+            paginationInfo: {
+                take: 4,
+                skip: 0,
+            },
+        },
+    });
+    const session = await getSession(context);
+    return {
+        props: {
+            userSession: session,
+            availableSpaceTypes: data.availableSpaceTypes,
+            allSpaces: data.allSpaces,
+            allPublishedHotels: data.allPublishedHotels,
+        },
+    };
 };
-
-export default Teaser;
-
-export const itemGridData = [
-    {
-        id: 1,
-        photo: "https://cdnspacemarket.com/uploads/attachments/445622/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
-        location: "東京都渋谷区",
-        rating: 4.1,
-        cases: 328,
-        title: "108【シェアスペORENGE新宿】🎇スパークリング割🎇定期消毒✨テレワーク✨新宿駅3分✨最大12名✨会議✨パーティ",
-        price: 1131,
-        people: 12,
-        area: "32m²",
-        tag: "おうちスペース",
-        coords: {
-            lat: 35.662,
-            lng: 139.7038,
-        },
-    },
-    {
-        id: 2,
-        photo: "https://cdnspacemarket.com/uploads/attachments/315502/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
-        location: "東京都新宿区",
-        rating: 4.6,
-        cases: 415,
-        title: "013_fika新宿御苑🌿夏割🌊最大24名収容⭕新宿三丁目3分＆新宿御苑駅3分🚶‍♂️65型TV📺本格キッチン🍴Wi-Fi📶",
-        price: 1732,
-        people: 30,
-        area: "60m²",
-        tag: "イベントスペース",
-        coords: {
-            lat: 35.663,
-            lng: 139.705,
-        },
-    },
-    {
-        id: 3,
-        photo: "https://cdnspacemarket.com/uploads/attachments/693445/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
-        location: "東京都渋谷区",
-        rating: 4.2,
-        cases: 13,
-        title: "夏割⛵定期除菌🌟新宿駅徒歩３分【ティファニー会議室】清潔素敵空間🌈撮影OK📸会議/セミナー/女子会",
-        price: 1732,
-        people: 6,
-        area: "19m²",
-        tag: "貸し会議室",
-        coords: {
-            lat: 35.653,
-            lng: 139.7123,
-        },
-    },
-    {
-        id: 4,
-        photo: "https://cdnspacemarket.com/uploads/attachments/776274/image.jpg?fit=crop&width=1200&height=800&bg-color=9c9c9c",
-        location: "東京都新宿区",
-        rating: 4.7,
-        cases: 123,
-        title: "mysa新宿4th🌿夏割🌊🉐新宿5分WiFiでか📺広々ソファ🛋️大人気ゲーム機🎮ネトフリ/女子会/パーティ/撮影/おうちデート",
-        price: 623,
-        people: 6,
-        area: "30m²",
-        tag: "おうちスペース",
-        coords: {
-            lat: 35.6666,
-            lng: 139.704,
-        },
-    },
-];
