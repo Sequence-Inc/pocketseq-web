@@ -8,8 +8,14 @@ export const algoliaClient: AlgoliaClient = algoliasearch(
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
 );
 
-export const spaceIndex = algoliaClient.initIndex(`space_dev`);
-export const hotelIndex = algoliaClient.initIndex(`hotel_dev`);
+const isDev = process.env.NEXT_PUBLIC_IS_DEV;
+
+export const spaceIndex = algoliaClient.initIndex(
+    isDev ? `space_dev` : `space_prod`
+);
+export const hotelIndex = algoliaClient.initIndex(
+    isDev ? `hotel_dev` : `hotel_prod`
+);
 
 type SpaceSearchFilterOptions = {
     spaceType?: string;
