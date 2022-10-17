@@ -8,7 +8,7 @@ export const algoliaClient: AlgoliaClient = algoliasearch(
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
 );
 
-const isDev = process.env.NEXT_PUBLIC_IS_DEV;
+const isDev = process.env.NEXT_PUBLIC_IS_DEV === "true";
 
 export const spaceIndex = algoliaClient.initIndex(
     isDev ? `space_dev` : `space_prod`
