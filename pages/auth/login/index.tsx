@@ -11,6 +11,7 @@ import ErrorModal from "src/elements/ErrorModal";
 import useTranslation from "next-translate/useTranslation";
 import { getCsrfToken, getSession } from "next-auth/react";
 import { config } from "src/utils";
+import moment from "moment";
 
 const Login = ({ csrfToken, userSession }) => {
     const {
@@ -105,7 +106,8 @@ const Login = ({ csrfToken, userSession }) => {
                         </Link>
                     </div>
                     <div className="py-2 text-sm text-gray-500 text-center">
-                        &copy; Copyright 2021 Sequence Co., Ltd.
+                        &copy; Copyright {moment().format("YYYY")} Sequence Co.,
+                        Ltd.
                     </div>
                 </div>
             </AuthLayout>

@@ -10,6 +10,7 @@ import ErrorModal from "src/elements/ErrorModal";
 
 import useTranslation from "next-translate/useTranslation";
 import { getSession } from "next-auth/react";
+import moment from "moment";
 
 const Register = ({ userSession }) => {
     const {
@@ -182,7 +183,7 @@ const Register = ({ userSession }) => {
                     </Link>
                 </div>
                 <div className="py-2 text-sm text-gray-500">
-                    {t("copyright")}
+                    &copy; Copyright {moment().format("YYYY")} Sequence Co.,
                 </div>
             </div>
         </AuthLayout>

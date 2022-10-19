@@ -11,6 +11,7 @@ import { useMutation } from "@apollo/client";
 import { RESET_PASSWORD } from "src/apollo/queries/auth.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
+import moment from "moment";
 
 const schema = yup.object().shape({
     password: yup.string().min(8).required(),
@@ -103,7 +104,8 @@ const ResetPassword = ({ email, code, userSession }) => {
                     </Link>
                 </div>
                 <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 Sequence Co., Ltd.
+                    &copy; Copyright {moment().format("YYYY")} Sequence Co.,
+                    Ltd.
                 </div>
             </div>
         </AuthLayout>

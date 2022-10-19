@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/client";
 import { FORGOT_PASSWORD, LOGIN } from "src/apollo/queries/auth.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
+import moment from "moment";
 
 const ForgotPassword = ({ userSession }) => {
     const router = useRouter();
@@ -134,7 +135,8 @@ const ForgotPassword = ({ userSession }) => {
                     </Link>
                 </div>
                 <div className="py-2 text-sm text-gray-500">
-                    &copy; Copyright 2021 Sequence Co., Ltd.
+                    &copy; Copyright {moment().format("YYYY")} Sequence Co.,
+                    Ltd.
                 </div>
             </div>
         </AuthLayout>
