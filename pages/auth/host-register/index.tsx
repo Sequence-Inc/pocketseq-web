@@ -13,6 +13,7 @@ import CorporateForm from "src/components/CorporateForm";
 import IndividualForm from "src/components/IndividualForm";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
+import moment from "moment";
 
 const Register = ({ userSession }) => {
     const {
@@ -224,7 +225,8 @@ const Register = ({ userSession }) => {
                             </Link>
                         </div>
                         <div className="py-2 text-sm text-gray-500">
-                            &copy; Copyright 2022 Sequence Co., Ltd.
+                            &copy; Copyright {moment().format("YYYY")} Sequence
+                            Co., Ltd.
                         </div>
                     </div>
                 </div>
