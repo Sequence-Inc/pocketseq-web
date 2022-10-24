@@ -11,20 +11,21 @@ type ContactFormDataType = {
         | "ホスト（スペース・宿泊施設を貸す方）はこちら"
         | "ゲスト（スペース・宿泊施設を借りる方）はこちら";
     email: string;
-    inquiryType: string;
-    subject:
+    inquiryType:
         | "ー"
         | "ゲストアカウントの登録について"
         | "ホストアカウントの登録について"
         | "掲載についてのご質問"
         | "その他の問い合わせ";
+    subject: string;
+
     description: string;
 };
 const defaultValue: ContactFormDataType = {
     customerType: "ー",
     email: "",
-    inquiryType: "",
-    subject: "ー",
+    inquiryType: "ー",
+    subject: "",
     description: "",
 };
 const useContactForm = ({
@@ -65,8 +66,8 @@ const useContactForm = ({
             variables: {
                 customerType: customerType || "ー",
                 email,
-                inquiryType,
-                subject: subject || "ー",
+                inquiryType: inquiryType || "ー",
+                subject,
                 description,
             },
         });

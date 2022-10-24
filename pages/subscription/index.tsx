@@ -26,42 +26,6 @@ import { useRouter } from "next/router";
 import { useCreateSubscriptions } from "@hooks/subscriptions";
 import { CheckIcon, CogIcon, ExclamationIcon } from "@heroicons/react/solid";
 
-const tiers = [
-    {
-        name: "Lite",
-        href: "#",
-        priceMonthly: 12,
-        description: "All the basics for starting a new business",
-        includedFeatures: [
-            "Potenti felis, in cras at at ligula nunc.",
-            "Orci neque eget pellentesque.",
-        ],
-    },
-    {
-        name: "Standard",
-        href: "#",
-        priceMonthly: 24,
-        description: "All the basics for starting a new business",
-        includedFeatures: [
-            "Potenti felis, in cras at at ligula nunc. ",
-            "Orci neque eget pellentesque.",
-            "Donec mauris sit in eu tincidunt etiam.",
-        ],
-    },
-    {
-        name: "Premium",
-        href: "#",
-        priceMonthly: 32,
-        description: "All the basics for starting a new business",
-        includedFeatures: [
-            "Potenti felis, in cras at at ligula nunc. ",
-            "Orci neque eget pellentesque.",
-            "Donec mauris sit in eu tincidunt etiam.",
-            "Faucibus volutpat magna.",
-        ],
-    },
-];
-
 export default function Home({ userSession, allSubscriptionProducts }) {
     const [currentSpaceCategory, setCurrentSpaceCategory] =
         useState<SubscriptionCategoryType>("A");
