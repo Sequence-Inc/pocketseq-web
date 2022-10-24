@@ -26,7 +26,7 @@ export const CUSTOMER_TYPES = [
         value: "ゲスト（スペース・宿泊施設を借りる方）はこちら",
     },
 ];
-export const SUBJECT = [
+export const INQUIRY_TYPE = [
     { label: "ー", value: "ー" },
     {
         label: "ゲストアカウントの登録について",
@@ -149,14 +149,22 @@ const Contact = ({ userSession }) => {
                                     required
                                 />
 
-                                <TextField
-                                    label={""}
-                                    errorMessage="問い合わせ種別 is required"
-                                    {...register("inquiryType", {
-                                        required: true,
-                                    })}
-                                    error={errors.inquiryType}
-                                    disabled={loading}
+                                <Controller
+                                    name={`inquiryType`}
+                                    control={control}
+                                    rules={{ required: false }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            label=""
+                                            options={INQUIRY_TYPE}
+                                            error={errors?.inquiryType && true}
+                                            labelKey="label"
+                                            valueKey="value"
+                                            disabled={loading}
+                                            className="sm:w-full"
+                                        />
+                                    )}
                                 />
                                 <p className="text-xs text-gray-500">
                                     お問合せ種別を選択してください
@@ -170,22 +178,14 @@ const Contact = ({ userSession }) => {
                                     required
                                 />
 
-                                <Controller
-                                    name={`subject`}
-                                    control={control}
-                                    rules={{ required: false }}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            label=""
-                                            options={SUBJECT}
-                                            error={errors?.subject && true}
-                                            labelKey="label"
-                                            valueKey="value"
-                                            disabled={loading}
-                                            className="sm:w-full"
-                                        />
-                                    )}
+                                <TextField
+                                    label={""}
+                                    errorMessage="件名 is required"
+                                    {...register("subject", {
+                                        required: true,
+                                    })}
+                                    error={errors.subject}
+                                    disabled={loading}
                                 />
                             </div>
 
