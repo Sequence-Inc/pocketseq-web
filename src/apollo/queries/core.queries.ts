@@ -115,6 +115,7 @@ export const USER_ACCOUNT = `
         lastNameKana
         roles
         email
+        dob
         phoneNumber
         emailVerified
         profilePhoto {

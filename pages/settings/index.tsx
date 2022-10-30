@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Button, Container, TextField } from "@element";
-import { useMutation, useQuery } from "@apollo/client";
+import {
+    selectHttpOptionsAndBody,
+    useMutation,
+    useQuery,
+} from "@apollo/client";
 
 import {
     GET_PROFILE_FOR_SETTINGS,
@@ -24,6 +28,8 @@ import { ADD_PROFILE_PHOTO } from "src/apollo/queries/host.queries";
 import { UploadIcon, XIcon } from "@heroicons/react/outline";
 import useTranslation from "next-translate/useTranslation";
 import { profile } from "console";
+import moment from "moment";
+import DatePicker from "antd/lib/date-picker";
 
 const UserSettings = ({ userSession }) => {
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
@@ -112,7 +118,12 @@ const UserSettings = ({ userSession }) => {
             setValue("lastName", data?.myProfile?.lastName);
             setValue("firstNameKana", data?.myProfile?.firstNameKana);
             setValue("lastNameKana", data?.myProfile?.lastNameKana);
-            setValue("dob", data?.myProfile?.dob);
+            setValue(
+                "dob",
+                data?.myProfile?.dob
+                    ? moment(data?.myProfile?.dob).format("YYYY-MM-DD")
+                    : ""
+            );
         }
     }, [data]);
 
@@ -466,11 +477,29 @@ const UserSettings = ({ userSession }) => {
                                 </div>
                                 <div className="">
                                     <TextField
-                                        {...register("dob")}
+                                        {...register("dob", {
+                                            required: false,
+                                        })}
                                         label="お誕生日"
                                         error={errors.dob && true}
                                         errorMessage="Date of birth is required"
                                         disabled={profileLoading || isLoading}
+                                        defaultValue={
+                                            data?.myProfile?.dob ||
+                                            myProfile?.dob
+                                                ? moment(
+                                                      data?.myProfile?.dob ||
+                                                          myProfile?.dob
+                                                  ).format("YYYY-MM-DD")
+                                                : ""
+                                        }
+                                        placeholder="YYYY-MM-DD"
+                                        type={
+                                            data?.myProfile?.dob ||
+                                            myProfile?.dob
+                                                ? "text"
+                                                : "date"
+                                        }
                                         singleRow
                                     />
                                 </div>
