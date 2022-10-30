@@ -5,7 +5,7 @@ import Image from "next/image";
 const CTAButton = ({ link, children }: { link: string; children: string }) => {
     return (
         <Link href={link}>
-            <a className="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-gray-600 bg-white border border-transparent rounded-md hover:bg-gray-50 shadow">
+            <a className="inline-flex items-center justify-center px-5 py-2 text-base text-gray-600 hover:text-gray-600 bg-white border border-transparent rounded-md hover:bg-gray-50 shadow">
                 {children}
             </a>
         </Link>
