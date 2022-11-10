@@ -61,6 +61,12 @@ class MyDocument extends Document {
                     <Main />
                     <NextScript />
                     <div id="modal"></div>
+                    <noscript
+                        dangerouslySetInnerHTML={{
+                            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-577T655"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+                        }}
+                    />
                 </body>
             </Html>
         );
