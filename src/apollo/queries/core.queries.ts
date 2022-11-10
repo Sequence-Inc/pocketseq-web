@@ -535,6 +535,7 @@ description
 checkInTime
 checkOutTime
 status
+buildingType
 address {
     ${ADDRESS}
 }
