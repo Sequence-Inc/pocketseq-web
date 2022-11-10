@@ -5,6 +5,7 @@ import {
     SpaceInfoReviews,
     LoadingSpinner,
     HostProfile,
+    RecommendationGrid,
 } from "@comp";
 import { Button, Container, Rating, Spinner, Tag } from "@element";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
@@ -626,6 +627,24 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                             reserve={reserve}
                         />
                     </div>
+                </div>
+                <div>
+                    <RecommendationGrid
+                        type="HOTEL"
+                        logic={{
+                            aroundLatLng: `${address.latitude},${address.longitude}`,
+                        }}
+                        title="近くのスペース"
+                        parentId={hotelId}
+                    />
+                    <RecommendationGrid
+                        type="HOTEL"
+                        logic={{
+                            filters: `buildingType: ${hotel.buildingType}`,
+                        }}
+                        title="Similar"
+                        parentId={hotelId}
+                    />
                 </div>
             </Container>
         </MainLayout>

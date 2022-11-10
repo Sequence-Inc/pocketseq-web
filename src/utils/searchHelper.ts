@@ -207,3 +207,12 @@ export const searchHotel = async (
         });
     }
 };
+
+export const recommendationHelper = async (
+    type: "HOTEL" | "SPACE",
+    logic: any
+) => {
+    const index = type === "HOTEL" ? hotelIndex : spaceIndex;
+
+    return await index.search("", { ...logic, hitsPerPage: 5 });
+};
