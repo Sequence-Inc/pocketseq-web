@@ -32,10 +32,12 @@ export const SpaceInfoTitle = ({
                 <div className="flex space-x-3">
                     <Rating />
                     <div className="text-sm">
-                        <p className="inline-block font-bold text-gray-600">
+                        <span className="inline-block font-bold text-gray-600">
                             {rating.points}
-                        </p>
-                        <span className="text-gray-500">({rating.reviews}件)</span>
+                        </span>
+                        <span className="text-gray-500">
+                            ({rating.reviews}件)
+                        </span>
                     </div>
                 </div>
                 <Tag
