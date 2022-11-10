@@ -44,6 +44,8 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import AlertModal from "src/components/AlertModal";
 import ProgressModal from "src/components/ProgressModal";
+import { RecommendationGrid } from "src/components/RecommendationGrid";
+import { removeArgumentsFromDocument } from "@apollo/client/utilities";
 
 type TDefaultSettings = {
     id?: string;
@@ -581,6 +583,24 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             cancelPolicy={cancelPolicy}
                         />
                     </div>
+                </div>
+                <div>
+                    <RecommendationGrid
+                        type="SPACE"
+                        logic={{
+                            aroundLatLng: `${address.latitude},${address.longitude}`,
+                        }}
+                        title="近くのスペース"
+                        parentId={spaceId}
+                    />
+                    <RecommendationGrid
+                        type="SPACE"
+                        logic={{
+                            filters: `spaceTypes: ${space.spaceTypes[0].title}`,
+                        }}
+                        title="Similar"
+                        parentId={spaceId}
+                    />
                 </div>
             </Container>
         </MainLayout>

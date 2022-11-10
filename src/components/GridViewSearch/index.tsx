@@ -11,7 +11,16 @@ export type SearchResult = {
     id: string;
     name: string;
     price: number;
-    priceUnit: "泊" | "日" | "時間" | "5分" | "10分" | "15分" | "30分" | "45分";
+    priceUnit:
+        | "泊"
+        | "日"
+        | "時間"
+        | "5分"
+        | "10分"
+        | "15分"
+        | "30分"
+        | "45分"
+        | string;
     maxAdult: number;
     maxChild?: number;
     thumbnail?: string;
