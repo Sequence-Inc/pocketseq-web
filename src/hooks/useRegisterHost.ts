@@ -29,6 +29,7 @@ type RegisterHost = {
     company: companyInput | undefined;
     user: UserInput | undefined;
     terms: boolean;
+    privacy: boolean;
 };
 
 // form validation schema
@@ -59,11 +60,13 @@ const useRegisterHost = () => {
         formState: { errors },
         watch,
         handleSubmit,
+        setError,
     } = useForm<RegisterHost>({
         // resolver: yupResolver(schema),
         defaultValues: {
             hostType: "個人",
             terms: false,
+            privacy: false,
         },
     });
 
@@ -88,12 +91,28 @@ const useRegisterHost = () => {
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
-        formModel.hostType =
-            formData.hostType === "個人" ? "Individual" : "Corporate";
-        formModel.user && delete formModel.user.confirmPassword;
-        formModel.company && delete formModel.company.confirmPassword;
-        delete formModel.terms;
-        registerHost({ variables: { input: formModel } });
+
+        if (!formModel.terms || !formModel.privacy) {
+            if (!formModel.terms) {
+                setError("terms", {
+                    type: "manual",
+                    message: "Need to accept",
+                });
+            }
+            if (!formModel.privacy) {
+                setError("privacy", {
+                    type: "manual",
+                    message: "Need to accept",
+                });
+            }
+        } else {
+            formModel.hostType =
+                formData.hostType === "個人" ? "Individual" : "Corporate";
+            formModel.user && delete formModel.user.confirmPassword;
+            formModel.company && delete formModel.company.confirmPassword;
+            delete formModel.terms;
+            registerHost({ variables: { input: formModel } });
+        }
     };
 
     return {

@@ -42,7 +42,7 @@ class MyDocument extends Document {
                     <meta name="msapplication-TileColor" content="#da532c" />
                     <meta name="theme-color" content="#ffffff" />
 
-                    <script
+                    {/* <script
                         async
                         src="https://www.googletagmanager.com/gtag/js?id=G-5WKZPFK2LT"
                     />
@@ -55,7 +55,7 @@ class MyDocument extends Document {
                             gtag('config', 'G-5WKZPFK2LT', { page_path: window.location.pathname });
                             `,
                         }}
-                    />
+                    /> */}
                 </Head>
                 <body>
                     <Main />
