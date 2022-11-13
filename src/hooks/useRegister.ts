@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRef } from "react";
 import { REGISTER_USER } from "src/apollo/queries/auth.queries";
-import { Console } from "console";
 
 // form validation schema
 const schema = yup.object().shape({
@@ -32,6 +31,17 @@ const useRegister = () => {
         setError,
     } = useForm({
         resolver: yupResolver(schema),
+        defaultValues: {
+            firstName: "",
+            firstNameKana: "",
+            lastName: "",
+            lastNameKana: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            terms: false,
+            privacy: false,
+        },
     });
 
     const [registerUser, { loading }] = useMutation(REGISTER_USER, {
@@ -42,7 +52,7 @@ const useRegister = () => {
         onCompleted: ({ registerUser }) => {
             if (registerUser?.action === "verify-email") {
                 // login after successfull user register
-                const obj = { email: watch().email };
+                const obj = { email: watch()?.email };
                 pinRef?.current.open(obj);
             }
         },
@@ -51,11 +61,23 @@ const useRegister = () => {
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
-        if (!formModel.terms) {
-            setError("terms", { type: "manual", message: "Need to accept" });
+        if (!formModel.terms || !formModel.privacy) {
+            if (!formModel.terms) {
+                setError("terms", {
+                    type: "manual",
+                    message: "Need to accept",
+                });
+            }
+            if (!formModel.privacy) {
+                setError("privacy", {
+                    type: "manual",
+                    message: "Need to accept",
+                });
+            }
         } else {
             delete formModel.confirmPassword;
             delete formModel.terms;
+            delete formModel.privacy;
             registerUser({ variables: { input: formModel } });
         }
     };
