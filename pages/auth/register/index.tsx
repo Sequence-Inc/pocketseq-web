@@ -132,13 +132,23 @@ const Register = ({ userSession }) => {
                                     htmlFor="terms"
                                     className="ml-3 text-sm text-gray-500 align-baseline"
                                 >
-                                    <a
-                                        href="https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/assets/%E3%82%B2%E3%82%B9%E3%83%88%E5%90%91%E3%81%91PocketseQ%E5%88%A9%E7%94%A8%E8%A6%8F%E7%B4%84.pdf"
-                                        className="inline-block text-gray-500 hover:text-primary"
-                                        target="_blank"
-                                    >
-                                        利用規約
-                                    </a>
+                                    <Link href="/terms/guest-terms">
+                                        <a
+                                            className="inline-block text-gray-500 hover:text-primary"
+                                            target="_blank"
+                                        >
+                                            利用規約
+                                        </a>
+                                    </Link>
+                                    と
+                                    <Link href="/terms/privacy-policy">
+                                        <a
+                                            className="inline-block text-gray-500 hover:text-primary"
+                                            target="_blank"
+                                        >
+                                            プライバシーポリシー
+                                        </a>
+                                    </Link>
                                     に同意いたします
                                 </label>
                             </div>
@@ -147,45 +157,6 @@ const Register = ({ userSession }) => {
                     {errors?.terms && (
                         <span className="text-xs text-red-600">
                             You must agree to terms and conditions to continue
-                        </span>
-                    )}
-
-                    <Controller
-                        key="privacy"
-                        name="privacy"
-                        control={control}
-                        rules={{ validate: (val) => val && true }}
-                        render={({ field }: any) => (
-                            <div>
-                                <input
-                                    {...register("privacy", {
-                                        required: true,
-                                        validate: (val) => val && true,
-                                    })}
-                                    id="privacy"
-                                    aria-describedby="privacy-description"
-                                    type="checkbox"
-                                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                                />
-                                <label
-                                    htmlFor="privacy"
-                                    className="ml-3 text-sm text-gray-500 align-baseline"
-                                >
-                                    <a
-                                        href="https://timebook-public-media.s3.ap-northeast-1.amazonaws.com/assets/%E3%82%B2%E3%82%B9%E3%83%88%E5%90%91%E3%81%91PocketseQ%E5%88%A9%E7%94%A8%E8%A6%8F%E7%B4%84.pdf"
-                                        className="inline-block text-gray-500 hover:text-primary"
-                                        target="_blank"
-                                    >
-                                        プライバシーポリシー
-                                    </a>
-                                    に同意いたします
-                                </label>
-                            </div>
-                        )}
-                    />
-                    {errors?.privacy && (
-                        <span className="text-xs text-red-600">
-                            You must agree to privacy policy to continue
                         </span>
                     )}
 
