@@ -31,17 +31,16 @@ const useRegister = () => {
         setError,
     } = useForm({
         resolver: yupResolver(schema),
-        defaultValues: {
-            firstName: "",
-            firstNameKana: "",
-            lastName: "",
-            lastNameKana: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            terms: false,
-            privacy: false,
-        },
+        // defaultValues: {
+        //     firstName: "",
+        //     firstNameKana: "",
+        //     lastName: "",
+        //     lastNameKana: "",
+        //     email: "",
+        //     password: "",
+        //     confirmPassword: "",
+        //     terms: false,
+        // },
     });
 
     const [registerUser, { loading }] = useMutation(REGISTER_USER, {
@@ -61,19 +60,11 @@ const useRegister = () => {
     // form submit function
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
-        if (!formModel.terms || !formModel.privacy) {
-            if (!formModel.terms) {
-                setError("terms", {
-                    type: "manual",
-                    message: "Need to accept",
-                });
-            }
-            if (!formModel.privacy) {
-                setError("privacy", {
-                    type: "manual",
-                    message: "Need to accept",
-                });
-            }
+        if (!formModel.terms) {
+            setError("terms", {
+                type: "manual",
+                message: "Need to accept",
+            });
         } else {
             delete formModel.confirmPassword;
             delete formModel.terms;

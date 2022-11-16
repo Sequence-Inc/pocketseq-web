@@ -66,7 +66,6 @@ const useRegisterHost = () => {
         defaultValues: {
             hostType: "個人",
             terms: false,
-            privacy: false,
         },
     });
 
@@ -92,27 +91,12 @@ const useRegisterHost = () => {
     const handleRegister = async (formData) => {
         const formModel = { ...formData };
 
-        if (!formModel.terms || !formModel.privacy) {
-            if (!formModel.terms) {
-                setError("terms", {
-                    type: "manual",
-                    message: "Need to accept",
-                });
-            }
-            if (!formModel.privacy) {
-                setError("privacy", {
-                    type: "manual",
-                    message: "Need to accept",
-                });
-            }
-        } else {
-            formModel.hostType =
-                formData.hostType === "個人" ? "Individual" : "Corporate";
-            formModel.user && delete formModel.user.confirmPassword;
-            formModel.company && delete formModel.company.confirmPassword;
-            delete formModel.terms;
-            registerHost({ variables: { input: formModel } });
-        }
+        formModel.hostType =
+            formData.hostType === "個人" ? "Individual" : "Corporate";
+        formModel.user && delete formModel.user.confirmPassword;
+        formModel.company && delete formModel.company.confirmPassword;
+        delete formModel.terms;
+        registerHost({ variables: { input: formModel } });
     };
 
     return {
