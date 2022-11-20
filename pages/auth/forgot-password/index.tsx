@@ -60,7 +60,7 @@ const ForgotPassword = ({ userSession }) => {
                 emailAddress={email}
             />
             <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
-                <Logo />
+                <Logo size="large" />
                 <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                     パスワードをリセットする
                 </h2>
