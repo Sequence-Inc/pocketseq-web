@@ -46,7 +46,7 @@ const Register = ({ userSession }) => {
             <div className="w-full lg:w-10/12 mx-auto px-5 lg:px-0 grid grid-cols-1 lg:grid-cols-5 lg:gap-10 lg:mt-20">
                 <div className="col-span-2">
                     <div className="w-full md:w-2/3 lg:w-full mx-auto px-4 pt-6 pb-4 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
-                        <Logo />
+                        <Logo size="large" />
                         <h2 className="mt-2 text-base font-normal text-center text-gray-500">
                             ホストアカウントを作成する
                         </h2>

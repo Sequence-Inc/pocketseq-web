@@ -63,7 +63,7 @@ const ResetPassword = ({ email, code, userSession }) => {
                 <title>パスワードをリセットする - {config.appName}</title>
             </Head>
             <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
-                <Logo />
+                <Logo size="large" />
                 <h3 className="font-medium text-center text-green-600">
                     確認コードの確認完了しました
                 </h3>
