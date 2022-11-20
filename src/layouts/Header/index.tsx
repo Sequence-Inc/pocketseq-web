@@ -153,7 +153,7 @@ const Header = ({ userSession }) => {
                                         <span className="hidden w-auto ml-2 text-lg font-medium text-white h-7 lg:flex lg:items-center">
                                            {config.appName}
                                         </span> */}
-                                        <Logo variant="dark" />
+                                        <Logo size="default" variant="dark" />
                                     </a>
                                 </Link>
                             </div>

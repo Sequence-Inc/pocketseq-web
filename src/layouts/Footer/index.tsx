@@ -83,9 +83,14 @@ const Footer = () => {
                         <div className="flex justify-center mt-12 md:mt-0">
                             <div>
                                 <h2 className="text-xl font-semibold text-gray-400">
-                                    {config.appNameEnglish}
+                                    {/* {config.appNameEnglish} */}
+                                    <img
+                                        src="/logo_text.svg"
+                                        alt="PocketseQ"
+                                        className="w-40"
+                                    />
                                 </h2>
-                                <div className="flex mt-4 space-x-6 md:order-2">
+                                <div className="flex mt-4 space-x-4 md:order-2">
                                     {navigation.social.map((item) => (
                                         <Link href={item.href} key={item.name}>
                                             <a

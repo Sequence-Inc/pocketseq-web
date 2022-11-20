@@ -4,10 +4,12 @@ import { config } from "src/utils";
 
 interface LogoProps {
     variant?: "default" | "dark";
+    size?: "default" | "large";
     className?: string;
 }
 
-const Logo = ({ variant, className }: LogoProps) => {
+const Logo = ({ variant, size, className }: LogoProps) => {
+    const style = size === "default" ? "h-10" : "h-14";
     return (
         <div
             className={clsx(
@@ -20,21 +22,22 @@ const Logo = ({ variant, className }: LogoProps) => {
                 }
             )}
         >
-            {/* <ClockIcon className="w-8 h-8 " /> */}
             <img
-                src="/timebook-logomark.svg"
-                alt="time book logo"
-                className="w-10 h-10"
+                src={
+                    variant === "default"
+                        ? "/logo_primary.svg"
+                        : "/logo_secondary.svg"
+                }
+                alt="PocketseQ"
+                className={style}
             />
-            <span className="ml-3 text-lg font-bold h-7">
-                {config.appNameEnglish}
-            </span>
         </div>
     );
 };
 
 Logo.defaultProps = {
     variant: "default",
+    size: "default",
 };
 
 export default Logo;
