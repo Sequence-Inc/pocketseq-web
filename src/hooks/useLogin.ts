@@ -8,7 +8,6 @@ import { LOGIN } from "src/apollo/queries/auth.queries";
 import { storeSession, storeProfile } from "src/utils/auth";
 import { currentSession, isLoggedIn, profile } from "src/apollo/cache";
 import { signIn } from "next-auth/react";
-import { getEnvironmentData } from "worker_threads";
 
 type Error = {
     message: string;
