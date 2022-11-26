@@ -118,7 +118,7 @@ export const AccountsList = ({ filterOptions }) => {
                 </div>
             );
         } else if (key === "action") {
-            return <Link href={`accounts/${data.id}`}>Detail</Link>;
+            return <Link href={`accounts/${data.accountId}`}>Detail</Link>;
         } else {
             return data[key];
         }

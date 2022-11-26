@@ -12,20 +12,21 @@ import {
     ACCOUNT_BY_ID,
     APPROVE_ACCOUNT,
 } from "src/apollo/queries/admin.queries";
+import moment from "moment";
 
 export const HostAccountInfo = ({ account }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const router = useRouter();
     const {
-        id,
         accountId,
         email,
         emailVerified,
-        phoneNumber,
         approved,
         suspended,
         host,
+        createdAt,
+        updatedAt,
     } = account;
 
     const [
@@ -60,13 +61,12 @@ export const HostAccountInfo = ({ account }) => {
     function handleReject() {}
 
     const {
+        id: hostId,
         name,
         type,
         photoId,
         profilePhoto,
         stripeAccountId,
-        createdAt,
-        updatedAt,
     } = host;
 
     let approveButton = null;
@@ -113,7 +113,15 @@ export const HostAccountInfo = ({ account }) => {
                     <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Name
+                                ホストID
+                            </dt>
+                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                {hostId}
+                            </dd>
+                        </div>
+                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">
+                                ホスト名
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {name}
@@ -124,7 +132,7 @@ export const HostAccountInfo = ({ account }) => {
                                 Type
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                                {type}
+                                {type === "Corporate" ? "法人" : "個人"}
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -133,14 +141,6 @@ export const HostAccountInfo = ({ account }) => {
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {stripeAccountId}
-                            </dd>
-                        </div>
-                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                                Joined
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                                {createdAt}
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -162,14 +162,6 @@ export const HostAccountInfo = ({ account }) => {
                                         </div>
                                     )}
                                 </div>
-                            </dd>
-                        </div>
-                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                                Phone
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                {phoneNumber || "-"}
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -206,6 +198,26 @@ export const HostAccountInfo = ({ account }) => {
                                         <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
                                         Not suspended
                                     </div>
+                                )}
+                            </dd>
+                        </div>
+                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">
+                                Registration Date
+                            </dt>
+                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                {moment(createdAt).format(
+                                    "YYYY年MM月DD日 HH:mm"
+                                )}
+                            </dd>
+                        </div>
+                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">
+                                Last Update Date
+                            </dt>
+                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                {moment(updatedAt).format(
+                                    "YYYY年MM月DD日 HH:mm"
                                 )}
                             </dd>
                         </div>
