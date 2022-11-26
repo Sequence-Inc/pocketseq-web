@@ -10,6 +10,7 @@ import { PhotoIdUploader, AddStripe, LoadingSpinner } from "src/components";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import { config } from "src/utils";
+import Link from "next/link";
 
 interface IBalanceInput {
     currency: string;
@@ -80,12 +81,11 @@ const HostDashboard = ({ userSession }) => {
                                 </p>
                                 <p>
                                     お問い合わせ：
-                                    <a
-                                        href="mailto:info@timeqonnect.jp"
-                                        className="text-gray-600 hover:text-gray-700 hover:underline"
-                                    >
-                                        info@timeqonnect.jp
-                                    </a>
+                                    <Link href="/contact">
+                                        <a className="text-gray-600 hover:text-gray-700 hover:underline">
+                                            こちら
+                                        </a>
+                                    </Link>
                                 </p>
                             </div>
                         </div>

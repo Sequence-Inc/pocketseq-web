@@ -42,18 +42,19 @@ const DayOverride = ({ userSession, currentSpace }) => {
     const handlePublishUnpublish = async () => {
         setLoading(true);
         try {
-            if (isPublished) {
-                confirm(`Are you sure you want to unpublish space "${name}"`);
-                setIsPublished(false);
-            } else {
-                const { data } = await publishSpace({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.publishSpace.message);
-                setIsPublished(true);
-            }
+            const confirmation = confirm(
+                `Are you sure you want to ${
+                    isPublished ? "unpublish" : "publish"
+                } this space "${name}"`
+            );
+            const { data } = await publishSpace({
+                variables: {
+                    id,
+                    publish: !isPublished,
+                },
+            });
+            alert(data.publishSpace.message);
+            setIsPublished(!isPublished);
         } catch (error) {
             alert(error.message);
         } finally {

@@ -58,12 +58,13 @@ export const PREFECTURE_BY_ID = gql`
 
 export const ACCOUNT_BY_ID = gql`
     query accountById($accountId: ID!) {
-        accountById(accountId: $accountId) {
+        accountById(accountId: $accountId) {        
             ${USER_ACCOUNT}
             ${COMPANY_ACCOUNT}
         }
     }
 `;
+
 export const APPROVE_LICENSE = gql`
     mutation ApproveLicense($id: ID!) {
         approveLicense(id: $id) {
