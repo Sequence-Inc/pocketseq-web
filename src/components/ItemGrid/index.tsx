@@ -73,14 +73,15 @@ export const ItemGrid = ({
                         {location}
                     </Tag>
 
-                    <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
+                    {/* <Tag Icon={StarIcon} iconStyle="h-5 w-5 text-yellow-400">
                         <div className="text-sm font-semibold text-gray-600">
                             {rating.points}{" "}
                             <span className="font-light text-gray-400">
                                 ({rating.reviews}件)
                             </span>
                         </div>
-                    </Tag>
+                    </Tag> */}
+                    <div>&nbsp;</div>
                 </div>
 
                 {/* title section */}
