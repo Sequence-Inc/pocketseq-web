@@ -616,9 +616,9 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         )}
 
                         {/* reviews and comment section */}
-                        <div>
+                        {/* <div>
                             <SpaceInfoReviews />
-                        </div>
+                        </div> */}
                     </div>
                     <div className="hidden md:block">
                         <FloatingPriceThree

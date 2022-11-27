@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 import axios, { AxiosRequestConfig } from "axios";
 
 export default NextAuth({
@@ -68,6 +69,10 @@ export default NextAuth({
                 },
             },
         }),
+        FacebookProvider({
+            clientId: process.env.AUTH_FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.AUTH_FACEBOOK_CLIENT_SECRET,
+        }),
     ],
     secret: "8eb0d5eb8a45e4a4ac60b284d317383e91c9d372e3b67b154155c0a1b183c5deb2e5d6dceb6366704828c494951925d5",
     session: {
@@ -99,10 +104,6 @@ export default NextAuth({
                         params.account;
 
                     // Make Call to our server and get user profile
-                    console.log(
-                        "Make API Call to our server and get user account"
-                    );
-
                     try {
                         const request = JSON.stringify({
                             query: `mutation socialLogin ($input: SocialLoginInput!) {
@@ -141,13 +142,53 @@ export default NextAuth({
                         console.log(e);
                         return null;
                     }
+                } else if (account.provider === "facebook") {
+                    console.log("Do necessary validation for Facebook");
+                    console.log({ ...params });
 
-                    return {
-                        ...token,
-                        accessToken: params.account.access_token,
-                        refreshToken: params.account.refresh_token,
-                        user: params.user,
-                    };
+                    const { provider, providerAccountId, access_token } =
+                        params.account;
+
+                    // Make Call to our server and get user profile
+                    try {
+                        const request = JSON.stringify({
+                            query: `mutation socialLogin ($input: SocialLoginInput!) {
+                                    socialLogin (input: $input) {
+                                        accessToken
+                                        refreshToken
+                                    }
+                                }`,
+                            variables: {
+                                input: {
+                                    provider,
+                                    providerAccountId,
+                                    id_token: access_token,
+                                },
+                            },
+                        });
+
+                        // login config
+                        const config: AxiosRequestConfig = {
+                            method: "post",
+                            url: process.env.NEXT_PUBLIC_API_URL,
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            data: request,
+                        };
+
+                        const { data } = await axios(config);
+                        console.log(data);
+                        const user = data.data.socialLogin;
+                        return {
+                            ...user.profile,
+                            accessToken: user.accessToken,
+                            refreshToken: user.refreshToken,
+                        };
+                    } catch (e) {
+                        console.log(e);
+                        return null;
+                    }
                 }
             } else {
                 return token;

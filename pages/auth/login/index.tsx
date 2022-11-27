@@ -80,15 +80,26 @@ const Login = ({ csrfToken, userSession }) => {
                         >
                             {t("do-login")}
                         </Button>
-                        <Button
-                            disabled={loading}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                signIn("google");
-                            }}
-                        >
-                            Google
-                        </Button>
+                        <div className="space-y-3">
+                            <Button
+                                disabled={loading}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    signIn("google");
+                                }}
+                            >
+                                Google
+                            </Button>
+                            <Button
+                                disabled={loading}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    signIn("facebook");
+                                }}
+                            >
+                                Facebook
+                            </Button>
+                        </div>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
