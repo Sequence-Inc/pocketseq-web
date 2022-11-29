@@ -572,7 +572,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <div className="w-full my-6 border-t border-gray-300" />
 
                         {/* reviews and comment section */}
-                        <SpaceInfoReviews />
+                        {/* <SpaceInfoReviews /> */}
                     </div>
                     <div className="hidden md:block">
                         <FloatingPriceTwo

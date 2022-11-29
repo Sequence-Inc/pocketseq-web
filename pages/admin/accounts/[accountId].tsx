@@ -20,14 +20,16 @@ function AccountDetails({ userSession, accountId }) {
     // get data for accountID this
     const { data, loading, error } = useQuery(ACCOUNT_BY_ID, {
         variables: { accountId },
-        fetchPolicy: "cache-only",
+        fetchPolicy: "network-only",
     });
 
     if (loading) return <NetworkHelper type="loading" />;
 
     if (error) return <NetworkHelper type="error" message={error.message} />;
 
-    const account = data.accountById;
+    console.log(data, loading, error);
+
+    const account = data?.accountById;
 
     if (account.length === 0) {
         return <NetworkHelper type="no-data" />;
@@ -35,7 +37,7 @@ function AccountDetails({ userSession, accountId }) {
 
     const tabs = [
         {
-            title: "Host information",
+            title: "アカウント",
             component: <BasicAccountInfo account={account} />,
         },
     ];
@@ -71,9 +73,9 @@ function AccountDetails({ userSession, accountId }) {
 
     let profilePhotoUrl;
     if (account.profilePhoto) {
-        profilePhotoUrl = account.profilePhoto.thumbnail.url;
+        profilePhotoUrl = account.profilePhoto?.thumbnail?.url;
     } else {
-        profilePhotoUrl = `https://avatars.dicebear.com/api/identicon/${account.id}.svg`;
+        profilePhotoUrl = `https://avatars.dicebear.com/api/identicon/${account?.id}.svg`;
     }
 
     return (

@@ -466,8 +466,8 @@ export const REMOVE_PRICE_OVERRIDE = gql`
 `;
 
 export const PUBLISH_SPACE = gql`
-    mutation PublishSpace($id: ID!) {
-        publishSpace(id: $id) {
+    mutation PublishSpace($id: ID!, $publish: Boolean) {
+        publishSpace(id: $id, publish: $publish) {
             message
             action
         }

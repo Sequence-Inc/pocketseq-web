@@ -9,7 +9,7 @@ import { AuthLayout } from "@layout";
 import ErrorModal from "src/elements/ErrorModal";
 
 import useTranslation from "next-translate/useTranslation";
-import { getCsrfToken, getSession } from "next-auth/react";
+import { getCsrfToken, getSession, signIn } from "next-auth/react";
 import { config } from "src/utils";
 import moment from "moment";
 
@@ -80,6 +80,26 @@ const Login = ({ csrfToken, userSession }) => {
                         >
                             {t("do-login")}
                         </Button>
+                        <div className="space-y-3">
+                            <Button
+                                disabled={loading}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    signIn("google");
+                                }}
+                            >
+                                Google
+                            </Button>
+                            <Button
+                                disabled={loading}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    signIn("facebook");
+                                }}
+                            >
+                                Facebook
+                            </Button>
+                        </div>
                         <div className="relative text-center">
                             <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
                             <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
