@@ -348,6 +348,8 @@ export default function Home({ userSession, allSubscriptionProducts }) {
         setSelectedPriceId(priceId);
     };
 
+    console.log(spaceProducts, hotelProducts);
+
     if (!spaceProducts || !hotelProducts) {
         return <LoadingSpinner />;
     }
@@ -627,6 +629,7 @@ export const getServerSideProps = async (context) => {
     const { data } = await client.query({
         query: ALL_SUBSCRIPTION_PRODUCTS,
     });
+
     const session = await getSession(context);
     return {
         props: {

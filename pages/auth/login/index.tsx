@@ -82,22 +82,50 @@ const Login = ({ csrfToken, userSession }) => {
                         </Button>
                         <div className="space-y-3">
                             <Button
+                                style={{
+                                    backgroundColor: "#4285F4",
+                                    color: "#ffffff",
+                                    paddingTop: 1,
+                                    paddingBottom: 1,
+                                }}
                                 disabled={loading}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     signIn("google");
                                 }}
                             >
-                                Google
+                                <img
+                                    src="/social_login_google.png"
+                                    style={{
+                                        width: "34px",
+                                        height: "34px",
+                                        marginRight: 8,
+                                    }}
+                                />
+                                Googleでログイン
                             </Button>
                             <Button
+                                style={{
+                                    backgroundColor: "#1877F2",
+                                    color: "#ffffff",
+                                    paddingTop: 4,
+                                    paddingBottom: 4,
+                                }}
                                 disabled={loading}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     signIn("facebook");
                                 }}
                             >
-                                Facebook
+                                <img
+                                    src="/social_login_facebook.png"
+                                    style={{
+                                        width: "28px",
+                                        height: "28px",
+                                        marginRight: 8,
+                                    }}
+                                />
+                                Facebookでログイン
                             </Button>
                         </div>
                         <div className="relative text-center">
