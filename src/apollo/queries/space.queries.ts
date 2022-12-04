@@ -13,6 +13,7 @@ import {
     COMPANY_ACCOUNT,
     HOTEL_OBJECT,
     PAGINATION_INFO,
+    SPACE_LITE,
 } from "./core.queries";
 
 export const GET_ALL_SPACE_TYPES = gql`
@@ -389,7 +390,7 @@ export const GET_TOP_PICK_SPACES = gql`
         }
         allSpaces(paginate: $paginate){
             data {
-                ${SPACE}
+                ${SPACE_LITE}
             }
             ${PAGINATION} 
         }
