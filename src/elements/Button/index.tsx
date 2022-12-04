@@ -14,7 +14,7 @@ interface ButtonProps {
     disabled?: boolean;
     Icon?: React.ComponentType<{ className: string }>;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    style: any;
+    style?: any;
 }
 
 const Button = (props: ButtonProps) => {
