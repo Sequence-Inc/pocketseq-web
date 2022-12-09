@@ -35,7 +35,7 @@ export const BasicAccountInfo = ({ account }) => {
                     <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Account ID
+                                アカウント ID
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {accountId}
@@ -43,7 +43,7 @@ export const BasicAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Account Type
+                                アカウントタイプ
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {__typename === "UserProfile" ? "個人" : "法人"}
@@ -51,7 +51,7 @@ export const BasicAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Account Role
+                                アカウントロール
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {roles[0] === "user" && "ユーザー"}
@@ -64,7 +64,7 @@ export const BasicAccountInfo = ({ account }) => {
                             <>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        User ID
+                                        ユーザーID
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {id}
@@ -72,15 +72,7 @@ export const BasicAccountInfo = ({ account }) => {
                                 </div>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        First Name
-                                    </dt>
-                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {firstName}
-                                    </dd>
-                                </div>
-                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        Last Name
+                                        姓
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {lastName}
@@ -88,7 +80,15 @@ export const BasicAccountInfo = ({ account }) => {
                                 </div>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        First Name Kana
+                                        名
+                                    </dt>
+                                    <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                                        {firstName}
+                                    </dd>
+                                </div>
+                                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500">
+                                        名（カナ）
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {firstNameKana}
@@ -96,7 +96,7 @@ export const BasicAccountInfo = ({ account }) => {
                                 </div>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        Last Name Kana
+                                        姓（カナ）
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {lastNameKana}
@@ -108,7 +108,7 @@ export const BasicAccountInfo = ({ account }) => {
                             <>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        Company ID
+                                        会社ID
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {id}
@@ -116,7 +116,7 @@ export const BasicAccountInfo = ({ account }) => {
                                 </div>
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        Name
+                                        名前
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {name}
@@ -125,7 +125,7 @@ export const BasicAccountInfo = ({ account }) => {
 
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt className="text-sm font-medium text-gray-500">
-                                        Name Kana
+                                        名前（カナ）
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {nameKana}
@@ -152,12 +152,12 @@ export const BasicAccountInfo = ({ account }) => {
                                     {emailVerified ? (
                                         <div className="flex items-center ml-3 text-primary text-sm">
                                             <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
-                                            Verified
+                                            承認済み
                                         </div>
                                     ) : (
                                         <div className="flex items-center ml-3 text-gray-500 text-sm">
                                             <QuestionMarkCircleIcon className="w-5 h-5 text-gray-400 mr-1" />
-                                            Not verified
+                                            未確認
                                         </div>
                                     )}
                                 </div>
@@ -165,31 +165,31 @@ export const BasicAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Approved
+                                アカウント承認
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 {approved ? (
                                     <div className="flex items-center text-primary text-sm">
                                         <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
-                                        Approved
+                                        承認済み
                                     </div>
                                 ) : (
                                     <div className="flex items-center text-gray-500 text-sm">
                                         <XCircleIcon className="w-5 h-5 text-gray-400 mr-1" />
-                                        Not approved
+                                        未承認
                                     </div>
                                 )}
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Suspended
+                                サスペンド
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 {suspended ? (
                                     <div className="flex items-center text-red-500 text-sm">
                                         <XCircleIcon className="w-5 h-5 text-red-500 mr-1" />
-                                        Suspended
+                                        一時停止
                                     </div>
                                 ) : (
                                     <div className="flex items-center text-primary text-sm">
@@ -201,7 +201,7 @@ export const BasicAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Registration Date
+                                登録日
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {moment(createdAt).format(
@@ -211,7 +211,7 @@ export const BasicAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Last Update Date
+                                最終更新日
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {moment(updatedAt).format(

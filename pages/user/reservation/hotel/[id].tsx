@@ -386,17 +386,16 @@ const ReservationById = ({ userSession, id }) => {
                                                 as="h3"
                                                 className="text-lg leading-6 font-bold text-gray-900"
                                             >
-                                                Add review
+                                                口コミ
                                             </Dialog.Title>
                                             <p className="mt-3 text-sm text-gray-500">
-                                                Tell us about your experience
-                                                about {packagePlan.name}
+                                                あなたのご体験をお聞かせください
                                             </p>
                                         </div>
                                         <div className="mt-4 pt-4 mb-4 space-y-3">
                                             <div className="text-sm text-gray-500">
                                                 <span className="inline-block w-20 font-bold">
-                                                    Rating
+                                                    評価
                                                 </span>
                                                 <span>
                                                     <select
@@ -431,7 +430,7 @@ const ReservationById = ({ userSession, id }) => {
                                             </div>
                                             <div className="flex text-sm text-gray-500">
                                                 <span className="inline-block w-20 font-bold">
-                                                    Comment
+                                                    コメント
                                                 </span>
                                                 <textarea
                                                     className="py-1 px-2 w-64 border-gray-200 rounded"
@@ -455,7 +454,7 @@ const ReservationById = ({ userSession, id }) => {
                                             return null;
                                         }}
                                     >
-                                        Add review
+                                        口コミの追加
                                     </button>
                                     <button
                                         type="button"
@@ -463,7 +462,7 @@ const ReservationById = ({ userSession, id }) => {
                                         onClick={() => setOpen(false)}
                                         ref={cancelButtonRef}
                                     >
-                                        Cancel
+                                        キャンセル
                                     </button>
                                 </div>
                             </div>
