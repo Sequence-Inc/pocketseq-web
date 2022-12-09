@@ -105,13 +105,13 @@ export const LicenseInfo = ({ account, refetchAccount }) => {
                                             {approved ? (
                                                 <div className="flex items-center text-primary text-sm">
                                                     <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
-                                                    Approved
+                                                    スターテス
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center text-gray-500 text-sm">
                                                     <XCircleIcon className="w-5 h-5 text-gray-400 mr-1" />
                                                     {remarks
-                                                        ? "Rejected"
+                                                        ? "拒否されました"
                                                         : "Not approved"}
                                                 </div>
                                             )}
@@ -139,7 +139,7 @@ export const LicenseInfo = ({ account, refetchAccount }) => {
                                                         handleShow(index)
                                                     }
                                                 >
-                                                    View photos
+                                                    ライセンスを表示
                                                 </button>
                                             </div>
                                         </div>
@@ -208,7 +208,7 @@ const LicenseDialog = ({
                                 as="h3"
                                 className="text-lg font-medium leading-6 text-gray-900"
                             >
-                                License
+                                ライセンス
                             </Dialog.Title>
                             <div className="mt-2">
                                 {licensePhotos.map((photo, index) => {
@@ -242,7 +242,7 @@ const LicenseDialog = ({
                                             onClick={() => approve()}
                                             disabled={loading}
                                         >
-                                            Approve
+                                            承認する
                                         </button>
                                         <button
                                             type="button"
@@ -250,7 +250,7 @@ const LicenseDialog = ({
                                             onClick={() => reject(remarks)}
                                             disabled={loading}
                                         >
-                                            Reject
+                                            拒絶
                                         </button>
                                     </>
                                 )}
@@ -260,7 +260,7 @@ const LicenseDialog = ({
                                     onClick={onClose}
                                     disabled={loading}
                                 >
-                                    Cancel
+                                    キャンセル
                                 </button>
                             </div>
                         </div>

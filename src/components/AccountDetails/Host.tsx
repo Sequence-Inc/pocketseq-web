@@ -129,7 +129,7 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Type
+                                アカウントタイプ
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {type === "Corporate" ? "法人" : "個人"}
@@ -137,7 +137,7 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Stripe ID
+                                ストライプ ID
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {stripeAccountId}
@@ -153,12 +153,12 @@ export const HostAccountInfo = ({ account }) => {
                                     {emailVerified ? (
                                         <div className="flex items-center ml-3 text-primary text-sm">
                                             <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
-                                            Verified
+                                            承認済み
                                         </div>
                                     ) : (
                                         <div className="flex items-center ml-3 text-gray-500 text-sm">
                                             <QuestionMarkCircleIcon className="w-5 h-5 text-gray-400 mr-1" />
-                                            Not verified
+                                            未確認
                                         </div>
                                     )}
                                 </div>
@@ -166,18 +166,18 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Approved
+                                アカウント承認
                             </dt>
                             <dd className="mt-1 flex items-center text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 {approved ? (
                                     <div className="flex items-center text-primary text-sm">
                                         <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
-                                        Approved
+                                        承認済み
                                     </div>
                                 ) : (
                                     <div className="flex items-center text-gray-500 text-sm">
                                         <XCircleIcon className="w-5 h-5 text-gray-400 mr-1" />
-                                        Not approved
+                                        未承認
                                     </div>
                                 )}
                                 {photoIdVerifyContent}
@@ -185,13 +185,13 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Suspended
+                                サスペンド
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 {suspended ? (
                                     <div className="flex items-center text-red-500 text-sm">
                                         <XCircleIcon className="w-5 h-5 text-red-500 mr-1" />
-                                        Suspended
+                                        一時停止
                                     </div>
                                 ) : (
                                     <div className="flex items-center text-primary text-sm">
@@ -203,7 +203,7 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Registration Date
+                                登録日
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {moment(createdAt).format(
@@ -213,7 +213,7 @@ export const HostAccountInfo = ({ account }) => {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">
-                                Last Update Date
+                                最終更新日
                             </dt>
                             <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                 {moment(updatedAt).format(
@@ -228,7 +228,7 @@ export const HostAccountInfo = ({ account }) => {
                                     variant="secondary"
                                     className="w-auto bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600"
                                 >
-                                    Suspend Host
+                                    ホストをサスペンド
                                 </Button>
                             </div>
                         </div>
@@ -296,21 +296,21 @@ const PhotoIdDialog = ({ photoId, isOpen, onClose, approve, reject }) => {
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-green-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                                     onClick={approve}
                                 >
-                                    Approve
+                                    承認する
                                 </button>
                                 <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-red-500 bg-white border border-transparent rounded-md hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-100"
                                     onClick={reject}
                                 >
-                                    Reject
+                                    拒絶
                                 </button>
                                 <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-300"
                                     onClick={onClose}
                                 >
-                                    Cancel
+                                    キャンセル
                                 </button>
                             </div>
                         </div>

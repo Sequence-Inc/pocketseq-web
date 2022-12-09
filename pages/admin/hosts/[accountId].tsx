@@ -36,15 +36,15 @@ function AdminDashboard({ userSession, accountId }) {
 
     let tabs = [
         {
-            title: "Host information",
+            title: "ホスト情報",
             component: <HostAccountInfo account={account} />,
         },
         {
-            title: "Kanrisha information",
+            title: "管理者情報",
             component: <BasicAccountInfo account={account} />,
         },
         {
-            title: "Licenses",
+            title: "ライセンス",
             component: (
                 <LicenseInfo account={account} refetchAccount={refetch} />
             ),
@@ -54,7 +54,7 @@ function AdminDashboard({ userSession, accountId }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Host account - {config.appName}</title>
+                <title>ホスト管理 - {config.appName}</title>
             </Head>
 
             <div className="bg-white shadow">
@@ -69,10 +69,10 @@ function AdminDashboard({ userSession, accountId }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Host
+                                            ホスト管理
                                         </h1>
                                     </div>
-                                    <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                    {/* <dl className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
                                         <dt className="sr-only">
                                             Total accounts
                                         </dt>
@@ -83,7 +83,7 @@ function AdminDashboard({ userSession, accountId }) {
                                             />
                                             12 accounts
                                         </dd>
-                                    </dl>
+                                    </dl> */}
                                 </div>
                             </div>
                         </div>
