@@ -36,7 +36,7 @@ const ReservationList = ({ userSession }) => {
     ];
 
     const hotelKeys = [
-        { name: "プラン名", key: "packagePlan" },
+        { name: "施設名", key: "packagePlan" },
         { name: "Room", key: "hotelRoom" },
         { name: "From", key: "fromDateTime" },
         { name: "To", key: "toDateTime" },
