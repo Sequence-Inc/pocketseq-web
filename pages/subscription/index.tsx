@@ -77,13 +77,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <ShieldExclamationIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
                         <p className=" text-base font-semibold  text-gray-600">
-                            Please wait !
+                            ログインが必要です
                         </p>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
-                        <p className="text-sm">
-                            This action requires you to log in first.
-                        </p>
+                        <p className="text-sm">先にログインを行ってください</p>
 
                         <div className="flex flex-col w-full justify-between  space-y-4 ">
                             <button
@@ -91,14 +89,14 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                 className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
                                 onClick={redirectAuth}
                             >
-                                Login
+                                ログイン
                             </button>
 
                             <button
                                 className="text-blue-500 underline underline-offset-8"
                                 onClick={redirectSignup}
                             >
-                                Sign Up
+                                サインアップ
                             </button>
                         </div>
                     </div>
@@ -112,7 +110,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 " />
                         <p className=" text-base font-semibold  text-blue-600">
-                            Please Wait
+                            読み込み中...
                         </p>
                     </div>
                 </div>
@@ -125,13 +123,13 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
                         <p className=" text-base font-semibold  text-gray-600">
-                            Oops !
+                            エラーが発生しました
                         </p>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
                         <p className="text-sm">
-                            Could not load payment sources. Please try again
-                            later.
+                            お支払い方法を読み込めませんでした。
+                            後でもう一度やり直してください。
                         </p>
 
                         <button
@@ -139,7 +137,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
                             onClick={() => setModalOpen(false)}
                         >
-                            Close
+                            閉じる
                         </button>
                     </div>
                 </div>
@@ -152,7 +150,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
                         <p className=" text-base font-semibold  text-gray-600">
-                            Oops !
+                            エラーが発生しました
                         </p>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
@@ -165,7 +163,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
                             onClick={redirectPaymentSource}
                         >
-                            Go to Settings
+                            設定へ
                         </button>
                     </div>
                 </div>
@@ -178,11 +176,13 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <CheckIcon className="text-green-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-green-500" />
                         <p className=" text-base font-semibold  text-gray-600">
-                            Success
+                            成功しました
                         </p>
                     </div>
                     <div className=" mt-4 text-center space-y-4">
-                        <p className="text-sm">Subscription successful</p>
+                        <p className="text-sm">
+                            サブスクリプションが成功しました
+                        </p>
 
                         <button
                             type="button"
@@ -192,7 +192,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                 resetSubscription();
                             }}
                         >
-                            Done
+                            終わり
                         </button>
                     </div>
                 </div>
@@ -205,7 +205,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <CogIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 animate-spin" />
                         <p className=" text-base font-semibold  text-blue-600">
-                            Subscribing
+                            購読中
                         </p>
                     </div>
                 </div>
@@ -218,14 +218,16 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <ExclamationIcon className="text-red-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-600" />
                         <p className=" text-base font-semibold  text-red-600">
-                            Already Subscribed
+                            既に登録済みです
                         </p>
                     </div>
                     <div className=" mt-4 text-center space-y-4">
                         {subscriptionFailed?.message ===
                         "You have already subscribed to rental-space subscription" ? (
                             <>
-                                <p>Already subscribed to this subscription.</p>
+                                <p>
+                                    このサブスクリプションに既に登録されています
+                                </p>
                                 <div className="flex flex-col space-y-4">
                                     <button
                                         className="bg-purple-500 p-3 rounded-md text-sm text-white"
@@ -234,7 +236,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                             resetSubscription();
                                         }}
                                     >
-                                        Manage Subscription
+                                        サブスクリプションを管理する
                                     </button>
 
                                     <button
@@ -243,14 +245,15 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                             resetSubscription();
                                         }}
                                     >
-                                        Cancel
+                                        キャンセル
                                     </button>
                                 </div>
                             </>
                         ) : (
                             <>
                                 <p className="text-sm">
-                                    Subscription failed. Try again later.
+                                    サブスクリプションに失敗しました。
+                                    もう一度お試しください。
                                 </p>
 
                                 <button
@@ -261,7 +264,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                         resetSubscription();
                                     }}
                                 >
-                                    Ok
+                                    確認
                                 </button>
                             </>
                         )}
@@ -275,20 +278,18 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div className="flex items-center justify-center space-x-2">
                     <ShoppingBagIcon className="text-blue-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-500" />
                     <p className=" text-base font-semibold  text-gray-600">
-                        Subscribe
+                        サブスクリプション
                     </p>
                 </div>
                 <div className=" mt-4 text-center space-y-4">
-                    <p className="text-sm">
-                        Are your sure you want to subscribe ?
-                    </p>
+                    <p className="text-sm">購読を希望しますか？</p>
 
                     <button
                         type="button"
                         className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
                         onClick={handleSubscribe}
                     >
-                        Confirm
+                        確認
                     </button>
                 </div>
             </div>

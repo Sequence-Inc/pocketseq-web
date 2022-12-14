@@ -127,12 +127,12 @@ const HostDashboard = ({ userSession }) => {
         return (
             <>
                 <h2 className="text-lg font-medium leading-6 text-gray-900">
-                    Overview
+                    概要
                 </h2>
                 <div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3">
                     <DashboardCard
                         Icon={ScaleIcon}
-                        name="Available Balance"
+                        name="利用可能残高"
                         amount={`${host?.stripeAccount?.balance?.available[0].currency?.toUpperCase()} ${
                             host?.stripeAccount?.balance?.available[0].amount
                         }`}
@@ -140,7 +140,7 @@ const HostDashboard = ({ userSession }) => {
                     />
                     <DashboardCard
                         Icon={ScaleIcon}
-                        name="Pending Balance"
+                        name="保留中残高"
                         amount={`${host?.stripeAccount?.balance?.pending[0].currency?.toUpperCase()} ${
                             host?.stripeAccount?.balance?.pending[0].amount
                         }`}

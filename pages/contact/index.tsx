@@ -50,7 +50,9 @@ const Contact = ({ userSession }) => {
     const { onSubmit, register, errors, control, loading } = useContactForm({
         onSuccess: (data) => {
             setErrorMessage("");
-            setSuccessMessage(data.contactForm.message);
+            setSuccessMessage(
+                "お問い合わせのリクエストを修正しました。できるだけ早くご返信いたします。"
+            );
         },
         onError: (err) => {
             setSuccessMessage("");

@@ -98,7 +98,7 @@ const Licenses = ({ userSession }) => {
                 if (column.id === "approved") {
                     return (
                         <div className="flex justify-center">
-                            {value ? "APPROVED" : "PENDING"}
+                            {value ? "承認済み" : "未承認"}
                         </div>
                     );
                 }
