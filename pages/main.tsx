@@ -4,12 +4,10 @@ import Link from "next/link";
 import { Container, Tag } from "@element";
 import {
     CategoryItem,
-    ItemGrid,
-    ItemGridHotel,
-    IExploreItem,
     RegisterCTA,
     HeroSection,
     SubscriptionCTA,
+    SearchResult,
 } from "@comp";
 import { Header, Footer } from "@layout";
 
@@ -21,33 +19,11 @@ import {
     FireIcon,
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
-import { GET_TOP_PICK_SPACES } from "src/apollo/queries/space.queries";
+import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { getSession } from "next-auth/react";
-import { config } from "src/utils/index";
+import { config, getFrontPageData, prepareSearchResult } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
-
-// const exploreAreas: IExploreItem[] = [
-//     {
-//         name: "新宿",
-//         distance: "3.5km",
-//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shinjuku-77442606d9.jpg",
-//     },
-//     {
-//         name: "渋谷",
-//         distance: "3.5km",
-//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-shibuya-e4e48ba97b.jpg",
-//     },
-//     {
-//         name: "池袋",
-//         distance: "3.5km",
-//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-ikebukuro-ce159c8b7e.jpg",
-//     },
-//     {
-//         name: "原宿",
-//         distance: "3.5km",
-//         photo: "https://cdnspacemarket.com/packs-production/images/top/img_area_tokyo-harajuku-087e2c5ed1.jpg",
-//     },
-// ];
+import { ItemGridSpace } from "src/components/ItemGridSpace";
 
 const features = [
     {
@@ -72,8 +48,13 @@ const features = [
 export default function Home({
     userSession,
     availableSpaceTypes,
-    allSpaces,
-    allPublishedHotels,
+    newSpaces,
+    newHotels,
+}: {
+    userSession: any;
+    availableSpaceTypes: any;
+    newSpaces: SearchResult[];
+    newHotels: SearchResult[];
 }) {
     return (
         <div className="bg-gray-50">
@@ -225,10 +206,10 @@ export default function Home({
                             </Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-4">
-                            {allSpaces?.data.map((item, index) => {
-                                if (index < 4) {
-                                    return <ItemGrid key={index} data={item} />;
-                                }
+                            {newSpaces?.map((item, index) => {
+                                return (
+                                    <ItemGridSpace key={index} data={item} />
+                                );
                             })}
                         </div>
                     </div>
@@ -251,15 +232,10 @@ export default function Home({
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
-                            {allPublishedHotels?.map((item, index) => {
-                                if (index < 4) {
-                                    return (
-                                        <ItemGridHotel
-                                            key={index}
-                                            data={item}
-                                        />
-                                    );
-                                }
+                            {newHotels?.map((item, index) => {
+                                return (
+                                    <ItemGridSpace key={index} data={item} />
+                                );
                             })}
                         </div>
                     </div>
@@ -275,21 +251,19 @@ export default function Home({
 export const getServerSideProps = async (context) => {
     const client = createApolloClient();
     const { data } = await client.query({
-        query: GET_TOP_PICK_SPACES,
-        variables: {
-            paginationInfo: {
-                take: 4,
-                skip: 0,
-            },
-        },
+        query: GET_AVAILABLE_SPACE_TYPES,
     });
+    const { space, hotel } = await getFrontPageData();
+
+    const newSpaces = prepareSearchResult("space", space);
+    const newHotels = prepareSearchResult("hotel", hotel);
     const session = await getSession(context);
     return {
         props: {
             userSession: session,
             availableSpaceTypes: data.availableSpaceTypes,
-            allSpaces: data.allSpaces,
-            allPublishedHotels: data.allPublishedHotels,
+            newSpaces,
+            newHotels,
         },
     };
 };

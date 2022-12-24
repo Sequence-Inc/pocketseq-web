@@ -27,6 +27,8 @@ export type SearchResult = {
     lat?: number;
     lng?: number;
     type: "hotel" | "space";
+    address?: string;
+    category?: string;
 };
 
 export const GridViewSearch = ({
@@ -108,8 +110,10 @@ export const GridViewSearch = ({
                                 {pax}
                             </div>
                             <div className="text-xl font-bold">
-                                {PriceFormatter(price)}〜
-                                <span className="font-normal">{` /${priceUnit}`}</span>
+                                {PriceFormatter(price)}
+                                <span className="font-normal">
+                                    {` /${priceUnit}`}〜
+                                </span>
                             </div>
                         </div>
                     );
