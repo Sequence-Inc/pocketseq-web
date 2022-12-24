@@ -20,6 +20,7 @@ import moment from "moment";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
 import { Dialog, Transition } from "@headlessui/react";
+import { StarIcon } from "@heroicons/react/solid";
 
 const ReservationById = ({ userSession, id }) => {
     const [open, setOpen] = useState(false);
@@ -71,7 +72,7 @@ const ReservationById = ({ userSession, id }) => {
 
     const handleCancel = async () => {
         const choice = confirm(
-            "Are you sure you want to cancel this reservation? Cancellation fee may apply!"
+            "予約をキャンセルしてもよろしいですか？ キャンセル料が発生する場合がございます。"
         );
         if (choice) {
             try {
@@ -98,7 +99,7 @@ const ReservationById = ({ userSession, id }) => {
                 },
             });
             setOpen(false);
-            alert("Successfully added review.");
+            alert("レビューありがとうございます。");
         } catch (error) {
             alert(`Error: ${error.message}`);
         }
@@ -187,27 +188,27 @@ const ReservationById = ({ userSession, id }) => {
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">
-                                    From Date Time
+                                    予約開始
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                     {moment(fromDateTime).format(
-                                        "YYYY/MM/DD HH:mm"
+                                        "YYYY年MM月DD日 HH:mm"
                                     )}
                                 </dd>
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">
-                                    To Date Time
+                                    予約終了
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                     {moment(toDateTime).format(
-                                        "YYYY/MM/DD HH:mm"
+                                        "YYYY年MM月DD日 HH:mm"
                                     )}
                                 </dd>
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">
-                                    Status
+                                    ステータス
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                     {status}
@@ -215,7 +216,7 @@ const ReservationById = ({ userSession, id }) => {
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm font-medium text-gray-500">
-                                    Reservation approved on
+                                    予約承認日
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                     {approvedOn
@@ -391,35 +392,34 @@ const ReservationById = ({ userSession, id }) => {
                                                 <span className="inline-block w-20 font-bold">
                                                     評価
                                                 </span>
-                                                <span>
-                                                    <select
-                                                        value={ratings}
-                                                        onChange={(event) => {
-                                                            setRatings(
-                                                                parseInt(
-                                                                    event.target
-                                                                        .value
-                                                                )
-                                                            );
-                                                        }}
-                                                        className="w-20 py-1 px-2 border-gray-200 rounded"
-                                                    >
-                                                        <option value="1">
-                                                            1
-                                                        </option>
-                                                        <option value="2">
-                                                            2
-                                                        </option>
-                                                        <option value="3">
-                                                            3
-                                                        </option>
-                                                        <option value="4">
-                                                            4
-                                                        </option>
-                                                        <option value="5">
-                                                            5
-                                                        </option>
-                                                    </select>
+                                                <span className="">
+                                                    <div className="inline-block absolute h-5">
+                                                        {[1, 2, 3, 4, 5].map(
+                                                            (rating) => {
+                                                                const selected =
+                                                                    rating <=
+                                                                    ratings;
+                                                                return (
+                                                                    <button
+                                                                        className="w-5 h-5 mr-1"
+                                                                        onClick={() => {
+                                                                            setRatings(
+                                                                                rating
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <StarIcon
+                                                                            className={`w-5 h-6 ${
+                                                                                selected
+                                                                                    ? `text-yellow-400`
+                                                                                    : `text-gray-300 hover:text-gray-400`
+                                                                            }`}
+                                                                        />
+                                                                    </button>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </div>
                                                 </span>
                                             </div>
                                             <div className="flex text-sm text-gray-500">
