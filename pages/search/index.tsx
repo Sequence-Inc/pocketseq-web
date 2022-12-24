@@ -15,7 +15,13 @@ import Head from "next/head";
 import { Slider } from "antd";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import { ILocationMarker } from "src/types/timebookTypes";
-import { config, PriceFormatter, searchHotel, searchSpace } from "src/utils";
+import {
+    config,
+    prepareSearchResult,
+    PriceFormatter,
+    searchHotel,
+    searchSpace,
+} from "src/utils";
 import { useRouter } from "next/router";
 
 type SearchParams = {
@@ -147,71 +153,6 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                 });
         }
     }, [searchParams]);
-
-    const prepareSearchResult = (
-        type: "hotel" | "space",
-        results
-    ): SearchResult[] => {
-        return results.map((result: any) => {
-            if (type === "space") {
-                let max = 9999999999;
-                let min = 0;
-                let spaceType = "HOURLY";
-                let duration = 1;
-                if (searchParams.minPrice) {
-                    min = searchParams.minPrice - 1;
-                }
-
-                result.price.map((price) => {
-                    if (max > price.amount && price.amount >= min) {
-                        max = price.amount;
-                        spaceType = price.type;
-                        duration = price.duration;
-                    }
-                });
-
-                let priceUnit = "";
-
-                if (spaceType === "DAILY") {
-                    priceUnit = "日";
-                } else if (spaceType === "HOURLY") {
-                    priceUnit = "時間";
-                } else {
-                    priceUnit = "分";
-                }
-
-                if (duration > 1) {
-                    priceUnit = duration + priceUnit;
-                }
-
-                return {
-                    id: result.objectID,
-                    name: result.name,
-                    maxAdult: result.maximumCapacity,
-                    maxChild: 0,
-                    price: max,
-                    priceUnit,
-                    lat: result._geoloc?.lat,
-                    lng: result._geoloc?.lng,
-                    thumbnail: result.thumbnail,
-                    type,
-                };
-            } else {
-                return {
-                    id: result.objectID,
-                    name: result.name,
-                    maxAdult: result.maxAdult,
-                    maxChild: result.maxChild,
-                    price: result.lowestPrice,
-                    priceUnit: "泊",
-                    lat: result._geoloc?.lat,
-                    lng: result._geoloc?.lng,
-                    thumbnail: result.thumbnail,
-                    type,
-                };
-            }
-        });
-    };
 
     if (!searchDataReceived) {
         return <LoadingSpinner />;

@@ -32,7 +32,7 @@ const DashboardCard = ({ Icon, name, amount, url }) => {
                             href={url}
                             className="font-medium text-green-700 hover:text-green-900"
                         >
-                            View all
+                            全て見る
                         </a>
                     </div>
                 </div>
