@@ -642,7 +642,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         logic={{
                             filters: `buildingType: ${hotel.buildingType}`,
                         }}
-                        title="Similar"
+                        title="類似した宿泊施設"
                         parentId={hotelId}
                     />
                 </div>

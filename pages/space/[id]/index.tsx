@@ -598,7 +598,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         logic={{
                             filters: `spaceTypes: ${space.spaceTypes[0].title}`,
                         }}
-                        title="Similar"
+                        title="類似した施設"
                         parentId={spaceId}
                     />
                 </div>
