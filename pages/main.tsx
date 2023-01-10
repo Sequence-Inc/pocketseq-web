@@ -20,7 +20,7 @@ import {
     ShieldCheckIcon,
 } from "@heroicons/react/outline";
 import { GET_AVAILABLE_SPACE_TYPES } from "src/apollo/queries/space.queries";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { config, getFrontPageData, prepareSearchResult } from "src/utils/index";
 import createApolloClient from "src/apollo/apolloClient";
 import { ItemGridSpace } from "src/components/ItemGridSpace";
