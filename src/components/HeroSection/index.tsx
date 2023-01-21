@@ -20,11 +20,7 @@ const createURL = (state) => {
 const searchStateToUrl = (location, searchState) =>
     searchState ? `/search${createURL(searchState)}` : "";
 
-export const HeroSection = ({
-    availableSpaceTypes,
-}: {
-    availableSpaceTypes?: any;
-}) => {
+export const HeroSection = () => {
     const router = useRouter();
     const setStateId = React.useRef(null);
 

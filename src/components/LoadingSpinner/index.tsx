@@ -1,7 +1,13 @@
-export const LoadingSpinner = ({ loadingText }: { loadingText?: string }) => {
+export const LoadingSpinner = ({
+    loadingText,
+    style,
+}: {
+    loadingText?: string;
+    style?: string;
+}) => {
     return (
-        <div className="w-full sm:w-1/2 mx-auto h-full space-y-6">
-            <div className="flex items-center justify-center h-content">
+        <div className={`w-full sm:w-1/2 mx-auto h-full space-y-6 ${style}`}>
+            <div className="flex items-center justify-center">
                 <svg
                     className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary"
                     xmlns="http://www.w3.org/2000/svg"
