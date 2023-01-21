@@ -80,6 +80,14 @@ const Login = ({ csrfToken, userSession }) => {
                         >
                             {t("do-login")}
                         </Button>
+
+                        <div className="relative text-center">
+                            <span className="absolute w-full top-2.5 left-0 h-1 border-b border-gray-300"></span>
+                            <span className="relative inline-block px-3 text-sm text-gray-400 bg-white">
+                                ゲストの方はこちらからもログイン
+                            </span>
+                        </div>
+
                         <div className="space-y-3">
                             <Button
                                 style={{
