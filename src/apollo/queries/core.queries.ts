@@ -592,3 +592,8 @@ packagePlans {
 createdAt
 updatedAt
 `;
+
+export const SEARCH_AREA_OBJECT = `
+prefecture
+city
+`;
