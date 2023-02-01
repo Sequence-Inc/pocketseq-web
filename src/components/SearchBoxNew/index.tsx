@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Calendar, DatePicker } from "antd";
+import { Calendar } from "antd";
 import { Button, Tag } from "@element";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -12,9 +12,12 @@ import {
     SearchIcon,
     XIcon,
 } from "@heroicons/react/outline";
+import { useQuery } from "@apollo/client";
+import { GET_SEARCH_AREA } from "src/apollo/queries/search.queries";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 const defaultBtnClass =
-    "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary";
+    "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-transparent focus:border-transparent";
 
 const areaList = [
     "千代田区",
@@ -60,6 +63,12 @@ export const SearchBoxNew = ({
     const [checkOutDate, setCheckOutDate] = useState(null);
     const [noOfAdults, setNoOfAdults] = useState(1);
     const [noOfChild, setNoOfChild] = useState(0);
+
+    const {
+        data: searchAreaList,
+        loading: searchAreaLoading,
+        error: searchAreaError,
+    } = useQuery(GET_SEARCH_AREA, { variables: { type: searchType } });
 
     const router = useRouter();
 
@@ -109,7 +118,7 @@ export const SearchBoxNew = ({
         } else {
             if (searchType === "hotel" && !checkOutDate) {
                 errorList.push(
-                    "Please provide check out date for hotel resrvation."
+                    "Please provide check out date for hotel reservation."
                 );
             }
             if (checkOutDate) {
@@ -190,6 +199,48 @@ export const SearchBoxNew = ({
         return parseInt(`${adult}`, 10) + parseInt(`${child}`, 10);
     };
 
+    const renderSearchArea = (close) => {
+        if (searchAreaLoading) return <LoadingSpinner />;
+        if (searchAreaError) return <div>error...</div>;
+
+        if (searchAreaList && searchAreaList.getSearchArea.length > 0) {
+            return (
+                <ul className="overflow-scroll text-left max-h-60">
+                    {searchAreaList.getSearchArea.map((prefecture) => {
+                        return (
+                            <>
+                                <li
+                                    key={prefecture.prefecture}
+                                    className={`px-4 py-2 font-bold text-sm text-gray-700`}
+                                >
+                                    {prefecture.prefecture}
+                                </li>
+                                {prefecture.city.map((city) => {
+                                    return (
+                                        <li
+                                            key={`${prefecture.prefecture}-${city}`}
+                                            className={`pl-8 pr-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
+                                                area === city
+                                                    ? "bg-gray-100"
+                                                    : ""
+                                            }`}
+                                            onClick={() => {
+                                                setArea(city);
+                                                close();
+                                            }}
+                                        >
+                                            {city}
+                                        </li>
+                                    );
+                                })}
+                            </>
+                        );
+                    })}
+                </ul>
+            );
+        }
+    };
+
     return (
         <>
             {type === "primary" && (
@@ -255,7 +306,7 @@ export const SearchBoxNew = ({
                                         leaveTo="opacity-0 translate-y-1"
                                     >
                                         <Popover.Panel
-                                            className={`absolute z-10 max-w-sm mt-3 lg:max-w-3xl left-0`}
+                                            className={`absolute z-10 max-w-sm mt-3 pb-3 lg:max-w-3xl left-0`}
                                         >
                                             <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
@@ -271,33 +322,7 @@ export const SearchBoxNew = ({
                                                         <XIcon className="w-5 h-5" />
                                                     </button>
                                                 </div>
-
-                                                <ul className="overflow-scroll max-h-60">
-                                                    {areaList.map(
-                                                        (
-                                                            item: string,
-                                                            index: number
-                                                        ) => (
-                                                            <li
-                                                                key={index.toString()}
-                                                                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
-                                                                    area ===
-                                                                    item
-                                                                        ? "bg-gray-100"
-                                                                        : ""
-                                                                }`}
-                                                                onClick={() => {
-                                                                    setArea(
-                                                                        item
-                                                                    );
-                                                                    close();
-                                                                }}
-                                                            >
-                                                                {item}
-                                                            </li>
-                                                        )
-                                                    )}
-                                                </ul>
+                                                {renderSearchArea(close)}
                                             </div>
                                         </Popover.Panel>
                                     </Transition>
@@ -467,7 +492,7 @@ export const SearchBoxNew = ({
                                         <Popover.Panel
                                             className={`absolute z-10 max-w-sm mt-3 lg:max-w-3xl left-0 sm:right-0`}
                                         >
-                                            <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl">
+                                            <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl text-left">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
                                                     <p className="text-lg font-bold">
                                                         ゲスト
@@ -704,7 +729,7 @@ export const SearchBoxNew = ({
                                         leaveTo="opacity-0 translate-y-1"
                                     >
                                         <Popover.Panel
-                                            className={`absolute z-10 max-w-sm mt-3 lg:max-w-3xl left-0`}
+                                            className={`absolute z-10 max-w-sm mt-3 pb-3 lg:max-w-3xl left-0`}
                                         >
                                             <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
@@ -721,32 +746,7 @@ export const SearchBoxNew = ({
                                                     </button>
                                                 </div>
 
-                                                <ul className="overflow-scroll max-h-60">
-                                                    {areaList.map(
-                                                        (
-                                                            item: string,
-                                                            index: number
-                                                        ) => (
-                                                            <li
-                                                                key={index.toString()}
-                                                                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
-                                                                    area ===
-                                                                    item
-                                                                        ? "bg-gray-100"
-                                                                        : ""
-                                                                }`}
-                                                                onClick={() => {
-                                                                    setArea(
-                                                                        item
-                                                                    );
-                                                                    close();
-                                                                }}
-                                                            >
-                                                                {item}
-                                                            </li>
-                                                        )
-                                                    )}
-                                                </ul>
+                                                {renderSearchArea(close)}
                                             </div>
                                         </Popover.Panel>
                                     </Transition>
@@ -792,7 +792,7 @@ export const SearchBoxNew = ({
                                         <Popover.Panel
                                             className={`absolute z-10 max-w-sm mt-3 lg:max-w-3xl left-0 sm:right-0`}
                                         >
-                                            <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl">
+                                            <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl text-left">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
                                                     <p className="text-lg font-bold">
                                                         ゲスト
