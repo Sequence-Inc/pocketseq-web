@@ -9,7 +9,11 @@ import Link from "next/link";
 import moment, { Moment } from "moment";
 import { durationSuffix } from "../Space/PricingPlan";
 import { PriceFormatter } from "src/utils/priceFormatter";
-import { FormatPrice, toBase64 } from "src/utils/stringHelper";
+import {
+    FormatPrice,
+    hoursAsCancelPolicyDuration,
+    toBase64,
+} from "src/utils/stringHelper";
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
 import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
@@ -400,7 +404,8 @@ export const FloatingPriceTwo = ({
                     <div className="flex flex-col justify-center space-x-1.5">
                         <div className="w-full my-6 border-t border-gray-300"></div>
                         <h2 className="mb-4 text-base font-bold text-gray-700">
-                            キャンセルポリシー : {cancelPolicy.name}
+                            キャンセルポリシー
+                            {/* {cancelPolicy.name} */}
                         </h2>
                         <ul>
                             {[...cancelPolicy.rates]
@@ -412,8 +417,9 @@ export const FloatingPriceTwo = ({
                                             className="text-base flex justify-between w-full"
                                         >
                                             <div>
-                                                {policy.beforeHours}
-                                                時間前
+                                                {hoursAsCancelPolicyDuration(
+                                                    policy.beforeHours
+                                                )}
                                             </div>
                                             <div>{policy.percentage}%</div>
                                         </li>
