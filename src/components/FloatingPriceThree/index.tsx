@@ -14,7 +14,7 @@ import moment, { Moment } from "moment";
 import { useLazyQuery } from "@apollo/client";
 import { Listbox, Transition } from "@headlessui/react";
 import { CALCULATE_ROOM_PLAN_PRICE } from "src/apollo/queries/hotel.queries";
-import { PriceFormatter } from "src/utils";
+import { hoursAsCancelPolicyDuration, PriceFormatter } from "src/utils";
 
 // type DurationType = "DAILY" | "HOURLY" | "MINUTES";
 
@@ -574,8 +574,8 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <div className="flex flex-col justify-center space-x-1.5">
                         <div className="w-full my-6 border-t border-gray-300"></div>
                         <h2 className="mb-4 text-base font-bold text-gray-700">
-                            キャンセルポリシー :{" "}
-                            {selectedPlan.cancelPolicy.name}
+                            キャンセルポリシー
+                            {/* {selectedPlan.cancelPolicy.name} */}
                         </h2>
                         <ul>
                             {[...selectedPlan.cancelPolicy.rates]
@@ -587,8 +587,9 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             className="text-base flex justify-between w-full"
                                         >
                                             <div>
-                                                {policy.beforeHours}
-                                                時間前
+                                                {hoursAsCancelPolicyDuration(
+                                                    policy.beforeHours
+                                                )}
                                             </div>
                                             <div>{policy.percentage}%</div>
                                         </li>

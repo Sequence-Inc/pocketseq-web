@@ -1,22 +1,15 @@
 import {
     HostProfile,
-    SpaceUtilities,
     SpaceInfoTitle,
     SpaceInfoBanner,
     SpaceInfoAccess,
-    SpaceInfoReviews,
     ISpaceInfoTitleProps,
     LoadingSpinner,
 } from "@comp";
-import { Button, Container, Spinner, Tag } from "@element";
+import { Button, Container, Spinner } from "@element";
 import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
-import {
-    StarIcon,
-    ShieldCheckIcon,
-    ExclamationIcon,
-    CheckIcon,
-} from "@heroicons/react/solid";
+import { ExclamationIcon, CheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { GET_SPACE_BY_ID } from "src/apollo/queries/space.queries";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
@@ -42,10 +35,8 @@ import {
     useReserveSpace,
 } from "@hooks/reserveSpace";
 import { useLazyQuery } from "@apollo/client";
-import AlertModal from "src/components/AlertModal";
 import ProgressModal from "src/components/ProgressModal";
 import { RecommendationGrid } from "src/components/RecommendationGrid";
-import { removeArgumentsFromDocument } from "@apollo/client/utilities";
 
 type TDefaultSettings = {
     id?: string;
@@ -71,10 +62,12 @@ const ContentSection = ({
     return (
         <div>
             <h2 className="mb-4 text-lg font-bold text-gray-700">{title}</h2>
-            <div className="mb-4 text-sm text-gray-500">{description}</div>
-            <Link href="/">
+            <div className="mb-4 text-sm text-gray-500 whitespace-pre-line">
+                {description}
+            </div>
+            {/* <Link href="/">
                 <a className="text-gray-600 underline">もっと見る</a>
-            </Link>
+            </Link> */}
         </div>
     );
 };
@@ -487,56 +480,35 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                 cancelPolicy={cancelPolicy}
                             />
                         </div>
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        <SpaceUtilities />
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        {/* host profile */}
-                        <div>
-                            <div className="space-y-6 sm:flex sm:space-y-0">
-                                <div className="flex-1">
-                                    <HostProfile host={host} />
-                                </div>
-                                <Button
-                                    variant="primary"
-                                    rounded
-                                    className="w-auto px-4 h-9"
-                                    onClick={sendMessage}
-                                >
-                                    Send Message
-                                </Button>
-                            </div>
-                            <div className="flex mt-6 space-x-3">
-                                <Tag
-                                    Icon={StarIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    499 評価とレビュー
-                                </Tag>
-                                <Tag
-                                    Icon={ShieldCheckIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    本人確認済み
-                                </Tag>
-                            </div>
-                        </div>
+                        {/* <div className="w-full my-6 border-t border-gray-300" />
+                        <SpaceUtilities /> */}
+
                         {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        {/* <div className="w-full my-6 border-t border-gray-300" /> */}
 
                         {/* About Sapce */}
                         <ContentSection
                             title="スペースについて"
                             description={description}
                         />
+                        <div className="w-full my-6 border-t border-gray-200" />
+                        {/* host profile */}
+                        <div className="space-y-6 sm:flex sm:space-y-0 items-center">
+                            <div className="flex-1">
+                                <HostProfile host={host} />
+                            </div>
+                            <Button
+                                variant="primary"
+                                rounded
+                                className="w-auto px-4 h-9"
+                                onClick={sendMessage}
+                            >
+                                Send Message
+                            </Button>
+                        </div>
 
                         {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-200" />
 
                         {/* Services / equipment */}
                         {/* <ContentSection
