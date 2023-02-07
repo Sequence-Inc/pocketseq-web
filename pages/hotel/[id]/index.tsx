@@ -15,6 +15,7 @@ import Link from "next/link";
 import {
     config,
     FormatShortAddress,
+    hoursAsCancelPolicyDuration,
     PriceFormatter,
     publicImage,
 } from "src/utils";
@@ -578,18 +579,9 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                         className="text-lg flex justify-between w-full"
                                                     >
                                                         <div>
-                                                            Test
-                                                            {policy.beforeHours <
-                                                            24
-                                                                ? `${policy.beforeHours}時間前`
-                                                                : `${moment
-                                                                      .duration(
-                                                                          policy.beforeHours,
-                                                                          "hours"
-                                                                      )
-                                                                      .as(
-                                                                          "days"
-                                                                      )}日前`}
+                                                            {hoursAsCancelPolicyDuration(
+                                                                policy.beforeHours
+                                                            )}
                                                         </div>
                                                         <div>
                                                             {policy.percentage}%
