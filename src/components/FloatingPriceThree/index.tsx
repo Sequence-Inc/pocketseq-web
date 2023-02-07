@@ -574,8 +574,8 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <div className="flex flex-col justify-center space-x-1.5">
                         <div className="w-full my-6 border-t border-gray-300"></div>
                         <h2 className="mb-4 text-base font-bold text-gray-700">
-                            キャンセルポリシー :{" "}
-                            {selectedPlan.cancelPolicy.name}
+                            キャンセルポリシー
+                            {/* {selectedPlan.cancelPolicy.name} */}
                         </h2>
                         <ul>
                             {[...selectedPlan.cancelPolicy.rates]
@@ -587,8 +587,14 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                                             className="text-base flex justify-between w-full"
                                         >
                                             <div>
-                                                {policy.beforeHours}
-                                                時間前
+                                                {policy.beforeHours < 24
+                                                    ? `${policy.beforeHours}時間前`
+                                                    : `${moment
+                                                          .duration(
+                                                              policy.beforeHours,
+                                                              "hours"
+                                                          )
+                                                          .as("days")}日前`}
                                             </div>
                                             <div>{policy.percentage}%</div>
                                         </li>

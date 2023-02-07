@@ -45,6 +45,7 @@ import PaymentMethods from "src/components/PaymentMethods";
 import { useReserveHotel } from "@hooks/reserveHotel";
 import AlertModal from "src/components/AlertModal";
 import ProgressModal from "src/components/ProgressModal";
+import moment from "moment";
 
 const ContentSection = ({
     title,
@@ -56,10 +57,12 @@ const ContentSection = ({
     return (
         <div>
             <h2 className="mb-4 text-lg font-bold text-gray-700">{title}</h2>
-            <div className="mb-4 text-sm text-gray-500">{description}</div>
-            <Link href="/">
+            <div className="mb-4 text-sm text-gray-500 whitespace-pre-line">
+                {description}
+            </div>
+            {/* <Link href="/">
                 <a className="text-gray-600 underline">もっと見る</a>
-            </Link>
+            </Link> */}
         </div>
     );
 };
@@ -439,55 +442,31 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 reserve={reserve}
                             />
                         </div>
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        <SpaceUtilities />
-                        <div className="w-full my-6 border-t border-gray-300" />
-                        {/* host profile */}
-                        <div>
-                            <div className="space-y-6 sm:flex sm:space-y-0">
-                                <div className="flex-1">
-                                    <HostProfile host={host} />
-                                </div>
-                                <Button
-                                    variant="primary"
-                                    rounded
-                                    className="w-auto px-4 h-9"
-                                    onClick={sendMessage}
-                                >
-                                    Send Message
-                                </Button>
-                            </div>
-                            <div className="flex mt-6 space-x-3">
-                                <Tag
-                                    Icon={StarIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    499 評価とレビュー
-                                </Tag>
-                                <Tag
-                                    Icon={ShieldCheckIcon}
-                                    iconSize={5}
-                                    iconStyle="text-red-500"
-                                    textStyle="text-sm text-gray-500"
-                                    numberOfLines={1}
-                                >
-                                    本人確認済み
-                                </Tag>
-                            </div>
-                        </div>
-                        {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
-
+                        <div className="w-full my-6 border-t border-gray-200" />
                         {/* About Sapce */}
                         <ContentSection
                             title="スペースについて"
                             description={description}
                         />
+                        <div className="w-full my-6 border-t border-gray-200" />
+                        {/* host profile */}
+                        <div className="space-y-6 sm:flex sm:space-y-0 items-center">
+                            <div className="flex-1">
+                                <HostProfile host={host} />
+                            </div>
+                            <Button
+                                variant="primary"
+                                rounded
+                                className="w-auto px-4 h-9"
+                                onClick={sendMessage}
+                            >
+                                Send Message
+                            </Button>
+                        </div>
                         {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+
+                        {/* divider */}
+                        <div className="w-full my-6 border-t border-gray-200" />
                         {/* Package Plans */}
                         <div className="">
                             <h2 className="mb-4 text-lg font-bold text-gray-700">
@@ -528,7 +507,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 })}
                             </div>
                         </div>
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-200" />
                         {/* Rooms */}
                         <div>
                             <h2 className="mb-4 text-lg font-bold text-gray-700">
@@ -565,14 +544,14 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         </div>
 
                         {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-200" />
 
                         {/* Services / equipment */}
-                        <ContentSection
+                        {/* <ContentSection
                             title="サービス・設備"
                             description="ママ会、女子会、おうちデート、映画鑑賞、カップル利用、ファミリー会（子連れ歓迎）、誕生日会、セミナー、ワークショップ、写真撮影、ロケ撮影、商品撮影、商用撮影、ストックフォト、キッチンスタジオ、撮影スタジオ、ハウススタジオ、パーティールーム、レンタルスペース、宿泊可能"
                         />
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-200" /> */}
 
                         {/* access section */}
                         <SpaceInfoAccess
@@ -581,7 +560,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         />
 
                         {/* divider */}
-                        <div className="w-full my-6 border-t border-gray-300" />
+                        <div className="w-full my-6 border-t border-gray-200" />
 
                         {/* cancel policy */}
                         {cancelPolicy && (
@@ -599,8 +578,18 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                         className="text-lg flex justify-between w-full"
                                                     >
                                                         <div>
-                                                            {policy.beforeHours}
-                                                            時間前
+                                                            Test
+                                                            {policy.beforeHours <
+                                                            24
+                                                                ? `${policy.beforeHours}時間前`
+                                                                : `${moment
+                                                                      .duration(
+                                                                          policy.beforeHours,
+                                                                          "hours"
+                                                                      )
+                                                                      .as(
+                                                                          "days"
+                                                                      )}日前`}
                                                         </div>
                                                         <div>
                                                             {policy.percentage}%
