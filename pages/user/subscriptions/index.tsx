@@ -69,7 +69,8 @@ const UserSettings = ({ userSession }) => {
                         </span>
                     </div>
                     <div>
-                        更新日: {moment(currentPeriodEnd).format("YYYY/MM/DD")}
+                        更新日:{" "}
+                        {moment(currentPeriodEnd).format("YYYY年MM月DD日")}
                     </div>
                 </div>
             );
@@ -86,9 +87,11 @@ const UserSettings = ({ userSession }) => {
                         </div>
                         <div>
                             キャンセル日:{" "}
-                            {moment(canceledAt).format("YYYY/MM/DD")}
+                            {moment(canceledAt).format("YYYY年MM月DD日")}
                         </div>
-                        <div>終了日: {moment(endsAt).format("YYYY/MM/DD")}</div>
+                        <div>
+                            終了日: {moment(endsAt).format("YYYY年MM月DD日")}
+                        </div>
                     </div>
                 );
             } else {
@@ -103,7 +106,7 @@ const UserSettings = ({ userSession }) => {
                         </div>
                         <div>
                             キャンセル日:{" "}
-                            {moment(canceledAt).format("YYYY/MM/DD")}
+                            {moment(canceledAt).format("YYYY年MM月DD日")}
                         </div>
                     </div>
                 );
