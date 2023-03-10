@@ -63,14 +63,14 @@ const UserSettings = ({ userSession }) => {
             return (
                 <div className="space-y-1">
                     <div>
-                        Status:{" "}
+                        スターテス:{" "}
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Active
+                            アクティブ
                         </span>
                     </div>
                     <div>
-                        Renewal on:{" "}
-                        {moment(currentPeriodEnd).format("YYYY/MM/DD")}
+                        更新日:{" "}
+                        {moment(currentPeriodEnd).format("YYYY年MM月DD日")}
                     </div>
                 </div>
             );
@@ -80,17 +80,17 @@ const UserSettings = ({ userSession }) => {
                 return (
                     <div className="space-y-1">
                         <div>
-                            Status:{" "}
+                            スターテス:{" "}
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Pending cancelation
+                                キャンセル保留中
                             </span>
                         </div>
                         <div>
-                            Canceled at:{" "}
-                            {moment(canceledAt).format("YYYY/MM/DD")}
+                            キャンセル日:{" "}
+                            {moment(canceledAt).format("YYYY年MM月DD日")}
                         </div>
                         <div>
-                            Ends at: {moment(endsAt).format("YYYY/MM/DD")}
+                            終了日: {moment(endsAt).format("YYYY年MM月DD日")}
                         </div>
                     </div>
                 );
@@ -99,14 +99,14 @@ const UserSettings = ({ userSession }) => {
                 return (
                     <div className="space-y-1">
                         <div>
-                            Status:{" "}
+                            スターテス:{" "}
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                Cancelled
+                                キャンセル
                             </span>
                         </div>
                         <div>
-                            Canceled at:{" "}
-                            {moment(canceledAt).format("YYYY/MM/DD")}
+                            キャンセル日:{" "}
+                            {moment(canceledAt).format("YYYY年MM月DD日")}
                         </div>
                     </div>
                 );

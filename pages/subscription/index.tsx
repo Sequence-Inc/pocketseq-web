@@ -205,7 +205,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     <div className="flex items-center justify-center space-x-2">
                         <CogIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 animate-spin" />
                         <p className=" text-base font-semibold  text-blue-600">
-                            購読中
+                            購買中
                         </p>
                     </div>
                 </div>
@@ -282,7 +282,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                     </p>
                 </div>
                 <div className=" mt-4 text-center space-y-4">
-                    <p className="text-sm">購読を希望しますか？</p>
+                    <p className="text-sm">購買を希望しますか？</p>
 
                     <button
                         type="button"
