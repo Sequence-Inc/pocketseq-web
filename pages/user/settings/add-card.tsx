@@ -5,8 +5,6 @@ import Head from "next/head";
 import { Button, Container } from "@element";
 import { LoadingSpinner } from "@comp";
 
-import withAuth from "src/utils/withAuth";
-
 import {
     Elements,
     PaymentElement,

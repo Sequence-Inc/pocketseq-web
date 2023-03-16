@@ -31,9 +31,9 @@ const ReservationList = ({ userSession }) => {
         fetchPolicy: "network-only",
         variables: {
             spacePaginate: { take: noOfItems, skip: 0 },
-            spaceFilter: {},
+            spaceFilter: { sortOrder: "desc" },
             hotelPaginate: { take: noOfItems, skip: 0 },
-            hotelFilter: {},
+            hotelFilter: { sortOrder: "desc" },
         },
     });
 
@@ -41,17 +41,20 @@ const ReservationList = ({ userSession }) => {
     const [approveHotelReservation] = useMutation(APPROVE_HOTEL_RESERVATION);
 
     const keys = [
-        { name: "Space Name", key: "space" },
+        { name: "施設名", key: "space" },
         { name: "From", key: "fromDateTime" },
         { name: "To", key: "toDateTime" },
-        { name: "Status", key: "status" },
+        { name: "状態", key: "status" },
+        { name: "予約日", key: "createdAt" },
     ];
 
     const hotelKeys = [
-        { name: "Plan Name", key: "packagePlan" },
+        { name: "施設名", key: "packagePlan" },
+        { name: "Room", key: "hotelRoom" },
         { name: "From", key: "fromDateTime" },
         { name: "To", key: "toDateTime" },
-        { name: "Status", key: "status" },
+        { name: "状態", key: "status" },
+        { name: "予約日", key: "createdAt" },
     ];
 
     const childClassname = (key) => {
@@ -95,17 +98,24 @@ const ReservationList = ({ userSession }) => {
                 if (column.id === "space") {
                     return (
                         <Link href={`/host/reservation/${row.original.id}`}>
-                            <a className="hover:text-gray-700">{value.name}</a>
+                            <a className="text-gray-700 font-medium hover:text-primary">
+                                {value.name}
+                            </a>
                         </Link>
                     );
                 } else if (
                     column.id === "fromDateTime" ||
-                    column.id === "toDateTime"
+                    column.id === "toDateTime" ||
+                    column.id === "createdAt"
                 ) {
-                    return format(new Date(value), "yyyy-MM-dd, HH:mm");
+                    return (
+                        <span className="text-sm text-gray-500">
+                            {format(new Date(value), "yyyy年MM月dd日, HH:mm")}
+                        </span>
+                    );
                 } else if (column.id === "status") {
                     return (
-                        <div className="text-center">
+                        <div className="text-center w-40">
                             {reservationStatusJapanify(value)}
                         </div>
                     );
@@ -158,19 +168,29 @@ const ReservationList = ({ userSession }) => {
                             <Link
                                 href={`/host/reservation/hotel/${row.original.id}`}
                             >
-                                <a className="text-gray-700 hover:text-gray-900 font-bold">
+                                <a className="text-gray-700 font-medium hover:text-primary">
                                     {value.name}
                                 </a>
                             </Link>
                         );
+                    } else if (column.id === "hotelRoom") {
+                        return <>{value.name}</>;
                     } else if (
                         column.id === "fromDateTime" ||
-                        column.id === "toDateTime"
+                        column.id === "toDateTime" ||
+                        column.id === "createdAt"
                     ) {
-                        return format(new Date(value), "yyyy-MM-dd, HH:mm");
+                        return (
+                            <span className="text-sm text-gray-500">
+                                {format(
+                                    new Date(value),
+                                    "yyyy年MM月dd日, HH:mm"
+                                )}
+                            </span>
+                        );
                     } else if (column.id === "status") {
                         return (
-                            <div className="text-center">
+                            <div className="text-center w-40">
                                 {reservationStatusJapanify(value)}
                             </div>
                         );
@@ -269,10 +289,6 @@ const ReservationList = ({ userSession }) => {
         },
         [data]
     );
-
-    // const handleNextPrev = () => {
-    //     return null;
-    // };
 
     let content;
     if (loading) {
