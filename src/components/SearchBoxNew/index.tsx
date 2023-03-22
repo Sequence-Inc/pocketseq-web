@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Calendar } from "antd";
 import { Button, Tag } from "@element";
-import moment from "moment";
 import { useRouter } from "next/router";
 import { Popover, Transition } from "@headlessui/react";
 import {
@@ -15,6 +14,10 @@ import {
 import { useQuery } from "@apollo/client";
 import { GET_SEARCH_AREA } from "src/apollo/queries/search.queries";
 import { LoadingSpinner } from "../LoadingSpinner";
+import moment from "moment";
+import "moment/locale/ja";
+
+moment.locale("ja");
 
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-transparent focus:border-transparent";

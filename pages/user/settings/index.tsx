@@ -125,7 +125,7 @@ const UserSettings = ({ userSession }) => {
     const makeDefault = ({ last4, token }) => {
         if (
             confirm(
-                `Are you sure you want to make this card ending with ${last4} your default source of payment?`
+                `このカードをデフォルトの支払い元に設定してもよろしいですか?`
             )
         ) {
             setIsLoading(true);
@@ -138,14 +138,12 @@ const UserSettings = ({ userSession }) => {
     };
     const removePaymentMethod = ({ token, last4, isDefault }) => {
         if (isDefault) {
-            alert("You can not remove default card from your account.");
+            alert(
+                "アカウントからデフォルト カードを削除することはできません。"
+            );
             return;
         }
-        if (
-            confirm(
-                `Are you sure you want to delete this card ending with ${last4}?`
-            )
-        ) {
+        if (confirm(`このカードを削除してもよろしいですか？`)) {
             setIsLoading(true);
             removePaymentSource({
                 variables: {
@@ -159,7 +157,7 @@ const UserSettings = ({ userSession }) => {
         if (paymentSource.length === 0) {
             return (
                 <div className="py-10">
-                    <h3 className="text-center">No payment methods</h3>
+                    <h3 className="text-center">支払い方法はありません</h3>
                 </div>
             );
         } else {
