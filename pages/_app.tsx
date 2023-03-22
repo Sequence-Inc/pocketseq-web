@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useRouter } from "next/router";
 
 import "antd/dist/antd.css";
 // tailwind css
@@ -11,6 +9,9 @@ import { useApollo } from "src/apollo/apollo";
 import { SessionProvider } from "next-auth/react";
 import { ToastProvider } from "@hooks/useToasts";
 import Script from "next/script";
+import { ConfigProvider } from "antd";
+import jaJP from "antd/lib/locale/ja_JP";
+import "dayjs/locale/ja";
 
 function TimeBook({
     Component,
@@ -53,7 +54,9 @@ function TimeBook({
                     `}
                 </Script>
                 <ToastProvider>
-                    <Component {...pageProps} />
+                    <ConfigProvider locale={jaJP}>
+                        <Component {...pageProps} />
+                    </ConfigProvider>
                 </ToastProvider>
             </ApolloProvider>
         </SessionProvider>
