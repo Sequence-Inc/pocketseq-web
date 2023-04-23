@@ -163,3 +163,11 @@ export const MY_RESERVATION = gql`
         }
     }
 `;
+
+export const UPDATE_PASSWORD = gql`
+    mutation UpdatePassword($input: ChangePasswordInput!) {
+        changePassword(input: $input) {
+            message
+        }
+    }
+`;

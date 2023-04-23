@@ -214,11 +214,11 @@ const Header = ({ userSession }) => {
                                                         Open user menu
                                                     </span>
                                                     <img
-                                                        className="w-8 h-8 mr-2 rounded-full"
+                                                        className="w-8 h-8 mr-0 sm:mr-2 rounded-full"
                                                         src={profilePhoto}
                                                         alt=""
                                                     />
-                                                    <div className="mr-2 font-medium text-primary">
+                                                    <div className="hidden mr-0 sm:inline-block sm:mr-2 font-medium text-primary">
                                                         {currentUser}
                                                     </div>
                                                 </Menu.Button>

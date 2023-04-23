@@ -30,6 +30,7 @@ import useTranslation from "next-translate/useTranslation";
 import { profile } from "console";
 import moment from "moment";
 import DatePicker from "antd/lib/date-picker";
+import { ChangePassword } from "src/components/ChangePassword";
 
 const UserSettings = ({ userSession }) => {
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
@@ -507,6 +508,7 @@ const UserSettings = ({ userSession }) => {
                         </div>
                     </form>
                 </div>
+                <ChangePassword />
                 {paymentSource && (
                     <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
                         <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
