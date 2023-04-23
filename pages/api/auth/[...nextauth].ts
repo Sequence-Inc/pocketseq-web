@@ -86,7 +86,6 @@ export default NextAuth({
     callbacks: {
         async jwt(params) {
             const { token, user, account } = params;
-            console.log("FROM JWT");
 
             if (user && account) {
                 if (account.provider === "credentials") {
@@ -97,9 +96,6 @@ export default NextAuth({
                         user: user.profile,
                     };
                 } else if (account.provider === "google") {
-                    console.log("Do necessary validation");
-                    console.log({ ...params });
-
                     const { provider, providerAccountId, id_token } =
                         params.account;
 
@@ -143,9 +139,6 @@ export default NextAuth({
                         return null;
                     }
                 } else if (account.provider === "facebook") {
-                    console.log("Do necessary validation for Facebook");
-                    console.log({ ...params });
-
                     const { provider, providerAccountId, access_token } =
                         params.account;
 
@@ -178,7 +171,6 @@ export default NextAuth({
                         };
 
                         const { data } = await axios(config);
-                        console.log(data);
                         const user = data.data.socialLogin;
                         return {
                             ...user.profile,
@@ -196,9 +188,6 @@ export default NextAuth({
         },
         async session(params) {
             const { session, token } = params;
-
-            console.log("FROM SESSION");
-            console.log({ ...params });
 
             session.accessToken = token.accessToken;
             session.refreshToken = token.refreshToken;
@@ -291,9 +280,6 @@ export default NextAuth({
         },
         async signIn(params) {
             if (params.account.provider === "google") {
-                console.log("FROM GOOGLE LOGIN");
-                console.log({ ...params });
-
                 return true;
             }
             return true;

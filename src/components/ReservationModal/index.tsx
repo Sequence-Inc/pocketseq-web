@@ -116,7 +116,7 @@ const RequestReservationModal = ({
                     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                 </Transition.Child>
 
-                <div className="fixed z-10 inset-0 overflow-y-auto px-10 py-10 ">
+                <div className="fixed z-10 inset-0 overflow-y-auto sm:px-10 py-10 ">
                     <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
                         <Transition.Child
                             as={Fragment}
@@ -127,7 +127,7 @@ const RequestReservationModal = ({
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="relative bg-white rounded-lg px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:min-h-full sm:mx-20 sm:p-6">
+                            <div className="relative bg-white rounded-lg px-4 sm:px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:min-h-full sm:mx-20 sm:p-6">
                                 <div>
                                     <div className="mt-3 text-left text-lg space-y-6 text-gray-700 sm:mt-5">
                                         <button
@@ -136,12 +136,12 @@ const RequestReservationModal = ({
                                         >
                                             <XIcon className="w-6 text-gray-500" />
                                         </button>
-                                        <h3 className="text-3xl leading-6 font-bold">
+                                        <h3 className="text-xl sm:text-3xl leading-6 font-bold">
                                             予約をリクエスト
                                         </h3>
-                                        <div className="flex items-start">
-                                            <div className="mt-2 pr-6 space-y-5 w-2/3">
-                                                <h4 className="text-2xl font-bold">
+                                        <div className="grid gap-y-0 gap-x-0 sm:gap-x-8 grid-cols-1 sm:grid-cols-3">
+                                            <div className="space-y-5 text-base sm:col-span-2">
+                                                <h4 className="sm:text-2xl font-bold">
                                                     旅行
                                                 </h4>
                                                 <div className="flex items-start justify-between">
@@ -158,7 +158,7 @@ const RequestReservationModal = ({
                                                     </div>
                                                     <div>
                                                         <button
-                                                            className="text-lg font-bold"
+                                                            className="font-bold"
                                                             onClick={() =>
                                                                 setShowModal(
                                                                     false
@@ -185,7 +185,7 @@ const RequestReservationModal = ({
                                                     </div>
                                                     <div>
                                                         <button
-                                                            className="text-lg font-bold"
+                                                            className="font-bold"
                                                             onClick={() =>
                                                                 setShowModal(
                                                                     false
@@ -213,7 +213,7 @@ const RequestReservationModal = ({
                                                     </div>
                                                     <div>
                                                         <button
-                                                            className="text-lg font-bold"
+                                                            className="font-bold"
                                                             onClick={() =>
                                                                 setShowModal(
                                                                     false
@@ -238,7 +238,7 @@ const RequestReservationModal = ({
                                                     </div>
                                                     <div>
                                                         <button
-                                                            className="text-lg font-bold"
+                                                            className="font-bold"
                                                             onClick={() =>
                                                                 setShowModal(
                                                                     false
@@ -294,7 +294,7 @@ const RequestReservationModal = ({
 
                                                 <div className="">
                                                     <div className="mb-8">
-                                                        <span className="text-2xl font-bold ">
+                                                        <span className="font-bold ">
                                                             オプションの追加
                                                         </span>
                                                     </div>
@@ -401,27 +401,6 @@ const RequestReservationModal = ({
                                                                                     className="w-full"
                                                                                     hidePlaceholder
                                                                                 />
-
-                                                                                {/* <select>
-                                                                                    {quantityOptions?.map(
-                                                                                        (
-                                                                                            val
-                                                                                        ) => (
-                                                                                            <option
-                                                                                                value={
-                                                                                                    val
-                                                                                                }
-                                                                                                key={
-                                                                                                    val
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    val
-                                                                                                }
-                                                                                            </option>
-                                                                                        )
-                                                                                    )}
-                                                                                </select> */}
                                                                             </div>
 
                                                                             <div className=" flex items-center ">
@@ -438,22 +417,16 @@ const RequestReservationModal = ({
                                                         )}
                                                     </div>
                                                 </div>
-
-                                                <div className="border-t border-gray-300 h-0 max-h-0"></div>
-
-                                                <div className="space-y-6">
-                                                    {children}
-                                                </div>
                                             </div>
 
-                                            <div className="mt-2 ml-6  w-1/3 relative">
+                                            <div className="relative">
                                                 <div
                                                     className={`border  border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5`}
                                                 >
-                                                    <h3 className="text-2xl font-bold">
+                                                    <h3 className="text-xl font-bold">
                                                         料金の詳細
                                                     </h3>
-                                                    <div className="flex items-center justify-between ">
+                                                    <div className="flex items-center justify-between text-base">
                                                         <div>
                                                             大人
                                                             {
@@ -541,7 +514,7 @@ const RequestReservationModal = ({
                                                                     );
                                                                 }
                                                             )}
-                                                    <div className="flex items-center justify-between">
+                                                    <div className="flex items-center justify-between text-base">
                                                         <div>税金</div>
                                                         <div>
                                                             {PriceFormatter(
@@ -549,7 +522,7 @@ const RequestReservationModal = ({
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
+                                                    <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3 text-base">
                                                         <div>合計（税込）</div>
                                                         <div>
                                                             {!loading &&
@@ -612,6 +585,12 @@ const RequestReservationModal = ({
                                                             reservationData?.useSubscription
                                                         }
                                                     />
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-5 text-base sm:col-span-2 pt-4 sm:pt-0">
+                                                <div className="space-y-6">
+                                                    {children}
                                                 </div>
                                             </div>
                                         </div>

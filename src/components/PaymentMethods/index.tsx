@@ -9,19 +9,19 @@ const PaymentMethods = ({
     return (
         <div>
             <div className=" flex justify-between items-center">
-                <h2 className="font-bold text-2xl">支払い方法を選択</h2>
+                <h2 className="font-bold text-xl">支払い方法を選択</h2>
                 <Link href="/user/settings/add-card">
                     <a target="_blank">
                         <button
                             type="button"
-                            className="inline-block bg-primary hover:bg-primaryHover text-white font-bold text-base py-2 px-4 rounded"
+                            className="inline-block bg-primary hover:bg-primaryHover text-white font-bold text-sm py-2 px-4 rounded"
                         >
                             カード追加
                         </button>
                     </a>
                 </Link>
             </div>
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4 mt-4 text-base">
                 {paymentSource &&
                     paymentSource.map((card, index) => {
                         let style =
