@@ -437,7 +437,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                                 ? "disabled"
                                                 : "primary"
                                         }
-                                        className="inline-block"
+                                        className="inline-block font-bold"
                                         disabled={
                                             selectedPaymentMethod === null
                                         }
@@ -450,7 +450,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         ) : (
                             <div>
                                 <div className="font-bold text-center mb-4">
-                                    Please login to finish reservation
+                                    ログインして下さい
                                 </div>
                                 <Button
                                     type="button"

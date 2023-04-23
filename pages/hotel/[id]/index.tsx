@@ -276,18 +276,18 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                             ? "disabled"
                                             : "primary"
                                     }
-                                    className="inline-block"
+                                    className="inline-block font-bold"
                                     disabled={selectedPaymentMethod === null}
                                     onClick={handleReservation}
                                 >
-                                    Pay and Reserve
+                                    支払い＆予約
                                 </Button>
                             </div>
                         </div>
                     ) : (
                         <div>
                             <div className="font-bold text-center mb-4">
-                                Please login to finish reservation
+                                ログインして下さい
                             </div>
                             <Button
                                 type="button"

@@ -18,6 +18,7 @@ import requireAuth from "src/utils/authecticatedRoute";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
+import { ChangePassword } from "src/components/ChangePassword";
 
 const UserSettings = ({ userSession }) => {
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
@@ -307,6 +308,9 @@ const UserSettings = ({ userSession }) => {
                         </div>
                     </form>
                 </div>
+
+                <ChangePassword />
+
                 <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
                     <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
                         <div className="font-bold">
