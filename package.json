@@ -40,6 +40,7 @@
         "react-instantsearch-dom-maps": "^6.15.0",
         "react-table": "^7.7.0",
         "use-deep-compare-effect": "^1.8.1",
+        "yet-another-react-lightbox": "^3.5.0",
         "yup": "^0.32.9"
     },
     "devDependencies": {
