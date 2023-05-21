@@ -18,6 +18,7 @@ import {
     GET_SPACE_BY_ID,
     REMOVE_SPACE_PHOTO,
     GET_UPLOAD_TOKEN,
+    CHANGE_DEFAULT_SPACE_PHOTO,
 } from "src/apollo/queries/space.queries";
 import { AVAILABLE_PREFECTURES } from "src/apollo/queries/admin.queries";
 import { queries as CancelPolicyQueires } from "src/apollo/queries/cancelPolicies";
@@ -88,13 +89,14 @@ const defaultValues = {
 };
 
 export const useSpacePhotos = (spaceId) => {
+    const [loading, setLoading] = useState(false);
     const [addSpacePhotos] = useMutation(GET_UPLOAD_TOKEN);
 
     const handleAddSpacePhotos = useCallback(async (photos) => {
         const payloadPhotos = Array.from(photos)?.map((res: File) => ({
             mime: res.type,
         }));
-
+        setLoading(true);
         const { data, errors } = await addSpacePhotos({
             variables: {
                 spaceId,
@@ -113,6 +115,8 @@ export const useSpacePhotos = (spaceId) => {
         if (errors) {
             throw errors;
         }
+
+        setLoading(false);
     }, []);
     const [removeSpacePhoto] = useMutation(REMOVE_SPACE_PHOTO, {
         refetchQueries: [
@@ -123,15 +127,41 @@ export const useSpacePhotos = (spaceId) => {
         ],
     });
 
+    const [changeDefaultSpacePhoto] = useMutation(CHANGE_DEFAULT_SPACE_PHOTO, {
+        refetchQueries: [
+            {
+                query: GET_SPACE_BY_ID,
+                variables: { id: spaceId },
+            },
+        ],
+    });
+
     const handleRemovePhoto = useCallback(async (photo) => {
+        setLoading(true);
         return removeSpacePhoto({
             variables: {
                 photoId: photo?.id,
             },
+            onCompleted: () => {
+                setLoading(false);
+            },
         });
     }, []);
 
-    return { handleRemovePhoto, handleAddSpacePhotos };
+    const handleDefault = useCallback(async (photo) => {
+        setLoading(true);
+        return changeDefaultSpacePhoto({
+            variables: {
+                photoId: photo?.id,
+                spaceId,
+            },
+            onCompleted: () => {
+                setLoading(false);
+            },
+        });
+    }, []);
+
+    return { handleRemovePhoto, handleAddSpacePhotos, handleDefault, loading };
 };
 
 const useAddSpace = () => {
@@ -238,7 +268,6 @@ export const useGetInitialSpace = (id) => {
             id,
         },
     });
-
     return {
         initialValue: initialValue?.spaceById,
         spaceDetailLoading,
@@ -316,7 +345,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
             numberOfSeats: undefined,
             needApproval: false,
             spaceSize: undefined,
-            spaceTypes: undefined,
+            spaceTypes: [],
             zipCode: undefined,
             prefecture: undefined,
             city: undefined,
@@ -506,7 +535,9 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                         variables: {
                             input: {
                                 spaceId: initialValue.id,
-                                spaceTypeIds: [formData.spaceTypes],
+                                spaceTypeIds: formData.spaceTypes.map(
+                                    (item) => item.id
+                                ),
                             },
                         },
                     }),
@@ -545,7 +576,9 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                         variables: {
                             input: {
                                 spaceId: addSpacesData.data.addSpace.space.id,
-                                spaceTypeIds: [formData.spaceTypes],
+                                spaceTypeIds: formData.spaceTypes.map(
+                                    (item) => item.id
+                                ),
                             },
                         },
                     }),
@@ -699,7 +732,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
             setValue("maximumCapacity", initialValue.maximumCapacity);
             setValue("numberOfSeats", initialValue.numberOfSeats);
             setValue("spaceSize", initialValue.spaceSize);
-            setValue("spaceTypes", initialValue.spaceTypes[0]?.id);
+            setValue("spaceTypes", initialValue.spaceTypes);
             setValue("needApproval", initialValue.needApproval);
             setValue("zipCode", initialValue.address?.postalCode);
             setValue("prefecture", initialValue.address?.prefecture?.id);

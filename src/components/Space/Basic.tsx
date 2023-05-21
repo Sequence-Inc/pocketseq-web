@@ -7,10 +7,8 @@ import {
     TextArea,
     TextField,
 } from "@element";
-import useAddSpace, {
-    useBasicSpace,
-    useGetInitialSpace,
-} from "@hooks/useAddSpace";
+import { default as ReactSelect } from "react-select";
+import useAddSpace, { useBasicSpace } from "@hooks/useAddSpace";
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 import axios from "axios";
@@ -120,7 +118,7 @@ const Basic = ({
         };
         watch().zipCode && api();
     }, [watch().zipCode]);
-
+    console.log("Rendered");
     return (
         <>
             <div className="px-4 py-2 border-b border-gray-200 sm:px-6 sm:py-5 bg-gray-50">
@@ -210,7 +208,7 @@ const Basic = ({
                             />
                         </div>
 
-                        <div className="">
+                        {/* <div className="">
                             <Controller
                                 name="spaceTypes"
                                 control={control}
@@ -232,27 +230,100 @@ const Basic = ({
                                     />
                                 )}
                             />
+                        </div> */}
+                        <div className="sm:space-x-4 flex-none sm:flex items-center">
+                        <label
+                                htmlFor=""
+                                className="block text-sm font-bold text-gray-700 sm:text-right w-60"
+                            >
+                                スペースタイプ
+                            </label>
+                            <div className="relative rounded-md sm:w-96">
+                            <Controller
+                                name="spaceTypes"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({
+                                    field: {
+                                        ref,
+                                        name,
+                                        value,
+                                        onChange,
+                                        onBlur,
+                                    },
+                                }) => {
+                                    // const selectedSpaceTypes =
+                                    //     spaceTypes?.availableSpaceTypes?.filter(
+                                    //         (type) => value.includes(type.id)
+                                    //     );
+                                    // console.log(selectedSpaceTypes);
+                                    return (
+                                        <ReactSelect
+                                            options={
+                                                spaceTypes?.availableSpaceTypes?.map(
+                                                    (items) => ({
+                                                        value: items.id,
+                                                        label: items.title,
+                                                    })
+                                                ) || []
+                                            }
+                                            value={
+                                                value?.map((item) => ({
+                                                    value: item.id,
+                                                    label: item.title,
+                                                })) || []
+                                            }
+                                            isMulti={true}
+                                            isLoading={loading}
+                                            onChange={(event) => {
+                                                console.log(event);
+                                                const newValue = event.map(
+                                                    (item) => {
+                                                        return spaceTypes?.availableSpaceTypes?.filter(
+                                                            (spaceType) =>
+                                                                item.value ===
+                                                                spaceType.id
+                                                        )[0];
+                                                    }
+                                                );
+                                                console.log(newValue);
+                                                setValue(
+                                                    "spaceTypes",
+                                                    newValue
+                                                );
+                                            }}
+                                            onBlur={onBlur}
+                                            ref={ref}
+                                            name={name}
+                                        />
+                                    );
+                                }}
+                            />
+                            </div>
                         </div>
 
                         <div className="">
-                            <Controller
-                                name="cancelPolicyId"
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        label={"キャンセルポリシー"}
-                                        options={cancelPolicies || []}
-                                        error={errors.cancelPolicyId && true}
-                                        errorMessage="Cancel Policy is required"
-                                        labelKey="name"
-                                        valueKey="id"
-                                        disabled={loading}
-                                        singleRow
-                                    />
-                                )}
-                            />
+                            
+                                <Controller
+                                    name="cancelPolicyId"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            label={"キャンセルポリシー"}
+                                            options={cancelPolicies || []}
+                                            error={
+                                                errors.cancelPolicyId && true
+                                            }
+                                            errorMessage="Cancel Policy is required"
+                                            labelKey="name"
+                                            valueKey="id"
+                                            disabled={loading}
+                                            singleRow
+                                        />
+                                    )}
+                                />
                         </div>
 
                         <div className="items-center flex-none sm:space-x-4 sm:flex">

@@ -23,6 +23,7 @@ interface PhotoUploadFieldProps {
     defaultPhotos?: any;
     onRemove?: any;
     onUpload?: any;
+    onDefault?: any;
 }
 
 const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
@@ -40,11 +41,12 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
             defaultPhotos,
             onRemove,
             onUpload,
+            onDefault,
             ...rest
         } = props;
         const [photos, setPhotos] = useState([]);
         const [mutatingPhoto, setMutatingPhoto] = useState(null);
-// just a comment
+        // just a comment
         const handleDelete = (index) => {
             const newPhotos = photos.filter((_, idx) => idx !== index);
             setPhotos(newPhotos);
@@ -69,6 +71,12 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
         const handleDeleteDefaultPhoto = async (photo) => {
             setMutatingPhoto(photo?.id);
             onRemove && (await onRemove(photo));
+            setMutatingPhoto(null);
+        };
+
+        const madeDefault = async (photo) => {
+            setMutatingPhoto(photo?.id);
+            onDefault && (await onDefault(photo));
             setMutatingPhoto(null);
         };
 
@@ -122,6 +130,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                             photos={defaultPhotos}
                             deletePhoto={handleDeleteDefaultPhoto}
                             mutatingPhoto={mutatingPhoto}
+                            madeDefault={madeDefault}
                         />
                         <SelectedPhotos
                             photos={photos}
@@ -184,8 +193,17 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
     }
 );
 
-const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
+const DefaultPhotos = ({ photos, deletePhoto, madeDefault, mutatingPhoto }) => {
     if (!photos?.length) return null;
+    function byId(a, b) {
+        if (a.id < b.id) {
+            return -1;
+        }
+        if (a.id > b.id) {
+            return 1;
+        }
+        return 0;
+    }
 
     return (
         <div className="grid grid-cols-3 gap-3">
@@ -198,7 +216,7 @@ const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
                         />
 
                         {photo?.id === mutatingPhoto && (
-                            <div className="absolute  opacity-50 w-36 h-36 top-0 border-4 flex items-center justify-center space-x-2">
+                            <div className="absolute opacity-50 w-36 h-36 top-0 border-4 flex items-center justify-center space-x-2">
                                 <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin "></div>
 
                                 <p className="max-w-min">Loading</p>
@@ -206,13 +224,24 @@ const DefaultPhotos = ({ photos, deletePhoto, mutatingPhoto }) => {
                         )}
                         {typeof photo === "object" &&
                         photo?.id !== mutatingPhoto ? (
-                            <button
-                                type="button"
-                                onClick={() => deletePhoto(photo)}
-                                className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
-                            >
-                                Remove
-                            </button>
+                            <div className="w-36 absolute text-center transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                {!photo?.isDefault && (
+                                    <button
+                                        type="button"
+                                        onClick={() => madeDefault(photo)}
+                                        className="px-4 py-2 mb-3 text-sm text-white bg-opacity-75 rounded-lg opacity-90  bg-primary hover:opacity-100"
+                                    >
+                                        Make Default
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => deletePhoto(photo)}
+                                    className="px-4 py-2 text-sm text-white bg-opacity-75 rounded-lg opacity-90  bg-primary hover:opacity-100"
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         ) : null}
                     </div>
                 );
@@ -249,10 +278,9 @@ const SelectedPhotos = ({ photos, deletePhoto }) => {
                             {typeof photo === "object" ? (
                                 <button
                                     type="button"
-                                    onClick={() => deletePhoto(index)}
-                                    className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-50 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
+                                    className="absolute px-4 py-2 text-sm text-white transform -translate-x-1/2 -translate-y-1/2 bg-opacity-75 rounded-lg opacity-90 top-1/2 left-1/2 bg-primary hover:bg-opacity-90 hover:opacity-100"
                                 >
-                                    Remove
+                                    Uploading...
                                 </button>
                             ) : null}
                         </div>
