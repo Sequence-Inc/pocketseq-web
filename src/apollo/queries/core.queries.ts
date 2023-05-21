@@ -241,6 +241,7 @@ export const SPACE_TYPES = `
     spaceTypes {
         id
         title
+        description
         photo {
             ${PHOTO}
         }
