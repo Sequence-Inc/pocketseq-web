@@ -23,6 +23,7 @@ export const PROFILE_PHOTO = `
 
 export const PHOTO = `
     id
+    isDefault
     mime
     thumbnail {
         ${IMAGE}

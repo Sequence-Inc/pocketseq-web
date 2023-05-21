@@ -22,9 +22,8 @@ const SpacePhotos = ({
         useGetInitialSpace(selectedSpaceId || spaceId);
 
     const { addAlert } = useToast();
-    const { handleRemovePhoto, handleAddSpacePhotos } = useSpacePhotos(
-        selectedSpaceId || spaceId
-    );
+    const { handleRemovePhoto, handleAddSpacePhotos, handleDefault, loading } =
+        useSpacePhotos(selectedSpaceId || spaceId);
 
     const hasPrevious: boolean = activeStep > 0 && true;
     const hasNext: boolean = activeStep < steps.length - 1 && true;
@@ -33,7 +32,7 @@ const SpacePhotos = ({
 
     const handleAddPhoto = useCallback(
         async (photo) => {
-            handleAddSpacePhotos(photo)
+            await handleAddSpacePhotos(photo)
                 .then((data) => {
                     setTimeout(() => {
                         addAlert({
@@ -87,13 +86,14 @@ const SpacePhotos = ({
                     defaultPhotos={initialValue?.photos || []}
                     onRemove={handleRemovePhoto}
                     onUpload={handleAddPhoto}
+                    onDefault={handleDefault}
                 />
             </div>
 
             <div className="flex justify-between px-4 py-5 bg-gray-50 sm:px-6">
                 <Button
                     className="w-auto px-8"
-                    disabled={spaceDetailLoading || !hasPrevious}
+                    disabled={loading || spaceDetailLoading || !hasPrevious}
                     onClick={handlePrevious}
                 >
                     {t("previous-page")}
@@ -102,7 +102,7 @@ const SpacePhotos = ({
                     type="button"
                     variant="primary"
                     className="w-auto px-8"
-                    loading={spaceDetailLoading}
+                    loading={loading || spaceDetailLoading}
                     onClick={handleNext}
                 >
                     {t("next-page")}
