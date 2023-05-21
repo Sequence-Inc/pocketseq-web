@@ -71,10 +71,12 @@ export interface ISpacePricePlan {
 export interface ISpaceType {
     id: string | number;
     title: string;
+    description?: string;
 }
 
 export interface IPhoto {
     id: string | number;
+    isDefault?: boolean;
     mime: string;
     type: "Profile" | "Cover" | "General";
     thumbnail: IImage;

@@ -5,6 +5,7 @@ import {
     TagIcon,
 } from "@heroicons/react/outline";
 import UserGroupIcon from "@heroicons/react/outline/UserGroupIcon";
+import Link from "next/link";
 import React from "react";
 import { IAddress, IRating, ISpace, ISpaceType } from "src/types/timebookTypes";
 import { FormatShortAddress } from "src/utils";
@@ -57,14 +58,7 @@ export const SpaceInfoTitle = ({
                 >
                     {spaceSize}m²
                 </Tag>
-                <Tag
-                    Icon={TagIcon}
-                    iconStyle="text-gray-400"
-                    textStyle="text-sm text-gray-500"
-                    numberOfLines={1}
-                >
-                    {spaceTypes[0].title}
-                </Tag>
+
                 <Tag
                     Icon={LocationMarkerIcon}
                     iconStyle="text-gray-300"
@@ -73,6 +67,30 @@ export const SpaceInfoTitle = ({
                 >
                     {location}
                 </Tag>
+            </div>
+            <div className="w-full mt-4 flex flex-col space-y-2 md:space-x-4 md:space-y-0 md:items-center md:flex-row">
+                {spaceTypes.map(({ title, description }) => (
+                    <Tag
+                        Icon={TagIcon}
+                        iconStyle="text-gray-400"
+                        textStyle="text-sm text-gray-500"
+                        numberOfLines={1}
+                    >
+                        <Link
+                            href={{
+                                pathname: `/search`,
+                                query: {
+                                    searchType: "space",
+                                    spaceType: title,
+                                    searchTitle: title,
+                                    searchDescription: description,
+                                },
+                            }}
+                        >
+                            {title}
+                        </Link>
+                    </Tag>
+                ))}
             </div>
         </>
     );
