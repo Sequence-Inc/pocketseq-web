@@ -8,13 +8,19 @@ import "yet-another-react-lightbox/styles.css";
 export const SpaceInfoBanner = ({ photos }: { photos: IPhoto[] }) => {
     const [open, setOpen] = React.useState(false);
 
-    const photo = photos?.find((pic) => !!pic?.large?.url)?.large?.url;
+    // default photo
+    const mainPhoto = photos?.find((photo) => photo.isDefault);
+    const photo = mainPhoto || photos[photos.length - 1];
+
+    const slides = mainPhoto
+        ? [mainPhoto, ...photos.filter((photo) => photo.id !== mainPhoto.id)]
+        : photos;
 
     return (
         <div className="relative pt-4 mb-8">
             <div className="relative w-full overflow-hidden rounded-lg aspect-w-16 aspect-h-9 bg-gray-200">
                 <img
-                    src={photo}
+                    src={photo.large.url}
                     alt="category items"
                     className="object-cover w-full h-full"
                 />
@@ -28,7 +34,7 @@ export const SpaceInfoBanner = ({ photos }: { photos: IPhoto[] }) => {
             <Lightbox
                 open={open}
                 close={() => setOpen(false)}
-                slides={photos.map((photo) => {
+                slides={slides.map((photo) => {
                     return { src: photo.large.url };
                 })}
             />
