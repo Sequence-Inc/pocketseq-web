@@ -319,6 +319,13 @@ export const REMOVE_SPACE_PHOTO = gql`
         }
     }
 `;
+export const CHANGE_DEFAULT_SPACE_PHOTO = gql`
+    mutation changeDefaultSpacePhoto($photoId: ID!, $spaceId: ID!) {
+        changeDefaultSpacePhoto(photoId: $photoId, spaceId: $spaceId) {
+            message
+        }
+    }
+`;
 
 export const GET_LICENSE_UPLOAD_TOKEN = gql`
     mutation addLicense($input: AddLicenseInput!) {
