@@ -78,9 +78,9 @@ export const SearchBox = ({
                     }
                 >
                     {/* <div className="w-64 p-4 bg-white rounded-3xl">
-                        <p className="text-lg text-primary text-semibold">
+                        <div className="text-lg text-primary text-semibold">
                             エリア
-                        </p>
+                        </div>
                         <div className="my-4 border-b border-gray-100">
                             <TextField
                                 label=""
@@ -88,9 +88,9 @@ export const SearchBox = ({
                                 value={area}
                                 onChange={(e) => setArea(e.target.value)}
                             />
-                            <p className="mt-2 text-xs text-gray-700">
+                            <div className="mt-2 text-xs text-gray-700">
                                 ※駅は５つまで選択可能です。都道府県・市区町村を複数入力することはできません。
-                            </p>
+                            </div>
                         </div>
                         <div>
                             <Button variant="primary" className="mt-4">
@@ -99,9 +99,9 @@ export const SearchBox = ({
                         </div>
                     </div> */}
                     <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
-                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                        <div className="px-4 pt-4 mb-1 text-lg text-semibold">
                             エリア
-                        </p>
+                        </div>
                         {/* <div className="flex px-4 space-x-3">
                             <button className="text-sm text-gray-800">
                                 時間貸し
@@ -145,9 +145,9 @@ export const SearchBox = ({
                     position="center"
                 >
                     <div className="relative z-50 overflow-hidden bg-white shadow-lg w-52 -left-1/2 rounded-3xl">
-                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                        <div className="px-4 pt-4 mb-1 text-lg text-semibold">
                             利用目的
-                        </p>
+                        </div>
                         {/* <div className="flex px-4 space-x-3">
                             <button className="text-sm text-gray-800">
                                 時間貸し
@@ -194,9 +194,9 @@ export const SearchBox = ({
                     }
                 >
                     <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl">
-                        <p className="px-4 pt-4 mb-1 text-lg text-semibold">
+                        <div className="px-4 pt-4 mb-1 text-lg text-semibold">
                             ご利用日
-                        </p>
+                        </div>
                         <Calendar
                             disabledDate={disabledDate}
                             fullscreen={false}

@@ -24,7 +24,7 @@ const SingleSpaceUtility = ({
             </div>
             <div className="text-gray-600">
                 <h4 className="font-bold mb-2">{title}</h4>
-                <p className="text-sm">{description}</p>
+                <div className="text-sm">{description}</div>
             </div>
         </div>
     );

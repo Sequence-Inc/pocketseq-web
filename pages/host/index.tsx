@@ -72,21 +72,21 @@ const HostDashboard = ({ userSession }) => {
                                 <h3 className="font-bold text-lg">
                                     ご登録ありがとうございます。
                                 </h3>
-                                <p>
+                                <div>
                                     アカウントの申請を承りました。
                                     <br />
                                     内容を確認致しまして、3営業日以内にご登録のアドレスへご連絡させていただきます。
                                     <br />
                                     3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
-                                </p>
-                                <p>
+                                </div>
+                                <div>
                                     お問い合わせ：
                                     <Link href="/contact">
                                         <a className="text-gray-600 hover:text-gray-700 hover:underline">
                                             こちら
                                         </a>
                                     </Link>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </Container>
@@ -121,8 +121,6 @@ const HostDashboard = ({ userSession }) => {
 
     const dashboardContent = (host) => {
         if (!host) return null;
-
-        console.log(host);
 
         return (
             <>
@@ -161,20 +159,20 @@ const HostDashboard = ({ userSession }) => {
                         <h3 className="font-bold text-lg">
                             ご登録ありがとうございます。
                         </h3>
-                        <p>
+                        <div>
                             アカウントの申請を承りました。
                             <br />
                             内容を確認致しまして、3営業日以内にご登録のアドレスへご連絡させていただきます。
                             <br />
                             3営業日以内に弊社からのご連絡がなかった場合、お手数ですが下記アドレスまでご連絡下さいませ。
                             <br />
-                        </p>
-                        <p>
+                        </div>
+                        <div>
                             お問い合わせ：
                             <a href="mailto:info@timeqonnect.jp">
                                 info@timeqonnect.jp
                             </a>
-                        </p>
+                        </div>
                     </div>
                 </div>
             );

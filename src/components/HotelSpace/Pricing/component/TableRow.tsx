@@ -52,19 +52,19 @@ const ModalBody = ({ getValues, dirtyFields }) => {
                     className="flex space-x-4 my-2 w-full bg-gray-100 items-center p-2"
                     key={index}
                 >
-                    <p className="text-sm font-semibold">{name}&nbsp;:</p>
-                    <p className="text-base font-medium ">
+                    <div className="text-sm font-semibold">{name}&nbsp;:</div>
+                    <div className="text-base font-medium ">
                         {formFields[fieldKey]}
-                    </p>
+                    </div>
                 </div>
             );
         });
     }, [formFields]);
     return (
         <div className="w-96">
-            <p className="text-left text-base font-bold text-gray-600 mb-3">
+            <div className="text-left text-base font-bold text-gray-600 mb-3">
                 Are you satisfied with your inputs
-            </p>
+            </div>
             {content}
         </div>
     );
@@ -154,7 +154,7 @@ const TableRow = (props: TableRowProps) => {
                         key={col.key}
                     >
                         {!loading && !priceSchemeLoading && (
-                            <p>{defaultValue && defaultValue[col.key]}</p>
+                            <div>{defaultValue && defaultValue[col.key]}</div>
                         )}
                         {loading ||
                             (priceSchemeLoading && (

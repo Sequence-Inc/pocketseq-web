@@ -24,13 +24,15 @@ export const SpaceInfoAccess = ({
 
     return (
         <div>
-            <p className="mb-4 text-lg font-bold text-gray-700">アクセス</p>
+            <div className="mb-4 text-lg font-bold text-gray-700">アクセス</div>
             <div className="flex mb-4">
-                <p className="w-32 text-sm font-bold text-gray-800">住所</p>
+                <div className="w-32 text-sm font-bold text-gray-800">住所</div>
                 <div className="text-sm text-gray-500">{fullAddress}</div>
             </div>
             <div className="flex mb-4">
-                <p className="w-32 text-sm font-bold text-gray-800">アクセス</p>
+                <div className="w-32 text-sm font-bold text-gray-800">
+                    アクセス
+                </div>
                 <div className="text-sm text-gray-500">
                     <ul>
                         {nearestStations.map((station, index) => {

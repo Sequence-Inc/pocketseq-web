@@ -149,12 +149,12 @@ const RequestReservationModal = ({
                                                         <h5 className="font-bold">
                                                             プラン
                                                         </h5>
-                                                        <p className="text-gray-500">
+                                                        <div className="text-gray-500">
                                                             {
                                                                 reservationData
                                                                     ?.plan.name
                                                             }
-                                                        </p>
+                                                        </div>
                                                     </div>
                                                     <div>
                                                         <button
@@ -174,14 +174,14 @@ const RequestReservationModal = ({
                                                         <h5 className="font-bold">
                                                             部屋タイプ
                                                         </h5>
-                                                        <p className="text-gray-500">
+                                                        <div className="text-gray-500">
                                                             {
                                                                 reservationData
                                                                     ?.room
                                                                     .hotelRoom
                                                                     .name
                                                             }
-                                                        </p>
+                                                        </div>
                                                     </div>
                                                     <div>
                                                         <button
@@ -201,7 +201,7 @@ const RequestReservationModal = ({
                                                         <h5 className="font-bold">
                                                             予約期間
                                                         </h5>
-                                                        <p className="text-gray-500">
+                                                        <div className="text-gray-500">
                                                             {reservationData?.startDate.format(
                                                                 "MM月DD日"
                                                             )}
@@ -209,7 +209,7 @@ const RequestReservationModal = ({
                                                             {reservationData?.endDate.format(
                                                                 "DD日"
                                                             )}
-                                                        </p>
+                                                        </div>
                                                     </div>
                                                     <div>
                                                         <button
@@ -229,12 +229,12 @@ const RequestReservationModal = ({
                                                         <h5 className="font-bold">
                                                             予約人数
                                                         </h5>
-                                                        <p className="text-gray-500">
+                                                        <div className="text-gray-500">
                                                             ゲスト
                                                             {reservationData?.noOfAdults +
                                                                 reservationData?.noOfChild}
                                                             名
-                                                        </p>
+                                                        </div>
                                                     </div>
                                                     <div>
                                                         <button
@@ -273,15 +273,15 @@ const RequestReservationModal = ({
                                                                     >
                                                                         <CheckIcon className="w-6 text-green-400" />
                                                                         <span className="flex items-center space-x-2">
-                                                                            <p>
+                                                                            <div>
                                                                                 {
                                                                                     includedOption?.name
                                                                                 }
-                                                                            </p>
-                                                                            <p className="text-xs text-gray-500">
+                                                                            </div>
+                                                                            <div className="text-xs text-gray-500">
                                                                                 {includedOption?.description &&
                                                                                     `(${includedOption?.description})`}
-                                                                            </p>
+                                                                            </div>
                                                                         </span>
                                                                     </div>
                                                                 )
@@ -343,36 +343,36 @@ const RequestReservationModal = ({
                                                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                                                             />
                                                                             <div className="flex flex-col space-y-1">
-                                                                                <p className="text-base leading-5 font-bold">
+                                                                                <div className="text-base leading-5 font-bold">
                                                                                     {
                                                                                         additionalField?.name
                                                                                     }
-                                                                                </p>
+                                                                                </div>
 
                                                                                 {paymentTerm && (
                                                                                     <span className="font-normal leading-5 text-sm flex space-x-1">
-                                                                                        <p>
+                                                                                        <div>
                                                                                             {PriceFormatter(
                                                                                                 additionalField?.additionalPrice
                                                                                             )}
-                                                                                        </p>
-                                                                                        <p>
+                                                                                        </div>
+                                                                                        <div>
                                                                                             /
-                                                                                        </p>
-                                                                                        <p>
+                                                                                        </div>
+                                                                                        <div>
                                                                                             {
                                                                                                 paymentTerm
                                                                                             }
-                                                                                        </p>
+                                                                                        </div>
                                                                                     </span>
                                                                                 )}
                                                                                 {!paymentTerm && (
                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
-                                                                                        <p className="text-sm text-gray-500">
+                                                                                        <div className="text-sm text-gray-500">
                                                                                             No
                                                                                             additional
                                                                                             charge
-                                                                                        </p>
+                                                                                        </div>
                                                                                     </span>
                                                                                 )}
                                                                             </div>
@@ -404,11 +404,11 @@ const RequestReservationModal = ({
                                                                             </div>
 
                                                                             <div className=" flex items-center ">
-                                                                                <p className="font-normal text-base w-12">
+                                                                                <div className="font-normal text-base w-12">
                                                                                     {
                                                                                         paymentTerm
                                                                                     }
-                                                                                </p>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -482,20 +482,20 @@ const RequestReservationModal = ({
                                                                             }
                                                                         >
                                                                             <span className="flex space-x-2 items-end">
-                                                                                <p>
+                                                                                <div>
                                                                                     {
                                                                                         additionalfield?.name
                                                                                     }
-                                                                                </p>
+                                                                                </div>
 
-                                                                                <p className="text-gray-400 text-sm">
+                                                                                <div className="text-gray-400 text-sm">
                                                                                     X
                                                                                     {
                                                                                         additionalfield?.quantity
                                                                                     }
-                                                                                </p>
+                                                                                </div>
                                                                             </span>
-                                                                            <p
+                                                                            <div
                                                                                 className={`${
                                                                                     optionsCharge ===
                                                                                         "No Charge" &&
@@ -509,7 +509,7 @@ const RequestReservationModal = ({
                                                                                           optionsCharge /
                                                                                               1.1
                                                                                       )}
-                                                                            </p>
+                                                                            </div>
                                                                         </div>
                                                                     );
                                                                 }
@@ -565,10 +565,10 @@ const RequestReservationModal = ({
                                                 )}
 
                                                 <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
-                                                    <p className="font-bold">
+                                                    <div className="font-bold">
                                                         適用されるサブスクリプション
                                                         :
-                                                    </p>
+                                                    </div>
                                                     <hr />
                                                     <SubsciptionBox
                                                         hasHotelSubscriptions={

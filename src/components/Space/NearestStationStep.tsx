@@ -128,11 +128,11 @@ const NearestStationStep = ({
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                     最寄り駅
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">
+                <div className="mt-1 text-sm text-gray-500">
                     施設様のご利用しやすい最寄り駅をお選びください
                     <br />
                     ※複数お選びいただけます。
-                </p>
+                </div>
             </div>
             <div className="w-full my-6 space-y-3 sm:w-96 sm:ml-64">
                 <h3 className="font-medium text-gray-700">Stations</h3>
@@ -152,10 +152,10 @@ const NearestStationStep = ({
             </div>
             <div className="mb-8">
                 {stations.length < 0 ? (
-                    <p className="text-sm text-center text-gray-800">
+                    <div className="text-sm text-center text-gray-800">
                         No Nearest station added yet. Please in below button to
                         add new station
-                    </p>
+                    </div>
                 ) : null}
                 {toggleForm && (
                     <NearestStation onAdd={addStation} closeForm={closeForm} />

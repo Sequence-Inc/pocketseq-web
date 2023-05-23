@@ -52,12 +52,12 @@ export default function UserGuide({ userSession }) {
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
-                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
+                                <div className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     ご利用の流れ
-                                </p>
-                                <p className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
+                                </div>
+                                <div className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
-                                </p>
+                                </div>
                                 <div className="space-y-5 mt-12">
                                     {steps.map(
                                         ({ Icon, title, subTitle }, index) => (
@@ -66,15 +66,15 @@ export default function UserGuide({ userSession }) {
                                                     <Icon className="w-6 h-6 text-white" />
                                                 </button>
                                                 <div className="text-left">
-                                                    <p className="text-sm text-gray-500 ">
+                                                    <div className="text-sm text-gray-500 ">
                                                         STEP {index + 1}
-                                                    </p>
+                                                    </div>
                                                     <h2 className="text-2xl font-medium text-primary mt-1">
                                                         {title}
                                                     </h2>
-                                                    <p className="text-gray-500 mt-2">
+                                                    <div className="text-gray-500 mt-2">
                                                         {subTitle}
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )

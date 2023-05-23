@@ -77,10 +77,10 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                 isOpen={alertModalOpen}
                 title="Warning"
             >
-                <p>All fields must be present</p>
+                <div>All fields must be present</div>
             </AlertModal>
             <div>
-                <p className="text-sm leading-5 font-medium">県</p>
+                <div className="text-sm leading-5 font-medium">県</div>
                 <Select
                     label=""
                     options={prefectureData?.availablePrefectures || []}
@@ -105,7 +105,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <p className="text-sm leading-5 font-medium">路線名</p>
+                <div className="text-sm leading-5 font-medium">路線名</div>
 
                 <Select
                     label=""
@@ -128,7 +128,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <p className="text-sm leading-5 font-medium">駅名</p>
+                <div className="text-sm leading-5 font-medium">駅名</div>
 
                 <Select
                     label=""
@@ -146,9 +146,9 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <p className="text-sm leading-5 font-medium">
+                <div className="text-sm leading-5 font-medium">
                     最寄駅からのアクセス
-                </p>
+                </div>
 
                 <Select
                     label=""
@@ -161,7 +161,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <p className="text-sm leading-5 font-medium">時間</p>
+                <div className="text-sm leading-5 font-medium">時間</div>
                 <TextField
                     // defaultValue={}
                     label=""
@@ -177,7 +177,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                 />
             </div>
             <div>
-                <p className="text-sm leading-5 font-medium">Exit</p>
+                <div className="text-sm leading-5 font-medium">Exit</div>
                 <TextField
                     // defaultValue={}
                     label=""

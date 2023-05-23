@@ -23,9 +23,9 @@ export const CTA = ({ title, children }) => {
         <div className="relative overflow-hidden bg-primary rounded-2xl">
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-20">
                 <div className="md:px-10">
-                    <p className="mt-2 text-center text-3xl font-bold tracking-tight text-white">
+                    <div className="mt-2 text-center text-3xl font-bold tracking-tight text-white">
                         {title}
-                    </p>
+                    </div>
                     {children}
                 </div>
             </div>

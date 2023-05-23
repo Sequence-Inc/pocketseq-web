@@ -53,20 +53,20 @@ export const HeroSection = () => {
 
                 <Container className="z-10 py-6 md:py-0">
                     <div className="flex flex-col items-center justify-center w-full h-full">
-                        <p className="z-20 mb-5 md:mb-10 text-3xl font-bold text-center text-white md:text-4xl drop-shadow-md">
+                        <div className="z-20 mb-5 md:mb-10 text-3xl font-bold text-center text-white md:text-4xl drop-shadow-md">
                             「人×場所×体験」を繋げる
                             <br className="hidden md:block" />
                             目的に合った場所を検索しよう
-                        </p>
+                        </div>
                         <SearchBoxNew type="primary" />
 
-                        <p className="z-20 mt-5 md:mt-10 text-center text-white text-xl drop-shadow-md">
+                        <div className="z-20 mt-5 md:mt-10 text-center text-white text-xl drop-shadow-md">
                             <span className="font-bold">
                                 スタートアップ特集テーマ！
                             </span>
                             <br />
                             ペットと「食べる、泊まる、遊ぶ」　癒しの時間と場所を繋ぐ
-                        </p>
+                        </div>
                     </div>
                 </Container>
             </div>

@@ -23,12 +23,12 @@ export const SubscriptionCTA = () => {
             </div>
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
                 <div className="md:ml-auto md:w-1/2 md:pl-10">
-                    <p className="mt-2 text-3xl font-bold tracking-tight text-white">
+                    <div className="mt-2 text-3xl font-bold tracking-tight text-white">
                         サブスクリプションのご案内
-                    </p>
-                    <p className="mt-5 text-gray-50 text-md">
+                    </div>
+                    <div className="mt-5 text-gray-50 text-md">
                         定額制でスペースレンタル・宿泊利用を始めよう
-                    </p>
+                    </div>
                     <div className="flex mt-10 space-x-4">
                         <CTAButton link="/subscription">
                             詳しくはこちら

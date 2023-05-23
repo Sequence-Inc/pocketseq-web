@@ -163,9 +163,11 @@ const LicenseUpload = ({ userSession }) => {
                             disabled={loading}
                         />
                     </label>
-                    {/* <p className="pl-1">アップロードする</p> */}
+                    {/* <div className="pl-1">アップロードする</div> */}
                 </div>
-                <p className="text-xs text-gray-500">JPEGファイルのみ対応</p>
+                <div className="text-xs text-gray-500">
+                    JPEGファイルのみ対応
+                </div>
             </div>
         </div>
     );
@@ -304,10 +306,10 @@ const LicenseUpload = ({ userSession }) => {
                                         </select>
                                     </div>
                                 </div>
-                                <p className="mt-4 text-gray-600">
+                                <div className="mt-4 text-gray-600">
                                     アップロードする{licenseTypeTitle}
                                     の画像を選択します。
-                                </p>
+                                </div>
                                 <div className="mt-8 mr-8 sm:max-w-md">
                                     {content}
                                 </div>

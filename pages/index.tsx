@@ -137,12 +137,12 @@ export default function Home({
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
-                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
+                                <div className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     {config.appName}とは
-                                </p>
-                                <p className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
+                                </div>
+                                <div className="w-full md:w-2/3 lg:w-1/2 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ホスト様のお持ちの様々なスペースと「こだわり」をもったゲストの皆様をおつなぎいたします。
-                                </p>
+                                </div>
                                 <div className="mt-12">
                                     <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                                         {features.map((feature) => (
@@ -163,11 +163,11 @@ export default function Home({
                                                         <h3 className="mt-8 text-lg font-medium tracking-tight text-primary">
                                                             {feature.name}
                                                         </h3>
-                                                        <p className="mt-5 text-base font-light text-gray-500">
+                                                        <div className="mt-5 text-base font-light text-gray-500">
                                                             {
                                                                 feature.description
                                                             }
-                                                        </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

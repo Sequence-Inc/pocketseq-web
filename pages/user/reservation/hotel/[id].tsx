@@ -141,9 +141,9 @@ const ReservationById = ({ userSession, id }) => {
                             <h3 className="text-lg leading-6 font-bold text-gray-700">
                                 Add review
                             </h3>
-                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                            <div className="mt-1 max-w-2xl text-sm text-gray-500">
                                 Tell us about your experience
-                            </p>
+                            </div>
                         </div>
                         <div>
                             <Button
@@ -163,11 +163,11 @@ const ReservationById = ({ userSession, id }) => {
                         <h3 className="text-lg leading-6 font-bold text-gray-700">
                             {packagePlan.name}
                         </h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        <div className="mt-1 max-w-2xl text-sm text-gray-500">
                             {moment(fromDateTime).format("YYYY/MM/DD HH:mm")}
                             から
                             {moment(toDateTime).format("YYYY/MM/DD HH:mm")}まで
-                        </p>
+                        </div>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                         <dl className="sm:divide-y sm:divide-gray-200">
@@ -233,10 +233,10 @@ const ReservationById = ({ userSession, id }) => {
                                     プラン
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    <p className="font-bold">
+                                    <div className="font-bold">
                                         {packagePlan.name}
-                                    </p>
-                                    <p>{packagePlan.description}</p>
+                                    </div>
+                                    <div>{packagePlan.description}</div>
                                 </dd>
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -244,10 +244,10 @@ const ReservationById = ({ userSession, id }) => {
                                     部屋
                                 </dt>
                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    <p className="font-bold">
+                                    <div className="font-bold">
                                         {hotelRoom.name}
-                                    </p>
-                                    <p>{hotelRoom.description}</p>
+                                    </div>
+                                    <div>{hotelRoom.description}</div>
                                 </dd>
                             </div>
                             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -388,9 +388,9 @@ const ReservationById = ({ userSession, id }) => {
                                             >
                                                 口コミ
                                             </Dialog.Title>
-                                            <p className="mt-3 text-sm text-gray-500">
+                                            <div className="mt-3 text-sm text-gray-500">
                                                 あなたのご体験をお聞かせください
-                                            </p>
+                                            </div>
                                         </div>
                                         <div className="mt-4 pt-4 mb-4 space-y-3">
                                             <div className="text-sm text-gray-500">

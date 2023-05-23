@@ -40,9 +40,9 @@ export default function HostNagare({ userSession }) {
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
-                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
+                                <div className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     信頼への取り組み
-                                </p>
+                                </div>
                                 <div className="space-y-5 mt-12">
                                     {steps.map(
                                         ({ Icon, title, subTitle }, index) => (
@@ -54,9 +54,9 @@ export default function HostNagare({ userSession }) {
                                                         </span>
                                                         {title}
                                                     </h2>
-                                                    <p className="text-gray-500 mt-2">
+                                                    <div className="text-gray-500 mt-2">
                                                         {subTitle}
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )

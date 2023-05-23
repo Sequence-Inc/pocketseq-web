@@ -35,16 +35,26 @@ const HostDashboard = ({ userSession }) => {
         profilePhoto = profile.profilePhoto.medium.url;
     }
 
-    const name = `${profile.lastName} ${profile.firstName}`;
-    const nameKana = `${profile.lastNameKana} ${profile.firstNameKana}`;
+    let name = "";
+    let fields = {};
 
-    const fields = {
-        性: profile.lastName,
-        名: profile.firstName,
-        "性（カナ）": profile.lastNameKana,
-        "名（カナ）": profile.firstNameKana,
-        Email: profile.email,
-    };
+    if (profile.__typename === "CompanyProfile") {
+        name = profile.name;
+        fields = {
+            会社名: profile.name,
+            Email: profile.email,
+        };
+    } else {
+        name = `${profile.lastName} ${profile.firstName}`;
+
+        fields = {
+            性: profile.lastName,
+            名: profile.firstName,
+            "性（カナ）": profile.lastNameKana,
+            "名（カナ）": profile.firstNameKana,
+            Email: profile.email,
+        };
+    }
 
     return (
         <HostLayout userSession={userSession}>

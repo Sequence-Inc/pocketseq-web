@@ -130,7 +130,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                 {/* price row */}
                 <div className="flex justify-between">
                     {/* <Price amount={price} /> */}
-                    {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
+                    {/* <div className="text-sm text-gray-600">¥ 10,392/日</div> */}
                 </div>
                 <div>
                     <Listbox value={selectedPlan} onChange={setSelectedPlan}>
@@ -601,15 +601,15 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                 <div>
                     {calculatingPrice && (
                         <div className="flex items-center justify-center">
-                            <p>Please wait . . .</p>
+                            <div>Please wait . . .</div>
                         </div>
                     )}
 
                     {priceCalculationError && (
-                        <p className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500">
                             {priceCalculationError?.message ||
                                 "Could not load price."}
-                        </p>
+                        </div>
                     )}
 
                     {!calculatingPrice && !priceCalculationError && (

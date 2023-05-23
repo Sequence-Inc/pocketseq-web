@@ -95,7 +95,9 @@ const CancelPolicyForm = (props: TCancelPolicyFormProps) => {
             <form onSubmit={onSubmit}>
                 <div className="px-2 py-3 space-y-6 sm:py-6">
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-semibold">名称</p>
+                        <div className="text-sm leading-5 font-semibold">
+                            名称
+                        </div>
                         <TextField
                             label=""
                             {...register("name", {
@@ -108,7 +110,9 @@ const CancelPolicyForm = (props: TCancelPolicyFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-semibold">概要</p>
+                        <div className="text-sm leading-5 font-semibold">
+                            概要
+                        </div>
                         <TextArea
                             label=""
                             rows={4}
@@ -121,18 +125,18 @@ const CancelPolicyForm = (props: TCancelPolicyFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-8/12">
-                        <p className="text-sm  leading-5 font-semibold">
+                        <div className="text-sm  leading-5 font-semibold">
                             ポリシー
-                        </p>
+                        </div>
                         {policiesField?.map((field, index) => (
                             <div
                                 className="w-full my-3 flex items-end justify-between space-x-2"
                                 key={field.policyId}
                             >
                                 <div className="flex flex-col flex-1 ">
-                                    <p className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500">
                                         時間前まで（時間）
-                                    </p>
+                                    </div>
                                     <TextField
                                         label=""
                                         {...register(
@@ -165,9 +169,9 @@ const CancelPolicyForm = (props: TCancelPolicyFormProps) => {
                                     />
                                 </div>
                                 <div className="flex flex-col flex-1">
-                                    <p className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500">
                                         パーセンテージ（%）
-                                    </p>
+                                    </div>
                                     <TextField
                                         label=""
                                         {...register(
