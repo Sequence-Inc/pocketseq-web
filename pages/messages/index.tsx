@@ -158,14 +158,14 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                     <div className="flex flex-col justify-between h-[calc(100vh-64px)] flex-1 pb-2">
                         <div className="flex justify-between px-4 py-3 bg-white border-b border-gray-200 sm:items-center">
                             <div className="flex items-center space-x-4">
-                                <img
+                                {/* <img
                                     src={activeRecipientProfilePhotoURL}
                                     alt=""
                                     className="w-10 h-10 rounded-full sm:w-12 sm:h-12"
-                                />
+                                /> */}
                                 <div className="flex flex-col leading-tight">
-                                    <div className="flex items-center mt-1 text-xl">
-                                        <span className="mr-3 text-gray-700">
+                                    <div className="flex items-center py-2 text-xl">
+                                        <span className="text-base font-bold text-gray-700">
                                             {activeRecipient
                                                 ? activeRecipientName
                                                 : activeChat?.name}
@@ -299,13 +299,13 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                         )}
                                         onClick={() => changeActiveChat(chat)}
                                     >
-                                        <img
+                                        {/* <img
                                             className="w-10 h-10 rounded-full"
                                             src={senderProfilePhoto}
                                             alt=""
-                                        />
+                                        /> */}
                                         <div className="ml-3">
-                                            <div className="text-sm font-medium text-gray-900">
+                                            <div className="text-sm font-bold text-gray-500">
                                                 {senderName}
                                             </div>
                                         </div>
