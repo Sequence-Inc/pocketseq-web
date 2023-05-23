@@ -139,7 +139,10 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
     const activeRecipientProfilePhotoURL =
         activeRecipient?.profilePhoto?.thumbnail?.url ||
         `https://avatars.dicebear.com/api/identicon/${activeRecipient?.id}.svg`;
-
+    const activeRecipientName =
+        activeRecipient?.__typename === "CompanyProfile"
+            ? activeRecipient?.name
+            : `${activeRecipient?.lastName} ${activeRecipient?.firstName}`;
     return (
         <HostLayout userSession={userSession}>
             <Head>
@@ -164,9 +167,7 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                     <div className="flex items-center mt-1 text-xl">
                                         <span className="mr-3 text-gray-700">
                                             {activeRecipient
-                                                ? activeRecipient?.lastName +
-                                                  " " +
-                                                  activeRecipient?.firstName
+                                                ? activeRecipientName
                                                 : activeChat?.name}
                                         </span>
                                     </div>
@@ -266,9 +267,9 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                 >
                                     <div className="w-10 h-10 bg-gray-200 rounded-full" />
                                     <div className="ml-3">
-                                        <p className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm font-medium text-gray-900">
                                             {newChat.name}
-                                        </p>
+                                        </div>
                                     </div>
                                 </li>
                             )}
@@ -278,6 +279,14 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                 )[0];
 
                                 const isActive = chat.id === activeChat?.id;
+
+                                const senderProfilePhoto =
+                                    sender?.profilePhoto?.thumbnail?.url ||
+                                    `https://avatars.dicebear.com/api/identicon/${sender?.id}.svg`;
+                                const senderName =
+                                    sender?.__typename === "CompanyProfile"
+                                        ? sender?.name
+                                        : `${sender?.lastName} ${sender?.firstName}`;
 
                                 return (
                                     <li
@@ -290,24 +299,15 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                         )}
                                         onClick={() => changeActiveChat(chat)}
                                     >
-                                        {sender?.profilePhoto?.thumbnail
-                                            ?.url ? (
-                                            <img
-                                                className="w-10 h-10 rounded-full"
-                                                src={
-                                                    sender.profilePhoto
-                                                        ?.thumbnail?.url
-                                                }
-                                                alt=""
-                                            />
-                                        ) : (
-                                            <div className="w-10 h-10 bg-gray-200 rounded-full" />
-                                        )}
+                                        <img
+                                            className="w-10 h-10 rounded-full"
+                                            src={senderProfilePhoto}
+                                            alt=""
+                                        />
                                         <div className="ml-3">
-                                            <p className="text-sm font-medium text-gray-900">
-                                                {sender?.lastName}{" "}
-                                                {sender?.firstName}
-                                            </p>
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {senderName}
+                                            </div>
                                         </div>
                                     </li>
                                 );

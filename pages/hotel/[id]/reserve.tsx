@@ -142,61 +142,61 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                                     <h3 className="font-bold text-lg">
                                         {name}
                                     </h3>
-                                    <p className="text-gray-500 text-sm mt-2">
+                                    <div className="text-gray-500 text-sm mt-2">
                                         {addressText}
-                                    </p>
+                                    </div>
                                 </div>
                                 <div className="h-0 border-t border-gray-200"></div>
                                 <h2 className="font-bold">
                                     Reservation Details
                                 </h2>
                                 <div className="space-y-2">
-                                    <p className="flex justify-between">
+                                    <div className="flex justify-between">
                                         <span>チェックイン:</span>
                                         <span className="font-bold">
                                             {startDateTime.format(
                                                 dateDisplayFormat
                                             )}
                                         </span>
-                                    </p>
-                                    <p className="flex justify-between">
+                                    </div>
+                                    <div className="flex justify-between">
                                         <span>チェックアウト:</span>
                                         <span className="font-bold">
                                             {endDateTime.format(
                                                 dateDisplayFormat
                                             )}
                                         </span>
-                                    </p>
-                                    <p className="flex justify-between">
+                                    </div>
+                                    <div className="flex justify-between">
                                         <span>期間:</span>
                                         <span className="font-bold">
                                             {duration}
                                             {durationSuffix(type)}
                                         </span>
-                                    </p>
+                                    </div>
                                 </div>
                                 <div className="h-0 border-t border-gray-200"></div>
                                 <div className="space-y-2">
-                                    <p className="flex justify-between">
+                                    <div className="flex justify-between">
                                         <span>小計:</span>
                                         <span className="font-bold">
                                             {PriceFormatter(taxableAmount)}
                                         </span>
-                                    </p>
-                                    <p className="flex justify-between">
+                                    </div>
+                                    <div className="flex justify-between">
                                         <span>税金:</span>
                                         <span className="font-bold">
                                             {PriceFormatter(
                                                 total - taxableAmount
                                             )}
                                         </span>
-                                    </p>
-                                    <p className="flex justify-between">
+                                    </div>
+                                    <div className="flex justify-between">
                                         <span>会計:</span>
                                         <span className="font-bold">
                                             {PriceFormatter(total)}
                                         </span>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="h-0 border-t border-gray-200"></div>
@@ -216,19 +216,19 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                                         Reservation complete
                                     </h3>
                                     <div className="space-y-1">
-                                        <p>
+                                        <div>
                                             {
                                                 reservationComplete.reserveSpace
                                                     .description
                                             }
-                                        </p>
-                                        <p>
+                                        </div>
+                                        <div>
                                             Reservation ID:{" "}
                                             {
                                                 reservationComplete.reserveSpace
                                                     .transactionId
                                             }
-                                        </p>
+                                        </div>
                                     </div>
                                     <div className="space-y-3 pt-1">
                                         <div>

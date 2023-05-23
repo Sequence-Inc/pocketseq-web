@@ -129,14 +129,14 @@ export const FloatingPrice = ({
                 {/* price row */}
                 <div className="flex justify-between">
                     <Price amount={price} />
-                    {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
+                    {/* <div className="text-sm text-gray-600">¥ 10,392/日</div> */}
                 </div>
 
                 {/* date and time row */}
                 <div>
-                    <p className="mb-2 text-sm font-bold text-gray-500">
+                    <div className="mb-2 text-sm font-bold text-gray-500">
                         チェックイン
-                    </p>
+                    </div>
                     <DatePicker
                         selected={start}
                         onChange={(date) => setStart(date)}
@@ -152,9 +152,9 @@ export const FloatingPrice = ({
                     />
                 </div>
                 <div>
-                    <p className="mb-2 text-sm font-bold text-gray-500">
+                    <div className="mb-2 text-sm font-bold text-gray-500">
                         チェックアウト
-                    </p>
+                    </div>
                     <DatePicker
                         selected={end}
                         onChange={(date) => setEnd(date)}
@@ -179,7 +179,7 @@ export const FloatingPrice = ({
 
                 {/* policy row */}
                 <div className="flex items-center justify-center space-x-1.5">
-                    <p className="text-gray-600">48時間キャンセル無料</p>
+                    <div className="text-gray-600">48時間キャンセル無料</div>
                     <InformationCircleIcon className="w-4 h-4 text-gray-400" />
                 </div>
             </div>

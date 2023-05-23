@@ -292,9 +292,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <div className="text-gray-600">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     エリア
-                                                </p>
+                                                </div>
                                                 {area || "エリアを選択"}
                                             </div>
                                         </Tag>
@@ -313,9 +313,9 @@ export const SearchBoxNew = ({
                                         >
                                             <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
-                                                    <p className="text-lg font-bold">
+                                                    <div className="text-lg font-bold">
                                                         エリア
-                                                    </p>
+                                                    </div>
                                                     <button
                                                         onClick={() => {
                                                             setArea(null);
@@ -347,9 +347,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <span className="text-gray-600 ">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     チェックイン
-                                                </p>
+                                                </div>
                                                 {checkInDate
                                                     ? checkInDate.format(
                                                           "MM月DD日"
@@ -409,9 +409,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <span className="text-gray-600 ">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     チェックアウト
-                                                </p>
+                                                </div>
                                                 {checkOutDate
                                                     ? checkOutDate.format(
                                                           "MM月DD日"
@@ -471,9 +471,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <span className="text-gray-600 ">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     旅行者
-                                                </p>
+                                                </div>
                                                 ゲスト
                                                 {`${addPax(
                                                     noOfAdults,
@@ -497,9 +497,9 @@ export const SearchBoxNew = ({
                                         >
                                             <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl text-left">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
-                                                    <p className="text-lg font-bold">
+                                                    <div className="text-lg font-bold">
                                                         ゲスト
-                                                    </p>
+                                                    </div>
                                                     <div className="flex"></div>
                                                 </div>
                                                 <div className="px-2 pb-4 mb-1">
@@ -715,9 +715,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <div className="text-gray-600">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     エリア
-                                                </p>
+                                                </div>
                                                 {area || "エリアを選択"}
                                             </div>
                                         </Tag>
@@ -736,9 +736,9 @@ export const SearchBoxNew = ({
                                         >
                                             <div className="relative left-0 z-50 overflow-hidden bg-white shadow-lg w-52 rounded-3xl">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
-                                                    <p className="text-lg font-bold">
+                                                    <div className="text-lg font-bold">
                                                         エリア
-                                                    </p>
+                                                    </div>
                                                     <button
                                                         onClick={() => {
                                                             setArea(null);
@@ -771,9 +771,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <span className="text-gray-600 ">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     利用者
-                                                </p>
+                                                </div>
                                                 ゲスト
                                                 {`${addPax(
                                                     noOfAdults,
@@ -797,9 +797,9 @@ export const SearchBoxNew = ({
                                         >
                                             <div className="relative z-50 overflow-hidden bg-white shadow-lg w-80 px-2 left-0 rounded-3xl text-left">
                                                 <div className="flex items-center justify-between px-4 pt-4 mb-1 ">
-                                                    <p className="text-lg font-bold">
+                                                    <div className="text-lg font-bold">
                                                         ゲスト
-                                                    </p>
+                                                    </div>
                                                     <div className="flex"></div>
                                                 </div>
                                                 <div className="px-2 pb-4 mb-1">
@@ -1011,9 +1011,9 @@ export const SearchBoxNew = ({
                                             numberOfLines={2}
                                         >
                                             <span className="text-gray-600 ">
-                                                <p className="font-bold mb-0">
+                                                <div className="font-bold mb-0">
                                                     利用日
-                                                </p>
+                                                </div>
                                                 {checkInDate
                                                     ? checkInDate.format(
                                                           "MM月DD日"

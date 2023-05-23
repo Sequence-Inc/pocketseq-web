@@ -139,9 +139,9 @@ const ReservationById = ({ userSession, id }) => {
                             <h3 className="text-lg leading-6 font-bold text-gray-700">
                                 口コミ
                             </h3>
-                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                            <div className="mt-1 max-w-2xl text-sm text-gray-500">
                                 あなたのご体験をお聞かせください
-                            </p>
+                            </div>
                         </div>
                         <div>
                             <Button
@@ -161,11 +161,11 @@ const ReservationById = ({ userSession, id }) => {
                         <h3 className="text-lg leading-6 font-bold text-gray-700">
                             {space.name}
                         </h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        <div className="mt-1 max-w-2xl text-sm text-gray-500">
                             {moment(fromDateTime).format("YYYY/MM/DD HH:mm")}
                             から
                             {moment(toDateTime).format("YYYY/MM/DD HH:mm")}まで
-                        </p>
+                        </div>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                         <dl className="sm:divide-y sm:divide-gray-200">
@@ -383,9 +383,9 @@ const ReservationById = ({ userSession, id }) => {
                                             >
                                                 口コミ
                                             </Dialog.Title>
-                                            <p className="mt-3 text-sm text-gray-500">
+                                            <div className="mt-3 text-sm text-gray-500">
                                                 あなたのご体験をお聞かせください
-                                            </p>
+                                            </div>
                                         </div>
                                         <div className="mt-4 pt-4 mb-4 space-y-3">
                                             <div className="text-sm text-gray-500">

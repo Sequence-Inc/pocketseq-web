@@ -76,12 +76,14 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div>
                     <div className="flex items-center justify-center space-x-2">
                         <ShieldExclamationIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <p className=" text-base font-semibold  text-gray-600">
+                        <div className=" text-base font-semibold  text-gray-600">
                             ログインが必要です
-                        </p>
+                        </div>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
-                        <p className="text-sm">先にログインを行ってください</p>
+                        <div className="text-sm">
+                            先にログインを行ってください
+                        </div>
 
                         <div className="flex flex-col w-full justify-between  space-y-4 ">
                             <button
@@ -109,9 +111,9 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 " />
-                        <p className=" text-base font-semibold  text-blue-600">
+                        <div className=" text-base font-semibold  text-blue-600">
                             読み込み中...
-                        </p>
+                        </div>
                     </div>
                 </div>
             );
@@ -122,15 +124,15 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div>
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <p className=" text-base font-semibold  text-gray-600">
+                        <div className=" text-base font-semibold  text-gray-600">
                             エラーが発生しました
-                        </p>
+                        </div>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
-                        <p className="text-sm">
+                        <div className="text-sm">
                             お支払い方法を読み込めませんでした。
                             後でもう一度やり直してください。
-                        </p>
+                        </div>
 
                         <button
                             type="button"
@@ -149,14 +151,14 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div>
                     <div className="flex items-center justify-center space-x-2">
                         <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <p className=" text-base font-semibold  text-gray-600">
+                        <div className=" text-base font-semibold  text-gray-600">
                             エラーが発生しました
-                        </p>
+                        </div>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
-                        <p className="text-sm">
+                        <div className="text-sm">
                             既存の支払い方法が見つかりません。最初の設定画面で支払い方法を追加してください。
-                        </p>
+                        </div>
 
                         <button
                             type="button"
@@ -175,14 +177,14 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
                         <CheckIcon className="text-green-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-green-500" />
-                        <p className=" text-base font-semibold  text-gray-600">
+                        <div className=" text-base font-semibold  text-gray-600">
                             成功しました
-                        </p>
+                        </div>
                     </div>
                     <div className=" mt-4 text-center space-y-4">
-                        <p className="text-sm">
+                        <div className="text-sm">
                             サブスクリプションが成功しました
-                        </p>
+                        </div>
 
                         <button
                             type="button"
@@ -204,9 +206,9 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
                         <CogIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 animate-spin" />
-                        <p className=" text-base font-semibold  text-blue-600">
+                        <div className=" text-base font-semibold  text-blue-600">
                             購買中
-                        </p>
+                        </div>
                     </div>
                 </div>
             );
@@ -217,17 +219,17 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
                         <ExclamationIcon className="text-red-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-600" />
-                        <p className=" text-base font-semibold  text-red-600">
+                        <div className=" text-base font-semibold  text-red-600">
                             既に登録済みです
-                        </p>
+                        </div>
                     </div>
                     <div className=" mt-4 text-center space-y-4">
                         {subscriptionFailed?.message ===
                         "You have already subscribed to rental-space subscription" ? (
                             <>
-                                <p>
+                                <div>
                                     このサブスクリプションに既に登録されています
-                                </p>
+                                </div>
                                 <div className="flex flex-col space-y-4">
                                     <button
                                         className="bg-purple-500 p-3 rounded-md text-sm text-white"
@@ -251,10 +253,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             </>
                         ) : (
                             <>
-                                <p className="text-sm">
+                                <div className="text-sm">
                                     サブスクリプションに失敗しました。
                                     もう一度お試しください。
-                                </p>
+                                </div>
 
                                 <button
                                     type="button"
@@ -277,12 +279,12 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             <div className="">
                 <div className="flex items-center justify-center space-x-2">
                     <ShoppingBagIcon className="text-blue-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-500" />
-                    <p className=" text-base font-semibold  text-gray-600">
+                    <div className=" text-base font-semibold  text-gray-600">
                         サブスクリプション
-                    </p>
+                    </div>
                 </div>
                 <div className=" mt-4 text-center space-y-4">
-                    <p className="text-sm">購買を希望しますか？</p>
+                    <div className="text-sm">購買を希望しますか？</div>
 
                     <button
                         type="button"
@@ -410,9 +412,9 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                         <h1 className="text-5xl tracking-tight font-bold text-primary sm:text-center">
                                             スペース・サブスクリプション・プラン
                                         </h1>
-                                        <p className="mt-5 text-xl text-gray-500 sm:text-center">
+                                        <div className="mt-5 text-xl text-gray-500 sm:text-center">
                                             スペースを定額制でご利用いただけます。アカウントプランでは、さらに多くの機能を利用できます。
-                                        </p>
+                                        </div>
                                         <div className="relative self-center mt-6 bg-gray-100 rounded-lg p-0.5 flex sm:mt-8">
                                             <button
                                                 type="button"
@@ -475,11 +477,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     <h2 className="text-lg leading-6 font-bold text-gray-900">
                                                         {product.name}
                                                     </h2>
-                                                    <p className="mt-4 text-gray-500">
+                                                    <div className="mt-4 text-gray-500">
                                                         毎月{product.unit}
                                                         時間を使う
-                                                    </p>
-                                                    <p className="mt-8">
+                                                    </div>
+                                                    <div className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
                                                             {PriceFormatter(
                                                                 product.price
@@ -489,7 +491,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         <span className="text-base font-bold text-gray-500">
                                                             /月
                                                         </span>
-                                                    </p>
+                                                    </div>
                                                     <button
                                                         onClick={() => {
                                                             console.log(
@@ -520,9 +522,9 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                         <h1 className="text-5xl tracking-tight font-bold text-primary sm:text-center">
                                             ホテル・サブスクリプション・プラン
                                         </h1>
-                                        <p className="mt-5 text-xl text-gray-500 sm:text-center">
+                                        <div className="mt-5 text-xl text-gray-500 sm:text-center">
                                             スペースを定額制でご利用いただけます。アカウントプランでは、さらに多くの機能を利用できます。
-                                        </p>
+                                        </div>
                                         <div className="relative self-center mt-6 bg-gray-100 rounded-lg p-0.5 flex sm:mt-8">
                                             <button
                                                 type="button"
@@ -585,11 +587,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                     <h2 className="text-lg leading-6 font-bold text-gray-900">
                                                         {product.name}
                                                     </h2>
-                                                    <p className="mt-4 text-gray-500">
+                                                    <div className="mt-4 text-gray-500">
                                                         毎月{product.unit}
                                                         時間を使う
-                                                    </p>
-                                                    <p className="mt-8">
+                                                    </div>
+                                                    <div className="mt-8">
                                                         <span className="text-4xl tracking-tight font-bold text-gray-900">
                                                             {PriceFormatter(
                                                                 product.price
@@ -599,7 +601,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                                                         <span className="text-base font-bold text-gray-500">
                                                             /月
                                                         </span>
-                                                    </p>
+                                                    </div>
                                                     <button
                                                         onClick={() => {
                                                             initiateSpaceSubscription(

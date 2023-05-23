@@ -21,15 +21,15 @@ export const RegisterCTAHost = () => {
             </div>
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
                 <div className="md:ml-auto md:w-1/2 md:pl-10">
-                    <p className="mt-2 text-3xl font-bold tracking-tight text-white">
+                    <div className="mt-2 text-3xl font-bold tracking-tight text-white">
                         サービス提供者（掲載する）
-                    </p>
-                    <p className="mt-5 text-gray-300 text-md">
+                    </div>
+                    <div className="mt-5 text-gray-300 text-md">
                         ～自分のスキルを告知できる～
-                    </p>
-                    <p className="mt-5 text-gray-300 text-md">
+                    </div>
+                    <div className="mt-5 text-gray-300 text-md">
                         ～空いてるスペースを活用できる～
-                    </p>
+                    </div>
                     <div className="flex mt-10 space-x-4">
                         <CTAButton link="/auth/host-register">
                             借りたい人はこちら

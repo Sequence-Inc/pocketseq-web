@@ -87,9 +87,9 @@ const PhotoUploadField = React.forwardRef<
                                 />
                             </label>
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500">
                             JPEGファイルでご登録下さい。
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

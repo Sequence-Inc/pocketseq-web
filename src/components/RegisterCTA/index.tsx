@@ -21,12 +21,12 @@ export const RegisterCTA = () => {
             </div>
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-16">
                 <div className="md:ml-auto md:w-1/2 md:pl-10">
-                    <p className="mt-2 text-3xl font-bold tracking-tight text-white">
+                    <div className="mt-2 text-3xl font-bold tracking-tight text-white">
                         会員登録すればいろいろな体験とお気に入りの場所が見つかります。
-                    </p>
-                    <p className="mt-5 text-gray-400 text-md">
+                    </div>
+                    <div className="mt-5 text-gray-400 text-md">
                         無料登録でスペースや技術を借りたり提供したりしてみよう
-                    </p>
+                    </div>
                     <div className="flex mt-10 space-x-4">
                         <CTAButton link="/auth/host-register">
                             借りたい人はこちら

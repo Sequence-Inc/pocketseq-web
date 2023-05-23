@@ -23,10 +23,10 @@ export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                     Preview
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">
+                <div className="mt-1 text-sm text-gray-500">
                     This information will be displayed publicly so be sure to
                     add valid information.
-                </p>
+                </div>
             </div>
             <div className="px-4 sm:p-0">
                 <dl className="">
@@ -116,16 +116,16 @@ export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
                                                     aria-hidden="true"
                                                 />
                                                 <div>
-                                                    <p className="ml-2 truncate">
+                                                    <div className="ml-2 truncate">
                                                         {
                                                             station.station
                                                                 .stationName
                                                         }
-                                                    </p>
-                                                    <p className="ml-2 text-xs font-medium text-gray-400 truncate">
+                                                    </div>
+                                                    <div className="ml-2 text-xs font-medium text-gray-400 truncate">
                                                         @{station.via},{" "}
                                                         {station.time} minutes
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>
@@ -144,8 +144,8 @@ export default function Preview({ activeStep, setActiveStep, steps, spaceId }) {
                                         <div className="flex">
                                             <PaperClipIcon className="flex-shrink-0 w-5 h-5 text-gray-400" aria-hidden="true" />
                                             <div>
-                                                <p className="ml-2 truncate">{price.title}</p>
-                                                <p className="ml-2 text-xs font-medium text-gray-400 truncate">{price.type}, {price.amount} yen</p>
+                                                <div className="ml-2 truncate">{price.title}</div>
+                                                <div className="ml-2 text-xs font-medium text-gray-400 truncate">{price.type}, {price.amount} yen</div>
                                             </div>
                                         </div>
                                     </li>

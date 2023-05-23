@@ -170,9 +170,9 @@ const FileUpload = React.forwardRef<HTMLInputElement, PhotoUploadFieldProps>(
                                         />
                                     </label>
                                 </div>
-                                <p className="text-xs text-gray-500 text-center">
+                                <div className="text-xs text-gray-500 text-center">
                                     {t("photo-upload-description")}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -219,7 +219,7 @@ const DefaultPhotos = ({ photos, deletePhoto, madeDefault, mutatingPhoto }) => {
                             <div className="absolute opacity-50 w-36 h-36 top-0 border-4 flex items-center justify-center space-x-2">
                                 <div className="w-4 h-4 border-[2px] border-green-400 border-l-0 border-solid rounded-full animate-spin "></div>
 
-                                <p className="max-w-min">Loading</p>
+                                <div className="max-w-min">Loading</div>
                             </div>
                         )}
                         {typeof photo === "object" &&

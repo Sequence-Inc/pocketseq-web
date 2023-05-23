@@ -125,9 +125,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
             <form className="px-2" onSubmit={onSubmit}>
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             オプションの名前
-                        </p>
+                        </div>
                         <TextField
                             disabled={loading}
                             label={""}
@@ -141,7 +141,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">概要</p>
+                        <div className="text-sm leading-5 font-medium">
+                            概要
+                        </div>
                         <TextArea
                             disabled={loading}
                             label={""}
@@ -286,9 +288,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                                         })}
                                         error={errors.cutOffBeforeDays && true}
                                     />
-                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                    <div className="text-sm leading-6 font-medium min-w-max">
                                         Days Before
-                                    </p>
+                                    </div>
                                 </div>
                                 <div className="flex items-center  space-x-2 ">
                                     <Controller
@@ -318,9 +320,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                                             />
                                         )}
                                     />
-                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                    <div className="text-sm leading-6 font-medium min-w-max">
                                         Till time
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -331,13 +333,13 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                             <h3 className="font-medium text-lg text-gray-900">
                                 Photos
                             </h3>
-                            <p className="text-gray-500">
+                            <div className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
-                            </p>
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-700 font-medium">
+                        <div className="text-sm text-gray-700 font-medium">
                             アップロードフォト
-                        </p>
+                        </div>
                         <Controller
                             rules={{
                                 required:
@@ -431,7 +433,9 @@ const AddOptionsForm = (props: TOptionFormProps) => {
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">在庫</p>
+                        <div className="text-sm leading-5 font-medium">
+                            在庫
+                        </div>
                         <TextField
                             disabled={loading}
                             label={""}

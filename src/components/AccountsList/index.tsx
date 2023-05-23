@@ -178,11 +178,11 @@ export const AccountsList = ({ filterOptions }) => {
                         aria-label="Pagination"
                     >
                         <div className="hidden sm:block">
-                            <p className="text-sm text-gray-700">
+                            <div className="text-sm text-gray-700">
                                 Showing <span className="font-medium">1</span>{" "}
                                 to <span className="font-medium">10</span> of{" "}
                                 <span className="font-medium">20</span> results
-                            </p>
+                            </div>
                         </div>
                         <div className="flex justify-between flex-1 sm:justify-end">
                             <a

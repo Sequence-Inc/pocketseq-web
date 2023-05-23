@@ -133,14 +133,14 @@ const ReservationById = ({ userSession, id }) => {
                             <h3 className="text-lg leading-6 font-bold text-gray-700">
                                 {space.name}
                             </h3>
-                            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                            <div className="mt-1 max-w-2xl text-sm text-gray-500">
                                 {moment(fromDateTime).format(
                                     "YYYY/MM/DD HH:mm"
                                 )}
                                 から
                                 {moment(toDateTime).format("YYYY/MM/DD HH:mm")}
                                 まで
-                            </p>
+                            </div>
                         </div>
                         {status !== "CANCELED" && (
                             <div className="flex w-60 space-x-4 items-center">
@@ -365,9 +365,9 @@ const ReservationById = ({ userSession, id }) => {
                                             >
                                                 予約をキャンセルする
                                             </Dialog.Title>
-                                            <p className="mt-3 text-sm text-gray-500">
+                                            <div className="mt-3 text-sm text-gray-500">
                                                 この予約をキャンセルしてもよろしいですか？
-                                            </p>
+                                            </div>
                                         </div>
                                         <div className="mt-4 pt-4 mb-4 space-y-3">
                                             <div className="text-sm text-gray-500">

@@ -43,9 +43,9 @@ const PinDialogContent = ({
             >
                 パスワードリセットコードを確認
             </h3>
-            <p className="text-sm text-center text-gray-600">
+            <div className="text-sm text-center text-gray-600">
                 確認コードをメールでお送りしました
-            </p>
+            </div>
             <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
                     確認コード入力

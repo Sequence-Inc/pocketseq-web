@@ -168,9 +168,9 @@ const Contact = ({ userSession }) => {
                                         />
                                     )}
                                 />
-                                <p className="text-xs text-gray-500">
+                                <div className="text-xs text-gray-500">
                                     お問合せ種別を選択してください
-                                </p>
+                                </div>
                             </div>
 
                             <div className=" sm:w-full">
@@ -209,9 +209,9 @@ const Contact = ({ userSession }) => {
                                     disabled={loading}
                                 />
 
-                                <p className="text-xs text-gray-500">
+                                <div className="text-xs text-gray-500">
                                     お問合せの詳細をご入力ください。なお、スペースの掲載内容に関するお問合せについては、ポケットシークでは回答できかねます。
-                                </p>
+                                </div>
                             </div>
                             {errorMessage && (
                                 <div className="bg-red-100 text-red-600 px-4 py-2 rounded-md border border-red-200">

@@ -73,14 +73,14 @@ const Modal = forwardRef((props: any, ref) => {
                                             Deactivate account
                                         </Dialog.Title>
                                         <div className="mt-2">
-                                            <p className="text-sm text-gray-500">
+                                            <div className="text-sm text-gray-500">
                                                 Are you sure you want to
                                                 deactivate your account? All of
                                                 your data will be permanently
                                                 removed from our servers
                                                 forever. This action cannot be
                                                 undone.
-                                            </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

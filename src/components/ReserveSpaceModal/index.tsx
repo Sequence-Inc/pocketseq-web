@@ -148,11 +148,11 @@ const ReserveSpaceModal = ({
                                         {fetchingSpace && <LoadingSpinner />}
                                         {!fetchingSpace &&
                                             fetchingSpaceError && (
-                                                <p>
+                                                <div>
                                                     Could not load space
                                                     details. Please try again
                                                     later
-                                                </p>
+                                                </div>
                                             )}
                                         {!fetchingSpace &&
                                             !fetchingSpaceError && (
@@ -163,11 +163,11 @@ const ReserveSpaceModal = ({
                                                                 <h5 className="font-bold">
                                                                     施設名
                                                                 </h5>
-                                                                <p className="text-gray-500">
+                                                                <div className="text-gray-500">
                                                                     {
                                                                         spaceDetails?.name
                                                                     }
-                                                                </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start justify-between">
@@ -175,13 +175,13 @@ const ReserveSpaceModal = ({
                                                                 <h5 className="font-bold">
                                                                     タイプ
                                                                 </h5>
-                                                                <p className="text-gray-500">
+                                                                <div className="text-gray-500">
                                                                     {
                                                                         spaceDetails
                                                                             ?.spaceTypes[0]
                                                                             .title
                                                                     }
-                                                                </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start justify-between">
@@ -189,10 +189,10 @@ const ReserveSpaceModal = ({
                                                                 <h5 className="font-bold">
                                                                     住所
                                                                 </h5>
-                                                                <p className="text-gray-500">
+                                                                <div className="text-gray-500">
                                                                     {addressText ||
                                                                         ""}
-                                                                </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start justify-between">
@@ -200,7 +200,7 @@ const ReserveSpaceModal = ({
                                                                 <h5 className="font-bold">
                                                                     チェックイン
                                                                 </h5>
-                                                                <p className="text-gray-500">
+                                                                <div className="text-gray-500">
                                                                     {reservationData?.fromDateTime &&
                                                                         moment(
                                                                             reservationData?.fromDateTime
@@ -214,7 +214,7 @@ const ReserveSpaceModal = ({
                                                                         ).format(
                                                                             "hh:mm a"
                                                                         )}
-                                                                </p>
+                                                                </div>
                                                             </div>
                                                         </div>
 
@@ -241,15 +241,15 @@ const ReserveSpaceModal = ({
                                                                             >
                                                                                 <CheckIcon className="w-6 text-green-400" />
                                                                                 <span className="flex items-center space-x-2">
-                                                                                    <p>
+                                                                                    <div>
                                                                                         {
                                                                                             includedOption?.name
                                                                                         }
-                                                                                    </p>
-                                                                                    <p className="text-xs text-gray-500">
+                                                                                    </div>
+                                                                                    <div className="text-xs text-gray-500">
                                                                                         {includedOption?.description &&
                                                                                             `(${includedOption?.description})`}
-                                                                                    </p>
+                                                                                    </div>
                                                                                 </span>
                                                                             </div>
                                                                         )
@@ -313,36 +313,36 @@ const ReserveSpaceModal = ({
                                                                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                                                                             />
                                                                                             <div className="flex flex-col space-y-1">
-                                                                                                <p className="text-base leading-5 font-bold">
+                                                                                                <div className="text-base leading-5 font-bold">
                                                                                                     {
                                                                                                         additionalField?.name
                                                                                                     }
-                                                                                                </p>
+                                                                                                </div>
 
                                                                                                 {paymentTerm && (
                                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
-                                                                                                        <p>
+                                                                                                        <div>
                                                                                                             {PriceFormatter(
                                                                                                                 additionalField?.additionalPrice
                                                                                                             )}
-                                                                                                        </p>
-                                                                                                        <p>
+                                                                                                        </div>
+                                                                                                        <div>
                                                                                                             /
-                                                                                                        </p>
-                                                                                                        <p>
+                                                                                                        </div>
+                                                                                                        <div>
                                                                                                             {
                                                                                                                 paymentTerm
                                                                                                             }
-                                                                                                        </p>
+                                                                                                        </div>
                                                                                                     </span>
                                                                                                 )}
                                                                                                 {!paymentTerm && (
                                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
-                                                                                                        <p className="text-sm text-gray-500">
+                                                                                                        <div className="text-sm text-gray-500">
                                                                                                             No
                                                                                                             additional
                                                                                                             charge
-                                                                                                        </p>
+                                                                                                        </div>
                                                                                                     </span>
                                                                                                 )}
                                                                                             </div>
@@ -375,11 +375,11 @@ const ReserveSpaceModal = ({
                                                                                             </div>
 
                                                                                             <div className=" flex items-center ">
-                                                                                                <p className="font-normal text-base w-12">
+                                                                                                <div className="font-normal text-base w-12">
                                                                                                     {
                                                                                                         paymentTerm
                                                                                                     }
-                                                                                                </p>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -406,12 +406,12 @@ const ReserveSpaceModal = ({
                                                                 </div>
 
                                                                 {priceData && (
-                                                                    <p>
+                                                                    <div>
                                                                         {PriceFormatter(
                                                                             priceData?.spaceAmount /
                                                                                 1.1
                                                                         )}
-                                                                    </p>
+                                                                    </div>
                                                                 )}
                                                             </div>
 
@@ -444,19 +444,19 @@ const ReserveSpaceModal = ({
                                                                                     }
                                                                                 >
                                                                                     <span className="flex space-x-2 items-end">
-                                                                                        <p>
+                                                                                        <div>
                                                                                             {
                                                                                                 additionalfield?.name
                                                                                             }
-                                                                                        </p>
+                                                                                        </div>
 
-                                                                                        <p className="text-gray-400 text-sm">
+                                                                                        <div className="text-gray-400 text-sm">
                                                                                             {
                                                                                                 additionalfield?.quantity
                                                                                             }
-                                                                                        </p>
+                                                                                        </div>
                                                                                     </span>
-                                                                                    <p
+                                                                                    <div
                                                                                         className={`${
                                                                                             optionsCharge ===
                                                                                                 "No Charge" &&
@@ -466,7 +466,7 @@ const ReserveSpaceModal = ({
                                                                                         {
                                                                                             optionsCharge
                                                                                         }
-                                                                                    </p>
+                                                                                    </div>
                                                                                 </div>
                                                                             );
                                                                         }
@@ -474,11 +474,11 @@ const ReserveSpaceModal = ({
                                                             <div className="flex items-center justify-between text-base">
                                                                 <div>税金</div>
 
-                                                                <p>
+                                                                <div>
                                                                     {PriceFormatter(
                                                                         taxCalculated
                                                                     )}
-                                                                </p>
+                                                                </div>
                                                             </div>
                                                             <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3 text-base">
                                                                 <div>
@@ -486,11 +486,11 @@ const ReserveSpaceModal = ({
                                                                 </div>
 
                                                                 {priceData?.total && (
-                                                                    <p>
+                                                                    <div>
                                                                         {PriceFormatter(
                                                                             priceData?.total
                                                                         )}
-                                                                    </p>
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -526,9 +526,9 @@ const ReserveSpaceModal = ({
                                                                 </div>
                                                             ))}
                                                         <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
-                                                            <p className="font-bold">
+                                                            <div className="font-bold">
                                                                 適用されるサブスクリプション:
-                                                            </p>
+                                                            </div>
                                                             <hr />
                                                             <SubsciptionBox
                                                                 hasSpaceSubscriptions={

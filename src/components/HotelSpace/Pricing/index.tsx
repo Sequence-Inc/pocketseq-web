@@ -169,9 +169,9 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
             {!hotelRooms?.myHotelRooms?.data?.length && (
                 <div className="flex flex-col space-y-4">
-                    <p className="text-sm font-semibold text-gray-500">
+                    <div className="text-sm font-semibold text-gray-500">
                         Rooms are not added yet!! Please add rooms first.
-                    </p>
+                    </div>
                     <Button
                         variant="primary"
                         className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"

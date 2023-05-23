@@ -125,9 +125,9 @@ const Basic = ({
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                     スペース
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">
+                <div className="mt-1 text-sm text-gray-500">
                     この情報は公開されますので、有効な情報を入力してください。
-                </p>
+                </div>
             </div>
             {spaceDetailLoading ? (
                 <LoadingSpinner />
@@ -232,98 +232,95 @@ const Basic = ({
                             />
                         </div> */}
                         <div className="sm:space-x-4 flex-none sm:flex items-center">
-                        <label
+                            <label
                                 htmlFor=""
                                 className="block text-sm font-bold text-gray-700 sm:text-right w-60"
                             >
                                 スペースタイプ
                             </label>
                             <div className="relative rounded-md sm:w-96">
-                            <Controller
-                                name="spaceTypes"
-                                control={control}
-                                rules={{ required: true }}
-                                render={({
-                                    field: {
-                                        ref,
-                                        name,
-                                        value,
-                                        onChange,
-                                        onBlur,
-                                    },
-                                }) => {
-                                    // const selectedSpaceTypes =
-                                    //     spaceTypes?.availableSpaceTypes?.filter(
-                                    //         (type) => value.includes(type.id)
-                                    //     );
-                                    // console.log(selectedSpaceTypes);
-                                    return (
-                                        <ReactSelect
-                                            options={
-                                                spaceTypes?.availableSpaceTypes?.map(
-                                                    (items) => ({
-                                                        value: items.id,
-                                                        label: items.title,
-                                                    })
-                                                ) || []
-                                            }
-                                            value={
-                                                value?.map((item) => ({
-                                                    value: item.id,
-                                                    label: item.title,
-                                                })) || []
-                                            }
-                                            isMulti={true}
-                                            isLoading={loading}
-                                            onChange={(event) => {
-                                                console.log(event);
-                                                const newValue = event.map(
-                                                    (item) => {
-                                                        return spaceTypes?.availableSpaceTypes?.filter(
-                                                            (spaceType) =>
-                                                                item.value ===
-                                                                spaceType.id
-                                                        )[0];
-                                                    }
-                                                );
-                                                console.log(newValue);
-                                                setValue(
-                                                    "spaceTypes",
-                                                    newValue
-                                                );
-                                            }}
-                                            onBlur={onBlur}
-                                            ref={ref}
-                                            name={name}
-                                        />
-                                    );
-                                }}
-                            />
+                                <Controller
+                                    name="spaceTypes"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field: {
+                                            ref,
+                                            name,
+                                            value,
+                                            onChange,
+                                            onBlur,
+                                        },
+                                    }) => {
+                                        // const selectedSpaceTypes =
+                                        //     spaceTypes?.availableSpaceTypes?.filter(
+                                        //         (type) => value.includes(type.id)
+                                        //     );
+                                        // console.log(selectedSpaceTypes);
+                                        return (
+                                            <ReactSelect
+                                                options={
+                                                    spaceTypes?.availableSpaceTypes?.map(
+                                                        (items) => ({
+                                                            value: items.id,
+                                                            label: items.title,
+                                                        })
+                                                    ) || []
+                                                }
+                                                value={
+                                                    value?.map((item) => ({
+                                                        value: item.id,
+                                                        label: item.title,
+                                                    })) || []
+                                                }
+                                                isMulti={true}
+                                                isLoading={loading}
+                                                onChange={(event) => {
+                                                    console.log(event);
+                                                    const newValue = event.map(
+                                                        (item) => {
+                                                            return spaceTypes?.availableSpaceTypes?.filter(
+                                                                (spaceType) =>
+                                                                    item.value ===
+                                                                    spaceType.id
+                                                            )[0];
+                                                        }
+                                                    );
+                                                    console.log(newValue);
+                                                    setValue(
+                                                        "spaceTypes",
+                                                        newValue
+                                                    );
+                                                }}
+                                                onBlur={onBlur}
+                                                ref={ref}
+                                                name={name}
+                                            />
+                                        );
+                                    }}
+                                />
                             </div>
                         </div>
 
                         <div className="">
-                            
-                                <Controller
-                                    name="cancelPolicyId"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            label={"キャンセルポリシー"}
-                                            options={cancelPolicies || []}
-                                            error={
-                                                errors.cancelPolicyId && true
-                                            }
-                                            errorMessage="Cancel Policy is required"
-                                            labelKey="name"
-                                            valueKey="id"
-                                            disabled={loading}
-                                            singleRow
-                                        />
-                                    )}
-                                />
+                            <Controller
+                                name="cancelPolicyId"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label={"キャンセルポリシー"}
+                                        options={cancelPolicies || []}
+                                        error={errors.cancelPolicyId && true}
+                                        errorMessage="Cancel Policy is required"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        disabled={loading}
+                                        singleRow
+                                    />
+                                )}
+                            />
                         </div>
 
                         <div className="items-center flex-none sm:space-x-4 sm:flex">
@@ -373,9 +370,9 @@ const Basic = ({
 
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
                             <div className="flex justify-between items-center pb-4 space-x-4">
-                                <p className="font-bold text-base">
+                                <div className="font-bold text-base">
                                     含まれるオプション
-                                </p>
+                                </div>
                             </div>
                             <div className="flex flex-wrap">
                                 {includedOptions?.map((option: any, index) => (
@@ -399,18 +396,18 @@ const Basic = ({
                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                         />
 
-                                        <p className="text-sm leading-4 font-medium">
+                                        <div className="text-sm leading-4 font-medium">
                                             {option?.name}
-                                        </p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         <div className="flex flex-col items-start justify-evenly  mx-auto w-9/12  ">
-                            <p className="font-bold text-base">
+                            <div className="font-bold text-base">
                                 追加のオプション
-                            </p>
+                            </div>
                             <div className="flex flex-wrap">
                                 {additionalOptions?.map(
                                     (option: any, index) => (
@@ -434,9 +431,9 @@ const Basic = ({
                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                             />
 
-                                            <p className="text-sm leading-4 font-medium">
+                                            <div className="text-sm leading-4 font-medium">
                                                 {option?.name}
-                                            </p>
+                                            </div>
                                         </div>
                                     )
                                 )}

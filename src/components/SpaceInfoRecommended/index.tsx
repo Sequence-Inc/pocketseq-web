@@ -7,7 +7,9 @@ export const SpaceInfoRecommended = () => {
         <div className="py-8 mt-16 bg-gray-100">
             <Container>
                 <div className="flex items-center justify-between px-1 pb-3 mb-4 border-b border-gray-200">
-                    <p className="text-xl text-gray-800">宿泊先をもっと見る</p>
+                    <div className="text-xl text-gray-800">
+                        宿泊先をもっと見る
+                    </div>
                     <a
                         href="#"
                         className="flex items-center text-xs text-gray-500 hover:text-primary"
