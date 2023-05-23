@@ -60,12 +60,12 @@ export default function Services({ userSession }) {
                     <div>
                         <div className="relative">
                             <div className="mx-auto text-center">
-                                <p className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
+                                <div className="mt-2 text-2xl tracking-tight text-primary sm:text-3xl">
                                     サービスについて
-                                </p>
-                                <p className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
+                                </div>
+                                <div className="w-4/5 mx-auto mt-6 text-xl font-light text-gray-500">
                                     ゴーシュは二つ療たりそれを習えてくれた。壁も栗にそうになりてあたりを譜のようをわらいてゴーシュを云いてぐっと音をいえがいまし。何とかごくごくおしまいがセロをむしっなた。
-                                </p>
+                                </div>
                                 <div className="grid grid-cols-1 gap-4 mt-12 sm:grid-cols-2 md:grid-cols-3 lg:gap-6">
                                     {categories.map((res) => (
                                         <Link href="/search" key={res.photo}>

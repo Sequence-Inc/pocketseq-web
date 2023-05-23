@@ -41,7 +41,7 @@ const ProgressModal = (props: IProgressModalProps) => {
             return (
                 failedContent || (
                     <div>
-                        <p>Failed</p>
+                        <div>Failed</div>
                     </div>
                 )
             );
@@ -49,7 +49,7 @@ const ProgressModal = (props: IProgressModalProps) => {
             return (
                 succeededContent || (
                     <div>
-                        <p>Success</p>
+                        <div>Success</div>
                     </div>
                 )
             );

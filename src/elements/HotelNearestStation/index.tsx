@@ -80,10 +80,10 @@ export const HotelNearestStation = React.forwardRef<
                     );
                 })}
                 {!toggleForm && stations?.length < 1 ? (
-                    <p className="text-sm text-center text-gray-800">
+                    <div className="text-sm text-center text-gray-800">
                         No Nearest station added yet. Please in below button to
                         add new station
-                    </p>
+                    </div>
                 ) : null}
             </div>
 

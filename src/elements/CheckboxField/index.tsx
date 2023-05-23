@@ -37,9 +37,9 @@ const CheckBoxField = () => {
                     >
                         Comments
                     </label>
-                    <p id="comments-description" className="text-gray-500">
+                    <div id="comments-description" className="text-gray-500">
                         Get notified when someones posts a comment on a posting.
-                    </p>
+                    </div>
                 </div>
             </div>
             <div className="relative flex items-start">
@@ -59,9 +59,9 @@ const CheckBoxField = () => {
                     >
                         Candidates
                     </label>
-                    <p id="candidates-description" className="text-gray-500">
+                    <div id="candidates-description" className="text-gray-500">
                         Get notified when a candidate applies for a job.
-                    </p>
+                    </div>
                 </div>
             </div>
             <div className="relative flex items-start">
@@ -81,10 +81,10 @@ const CheckBoxField = () => {
                     >
                         Offers
                     </label>
-                    <p id="offers-description" className="text-gray-500">
+                    <div id="offers-description" className="text-gray-500">
                         Get notified when a candidate accepts or rejects an
                         offer.
-                    </p>
+                    </div>
                 </div>
             </div>
         </fieldset>

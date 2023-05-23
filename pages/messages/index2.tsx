@@ -304,9 +304,9 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                 >
                                     <div className="w-10 h-10 bg-gray-200 rounded-full" />
                                     <div className="ml-3">
-                                        <p className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm font-medium text-gray-900">
                                             {newChat.name}
-                                        </p>
+                                        </div>
                                     </div>
                                 </li>
                             )}
@@ -341,10 +341,10 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
                                             <div className="w-10 h-10 bg-gray-200 rounded-full" />
                                         )}
                                         <div className="ml-3">
-                                            <p className="text-sm font-medium text-gray-900">
+                                            <div className="text-sm font-medium text-gray-900">
                                                 {filteredPerson?.lastName}{" "}
                                                 {filteredPerson?.firstName}
-                                            </p>
+                                            </div>
                                         </div>
                                     </li>
                                 );

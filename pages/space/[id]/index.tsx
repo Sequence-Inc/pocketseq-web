@@ -169,13 +169,13 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
             >
                 <h3>{plan.title}</h3>
-                <p>
+                <div>
                     {PriceFormatter(plan.amount)}
                     <span className="text-base text-gray-700">
                         /{plan.duration}
                         {durationSuffix(plan.type)}
                     </span>
-                </p>
+                </div>
             </div>
         );
     };
@@ -330,57 +330,57 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <>
                             <div className="flex items-center justify-center space-x-2">
                                 <CheckIcon className="text-green-600 w-10" />
-                                <p className="text-xl font-medium text-green-600">
+                                <div className="text-xl font-medium text-green-600">
                                     Success
-                                </p>
+                                </div>
                             </div>
                             <div className="mt-4  space-x-2 space-y-2 ">
-                                <p className="text-gray-500 text-base text-center">
+                                <div className="text-gray-500 text-base text-center">
                                     Successfully reserved space.
-                                </p>
+                                </div>
                                 <span className="flex items-center justify-center space-x-2">
-                                    <p className="text-gray-600   text-sm text-center">
+                                    <div className="text-gray-600   text-sm text-center">
                                         Transaction Id :
-                                    </p>
+                                    </div>
                                     {reservationSuccessData?.reserveSpace && (
-                                        <p className="text-gray-500  font-bold text-center">
+                                        <div className="text-gray-500  font-bold text-center">
                                             {
                                                 reservationSuccessData
                                                     ?.reserveSpace
                                                     ?.reservationId
                                             }
-                                        </p>
+                                        </div>
                                     )}
                                 </span>
                             </div>
                             <span className="flex items-center justify-center space-x-2">
-                                <p className="text-gray-600   text-sm text-center">
+                                <div className="text-gray-600   text-sm text-center">
                                     Subscriptions utilized (Units) :
-                                </p>
+                                </div>
                                 {reservationSuccessData?.reserveSpace
                                     ?.subscriptionUnit && (
-                                    <p className="text-gray-500  font-bold text-center">
+                                    <div className="text-gray-500  font-bold text-center">
                                         {
                                             reservationSuccessData?.reserveSpace
                                                 ?.subscriptionUnit
                                         }
                                         /night
-                                    </p>
+                                    </div>
                                 )}
                             </span>
 
                             <span className="flex items-center justify-center space-x-2">
-                                <p className="text-gray-600   text-sm text-center">
+                                <div className="text-gray-600   text-sm text-center">
                                     Price not covered by subscription
-                                </p>
+                                </div>
                                 {reservationSuccessData?.reserveSpace
                                     ?.amount && (
-                                    <p className="text-gray-500  font-bold text-center">
+                                    <div className="text-gray-500  font-bold text-center">
                                         {PriceFormatter(
                                             reservationSuccessData?.reserveSpace
                                                 ?.amount
                                         )}
-                                    </p>
+                                    </div>
                                 )}
                             </span>
                         </>
@@ -390,16 +390,16 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                         <div className="space-y-4">
                             <div className="flex items-center justify-center space-x-3">
                                 <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
-                                <p className="text-xl font-medium text-red-600">
+                                <div className="text-xl font-medium text-red-600">
                                     Error
-                                </p>
+                                </div>
                             </div>
                             <div className="mt-2 space-x-2 space-y-2 ">
-                                <p className="text-gray-500 text-base ">
+                                <div className="text-gray-500 text-base ">
                                     {reservationFailure?.message ||
                                         `Could not reserve space. Please try again
                                     later!`}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     }

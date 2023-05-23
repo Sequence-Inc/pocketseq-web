@@ -69,9 +69,9 @@ export const SpaceInfoReviews = () => {
         <div className="pb-20">
             <div className="flex items-center space-x-2">
                 <StarIcon className="w-5 h-5 text-red-500" />
-                <p className="text-lg font-bold text-gray-700">
+                <div className="text-lg font-bold text-gray-700">
                     4.52（99件のレビュー）
-                </p>
+                </div>
             </div>
             <div className="grid max-w-3xl grid-cols-1 py-5 space-y-2 sm:grid-cols-2">
                 {reviews.map((res, index) => (

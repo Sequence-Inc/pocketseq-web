@@ -113,9 +113,9 @@ const Teaser = () => {
                                         <h2 className="text-5xl font-bold text-white">
                                             「人×場所×体験」を繋げる
                                         </h2>
-                                        <p className="mt-4 text-2xl text-green-100">
+                                        <div className="mt-4 text-2xl text-green-100">
                                             さぁ、思い思いの場所と体験を見つけに行こう！
-                                        </p>
+                                        </div>
                                     </div>
                                     <div>
                                         <Link href="/auth/host-register">
@@ -125,14 +125,14 @@ const Teaser = () => {
                                         </Link>
                                     </div>
                                     <div>
-                                        <p className="text-white">
+                                        <div className="text-white">
                                             アカウントをお持ちの方
                                             <Link href="/auth/login">
                                                 <a className="text-base font-medium text-center text-white hover:text-green-50 border border-transparent rounded-md bg-primary hover:underline sm:inline-block sm:w-auto">
                                                     ログインする
                                                 </a>
                                             </Link>
-                                        </p>
+                                        </div>
                                     </div>
                                     <div>
                                         <a
@@ -144,9 +144,9 @@ const Teaser = () => {
                                             についてプレスリリースはこちら
                                         </a>
                                     </div>
-                                    <p className="pt-10 text-sm text-green-100">
+                                    <div className="pt-10 text-sm text-green-100">
                                         &copy; copyright {config.appName} 2022.
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

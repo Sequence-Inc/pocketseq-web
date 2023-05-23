@@ -17,15 +17,15 @@ export const RegisterCTAGuest = () => {
         <div className="relative overflow-hidden bg-primary rounded-2xl">
             <div className="relative px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-20">
                 <div className="md:mr-auto md:w-1/2 md:pr-10">
-                    <p className="mt-2 text-right text-3xl font-bold tracking-tight text-white">
+                    <div className="mt-2 text-right text-3xl font-bold tracking-tight text-white">
                         レンタル（体験する）
-                    </p>
-                    <p className="mt-5 text-right text-white text-md">
+                    </div>
+                    <div className="mt-5 text-right text-white text-md">
                         ～目的にあったスペースを探すことができる～
-                    </p>
-                    <p className="mt-5 text-right text-white text-md">
+                    </div>
+                    <div className="mt-5 text-right text-white text-md">
                         ～興味ある体験を探すことができる～
-                    </p>
+                    </div>
                     <div className="flex justify-end mt-10 space-x-4">
                         <CTAButton link="/auth/register">
                             ゲスト登録する

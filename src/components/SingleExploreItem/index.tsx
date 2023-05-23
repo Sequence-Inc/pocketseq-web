@@ -23,12 +23,12 @@ export const SingleExploreItem = ({ name, distance, photo }: IExploreItem) => {
                 </Link>
             </div>
             <div className="px-4 py-3">
-                <p className="mb-1 text-gray-800">
+                <div className="mb-1 text-gray-800">
                     <Link href="/search">
                         <a>{name}</a>
                     </Link>
-                </p>
-                <p className="text-xs text-gray-500">{distance}</p>
+                </div>
+                <div className="text-xs text-gray-500">{distance}</div>
             </div>
         </div>
     );

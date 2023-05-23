@@ -96,9 +96,11 @@ const PhotoIdUpload = ({ userSession }) => {
                             disabled={loading}
                         />
                     </label>
-                    {/* <p className="pl-1">アップロードする</p> */}
+                    {/* <div className="pl-1">アップロードする</div> */}
                 </div>
-                <p className="text-xs text-gray-500">JPEGファイルのみ対応</p>
+                <div className="text-xs text-gray-500">
+                    JPEGファイルのみ対応
+                </div>
             </div>
         </div>
     );
@@ -152,9 +154,9 @@ const PhotoIdUpload = ({ userSession }) => {
                                 <h3 className="text-xl font-medium text-gray-700">
                                     アップロードする
                                 </h3>
-                                <p className="mt-4 text-gray-600">
+                                <div className="mt-4 text-gray-600">
                                     現在、運転免許証またはパスポートが、政府発行の有効な写真付き身分証明書として認められています。
-                                </p>
+                                </div>
                                 <div className="mt-8 mr-8 sm:max-w-md">
                                     {content}
                                 </div>

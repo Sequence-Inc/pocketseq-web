@@ -598,7 +598,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                                 {/* alert section */}
                                 {/* <div className="space-y-4">
                                     <Alert Icon={SpeakerphoneIcon}>
-                                        <p>
+                                        <div>
                                             We are currently suspending all new
                                             bookings for the Go To Travel
                                             Campaign. We will update the details
@@ -609,15 +609,15 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                                                     Go To Travel Campaign FAQ
                                                 </a>
                                             </Link>
-                                        </p>
+                                        </div>
                                     </Alert>
                                     <Alert Icon={LightBulbIcon}>
-                                        <p className="font-medium">
+                                        <div className="font-medium">
                                             正確な料金を表示するために
-                                        </p>
-                                        <p className="text-sm">
+                                        </div>
+                                        <div className="text-sm">
                                             利用日と時間を設定すると、正確な合計金額が表示されます。
-                                        </p>
+                                        </div>
                                     </Alert>
                                 </div> */}
 

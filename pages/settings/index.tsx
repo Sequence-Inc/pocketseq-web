@@ -315,11 +315,11 @@ const UserSettings = ({ userSession }) => {
                                 disabled={loading}
                             />
                         </label>
-                        {/* <p className="pl-1">アップロードする</p> */}
+                        {/* <div className="pl-1">アップロードする</div> */}
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500">
                         JPEGファイルのみ対応
-                    </p>
+                    </div>
                 </div>
             </div>
         );
@@ -401,113 +401,126 @@ const UserSettings = ({ userSession }) => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
-                    <form onSubmit={onSubmit}>
-                        <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
-                            <div className="font-bold">
-                                ご利用者プロフィール
+                {myProfile.__typename === "UserProfile" && (
+                    <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
+                        <form onSubmit={onSubmit}>
+                            <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
+                                <div className="font-bold">
+                                    ご利用者プロフィール
+                                </div>
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    className="inline-block w-auto px-4"
+                                    loading={profileLoading || isLoading}
+                                >
+                                    アップデート
+                                </Button>
+                            </h3>
+                            <div className="space-y-3">
+                                <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
+                                    <div className="">
+                                        <TextField
+                                            {...register("lastName", {
+                                                required: true,
+                                            })}
+                                            label="性"
+                                            error={errors.lastName && true}
+                                            errorMessage="Last Name is required"
+                                            disabled={
+                                                profileLoading || isLoading
+                                            }
+                                            singleRow
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <TextField
+                                            {...register("firstName", {
+                                                required: true,
+                                            })}
+                                            label="名"
+                                            error={errors.firstName && true}
+                                            errorMessage="First Name is required"
+                                            autoFocus
+                                            disabled={
+                                                profileLoading || isLoading
+                                            }
+                                            singleRow
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <TextField
+                                            {...register("lastNameKana", {
+                                                required: true,
+                                            })}
+                                            label="性（カナ）"
+                                            error={errors.lastNameKana && true}
+                                            errorMessage="Last Name Kana is required"
+                                            disabled={
+                                                profileLoading || isLoading
+                                            }
+                                            singleRow
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <TextField
+                                            {...register("firstNameKana", {
+                                                required: true,
+                                            })}
+                                            label="名（カナ）"
+                                            error={errors.firstNameKana && true}
+                                            errorMessage="First Name Kana is required"
+                                            disabled={
+                                                profileLoading || isLoading
+                                            }
+                                            singleRow
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <TextField
+                                            label="Email"
+                                            value={myProfile?.email}
+                                            onChange={() => {}}
+                                            disabled
+                                            singleRow
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <TextField
+                                            {...register("dob", {
+                                                required: false,
+                                            })}
+                                            label="お誕生日"
+                                            error={errors.dob && true}
+                                            errorMessage="Date of birth is required"
+                                            disabled={
+                                                profileLoading || isLoading
+                                            }
+                                            defaultValue={
+                                                data?.myProfile?.dob ||
+                                                myProfile?.dob
+                                                    ? moment(
+                                                          data?.myProfile
+                                                              ?.dob ||
+                                                              myProfile?.dob
+                                                      ).format("YYYY-MM-DD")
+                                                    : ""
+                                            }
+                                            placeholder="YYYY-MM-DD"
+                                            type={
+                                                data?.myProfile?.dob ||
+                                                myProfile?.dob
+                                                    ? "text"
+                                                    : "date"
+                                            }
+                                            singleRow
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                className="inline-block w-auto px-4"
-                                loading={profileLoading || isLoading}
-                            >
-                                アップデート
-                            </Button>
-                        </h3>
-                        <div className="space-y-3">
-                            <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">
-                                <div className="">
-                                    <TextField
-                                        {...register("lastName", {
-                                            required: true,
-                                        })}
-                                        label="性"
-                                        error={errors.lastName && true}
-                                        errorMessage="Last Name is required"
-                                        disabled={profileLoading || isLoading}
-                                        singleRow
-                                    />
-                                </div>
-                                <div className="">
-                                    <TextField
-                                        {...register("firstName", {
-                                            required: true,
-                                        })}
-                                        label="名"
-                                        error={errors.firstName && true}
-                                        errorMessage="First Name is required"
-                                        autoFocus
-                                        disabled={profileLoading || isLoading}
-                                        singleRow
-                                    />
-                                </div>
-                                <div className="">
-                                    <TextField
-                                        {...register("lastNameKana", {
-                                            required: true,
-                                        })}
-                                        label="性（カナ）"
-                                        error={errors.lastNameKana && true}
-                                        errorMessage="Last Name Kana is required"
-                                        disabled={profileLoading || isLoading}
-                                        singleRow
-                                    />
-                                </div>
-                                <div className="">
-                                    <TextField
-                                        {...register("firstNameKana", {
-                                            required: true,
-                                        })}
-                                        label="名（カナ）"
-                                        error={errors.firstNameKana && true}
-                                        errorMessage="First Name Kana is required"
-                                        disabled={profileLoading || isLoading}
-                                        singleRow
-                                    />
-                                </div>
-                                <div className="">
-                                    <TextField
-                                        label="Email"
-                                        value={myProfile?.email}
-                                        onChange={() => {}}
-                                        disabled
-                                        singleRow
-                                    />
-                                </div>
-                                <div className="">
-                                    <TextField
-                                        {...register("dob", {
-                                            required: false,
-                                        })}
-                                        label="お誕生日"
-                                        error={errors.dob && true}
-                                        errorMessage="Date of birth is required"
-                                        disabled={profileLoading || isLoading}
-                                        defaultValue={
-                                            data?.myProfile?.dob ||
-                                            myProfile?.dob
-                                                ? moment(
-                                                      data?.myProfile?.dob ||
-                                                          myProfile?.dob
-                                                  ).format("YYYY-MM-DD")
-                                                : ""
-                                        }
-                                        placeholder="YYYY-MM-DD"
-                                        type={
-                                            data?.myProfile?.dob ||
-                                            myProfile?.dob
-                                                ? "text"
-                                                : "date"
-                                        }
-                                        singleRow
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                        </form>
+                    </div>
+                )}
                 <ChangePassword />
                 {paymentSource && (
                     <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">

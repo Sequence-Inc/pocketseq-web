@@ -109,7 +109,9 @@ const AddRoomForm = ({
             className="px-2 py-3 space-y-6 sm:py-6"
         >
             <div className="w-full lg:w-6/12 md:w-8/12">
-                <p className="text-sm leading-5 font-medium">ルームタイプ</p>
+                <div className="text-sm leading-5 font-medium">
+                    ルームタイプ
+                </div>
                 <TextField
                     label={""}
                     {...register("name", {
@@ -122,7 +124,7 @@ const AddRoomForm = ({
                 />
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
-                <p className="text-sm leading-5 font-medium">概要</p>
+                <div className="text-sm leading-5 font-medium">概要</div>
                 <TextArea
                     label=""
                     {...register("description", {
@@ -139,13 +141,13 @@ const AddRoomForm = ({
                     <h3 className="font-medium text-lg text-gray-900">
                         Photos
                     </h3>
-                    <p className="text-gray-500">
+                    <div className="text-gray-500">
                         この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
-                    </p>
+                    </div>
                 </div>
-                <p className="text-sm text-gray-700 font-medium">
+                <div className="text-sm text-gray-700 font-medium">
                     アップロードフォト
-                </p>
+                </div>
 
                 <Controller
                     rules={{
@@ -171,7 +173,9 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <p className="text-lg font-medium leading-6">支払い種類</p>
+                    <div className="text-lg font-medium leading-6">
+                        支払い種類
+                    </div>
                 </div>
                 <Controller
                     rules={{ required: true }}
@@ -201,7 +205,9 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <p className="text-lg font-medium leading-6">最大人数</p>
+                    <div className="text-lg font-medium leading-6">
+                        最大人数
+                    </div>
                 </div>
                 <div className="flex flex-col sm:flex-row space-x-0 space-y-2 sm:space-x-4 sm:space-y-0 ">
                     <div className="w-full">
@@ -211,9 +217,9 @@ const AddRoomForm = ({
                             rules={{ required: true }}
                             render={({ field }) => (
                                 <>
-                                    <p className="text-sm leading-5 font-medium text-gray-700">
+                                    <div className="text-sm leading-5 font-medium text-gray-700">
                                         大人
-                                    </p>
+                                    </div>
                                     <Select
                                         {...field}
                                         label={""}
@@ -244,9 +250,9 @@ const AddRoomForm = ({
                             rules={{ required: true }}
                             render={({ field }) => (
                                 <>
-                                    <p className="text-sm leading-5 font-medium text-gray-700">
+                                    <div className="text-sm leading-5 font-medium text-gray-700">
                                         子供
-                                    </p>
+                                    </div>
                                     <Select
                                         {...field}
                                         label={""}
@@ -274,7 +280,7 @@ const AddRoomForm = ({
 
             <div className="w-full  md:w-6/12">
                 <div className="w-full pb-2 flex items-center justify-between">
-                    <p className="text-lg font-medium leading-6">在庫</p>
+                    <div className="text-lg font-medium leading-6">在庫</div>
 
                     <Button
                         type="button"
@@ -304,9 +310,9 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12 space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
-                    <p className="text-lg font-medium leading-6">
+                    <div className="text-lg font-medium leading-6">
                         基本料金設定
-                    </p>
+                    </div>
                     <Button
                         type="button"
                         onClick={() =>
@@ -321,9 +327,9 @@ const AddRoomForm = ({
                     </Button>
                 </div>
                 {priceSchemes?.myPriceSchemes?.length < 1 && (
-                    <p className="space-y-3  text-base font-semibold text-center leading-10 mt-4 text-gray-400">
+                    <div className="space-y-3  text-base font-semibold text-center leading-10 mt-4 text-gray-400">
                         Add pricing schemes first (on next page)
-                    </p>
+                    </div>
                 )}
                 {priceSchemes?.myPriceSchemes?.length > 0 && (
                     <div className="flex flex-wrap space-y-3 lg:space-y-0 ">
@@ -332,7 +338,7 @@ const AddRoomForm = ({
                                 className="flex w-full sm:w-20 py-2  flex-row items-center justify-between lg:flex-1 lg:flex-col lg:justify-between lg:items-center lg:border first:rounded-l-md last:rounded-r-md "
                                 key={index}
                             >
-                                <p className="text-xl">{pricing.name}</p>
+                                <div className="text-xl">{pricing.name}</div>
                                 <Controller
                                     name={`basicPriceSettings.${index}`}
                                     control={control}

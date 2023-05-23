@@ -143,9 +143,9 @@ const General = ({
             <form onSubmit={onSubmit} id="add-hotel-space">
                 <div className="px-2 py-3 space-y-6 sm:py-6">
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             {t("name")}
-                        </p>
+                        </div>
                         <TextField
                             label={""}
                             {...register("name", {
@@ -159,7 +159,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12">
-                        <p className="text-sm leading-5 font-medium">概要</p>
+                        <div className="text-sm leading-5 font-medium">
+                            概要
+                        </div>
                         <TextArea
                             label=""
                             {...register("description", {
@@ -173,9 +175,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             施設のタイプ
-                        </p>
+                        </div>
 
                         <Controller
                             name={`buildingType`}
@@ -199,9 +201,9 @@ const General = ({
                     </div>
 
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             ペット許可
-                        </p>
+                        </div>
                         <Controller
                             name="isPetAllowed"
                             control={control}
@@ -217,9 +219,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full sm:w-80">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             チェックイン時間
-                        </p>
+                        </div>
                         <Controller
                             rules={{ required: true }}
                             control={control}
@@ -242,9 +244,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full sm:w-80">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             チェックアウト時間
-                        </p>
+                        </div>
                         <Controller
                             rules={{ required: true }}
                             control={control}
@@ -272,13 +274,13 @@ const General = ({
                             <h3 className="font-medium text-lg text-gray-900">
                                 Photos
                             </h3>
-                            <p className="text-gray-500">
+                            <div className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
-                            </p>
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-700 font-medium">
+                        <div className="text-sm text-gray-700 font-medium">
                             アップロードフォト
-                        </p>
+                        </div>
 
                         <Controller
                             rules={{
@@ -314,9 +316,9 @@ const General = ({
                         </h3>
                     </div>
                     <div className=" w-full sm:w-32 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             {t("address-postal-code")}
-                        </p>
+                        </div>
                         <TextField
                             {...register("zipCode", {
                                 required: true,
@@ -335,7 +337,7 @@ const General = ({
                             defaultValue={initialValue?.address?.prefecture?.id}
                             render={({ field }) => (
                                 <div className="space-y-2">
-                                    <p>{t("address-prefecture")}</p>
+                                    <div>{t("address-prefecture")}</div>
                                     <Select
                                         {...field}
                                         label=""
@@ -357,9 +359,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             {t("address-city")}
-                        </p>
+                        </div>
 
                         <TextField
                             {...register("city", {
@@ -373,9 +375,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             {t("address-line-1")}
-                        </p>
+                        </div>
                         <TextField
                             {...register("addressLine1", {
                                 required: true,
@@ -390,9 +392,9 @@ const General = ({
                         />
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12 space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             {t("address-line-2")}
-                        </p>
+                        </div>
                         <TextField
                             {...register("addressLine2", {
                                 required: false,
@@ -411,11 +413,11 @@ const General = ({
                         <h3 className="font-medium text-lg text-gray-900 leading-6">
                             最寄り駅
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">
+                        <div className="mt-1 text-sm text-gray-500">
                             施設様のご利用しやすい最寄り駅をお選びください
                             <br />
                             ※複数お選びいただけます。
-                        </p>
+                        </div>
                     </div>
                     <div className="w-full md:w-8/12 lg:w-6/12">
                         <Controller

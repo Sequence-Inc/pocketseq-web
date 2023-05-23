@@ -51,7 +51,7 @@ export const navigation = [
     },
     {
         name: "プロフィール",
-        href: "/host/profile",
+        href: "/user/profile",
         Icon: UserCircleIcon,
         roles: ["host"],
     },

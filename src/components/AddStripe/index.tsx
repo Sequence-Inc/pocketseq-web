@@ -22,16 +22,16 @@ export const AddStripe = ({ account }) => {
                             <h3 className="text-xl font-medium text-gray-700">
                                 決済情報の追加
                             </h3>
-                            <p className="mt-4 text-gray-600">
+                            <div className="mt-4 text-gray-600">
                                 {config.appName} では、口座情報の登録が
                                 必要となります。こちらの設定が
                                 完了後スペースやサービスの登録
                                 が可能になります。
-                            </p>
-                            <p className="mt-4 text-gray-600">
+                            </div>
+                            <div className="mt-4 text-gray-600">
                                 下の「登録する」をクリックする と決済サイト「
                                 stripe 」に移行しま す。
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>

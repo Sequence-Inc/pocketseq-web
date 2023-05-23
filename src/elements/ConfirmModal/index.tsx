@@ -70,9 +70,9 @@ const ConfirmModal = forwardRef(({ redirect }: any, ref) => {
                                         Payment successful
                                     </Dialog.Title> */}
                                     <div className="mt-2">
-                                        <p className="text-sm text-gray-500">
+                                        <div className="text-sm text-gray-500">
                                             {message}
-                                        </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

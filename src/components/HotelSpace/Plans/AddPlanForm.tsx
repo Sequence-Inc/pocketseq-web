@@ -146,9 +146,9 @@ const Plans = (props: IPlanFormProps) => {
             <form className="px-2" onSubmit={onSubmit}>
                 <div className="px-0 py-3 space-y-6 sm:py-6">
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             プラン名
-                        </p>
+                        </div>
                         <TextField
                             disabled={loading}
                             label={""}
@@ -161,7 +161,9 @@ const Plans = (props: IPlanFormProps) => {
                         />
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full">
-                        <p className="text-sm leading-5 font-medium">概要</p>
+                        <div className="text-sm leading-5 font-medium">
+                            概要
+                        </div>
                         <TextArea
                             disabled={loading}
                             label=""
@@ -175,9 +177,9 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full space-y-2">
-                        <p className="text-sm leading-5 font-medium">
+                        <div className="text-sm leading-5 font-medium">
                             キャンセルポリシー
-                        </p>
+                        </div>
                         <Controller
                             name="cancelPolicyId"
                             control={control}
@@ -359,9 +361,9 @@ const Plans = (props: IPlanFormProps) => {
                                         })}
                                         error={errors.cutOffBeforeDays && true}
                                     />
-                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                    <div className="text-sm leading-6 font-medium min-w-max">
                                         Days Before
-                                    </p>
+                                    </div>
                                 </div>
                                 <div className="flex items-center  space-x-2 ">
                                     <Controller
@@ -391,9 +393,9 @@ const Plans = (props: IPlanFormProps) => {
                                             />
                                         )}
                                     />
-                                    <p className="text-sm leading-6 font-medium min-w-max">
+                                    <div className="text-sm leading-6 font-medium min-w-max">
                                         Till time
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -403,13 +405,13 @@ const Plans = (props: IPlanFormProps) => {
                             <h3 className="font-medium text-lg text-gray-900">
                                 Photos
                             </h3>
-                            <p className="text-gray-500">
+                            <div className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
-                            </p>
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-700 font-medium">
+                        <div className="text-sm text-gray-700 font-medium">
                             アップロードフォト
-                        </p>
+                        </div>
                         <Controller
                             rules={{ required: !initialValue?.photos?.length }}
                             control={control}
@@ -438,9 +440,9 @@ const Plans = (props: IPlanFormProps) => {
                                 <h3 className="font-medium text-lg text-gray-900">
                                     部屋の種類
                                 </h3>
-                                <p className="text-gray-500">
+                                <div className="text-gray-500">
                                     このプランに付いてる部屋を選択してください。
-                                </p>
+                                </div>
                             </div>
 
                             {errors?.roomTypes && (
@@ -519,9 +521,9 @@ const Plans = (props: IPlanFormProps) => {
                                                     />
                                                 )}
                                                 {canBeUpdated && (
-                                                    <p className="text-sm leading-4 font-medium">
+                                                    <div className="text-sm leading-4 font-medium">
                                                         {room?.name}
-                                                    </p>
+                                                    </div>
                                                 )}
                                             </div>
                                             {fieldIndex >= 0 && (
@@ -541,11 +543,11 @@ const Plans = (props: IPlanFormProps) => {
                                                                             dayIndex
                                                                         }
                                                                     >
-                                                                        <p>
+                                                                        <div>
                                                                             {
                                                                                 day.name
                                                                             }
-                                                                        </p>
+                                                                        </div>
                                                                         <Select
                                                                             disabled={
                                                                                 loading
@@ -682,9 +684,9 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
-                            <p className="text-lg font-medium leading-6">
+                            <div className="text-lg font-medium leading-6">
                                 含まれるオプション
-                            </p>
+                            </div>
                             <Button
                                 type="button"
                                 onClick={redirectToOptions}
@@ -715,9 +717,9 @@ const Plans = (props: IPlanFormProps) => {
                                     className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
 
-                                <p className="text-sm leading-4 font-medium">
+                                <div className="text-sm leading-4 font-medium">
                                     {option?.name}
-                                </p>
+                                </div>
                             </div>
                         ))}
                         {errors?.options && (
@@ -735,9 +737,9 @@ const Plans = (props: IPlanFormProps) => {
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
-                            <p className="text-lg font-medium leading-6">
+                            <div className="text-lg font-medium leading-6">
                                 追加のオプション
-                            </p>
+                            </div>
                             <Button
                                 type="button"
                                 onClick={redirectToOptions}
@@ -768,9 +770,9 @@ const Plans = (props: IPlanFormProps) => {
                                     className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                 />
 
-                                <p className="text-sm leading-4 font-medium">
+                                <div className="text-sm leading-4 font-medium">
                                     {option?.name}
-                                </p>
+                                </div>
                             </div>
                         ))}
                         {errors?.options && (

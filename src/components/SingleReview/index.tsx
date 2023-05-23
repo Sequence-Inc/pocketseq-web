@@ -17,8 +17,8 @@ export const SingleReview = ({ data }: { data: IReviewComment }) => {
                     alt={data?.name}
                 />
                 <div>
-                    <p className="text-gray-800">{data?.name}</p>
-                    <p className="text-xs text-gray-500">{data?.date}</p>
+                    <div className="text-gray-800">{data?.name}</div>
+                    <div className="text-xs text-gray-500">{data?.date}</div>
                 </div>
             </div>
             <div className="text-sm text-gray-600">{data?.comment}</div>

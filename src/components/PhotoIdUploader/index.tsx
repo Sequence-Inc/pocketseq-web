@@ -22,14 +22,14 @@ export const PhotoIdUploader = () => {
                             <h3 className="text-xl font-medium text-gray-700">
                                 本人確認書類の写真をアップロードしてください
                             </h3>
-                            <p className="mt-4 text-gray-600">
+                            <div className="mt-4 text-gray-600">
                                 {config.appName}
                                 では、お客様がスペースを投稿する前に、お客様の身元を確認させていただきます。
                                 お客様の写真付き身分証明書は、当社のスタッフによって確認され、タイムリーに承認されます。
-                            </p>
-                            <p className="mt-4 text-gray-600">
+                            </div>
+                            <div className="mt-4 text-gray-600">
                                 現在、運転免許証またはパスポートが、政府発行の有効な写真付き身分証明書として認められています。
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -318,58 +318,58 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         <>
                             <div className="flex items-center justify-center space-x-2">
                                 <CheckIcon className="text-green-600 w-10" />
-                                <p className="text-xl font-medium text-green-600">
+                                <div className="text-xl font-medium text-green-600">
                                     Success
-                                </p>
+                                </div>
                             </div>
                             <div className="mt-4  space-x-2 space-y-2 ">
-                                <p className="text-gray-500 text-base text-center">
+                                <div className="text-gray-500 text-base text-center">
                                     Successfully reserved hotel room.
-                                </p>
+                                </div>
                                 <span className="flex items-center justify-center space-x-2">
-                                    <p className="text-gray-600   text-sm text-center">
+                                    <div className="text-gray-600   text-sm text-center">
                                         Transaction Id :
-                                    </p>
+                                    </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom && (
-                                        <p className="text-gray-500  font-bold text-center">
+                                        <div className="text-gray-500  font-bold text-center">
                                             {
                                                 reservedHotelSuccessData
                                                     ?.reserveHotelRoom
                                                     ?.reservationId
                                             }
-                                        </p>
+                                        </div>
                                     )}
                                 </span>
 
                                 <span className="flex items-center justify-center space-x-2">
-                                    <p className="text-gray-600   text-sm text-center">
+                                    <div className="text-gray-600   text-sm text-center">
                                         Subscriptions utilized (Units) :
-                                    </p>
+                                    </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom
                                         ?.subscriptionUnit && (
-                                        <p className="text-gray-500  font-bold text-center">
+                                        <div className="text-gray-500  font-bold text-center">
                                             {
                                                 reservedHotelSuccessData
                                                     ?.reserveHotelRoom
                                                     ?.subscriptionUnit
                                             }
                                             /night
-                                        </p>
+                                        </div>
                                     )}
                                 </span>
 
                                 <span className="flex items-center justify-center space-x-2">
-                                    <p className="text-gray-600   text-sm text-center">
+                                    <div className="text-gray-600   text-sm text-center">
                                         Price not covered by subscription
-                                    </p>
+                                    </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom
                                         ?.amount && (
-                                        <p className="text-gray-500  font-bold text-center">
+                                        <div className="text-gray-500  font-bold text-center">
                                             {PriceFormatter(
                                                 reservedHotelSuccessData
                                                     ?.reserveHotelRoom?.amount
                                             )}
-                                        </p>
+                                        </div>
                                     )}
                                 </span>
                             </div>
@@ -380,15 +380,15 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                         <div className="space-y-4">
                             <div className="flex items-center justify-center space-x-3">
                                 <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
-                                <p className="text-xl font-medium text-red-600">
+                                <div className="text-xl font-medium text-red-600">
                                     Error
-                                </p>
+                                </div>
                             </div>
                             <div className="mt-2 space-x-2 space-y-2 ">
-                                <p className="text-gray-500 text-base ">
+                                <div className="text-gray-500 text-base ">
                                     Could not reserve space. Please try again
                                     later!!!
-                                </p>
+                                </div>
                             </div>
                         </div>
                     }
@@ -422,9 +422,9 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 <div className="flex space-x-3 items-center">
                                     <Rating />
                                     <div className="text-sm">
-                                        <p className="inline-block font-bold text-lg text-gray-600 mb-0">
+                                        <div className="inline-block font-bold text-lg text-gray-600 mb-0">
                                             {rating.points}
-                                        </p>
+                                        </div>
                                         <span className="text-gray-500 text-lg">
                                             ({rating.reviews}件)
                                         </span>
@@ -489,7 +489,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                 <h3 className="font-bold text-lg">
                                                     {plan.name}
                                                 </h3>
-                                                <p>{plan.description}</p>
+                                                <div>{plan.description}</div>
                                                 <div className="pt-2">
                                                     <button
                                                         onClick={() =>
@@ -530,13 +530,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                 <h3 className="font-bold text-lg">
                                                     {room.name}
                                                 </h3>
-                                                <p>{room.description}</p>
-                                                <p>
+                                                <div>{room.description}</div>
+                                                <div>
                                                     大人{room.maxCapacityAdult}
                                                     {room.maxCapacityChild > 0
                                                         ? `・子供${room.maxCapacityChild}`
                                                         : ""}
-                                                </p>
+                                                </div>
                                             </div>
                                         </div>
                                     );

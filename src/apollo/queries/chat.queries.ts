@@ -7,6 +7,7 @@ export const MY_CHAT = gql`
     id
     type
     members{
+      __typename
       ... on UserProfile{
         id
         accountId

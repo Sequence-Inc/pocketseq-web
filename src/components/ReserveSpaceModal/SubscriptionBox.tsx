@@ -27,15 +27,15 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
 
     if (!spaceDetails?.subcriptionPrice)
         return (
-            <p className="text-sm">
+            <div className="text-sm">
                 Subscription not applicable to this space.
-            </p>
+            </div>
         );
     if (!hasSpaceSubscriptions) {
         return (
-            <p className="text-sm">
+            <div className="text-sm">
                 お客様は現在、いずれのサブスクリプションプランにも加入していません。
-            </p>
+            </div>
         );
     }
 
@@ -47,9 +47,9 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     priceData={priceData}
                     hasSpaceSubscriptions={hasSpaceSubscriptions}
                 />
-                <p className="text-sm">
+                <div className="text-sm">
                     You subscription is already fully utilized.
-                </p>
+                </div>
             </>
         );
 
@@ -66,16 +66,16 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 />
 
                 <div className="w-full flex items-center  space-x-4">
-                    <p className="text-sm">Use Subscription</p>
+                    <div className="text-sm">Use Subscription</div>
                     <SwitchField
                         className="my-2"
                         onChange={(val) => setSubscription(val)}
                     />
                 </div>
 
-                <p className=" text-sm font-semibold">
+                <div className=" text-sm font-semibold">
                     Your subscription can be applied.
-                </p>
+                </div>
             </>
         );
     }
@@ -90,16 +90,16 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 />
 
                 <div className="w-full flex items-center  space-x-4">
-                    <p className="text-sm">Use Subscription</p>
+                    <div className="text-sm">Use Subscription</div>
                     <SwitchField
                         className="my-2"
                         disabled
                         onChange={(val) => setSubscription(val)}
                     />
                 </div>
-                <p className=" text-sm font-semibold">
+                <div className=" text-sm font-semibold">
                     Your subscription does not cover for this space.
-                </p>
+                </div>
             </>
         );
     }

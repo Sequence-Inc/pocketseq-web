@@ -295,14 +295,14 @@ export const FloatingPriceTwo = ({
                 {/* price row */}
                 <div className="flex justify-between">
                     <Price amount={price} />
-                    {/* <p className="text-sm text-gray-600">¥ 10,392/日</p> */}
+                    {/* <div className="text-sm text-gray-600">¥ 10,392/日</div> */}
                     {/* {startDateTime?.format("YYYY-MM-DD HH:mm")} */}
                 </div>
                 {/* date and time row */}
                 <div className="">
-                    <p className="mb-2 text-sm font-bold text-gray-500">
+                    <div className="mb-2 text-sm font-bold text-gray-500">
                         チェックイン
-                    </p>
+                    </div>
                     <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                         <DatePicker
                             onChange={(date) => setStart(date)}
@@ -314,7 +314,9 @@ export const FloatingPriceTwo = ({
                     </div>
                 </div>
                 <div>
-                    <p className="mb-2 text-sm font-bold text-gray-500">期間</p>
+                    <div className="mb-2 text-sm font-bold text-gray-500">
+                        期間
+                    </div>
                     <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                         <select
                             className="text-sm border-0 outline-none"
@@ -348,9 +350,9 @@ export const FloatingPriceTwo = ({
                 </div>
                 {showCheckInTime && (
                     <div>
-                        <p className="mb-2 text-sm font-bold text-gray-500">
+                        <div className="mb-2 text-sm font-bold text-gray-500">
                             チェックイン時間
-                        </p>
+                        </div>
                         <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                             <select
                                 value={hour}

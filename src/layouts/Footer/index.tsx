@@ -113,9 +113,9 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="flex flex-col items-center pt-8 mt-8 border-t border-gray-700 lg:flex-row">
-                    <p className="mt-8 mr-8 text-base text-gray-400 md:mt-0">
+                    <div className="mt-8 mr-8 text-base text-gray-400 md:mt-0">
                         &copy; {moment().format("YYYY")} {config.appNameEnglish}
-                    </p>
+                    </div>
                     <nav className="flex flex-wrap">
                         {navigation.others.map((item) => (
                             <div key={item.name} className="px-5 py-2">

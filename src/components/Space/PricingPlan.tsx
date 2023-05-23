@@ -213,9 +213,9 @@ IOtherSpacesProps) => {
                     <h3 className="text-lg font-medium leading-6 text-gray-900">
                         {t("price-plan-title")}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <div className="mt-1 text-sm text-gray-500">
                         {t("price-plan-description")}
-                    </p>
+                    </div>
                 </div>
                 <div>
                     <button
@@ -365,10 +365,10 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                                                     Are you sure?
                                                 </Dialog.Title>
                                                 <div className="mt-2">
-                                                    <p className="text-sm text-gray-500">
+                                                    <div className="text-sm text-gray-500">
                                                         Would you like to delete
                                                         "{title}" plan?
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </>
                                         )}
