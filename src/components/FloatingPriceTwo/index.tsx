@@ -216,7 +216,7 @@ export const FloatingPriceTwo = ({
                                         </div>
                                     </div>
                                     <div className="text-lg font-bold">
-                                        {appliedTimes}回
+                                        {/* {appliedTimes}回 */}
                                     </div>
                                 </div>
                             );
