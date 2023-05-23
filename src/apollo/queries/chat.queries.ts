@@ -16,6 +16,12 @@ export const MY_CHAT = gql`
         profilePhoto {
           ${PHOTO}
         }
+        host {
+            name
+            profilePhoto {
+                ${PHOTO}
+            }
+        }
       }
       ... on CompanyProfile{
         id
@@ -23,6 +29,12 @@ export const MY_CHAT = gql`
         name
         profilePhoto {
           ${PHOTO}
+        }
+        host {
+            name
+            profilePhoto {
+                ${PHOTO}
+            }
         }
       }
     }
