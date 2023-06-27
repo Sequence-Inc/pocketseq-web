@@ -126,7 +126,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
 
     return (
         <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky lg:w-96 md:top-20">
-            <div className="relative p-5 space-y-4 border border-gray-200 rounded-lg">
+            <div className="relative p-4 pt-0 space-y-4 border border-gray-200 rounded-lg">
                 {/* price row */}
                 <div className="flex justify-between">
                     {/* <Price amount={price} /> */}
@@ -136,7 +136,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <Listbox value={selectedPlan} onChange={setSelectedPlan}>
                         {({ open }) => (
                             <>
-                                <div className="mt-1 relative">
+                                <div className="relative">
                                     <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
                                         <span className="flex items-center">
                                             {/* <img
@@ -239,7 +239,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <Listbox value={selectedRoom} onChange={setSelectedRoom}>
                         {({ open }) => (
                             <>
-                                <div className="mt-1 relative">
+                                <div className="relative">
                                     <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
                                         <span className="flex items-center">
                                             {/* <img
@@ -356,7 +356,7 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                 {/* date and time row */}
                 <div>
                     <fieldset>
-                        <div className="mt-1 bg-white rounded-md shadow-sm -space-y-px">
+                        <div className=" bg-white rounded-md shadow-sm -space-y-px">
                             <div className="flex -space-x-px">
                                 <div className="w-1/2 flex-1 min-w-0 border border-gray-300 shadow-sm rounded-none rounded-tl-md py-2 space-y-2">
                                     <label
@@ -598,59 +598,53 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                         </ul>
                     </div>
                 )}
-                <div>
-                    {calculatingPrice && (
-                        <div className="flex items-center justify-center">
-                            <div>Please wait . . .</div>
-                        </div>
-                    )}
+                {calculatingPrice && (
+                    <div className="flex items-center justify-center">
+                        <div>読み込み中...</div>
+                    </div>
+                )}
 
-                    {priceCalculationError && (
-                        <div className="text-sm text-gray-500">
-                            {priceCalculationError?.message ||
-                                "Could not load price."}
-                        </div>
-                    )}
+                {priceCalculationError && (
+                    <div className="text-sm text-gray-500">
+                        {priceCalculationError?.message ||
+                            "Could not load price."}
+                    </div>
+                )}
 
-                    {!calculatingPrice && !priceCalculationError && (
-                        <div className="space-y-3 text-lg">
-                            {noOfNight && (
-                                <>
-                                    <div className="flex items-center justify-between ">
-                                        <div>
-                                            大人{noOfAdults}
-                                            {noOfChild > 0 && (
-                                                <>・子供{noOfChild}</>
-                                            )}{" "}
-                                            x {noOfNight}泊
-                                        </div>
-                                        <div>
-                                            {price && (
-                                                <div>
-                                                    {PriceFormatter(
-                                                        price / 1.1
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
+                {!calculatingPrice && !priceCalculationError && (
+                    <div className="space-y-3 text-lg">
+                        {noOfNight && (
+                            <>
+                                <div className="flex items-center justify-between ">
+                                    <div>
+                                        大人{noOfAdults}
+                                        {noOfChild > 0 && (
+                                            <>・子供{noOfChild}</>
+                                        )}{" "}
+                                        x {noOfNight}泊
                                     </div>
-                                    <div className="flex items-center justify-between">
-                                        <div>税金</div>
-                                        <div>
-                                            {PriceFormatter(
-                                                price - price / 1.1
-                                            )}
-                                        </div>
+                                    <div>
+                                        {price && (
+                                            <div>
+                                                {PriceFormatter(price / 1.1)}
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
-                                        <div>合計（税込）</div>
-                                        <div>{PriceFormatter(price)}</div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div>税金</div>
+                                    <div>
+                                        {PriceFormatter(price - price / 1.1)}
                                     </div>
-                                </>
-                            )}
-                        </div>
-                    )}
-                </div>
+                                </div>
+                                <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3">
+                                    <div>合計（税込）</div>
+                                    <div>{PriceFormatter(price)}</div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
             <div className="flex my-4 space-x-2">
                 <Button>
