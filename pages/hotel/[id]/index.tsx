@@ -479,18 +479,20 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                     return (
                                         <div
                                             key={plan.id}
-                                            className="w-60 rounded-lg"
+                                            className="flex-shrink-0 w-60 rounded-lg"
                                         >
                                             <img
                                                 src={plan.photos[0].large.url}
                                                 className="w-60 h-40 rounded-lg bg-gray-200"
                                             />
                                             <div className=" space-y-1 py-2 mt-2">
-                                                <h3 className="font-bold text-lg">
+                                                <h3 className="font-bold text-md">
                                                     {plan.name}
                                                 </h3>
-                                                <div>{plan.description}</div>
                                                 <div className="pt-2">
+                                                    {plan.description}
+                                                </div>
+                                                <div className="pt-4">
                                                     <button
                                                         onClick={() =>
                                                             setSelectedPlan(
@@ -514,33 +516,41 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                             <h2 className="mb-4 text-lg font-bold text-gray-700">
                                 寝室・ベッドについて
                             </h2>
-                            <div className="flex flex-row space-x-4 overflow-x-scroll">
-                                {rooms.map((room) => {
-                                    // src={room.photos[0].medium.url}
-                                    return (
-                                        <div
-                                            key={room.id}
-                                            className="w-60 rounded-lg"
-                                        >
-                                            <img
-                                                src={room.photos[0].large.url}
-                                                className="w-60 h-40 rounded-lg bg-gray-200"
-                                            />
-                                            <div className=" space-y-1 py-2 mt-2">
-                                                <h3 className="font-bold text-lg">
-                                                    {room.name}
-                                                </h3>
-                                                <div>{room.description}</div>
-                                                <div>
-                                                    大人{room.maxCapacityAdult}
-                                                    {room.maxCapacityChild > 0
-                                                        ? `・子供${room.maxCapacityChild}`
-                                                        : ""}
+                            <div className="">
+                                <div className="overflow-x-scroll w-auto space-x-4 flex flex-row pb-2">
+                                    {rooms.map((room) => {
+                                        // src={room.photos[0].medium.url}
+                                        return (
+                                            <div
+                                                key={room.id}
+                                                className="w-60 rounded-lg flex-shrink-0"
+                                            >
+                                                <img
+                                                    src={
+                                                        room.photos[0].large.url
+                                                    }
+                                                    className="w-60 h-40 rounded-lg bg-gray-200"
+                                                />
+                                                <div className=" space-y-1 py-2 mt-2">
+                                                    <h3 className="font-bold text-md line-clamp-1">
+                                                        {room.name}
+                                                    </h3>
+                                                    <div className="text-gray-600 line-clamp-1">
+                                                        {room.description}
+                                                    </div>
+                                                    <div className="text-gray-800 text-sm font-bold pt-2">
+                                                        大人
+                                                        {room.maxCapacityAdult}
+                                                        {room.maxCapacityChild >
+                                                        0
+                                                            ? `・子供${room.maxCapacityChild}`
+                                                            : ""}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
 
