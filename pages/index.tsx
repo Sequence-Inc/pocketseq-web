@@ -258,7 +258,7 @@ export default function Home({
                                 iconStyle="mr-2 text-primary"
                                 textStyle="text-xl text-primary"
                             >
-                                新着宿泊スペース
+                                新着宿泊施設
                             </Tag>
                             <Link href="/search?searchType=hotel">
                                 <a className="flex items-center text-xs text-gray-500 hover:text-primary">
