@@ -199,6 +199,7 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
                     reviews: 1,
                     points: 5,
                 },
+                type,
             };
         }
     );
