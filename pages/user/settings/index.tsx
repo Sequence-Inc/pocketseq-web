@@ -19,6 +19,7 @@ import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { ChangePassword } from "src/components/ChangePassword";
+import { DeactivateAccount } from "@comp";
 
 const UserSettings = ({ userSession }) => {
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
@@ -331,6 +332,19 @@ const UserSettings = ({ userSession }) => {
                     </h3>
                     <div className="space-y-3 px-4 sm:px-6">
                         {renderPaymentMethods()}
+                    </div>
+                </div>
+                <div className="w-full overflow-hidden bg-white rounded-lg shadow py-2 sm:py-3">
+                    <h3 className="flex items-center justify-between py-2 mb-4 border-b border-gray-100 px-4 sm:px-6 pb-4">
+                        <div className="w-full font-bold flex align-baseline justify-between">
+                            <div>アカウントを削除</div>
+                            <div className="inline-block ml-4 font-normal text-red-500 text-sm">
+                                ※警告！ この操作は元に戻せません。
+                            </div>
+                        </div>
+                    </h3>
+                    <div className="px-4 sm:px-6">
+                        <DeactivateAccount />
                     </div>
                 </div>
             </Container>

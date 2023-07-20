@@ -19,22 +19,6 @@ function TimeBook({
 }: AppProps) {
     const apolloClient = useApollo(pageProps.initialApolloState);
 
-    // const router = useRouter();
-
-    // // handle route changes to send data to GTM
-    // const handleRouteChange = (url) => {
-    //     window.gtag("config", "GTM-577T655", {
-    //         page_path: url,
-    //     });
-    // };
-
-    // useEffect(() => {
-    //     router.events.on("routeChangeComplete", handleRouteChange);
-    //     return () => {
-    //         router.events.off("routeChangeComplete", handleRouteChange);
-    //     };
-    // }, [router.events]);
-
     return (
         <SessionProvider session={session}>
             <ApolloProvider client={apolloClient}>

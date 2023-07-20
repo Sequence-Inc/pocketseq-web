@@ -171,3 +171,11 @@ export const UPDATE_PASSWORD = gql`
         }
     }
 `;
+
+export const DEACTIVATE_ACCOUNT = gql`
+    mutation DeactivateAccount($input: DeactivateAccountInput!) {
+        deactivateAccount(input: $input) {
+            message
+        }
+    }
+`;
