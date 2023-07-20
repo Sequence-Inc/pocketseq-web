@@ -33,7 +33,7 @@ class MyDocument extends Document {
                         sizes="16x16"
                         href="/favicon/favicon-16x16.png"
                     />
-                    <link rel="manifest" href="/site.webmanifest" />
+                    <link rel="manifest" href="/favicon/site.webmanifest" />
                     <link
                         rel="mask-icon"
                         href="/favicon/safari-pinned-tab.svg"
@@ -41,21 +41,6 @@ class MyDocument extends Document {
                     />
                     <meta name="msapplication-TileColor" content="#da532c" />
                     <meta name="theme-color" content="#ffffff" />
-
-                    {/* <script
-                        async
-                        src="https://www.googletagmanager.com/gtag/js?id=G-5WKZPFK2LT"
-                    />
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', 'G-5WKZPFK2LT', { page_path: window.location.pathname });
-                            `,
-                        }}
-                    /> */}
                 </Head>
                 <body>
                     <Main />

@@ -1,20 +1,12 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-    MenuIcon,
-    XIcon,
-    ClockIcon,
-    SearchIcon,
-} from "@heroicons/react/outline";
+import { MenuIcon, XIcon, SearchIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { Button, Logo } from "@element";
-import { GET_SESSION } from "src/apollo/queries/state.queries";
-import { useQuery } from "@apollo/client";
-import { authorizeRole, logout, classNames } from "src/utils/";
+import { authorizeRole, classNames } from "src/utils/";
 import React, { Fragment, useState } from "react";
-import ClientOnly from "src/components/ClientOnly";
-import { getSession, signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { SearchBoxNew } from "@comp";
 
 interface INavLinkItems {
@@ -27,18 +19,11 @@ const navLinkItems: INavLinkItems[] = [
     {
         name: "スペース掲載",
         link: "/auth/host-register",
+        authenticate: true,
     },
-    // {
-    //     name: "初めての方へ",
-    //     link: "/services",
-    // },
-    // {
-    //     name: "ヘルプ",
-    //     link: "/help",
-    // },
     {
         name: "ログイン",
-        link: "/api/auth/signin",
+        link: "/auth/login",
         authenticate: true,
     },
 ];
@@ -46,7 +31,10 @@ const navLinkItems: INavLinkItems[] = [
 const userNavigation = [
     { name: "ダッシュボード", href: "/admin", role: ["admin"] },
     { name: "ダッシュボード", href: "/host", role: ["host"] },
-    { name: "プロフィール", href: "/user/profile", role: ["user", "host"] },
+    { name: "プロフィール", href: "/user/profile", role: ["user"] },
+    { name: "予約", href: "/user/reservation", role: ["user"] },
+    { name: "メッセージ", href: "/messages", role: ["user", "host"] },
+    { name: "サブスクリプション", href: "/user/subscriptions", role: ["user"] },
     {
         name: "設定",
         href: "/user/settings",
@@ -64,7 +52,7 @@ const NavLink = ({ link, name }: INavLinkItems) => {
                     {
                         "text-white border-transparent hover:border-gray-100 hover:text-gray-100":
                             router.pathname !== link,
-                        "border-gray-100 text-gray-100":
+                        "border-gray-100 text-gray-100 hover:text-gray-100":
                             router.pathname === link,
                     }
                 )}
@@ -216,7 +204,7 @@ const Header = ({ userSession }) => {
                                                     <img
                                                         className="w-8 h-8 mr-0 sm:mr-2 rounded-full"
                                                         src={profilePhoto}
-                                                        alt=""
+                                                        alt={currentUser}
                                                     />
                                                     <div className="hidden mr-0 sm:inline-block sm:mr-2 font-medium text-primary">
                                                         {currentUser}
@@ -256,9 +244,9 @@ const Header = ({ userSession }) => {
                                                                                 }
                                                                                 className={classNames(
                                                                                     active
-                                                                                        ? "bg-gray-100"
+                                                                                        ? "bg-gray-100 text-primary"
                                                                                         : "",
-                                                                                    "block px-4 py-2 text-sm text-gray-700"
+                                                                                    "font-bold block px-4 py-2 text-sm text-gray-500 hover:text-primary"
                                                                                 )}
                                                                             >
                                                                                 {
@@ -274,10 +262,12 @@ const Header = ({ userSession }) => {
                                                         }
                                                     )}
                                                     <button
-                                                        className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                                                        onClick={(event) => {
+                                                        className="font-bold block w-full px-4 py-2 text-sm text-left text-gray-500 hover:bg-gray-100 hover:text-primary"
+                                                        onClick={async (
+                                                            event
+                                                        ) => {
                                                             event.preventDefault();
-                                                            signOut();
+                                                            await signOut();
                                                         }}
                                                     >
                                                         サインアウト

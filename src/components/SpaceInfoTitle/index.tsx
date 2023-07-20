@@ -69,8 +69,9 @@ export const SpaceInfoTitle = ({
                 </Tag>
             </div>
             <div className="w-full mt-4 flex flex-col space-y-2 md:space-x-4 md:space-y-0 md:items-center md:flex-row">
-                {spaceTypes.map(({ title, description }) => (
+                {spaceTypes.map(({ title, description }, index) => (
                     <Tag
+                        key={index}
                         Icon={TagIcon}
                         iconStyle="text-gray-400"
                         textStyle="text-sm text-gray-500"
