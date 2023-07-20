@@ -46,7 +46,10 @@ export default NextAuth({
                     };
 
                     const { data } = await axios(config);
-                    const user = data.data.login;
+                    if (data.errors) {
+                        return null;
+                    }
+                    const user = data?.data?.login;
                     return {
                         ...user.profile,
                         accessToken: user.accessToken,
@@ -284,8 +287,13 @@ export default NextAuth({
             }
             return true;
         },
+        async redirect({ url, baseUrl }) {
+            return baseUrl;
+        },
     },
     pages: {
         signIn: "/auth/login",
+        error: "/auth/error",
     },
+    debug: true,
 });

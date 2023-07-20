@@ -40,11 +40,11 @@ const MyMarker = ({
     };
 
     return (
-        <div className="relative">
+        <div className="">
             <button
                 className={clsx(
                     "rounded-full px-3 py-1 text-base font-bold flex justify-center relative shadow-station",
-                    "hover:bg-gray-900 focus:outline-none hover:text-white",
+                    "hover:bg-gray-900 focus:outline-none hover:text-white hover:z-50",
                     {
                         "bg-gray-900 text-white": activeIndex === marker.id,
                         "bg-white text-gray-800": activeIndex !== marker.id,
@@ -57,15 +57,16 @@ const MyMarker = ({
                 </span>
             </button>
             {alive && activeIndex === marker.id && (
-                <Link href={`/space/${marker.id}`}>
+                <Link href={`/${marker.type}/${marker.id}`}>
                     <a
                         ref={wrapperRef}
-                        className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-8 -left-8"
+                        className="absolute z-20 overflow-hidden bg-white rounded-lg bottom-2 -left-1/2 transform -translate-x-1/4"
+                        target="_blank"
                     >
                         <div className="relative w-48 overflow-hidden aspect-w-16 aspect-h-9">
                             <img src={marker.photo} />
                         </div>
-                        <div className="py-2 px-3 space-y-1.5">
+                        <div className="py-4 px-3">
                             {/* <Tag
                                 Icon={StarIcon}
                                 iconSize={4}
@@ -78,10 +79,10 @@ const MyMarker = ({
                                     </span>
                                 </div>
                             </Tag> */}
-                            <h3 className="text-lg font-bold leading-4 line-clamp1 text-gray-700">
+                            <h3 className="text-sm font-bold leading-4 line-clamp1 text-gray-700">
                                 {marker.name}
                             </h3>
-                            <div className="text-xl leading-4 font-bold text-gray-700">
+                            <div className="mt-4 text-lg leading-4 font-bold text-gray-700">
                                 {marker.priceText}
                             </div>
                         </div>

@@ -13,7 +13,7 @@ import { getCsrfToken, getSession, signIn } from "next-auth/react";
 import { config } from "src/utils";
 import moment from "moment";
 
-const Login = ({ csrfToken, userSession }) => {
+const Login = ({ csrfToken, error }) => {
     const {
         register,
         errors,
@@ -36,12 +36,17 @@ const Login = ({ csrfToken, userSession }) => {
             </Head>
             <PinDialog ref={pinRef} callback={handleLogin} location="login" />
             <ErrorModal ref={errorRef} />
-            <AuthLayout userSession={userSession}>
-                <div className="w-96 lg:w-1/3 mx-auto px-4 pt-6 pb-4 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
+            <AuthLayout userSession={null}>
+                <div className="max-w-lg mx-auto p-6 mt-20 space-y-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <Logo size="large" />
-                    <h2 className="mt-2 text-base font-normal text-center text-gray-500">
+                    <h2 className="mt-2 text-base font-bold text-center text-primary">
                         {t("login")}
                     </h2>
+                    {error && (
+                        <div className="bg-red-100 text-red-500 py-4 px-6 rounded-lg mt-6">
+                            メールまたはパスワードが一致しません
+                        </div>
+                    )}
                     <form
                         onSubmit={handleSubmit(handleLogin)}
                         className="space-y-4 lg:space-y-6"
@@ -174,18 +179,18 @@ const Login = ({ csrfToken, userSession }) => {
 export default Login;
 
 export async function getServerSideProps(context) {
+    const { error } = context.query;
     const session = await getSession(context);
     if (session) {
-        const { callbackUrl } = context.query;
         return {
             redirect: {
                 permanent: false,
-                destination: callbackUrl || "/",
+                destination: "/",
             },
         };
     }
     const csrfToken = await getCsrfToken(context);
     return {
-        props: { csrfToken },
+        props: { csrfToken, error: error || null },
     };
 }

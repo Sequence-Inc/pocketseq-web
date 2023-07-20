@@ -154,8 +154,8 @@ const SideBar = ({ userSession, sidebarOpen, setSidebarOpen }) => {
                                     <div className="mt-2 space-y-1">
                                         <button
                                             className="flex items-center w-full px-2 py-2 text-base font-medium text-green-100 rounded-md hover:text-white"
-                                            onClick={() => {
-                                                signOut();
+                                            onClick={async () => {
+                                                await signOut();
                                             }}
                                         >
                                             <LogoutIcon className="w-6 h-6 mr-3" />

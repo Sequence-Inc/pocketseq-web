@@ -22,32 +22,6 @@ moment.locale("ja");
 const defaultBtnClass =
     "relative inline-flex items-center text-sm text-gray-400 bg-white border border-transparent hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-transparent focus:border-transparent";
 
-const areaList = [
-    "千代田区",
-    "中央区",
-    "港区",
-    "新宿区",
-    "文京区",
-    "台東区",
-    "墨田区",
-    "江東区",
-    "品川区",
-    "目黒区",
-    "大田区",
-    "世田谷区",
-    "渋谷区",
-    "中野区",
-    "杉並区",
-    "豊島区",
-    "北区",
-    "荒川区",
-    "板橋区",
-    "練馬区",
-    "足立区",
-    "葛飾区",
-    "江戸川区",
-];
-
 const maxSpacePeople = 1000;
 const maxHotelPeople = 10;
 
@@ -208,19 +182,18 @@ export const SearchBoxNew = ({
 
         if (searchAreaList && searchAreaList.getSearchArea.length > 0) {
             return (
-                <ul className="overflow-scroll text-left max-h-60">
+                <div className="overflow-scroll text-left max-h-60">
                     {searchAreaList.getSearchArea.map((prefecture) => {
                         return (
-                            <>
-                                <li
-                                    key={prefecture.prefecture}
+                            <div key={prefecture.prefecture}>
+                                <div
                                     className={`px-4 py-2 font-bold text-sm text-gray-700`}
                                 >
                                     {prefecture.prefecture}
-                                </li>
+                                </div>
                                 {prefecture.city.map((city) => {
                                     return (
-                                        <li
+                                        <div
                                             key={`${prefecture.prefecture}-${city}`}
                                             className={`pl-8 pr-4 py-2 cursor-pointer hover:bg-gray-100 text-sm text-gray-600 ${
                                                 area === city
@@ -233,13 +206,13 @@ export const SearchBoxNew = ({
                                             }}
                                         >
                                             {city}
-                                        </li>
+                                        </div>
                                     );
                                 })}
-                            </>
+                            </div>
                         );
                     })}
-                </ul>
+                </div>
             );
         }
     };

@@ -108,6 +108,7 @@ export interface ILocationMarker {
     priceText: string;
     rating: IRating;
     photo: string;
+    type: "hotel" | "space";
 }
 
 export interface IPaymentMethod {
