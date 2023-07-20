@@ -47,7 +47,7 @@ export const DeactivateAccount = () => {
                         reset();
                     }}
                 >
-                    Okay
+                    戻る
                 </Button>
             </div>
         );
