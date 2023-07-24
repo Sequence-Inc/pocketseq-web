@@ -84,7 +84,7 @@ const General = ({
                     setTimeout(() => {
                         addAlert({
                             type: "success",
-                            message: "Added photos successfully",
+                            message: "写真を追加しました。",
                         });
                         refetch();
                     }, 5000);
@@ -92,7 +92,7 @@ const General = ({
                 .catch((err) => {
                     addAlert({
                         type: "error",
-                        message: "Could not add photos ",
+                        message: "写真を追加できませんでした。",
                     });
                     refetch();
                 });
@@ -271,8 +271,8 @@ const General = ({
 
                     <div className="w-full md:w-8/12 lg:w-6/12">
                         <div className="pb-2">
-                            <h3 className="font-medium text-lg text-gray-900">
-                                Photos
+                            <h3 className="font-bold text-primary text-lg leading-6">
+                                画像
                             </h3>
                             <div className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
@@ -311,8 +311,8 @@ const General = ({
                     </div>
 
                     <div className="pb-0">
-                        <h3 className="font-medium text-lg leading-6">
-                            Address
+                        <h3 className="font-bold text-primary text-lg leading-6">
+                            住所
                         </h3>
                     </div>
                     <div className=" w-full sm:w-32 space-y-2">
@@ -410,7 +410,7 @@ const General = ({
                     </div>
 
                     <div className="pb-2">
-                        <h3 className="font-medium text-lg text-gray-900 leading-6">
+                        <h3 className="font-bold text-lg text-primary leading-6">
                             最寄り駅
                         </h3>
                         <div className="mt-1 text-sm text-gray-500">
@@ -450,7 +450,7 @@ const General = ({
                         </Button>
                         <Button
                             variant="secondary"
-                            className="w-16"
+                            className="w-24"
                             type="button"
                             disabled={loading}
                             onClick={() => router.push("/host/hotel-space")}

@@ -397,7 +397,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                 </Dialog>
             </Transition.Root>
             <Popover key={index} className="relative">
-                <Popover.Button className="flex w-full items-center px-4 py-3 text-white rounded-md bg-primary hover:bg-primaryHover">
+                <Popover.Button className="flex w-full h-12 items-center px-4 py-3 text-white rounded-md bg-primary hover:bg-primaryHover">
                     <div className="flex-grow text-left">{title}</div>
                     <div className="w-10 text-center">
                         {duration}
@@ -407,7 +407,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                         {PriceFormatter(amount)}
                     </div>
                 </Popover.Button>
-                <Popover.Panel className="absolute top-11.5 left-0 right-0 py-4 px-3 rounded-md shadow z-20 bg-white text-gray-700 space-y-4">
+                <Popover.Panel className="absolute bottom-12 left-0 right-0 py-4 px-3 rounded-md shadow-lg z-20 bg-white text-gray-700 space-y-4">
                     <div className="text-gray-500 space-y-2">
                         <div className="w-full flex items-center space-x-4">
                             <div className="w-28 font-bold text-right">
@@ -681,15 +681,20 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
                 </div>
             </div>
             <div>
-                <TextField
-                    label={t("price-plan-cooldown")}
-                    error={null}
-                    errorMessage="Cooldown time is required"
-                    autoFocus
-                    singleRow
-                    value={cooldownTime}
-                    onChange={(event) => setCooldownTime(event.target.value)}
-                />
+                <div className="flex items-center">
+                    <TextField
+                        label={t("price-plan-cooldown")}
+                        error={null}
+                        errorMessage="Cooldown time is required"
+                        autoFocus
+                        singleRow
+                        value={cooldownTime}
+                        onChange={(event) =>
+                            setCooldownTime(event.target.value)
+                        }
+                    />
+                    <div className="ml-2 text-lg text-gray-500">分</div>
+                </div>
             </div>
             {/* <div>
                 <div className="flex items-center">

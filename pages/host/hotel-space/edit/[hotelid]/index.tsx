@@ -71,7 +71,7 @@ function EditHotelSpace({ userSession }) {
                     activeKey={activeTab?.toString()}
                     onTabClick={(key) => setActiveTab(parseInt(key, 10))}
                 >
-                    <TabPane tab="General" key="1">
+                    <TabPane tab="基本情報" key="1">
                         <General
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
@@ -80,7 +80,7 @@ function EditHotelSpace({ userSession }) {
                             hotelLoading={hotelLoading}
                         />
                     </TabPane>
-                    <TabPane tab="Rooms" key="2">
+                    <TabPane tab="部屋設定" key="2">
                         <Rooms
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
@@ -88,14 +88,14 @@ function EditHotelSpace({ userSession }) {
                             // initialValue={data?.hotelById?.rooms}
                         />
                     </TabPane>
-                    <TabPane tab="Pricing" key="3">
+                    <TabPane tab="料金設定" key="3">
                         <Pricing
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
                             hotelId={data?.hotelById?.id || hotelId}
                         />
                     </TabPane>
-                    <TabPane tab="Plans" key="4">
+                    <TabPane tab="プラン" key="4">
                         <Plans
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}

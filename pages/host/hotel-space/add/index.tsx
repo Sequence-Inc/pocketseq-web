@@ -53,28 +53,28 @@ function AddHotelSpace({ userSession }) {
                     activeKey={activeTab?.toString()}
                     onTabClick={(key) => setActiveTab(parseInt(key, 10))}
                 >
-                    <TabPane tab="General" key="1">
+                    <TabPane tab="基本情報" key="1">
                         <General
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
                             setHotelId={setHotelId}
                         />
                     </TabPane>
-                    <TabPane tab="Rooms" key="2" disabled={!hotelId}>
+                    <TabPane tab="部屋設定" key="2" disabled={!hotelId}>
                         <Rooms
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
                             hotelId={hotelId}
                         />
                     </TabPane>
-                    <TabPane tab="Pricing" key="3" disabled={!hotelId}>
+                    <TabPane tab="料金設定" key="3" disabled={!hotelId}>
                         <Pricing
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
                             hotelId={hotelId}
                         />
                     </TabPane>
-                    <TabPane tab="Plans" key="4" disabled={!hotelId}>
+                    <TabPane tab="プラン" key="4" disabled={!hotelId}>
                         <Plans
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}

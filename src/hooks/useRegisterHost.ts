@@ -34,9 +34,11 @@ type RegisterHost = {
 
 // form validation schema
 const schema = yup.object().shape({
-    hostType: yup.string().required("Host Type is required"),
+    hostType: yup
+        .string()
+        .required("ホストアカウントのタイプを選択してください"),
     company: yup.object({
-        name: yup.string().required("Name is required"),
+        name: yup.string().required("名前は必須です。"),
     }),
     // name: yup.string().required("company Name is required"),
     // nameKana: yup.string().required("company Name Kana is required"),
