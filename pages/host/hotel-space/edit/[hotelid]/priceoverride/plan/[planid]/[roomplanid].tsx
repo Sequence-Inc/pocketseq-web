@@ -96,14 +96,14 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
         <HostLayout userSession={userSession}>
             <Head>
                 <title>
-                    Plan Price Override | {plan.name} | {config.appName}
+                    料金の上書き | {plan.name} | {config.appName}
                 </title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 ">
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8 pt-4">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-4">
-                            Price Override {plan.name}
+                            料金の上書き 「{plan.name}」
                         </h2>
 
                         <HotelCalendarView

@@ -604,14 +604,14 @@ const Basic = ({
                         <div className="border-t border-gray-200 my-8"></div>
 
                         <h3 className="font-bold md:ml-60 md:pl-4  text-primary text-xl">
-                            Subscription
+                            サブスクリプション
                         </h3>
                         <div className="md:ml-60 md:pl-4 mt-4 ">
                             <SwitchField
                                 label={
                                     <>
                                         <span className="text-sm leading-5 font-medium">
-                                            Subscritpion Price
+                                            サブスクリプション用の料金
                                         </span>
                                     </>
                                 }
@@ -642,6 +642,9 @@ const Basic = ({
                                                 errors.subcriptionPrice && true
                                             }
                                         />
+                                        <span className="inline-block ml-2">
+                                            円
+                                        </span>
                                     </div>
                                 )}
                             </div>
