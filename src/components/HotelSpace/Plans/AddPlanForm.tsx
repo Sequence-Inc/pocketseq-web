@@ -402,8 +402,8 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="pb-2">
-                            <h3 className="font-medium text-lg text-gray-900">
-                                Photos
+                            <h3 className="font-bold text-lg text-primary">
+                                画像
                             </h3>
                             <div className="text-gray-500">
                                 この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
@@ -437,7 +437,7 @@ const Plans = (props: IPlanFormProps) => {
                     <div className="lg:w-8/12 md:w-3/4 sm:w-full flex flex-col space-y-3">
                         <div className="pb-2 flex space-x-4 ">
                             <div>
-                                <h3 className="font-medium text-lg text-gray-900">
+                                <h3 className="font-bold text-lg text-primary">
                                     部屋の種類
                                 </h3>
                                 <div className="text-gray-500">
@@ -629,7 +629,7 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="pb-2">
-                            <h3 className="font-medium text-lg text-gray-900">
+                            <h3 className="font-bold text-lg text-primary">
                                 支払いの種別
                             </h3>
                         </div>
@@ -653,7 +653,7 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex items-center justify-between  pb-2">
-                            <h3 className="font-medium text-lg text-gray-900">
+                            <h3 className="font-bold text-lg text-primary">
                                 在庫
                             </h3>
                             <Button
@@ -684,7 +684,7 @@ const Plans = (props: IPlanFormProps) => {
                     </div>
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
-                            <div className="text-lg font-medium leading-6">
+                            <div className="text-lg font-bold text-primary leading-6">
                                 含まれるオプション
                             </div>
                             <Button
@@ -737,7 +737,7 @@ const Plans = (props: IPlanFormProps) => {
 
                     <div className="lg:w-6/12 md:w-3/4 sm:w-full flex flex-col space-y-2">
                         <div className="flex justify-between items-center pb-4">
-                            <div className="text-lg font-medium leading-6">
+                            <div className="text-lg font-bold text-primary leading-6">
                                 追加のオプション
                             </div>
                             <Button
@@ -833,7 +833,7 @@ const Plans = (props: IPlanFormProps) => {
                         </Button>
                         <Button
                             variant="secondary"
-                            className="w-16"
+                            className="w-24"
                             type="button"
                             disabled={loading}
                             onClick={toggleForm}

@@ -289,7 +289,7 @@ const HotelCalendarView = ({
             <div className="w-1/3 space-y-4">
                 {selectedDates.length > 0 && (
                     <div className="space-y-4 border border-gray-200 shadow-sm rounded p-3">
-                        <h3 className="font-bold">Override Price:</h3>
+                        <h3 className="font-bold">料金の上書き:</h3>
                         <div className="flex flex-row space-x-4">
                             <select
                                 className="rounded w-40 border border-gray-200 shadow-sm"
@@ -297,7 +297,7 @@ const HotelCalendarView = ({
                                     setSelectedPriceScheme(event.target.value);
                                 }}
                             >
-                                <option value={null}>Select Plan</option>
+                                <option value={null}>プランを選択</option>
                                 {priceScheme.map((rank) => {
                                     return (
                                         <option key={rank.id} value={rank.id}>
@@ -310,12 +310,12 @@ const HotelCalendarView = ({
                                 className="bg-primary text-white px-6 font-bold rounded"
                                 onClick={addOverRide}
                             >
-                                Add Override
+                                料金の上書きの保存
                             </button>
                         </div>
-                        <div>
+                        {/* <div>
                             <a href="#">Click here to add price plans.</a>
-                        </div>
+                        </div> */}
                     </div>
                 )}
                 <div className="flex flex-row space-x-4 border border-gray-200 shadow-sm rounded p-3">
@@ -328,12 +328,12 @@ const HotelCalendarView = ({
                         }`}
                         onClick={onClearRangeSelection}
                     >
-                        Clear Selection
+                        選択解除
                     </button>
-                    <div>Or Press 'Esc' key to clear selection.</div>
+                    <div>「Esc」を押すか選択解除を押す</div>
                 </div>
                 <div className="border border-gray-200 shadow-sm rounded p-3">
-                    <h3 className="font-bold">Saved Price Overrides:</h3>
+                    <h3 className="font-bold">料金の上書き:</h3>
                     <div className="mt-3 space-y-3">
                         {priceOverride.map((override) => {
                             return (
@@ -356,7 +356,7 @@ const HotelCalendarView = ({
                                         )}
                                         <br />
                                         <span className="text-gray-400">
-                                            Added on:{" "}
+                                            登録日:{" "}
                                             {moment(override.createdAt).format(
                                                 "YYYY-MM-DD"
                                             )}

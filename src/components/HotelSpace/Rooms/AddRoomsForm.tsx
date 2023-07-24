@@ -138,9 +138,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <h3 className="font-medium text-lg text-gray-900">
-                        Photos
-                    </h3>
+                    <h3 className="font-bold text-lg text-primary">画像</h3>
                     <div className="text-gray-500">
                         この情報は情報は一般に公開されますので、必ず有効な情報を追加してください。
                     </div>
@@ -173,7 +171,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <div className="text-lg font-medium leading-6">
+                    <div className="text-lg font-bold text-primary leading-6">
                         支払い種類
                     </div>
                 </div>
@@ -205,7 +203,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12">
                 <div className="pb-2">
-                    <div className="text-lg font-medium leading-6">
+                    <div className="text-lg font-bold text-primary leading-6">
                         最大人数
                     </div>
                 </div>
@@ -280,7 +278,9 @@ const AddRoomForm = ({
 
             <div className="w-full  md:w-6/12">
                 <div className="w-full pb-2 flex items-center justify-between">
-                    <div className="text-lg font-medium leading-6">在庫</div>
+                    <div className="text-lg font-bold text-primary leading-6">
+                        在庫
+                    </div>
 
                     <Button
                         type="button"
@@ -310,7 +310,7 @@ const AddRoomForm = ({
             </div>
             <div className="w-full lg:w-6/12 md:w-8/12 space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
-                    <div className="text-lg font-medium leading-6">
+                    <div className="text-lg font-bold text-primary leading-6">
                         基本料金設定
                     </div>
                     <Button
@@ -403,10 +403,10 @@ const AddRoomForm = ({
                 </Button>
                 <Button
                     type="button"
-                    variant="white"
+                    variant="secondary"
                     disabled={loading}
                     onClick={toggleForm}
-                    className="font-medium border-l text-sm w-16"
+                    className="w-24"
                 >
                     キャンセル
                 </Button>

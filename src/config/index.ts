@@ -27,10 +27,10 @@ export const PRICE_SCHEME_CHILD = [
 ];
 
 export const BUILDING_TYPE_OPTIONS = [
-    { label: "Whole House Rental", value: "WHOLE_HOUSE" },
-    { label: "Simple Accomodation", value: "SIMPLE_ACCOMODATION" },
-    { label: "Hotel", value: "HOTEL" },
-    { label: "Inn", value: "INN" },
+    { label: "一軒家貸切", value: "WHOLE_HOUSE" },
+    { label: "簡易宿泊施設", value: "SIMPLE_ACCOMODATION" },
+    { label: "ホテル", value: "HOTEL" },
+    { label: "旅館", value: "INN" },
 ];
 
 export const DAY_OF_WEEK = [

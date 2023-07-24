@@ -197,8 +197,7 @@ const Register = ({ userSession }) => {
                             />
                             {errors?.terms && (
                                 <span className="text-xs text-red-600">
-                                    You must agree to terms and conditions to
-                                    continue
+                                    続行するには利用規約に同意する必要があります
                                 </span>
                             )}
 
