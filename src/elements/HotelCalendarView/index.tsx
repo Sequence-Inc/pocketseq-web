@@ -4,7 +4,6 @@ import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { startOfDay } from "date-fns";
 
 const HotelCalendarView = ({
     priceScheme,
@@ -38,12 +37,12 @@ const HotelCalendarView = ({
         return (
             <div>
                 <h3 className="text-lg">
-                    Error: The {type} does not have basic price scheme set
-                    properly. Please update the price scheme first.
+                    エラー: {type}{" "}
+                    には基本的な価格体系が正しく設定されていません。
                 </h3>
                 <Link href={`/host/hotel-space/edit/${hotelId}`}>
                     <button className="font-bold text-lg bg-gray-100 border border-gray-300 shadow-sm py-1 px-4 mt-4 rounded">
-                        Go Back
+                        戻る
                     </button>
                 </Link>
             </div>

@@ -22,6 +22,13 @@ import { General } from "src/apollo/queries/hotel";
 const { query: generalQueries } = General;
 const noOfItems = 10;
 
+const hotelStatusJP = {
+    DRAFTED: "下書き",
+    PUBLISHED: "出版された",
+    HIDDEN: "隠れた",
+    DELETED: "削除されました",
+};
+
 const HotelSpace = ({ userSession }) => {
     const [columns, setColumns] = useState<IColumns[] | undefined>();
     const [loadComplete, setLoadComplete] = useState<boolean>(false);
@@ -39,8 +46,8 @@ const HotelSpace = ({ userSession }) => {
     );
 
     const keys: TTableKey[] = [
-        { name: t("space-name"), key: "name" },
-        { name: t("hotel-space-status"), key: "status" },
+        { name: "施設名", key: "name" },
+        { name: "スターテス", key: "status" },
     ];
 
     const columnClassName = (key): string | undefined => {
@@ -78,6 +85,13 @@ const HotelSpace = ({ userSession }) => {
                         </div>
                     );
                 }
+                if (column?.id === "status") {
+                    return (
+                        <span className="text-sm text-gray-500">
+                            {hotelStatusJP[value] || value}
+                        </span>
+                    );
+                }
                 return value;
             },
         }));
@@ -89,7 +103,7 @@ const HotelSpace = ({ userSession }) => {
             childClassName: childClassname("action"),
             Cell: ({ row }: { row: any }) => {
                 return (
-                    <div className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm space-y-2 md:flex md:items-center md:justify-center md:space-y-0 md:space-x-2 ">
+                    <div className="relative whitespace-nowrap pl-3 pr-4 text-right text-sm space-y-2 md:flex md:items-center md:justify-center md:space-y-0 md:space-x-2 ">
                         <button
                             className="flex items-center shadow text-sm focus:outline-none bg-gray-100 px-3 py-1 rounded  text-gray-500 hover:text-gray-700 "
                             onClick={() => {
@@ -176,7 +190,7 @@ const HotelSpace = ({ userSession }) => {
         content = <LoadingSpinner loadingText="Loading hotels..." />;
     }
     if (error) {
-        content = <div>An error occurred: {error.message}</div>;
+        content = <div>エラー：{error.message}</div>;
     }
 
     if (loadComplete && data) {

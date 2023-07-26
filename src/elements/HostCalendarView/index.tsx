@@ -35,7 +35,8 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
     const [selectedRangeStart, setSelectedRangeStart] = useState(undefined);
     const [selectedRangeEnd, setSelectedRangeEnd] = useState(undefined);
 
-    const [defaultDailyPlan, setDefaultDailyPlan] = useState<any>();
+    const [defaultPlan, setDefaultPlan] = useState<any>();
+    const [defaultPlanUnit, setDefaultPlanUnit] = useState<string>();
     const [overRides, setOverRides] = useState([]);
 
     const [defaultSetting, setDefaultSetting] = useState();
@@ -78,9 +79,25 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                         };
                     })
             );
-            setDefaultDailyPlan(
-                plans.filter((_) => _.isDefault && _.type === "DAILY")[0]
-            );
+
+            const defaultDailyPlan = plans.filter(
+                (_) => _.isDefault && _.type === "DAILY"
+            )[0];
+            const defaultHourlyPlan = plans.filter(
+                (_) => _.isDefault && _.type === "HOURLY"
+            )[0];
+
+            if (defaultDailyPlan) {
+                setDefaultPlan(defaultDailyPlan);
+                setDefaultPlanUnit("DAILY");
+            } else {
+                setDefaultPlan(defaultHourlyPlan);
+                setDefaultPlanUnit("HOURLY");
+            }
+
+            // setDefaultPlan(
+            //     plans.filter((_) => _.isDefault && _.type === "DAILY")[0]
+            // );
         }
         if (settings) {
             const setting = settings.map((_) => {
@@ -168,8 +185,9 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
             cellClass += " ant-picker-cell-today";
             dateClass += " ant-picker-calendar-date-today";
         }
+        let price = defaultPlan?.amount;
+        let unit = defaultPlanUnit === "DAILY" ? "日" : "時間";
 
-        let price = defaultDailyPlan.amount;
         let setting: any = defaultSetting;
         let isOverride = false;
         // check if date is between override dates;
@@ -268,7 +286,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                     )}
                     <div>在庫: {setting?.totalStock}</div>
                     <div className="font-bold text-sm">
-                        {price && `${PriceFormatter(price)}/日`}
+                        {price && `${PriceFormatter(price)}/${unit}`}
                     </div>
                 </div>
             );

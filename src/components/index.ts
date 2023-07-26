@@ -39,3 +39,4 @@ export * from "./SubscriptionItemsList";
 export * from "./SubscriptionCTA";
 export * from "./RecommendationGrid";
 export * from "./DeactivateAccount";
+export * from "./Dialog";

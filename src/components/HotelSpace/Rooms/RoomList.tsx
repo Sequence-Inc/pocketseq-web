@@ -22,7 +22,7 @@ const RoomList = (props: IRoomListProps) => {
     const { t } = useTranslation("adminhost");
 
     const keys: TTableKey[] = [
-        { name: t("space-name"), key: "name" },
+        { name: "施設名", key: "name" },
         { name: "在庫", key: "stock" },
     ];
 
@@ -87,7 +87,7 @@ const RoomList = (props: IRoomListProps) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading Rooms..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
 
     if (loadComplete && data?.length) {

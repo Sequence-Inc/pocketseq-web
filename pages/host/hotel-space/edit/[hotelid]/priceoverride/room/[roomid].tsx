@@ -1,9 +1,9 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { LoadingSpinner } from "@comp";
+import { useMutation, useQuery } from "@apollo/client";
+import { Dialog, DialogProps, LoadingSpinner } from "@comp";
 import { Container, HotelCalendarView } from "@element";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
+import { useState } from "react";
 import {
     ADD_ROOM_PRICE_OVERRIDE,
     REMOVE_ROOM_PRICE_OVERRIDE,
@@ -14,6 +14,16 @@ import { config } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
 const DailyOverride = ({ userSession, roomId, hotelId }) => {
+    const [dialog, setDialog] = useState<DialogProps>({
+        isOpen: false,
+        type: "info",
+        title: "title",
+    });
+
+    const handleDialogClose = () => {
+        setDialog({ ...dialog, isOpen: false });
+    };
+
     const { data, loading, error } = useQuery(ROOM_AND_ROOM_OVERRIDE, {
         variables: {
             roomId,
@@ -24,8 +34,18 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
 
     const [addRoomPriceOverride] = useMutation(ADD_ROOM_PRICE_OVERRIDE, {
         onCompleted(data) {
-            alert("Price override successfully added.");
-            location.reload();
+            // alert("Price override successfully added.");
+
+            setDialog({
+                isOpen: true,
+                type: "info",
+                title: "価格の上書きが追加されました",
+                description: "",
+                onClose: () => {
+                    setDialog({ ...dialog, isOpen: false });
+                    location.reload();
+                },
+            });
             return false;
         },
     });
@@ -96,9 +116,8 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8 pt-4">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-4">
-                            Price Override {room.name}
+                            料金の上書き {room.name}
                         </h2>
-
                         <HotelCalendarView
                             type="room"
                             priceScheme={priceScheme}
@@ -108,6 +127,7 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                             deletePriceOverride={deletePriceOverride}
                             hotelId={hotelId}
                         />
+                        <Dialog onClose={handleDialogClose} {...dialog} />
                     </div>
                 </div>
             </Container>

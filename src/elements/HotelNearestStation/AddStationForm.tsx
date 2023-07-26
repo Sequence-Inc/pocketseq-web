@@ -20,7 +20,6 @@ const AddStationForm = ({ onAdd, closeForm }) => {
 
     const [alertModalOpen, setAlertModal] = useState(false);
     const toggleAlertModal = () => {
-        console.log("toggler clled");
         setAlertModal((prev) => !prev);
     };
 
@@ -52,8 +51,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             !lineId ||
             !stationId ||
             accessType.trim() === "" ||
-            !time ||
-            !exit
+            !time
         ) {
             toggleAlertModal();
             setLoading(false);
@@ -77,7 +75,7 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                 isOpen={alertModalOpen}
                 title="Warning"
             >
-                <div>All fields must be present</div>
+                <div>必要な情報をすべて入力してください。</div>
             </AlertModal>
             <div>
                 <div className="text-sm leading-5 font-medium">県</div>
@@ -161,12 +159,12 @@ const AddStationForm = ({ onAdd, closeForm }) => {
             </div>
 
             <div>
-                <div className="text-sm leading-5 font-medium">時間</div>
+                <div className="text-sm leading-5 font-medium">時間（分）</div>
                 <TextField
                     // defaultValue={}
                     label=""
                     // error={}
-                    errorMessage="時間 is required"
+                    errorMessage="時間が必要です。"
                     type="number"
                     disabled={loading}
                     onChange={(event) => {
@@ -177,12 +175,12 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                 />
             </div>
             <div>
-                <div className="text-sm leading-5 font-medium">Exit</div>
+                <div className="text-sm leading-5 font-medium">出口</div>
                 <TextField
                     // defaultValue={}
                     label=""
                     // error={}
-                    errorMessage="Exit is required"
+                    errorMessage="出口が必要です。"
                     type="text"
                     disabled={loading}
                     onChange={(event) => {
@@ -197,10 +195,10 @@ const AddStationForm = ({ onAdd, closeForm }) => {
                     onClick={onSubmit}
                     className="bg-indigo-100 w-28 text-indigo-700"
                 >
-                    Add Station
+                    駅を追加
                 </Button>
                 <Button type="button" onClick={closeForm} className=" w-28 ">
-                    Cancel
+                    キャンセル
                 </Button>
             </div>
         </div>
