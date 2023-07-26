@@ -117,7 +117,7 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
 
     let content;
     if (loading || pricingLoading) {
-        content = <LoadingSpinner loadingText="Loading Rooms..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
 
     if (loadComplete && hotelRooms?.myHotelRooms?.data?.length) {
@@ -168,17 +168,19 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
             <div className="py-4 text-gray-700">{content}</div>
 
             {!hotelRooms?.myHotelRooms?.data?.length && (
-                <div className="flex flex-col space-y-4">
+                <div className="flex flex-col items-center space-y-4">
                     <div className="text-sm font-semibold text-gray-500">
-                        Rooms are not added yet!! Please add rooms first.
+                        部屋登録されていません。料金プラン登録するため部屋を登録して下さい。
                     </div>
                     <Button
                         variant="primary"
                         className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
-                        onClick={() => setActiveTab(activeTab - 1)}
+                        onClick={() => {
+                            window.location.href = `/host/hotel-space/edit/${hotelId}?tab=2`;
+                        }}
                         loading={loading || pricingLoading}
                     >
-                        Back
+                        部屋設定へ戻る
                     </Button>
                 </div>
             )}

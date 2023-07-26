@@ -1,10 +1,8 @@
 import React from "react";
 import clsx from "clsx";
 
-import { Spin } from "antd";
-
 interface ButtonProps {
-    variant?: "primary" | "secondary" | "white" | "disabled";
+    variant?: "primary" | "secondary" | "white" | "disabled" | "danger";
     rounded?: boolean;
     type?: "button" | "submit";
     className?: string;
@@ -48,6 +46,8 @@ const Button = (props: ButtonProps) => {
                         variant === "white",
                     "text-gray-600 bg-gray-100 hover:bg-gray-100 focus:ring-gray-100 cursor-default":
                         variant === "disabled",
+                    "text-white bg-red-600 hover:bg-red-700 focus:ring-red-600 disabled:hover:bg-red-600":
+                        variant === "danger",
                     "rounded p-2": !rounded,
                     "rounded-full px-4 py-2": rounded,
                 },

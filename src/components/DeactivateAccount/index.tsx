@@ -56,7 +56,7 @@ export const DeactivateAccount = () => {
     return (
         <div className="space-y-4 max-w-md mx-auto">
             {open && (
-                <div className="space-y-4 border-t-2 border-gray-100 mt-4 pt-4">
+                <div className="space-y-4">
                     <div>
                         <TextField
                             label="パスワード"
@@ -72,7 +72,7 @@ export const DeactivateAccount = () => {
                     <Button
                         onClick={handleAccountDeactivation}
                         disabled={loading}
-                        variant="primary"
+                        variant="danger"
                         type="button"
                     >
                         アカウントを削除
@@ -83,7 +83,7 @@ export const DeactivateAccount = () => {
                 onClick={() => {
                     setOpen((open) => !open);
                 }}
-                variant={open ? "secondary" : "primary"}
+                variant={open ? "secondary" : "danger"}
                 type="button"
             >
                 {open ? "キャンセル" : "アカウントを削除"}

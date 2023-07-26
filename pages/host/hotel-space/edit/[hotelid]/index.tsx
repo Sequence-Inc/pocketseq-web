@@ -17,9 +17,9 @@ const { query: generalQueries } = GeneralQuries;
 
 const { TabPane } = Tabs;
 
-function EditHotelSpace({ userSession }) {
+function EditHotelSpace({ userSession, activeIndex }) {
     const { t } = useTranslation("adminhost");
-    const [activeTab, setActiveTab] = useState<number>(1);
+    const [activeTab, setActiveTab] = useState<number>(activeIndex);
     const [hotelId, setHotelId] = useState<string>();
     const router = useRouter();
     const { hotelid: id } = router.query;
@@ -67,9 +67,12 @@ function EditHotelSpace({ userSession }) {
             <Container className="bg-white py-4 sm:py-6 lg:py-8 mt-3 mb-3 sm:mb-5">
                 <Tabs
                     defaultActiveKey="1"
-                    tabBarGutter={40}
+                    tabBarGutter={10}
                     activeKey={activeTab?.toString()}
-                    onTabClick={(key) => setActiveTab(parseInt(key, 10))}
+                    onTabClick={(key) => {
+                        window.location.href = `/host/hotel-space/edit/${id}?tab=${key}`;
+                    }}
+                    type="card"
                 >
                     <TabPane tab="基本情報" key="1">
                         <General
@@ -84,7 +87,7 @@ function EditHotelSpace({ userSession }) {
                         <Rooms
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={data?.hotelById?.id || hotelId}
+                            hotelId={data?.hotelById?.id || id}
                             // initialValue={data?.hotelById?.rooms}
                         />
                     </TabPane>
@@ -92,14 +95,14 @@ function EditHotelSpace({ userSession }) {
                         <Pricing
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={data?.hotelById?.id || hotelId}
+                            hotelId={data?.hotelById?.id || id}
                         />
                     </TabPane>
                     <TabPane tab="プラン" key="4">
                         <Plans
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
-                            hotelId={data?.hotelById?.id || hotelId}
+                            hotelId={data?.hotelById?.id || id}
                         />
                     </TabPane>
                 </Tabs>
@@ -111,6 +114,7 @@ function EditHotelSpace({ userSession }) {
 export default EditHotelSpace;
 
 export const getServerSideProps = async (context) => {
+    const { tab } = context.query;
     const userSession = await getSession(context);
     const validation = requireAuth({
         session: userSession,
@@ -123,6 +127,7 @@ export const getServerSideProps = async (context) => {
         return {
             props: {
                 userSession,
+                activeIndex: tab || 1,
             },
         };
     }

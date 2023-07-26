@@ -74,9 +74,11 @@ const General = ({
     } = useGeneral(handleNext, defaultHotelValue?.hotelById);
 
     function handleNext(id): void {
-        setHotelId(id);
-        setActiveTab(activeTab + 1);
+        // setHotelId(id);
+        // setActiveTab(activeTab + 1);
+        router.push(`/host/hotel-space/edit/${id}?tab=2`);
     }
+
     const handleAddPhoto = useCallback(
         async (photo) => {
             onAddHotelPhotos(photo)

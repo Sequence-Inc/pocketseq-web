@@ -81,8 +81,7 @@ export const HotelNearestStation = React.forwardRef<
                 })}
                 {!toggleForm && stations?.length < 1 ? (
                     <div className="text-sm text-center text-gray-800">
-                        No Nearest station added yet. Please in below button to
-                        add new station
+                        最寄りの駅を追加してください。
                     </div>
                 ) : null}
             </div>

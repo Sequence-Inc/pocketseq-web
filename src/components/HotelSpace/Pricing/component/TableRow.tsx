@@ -151,7 +151,7 @@ const TableRow = (props: TableRowProps) => {
                             "px-4 py-3.5 text-base text-gray-700 whitespace-nowrap  border-l-0 border-b-0 " +
                             `${loading && " bg-gray-200"}`
                         }
-                        key={col.key}
+                        key={`${index}-${col.key}`}
                     >
                         {!loading && !priceSchemeLoading && (
                             <div>{defaultValue && defaultValue[col.key]}</div>
@@ -171,7 +171,7 @@ const TableRow = (props: TableRowProps) => {
                             "px-4 py-3.5 text-base text-gray-700  whitespace-nowrap border min-w-max border-b-0 last:border-r-0" +
                             `${loading && " bg-gray-200"}`
                         }
-                        key={col.key}
+                        key={`${index}-${col.key}`}
                     >
                         <TextField
                             label=""
@@ -198,7 +198,7 @@ const TableRow = (props: TableRowProps) => {
             }
         });
         formFields.push(
-            <td className="flex mt-3 ml-2  space-x-2 items-center  ">
+            <td className="flex mt-3 ml-2  space-x-2 items-center">
                 {isDirty && (
                     <>
                         <Button

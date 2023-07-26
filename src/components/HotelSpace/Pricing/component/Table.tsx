@@ -82,7 +82,7 @@ const Table = ({ columns, data, refetchPricings, ...rest }: ITableProps) => {
                                         <TableRow
                                             row={row}
                                             rowId={index}
-                                            key={index}
+                                            key={`${index}`}
                                             columns={headers}
                                             refetchPricings={refetchPricings}
                                             {...rest}
