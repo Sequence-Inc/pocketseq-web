@@ -23,6 +23,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
     const [skip, setSkip] = useState<number>(0);
 
     const toggleForm = () => setFormVisible((prev) => !prev);
+
     const { data, loading, error, networkStatus, refetch } = useQuery(
         roomQueries.ROOMS_BY_HOTEL_ID,
         {
@@ -33,6 +34,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
             skip: !hotelId,
         }
     );
+
     const handlePaginateSpaces = React.useCallback(
         (type: "next" | "prev") => {
             const hasNext = data?.myHotelRooms?.paginationInfo?.hasNext;
@@ -76,7 +78,8 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
     };
     const handleSubmit = () => {
         toggleForm();
-        addAlert({ type: "success", message: "Successfully added hotel room" });
+        addAlert({ type: "success", message: "部屋は追加しました。" });
+        refetch();
     };
     return (
         <div className="overflow-auto">
@@ -103,7 +106,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                         setFormData={setFormData}
                     />
 
-                    <div className="flex justify-start w-full ">
+                    {/* <div className="flex justify-start w-full ">
                         <Button
                             type="button"
                             variant="primary"
@@ -112,7 +115,7 @@ const Rooms = ({ setActiveTab, activeTab, hotelId }: IRoomFormProps) => {
                         >
                             次へ
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             )}
             {formVisible && (

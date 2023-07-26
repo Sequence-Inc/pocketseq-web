@@ -213,10 +213,16 @@ const useAddGeneral = (fn, initialValue) => {
 
             try {
                 await Promise.all(updateMutations);
-                addAlert({ type: "success", message: "Update successful" });
+                addAlert({
+                    type: "success",
+                    message: "アップデートが成功しました。",
+                });
                 setLoading(false);
             } catch (err) {
-                addAlert({ type: "error", message: "Could not update " });
+                addAlert({
+                    type: "error",
+                    message: "アップデートに失敗しました。",
+                });
                 setLoading(false);
             }
         },
@@ -266,6 +272,7 @@ const useAddGeneral = (fn, initialValue) => {
             return fn(data?.addHotel?.hotel?.id);
         }
     }, []);
+
     const onSubmit = handleSubmit(async (formData) => {
         setLoading(true);
 

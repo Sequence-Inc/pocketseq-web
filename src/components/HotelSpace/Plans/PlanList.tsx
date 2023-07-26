@@ -23,7 +23,7 @@ const RoomList = (props: IPlanListProps) => {
     const { t } = useTranslation("adminhost");
 
     const keys: TTableKey[] = [
-        { name: "Name", key: "name" },
+        { name: "プラン名", key: "name" },
         { name: "在庫", key: "stock" },
     ];
 
@@ -91,7 +91,7 @@ const RoomList = (props: IPlanListProps) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading Plans..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
 
     if (loadComplete && data?.length) {

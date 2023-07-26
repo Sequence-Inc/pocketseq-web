@@ -313,22 +313,29 @@ const AddRoomForm = ({
                     <div className="text-lg font-bold text-primary leading-6">
                         基本料金設定
                     </div>
-                    <Button
-                        type="button"
-                        onClick={() =>
-                            router.push(
-                                `/host/hotel-space/edit/${hotelId}/priceoverride/room/${initialValue?.id}`
-                            )
-                        }
-                        // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
-                        className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
-                    >
-                        料金の上書き
-                    </Button>
+                    {priceSchemes?.myPriceSchemes?.length > 0 && (
+                        <Button
+                            type="button"
+                            onClick={() =>
+                                router.push(
+                                    `/host/hotel-space/edit/${hotelId}/priceoverride/room/${initialValue?.id}`
+                                )
+                            }
+                            // /host/hotel-space/edit/[HOTEL_ID]/priceoverride/room/[ROOM_ID]
+                            className=" lg:w-36 bg-indigo-100 text-indigo-700 text-sm leading-5 font-medium"
+                        >
+                            料金の上書き
+                        </Button>
+                    )}
                 </div>
                 {priceSchemes?.myPriceSchemes?.length < 1 && (
-                    <div className="space-y-3  text-base font-semibold text-center leading-10 mt-4 text-gray-400">
-                        Add pricing schemes first (on next page)
+                    <div className="space-y-1 text-sm text-center my-6 text-gray-500">
+                        <div className="font-bold text-gray-600">
+                            料金プラン登録されていません
+                        </div>
+                        <div>
+                            料金の設定する前次のページから料金プランをご登録ください。
+                        </div>
                     </div>
                 )}
                 {priceSchemes?.myPriceSchemes?.length > 0 && (

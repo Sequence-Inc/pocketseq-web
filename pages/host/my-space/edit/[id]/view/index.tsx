@@ -96,7 +96,7 @@ const DayOverride = ({ userSession, currentSpace }) => {
                                 </button>
                             </div>
                         </div>
-                        <div>
+                        <div className="space-x-2">
                             {spaceTypes.map((type, index) => {
                                 return (
                                     <span
