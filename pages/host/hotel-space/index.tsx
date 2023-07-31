@@ -187,7 +187,7 @@ const HotelSpace = ({ userSession }) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading hotels..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
     if (error) {
         content = <div>エラー：{error.message}</div>;

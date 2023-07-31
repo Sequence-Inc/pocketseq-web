@@ -35,7 +35,7 @@ const UserSettings = ({ userSession }) => {
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div>エラー: {error.message}</div>;
     }
 
     const { mySubscriptions } = data;

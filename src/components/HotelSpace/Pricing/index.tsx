@@ -167,23 +167,24 @@ const Pricing = ({ hotelId, activeTab, setActiveTab }: IPricingFormProps) => {
         <div className="px-2 pb-2">
             <div className="py-4 text-gray-700">{content}</div>
 
-            {!hotelRooms?.myHotelRooms?.data?.length && (
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="text-sm font-semibold text-gray-500">
-                        部屋登録されていません。料金プラン登録するため部屋を登録して下さい。
+            {!hotelRooms?.myHotelRooms?.data?.length &&
+                (!loading || !pricingLoading) && (
+                    <div className="flex flex-col items-center space-y-4">
+                        <div className="text-sm font-semibold text-gray-500">
+                            部屋登録されていません。料金プラン登録するため部屋を登録して下さい。
+                        </div>
+                        <Button
+                            variant="primary"
+                            className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
+                            onClick={() => {
+                                window.location.href = `/host/hotel-space/edit/${hotelId}?tab=2`;
+                            }}
+                            loading={loading || pricingLoading}
+                        >
+                            部屋設定へ戻る
+                        </Button>
                     </div>
-                    <Button
-                        variant="primary"
-                        className="whitespace-nowrap w-40 text-white bg-indigo-600 hover:bg-indigo-300"
-                        onClick={() => {
-                            window.location.href = `/host/hotel-space/edit/${hotelId}?tab=2`;
-                        }}
-                        loading={loading || pricingLoading}
-                    >
-                        部屋設定へ戻る
-                    </Button>
-                </div>
-            )}
+                )}
 
             {hotelRooms?.myHotelRooms?.data?.length > 0 && (
                 <Button

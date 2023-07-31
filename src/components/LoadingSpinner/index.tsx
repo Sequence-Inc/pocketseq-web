@@ -29,7 +29,7 @@ export const LoadingSpinner = ({
                     ></path>
                 </svg>
                 <span className="text-gray-400 text-base">
-                    {loadingText || `Loading...`}
+                    {loadingText || `読み込み中...`}
                 </span>
             </div>
         </div>

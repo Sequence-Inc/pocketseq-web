@@ -37,7 +37,6 @@ const HotelCalendarView = ({
         return (
             <div>
                 <h3 className="text-lg">
-                    エラー: {type}{" "}
                     には基本的な価格体系が正しく設定されていません。
                 </h3>
                 <Link href={`/host/hotel-space/edit/${hotelId}`}>
