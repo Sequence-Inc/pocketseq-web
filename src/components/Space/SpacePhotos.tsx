@@ -62,7 +62,7 @@ const SpacePhotos = ({
     }
 
     if (spaceDetailLoading)
-        return <LoadingSpinner loadingText="Loading Space Photos" />;
+        return <LoadingSpinner loadingText="読み込み中..." />;
 
     return (
         <form>

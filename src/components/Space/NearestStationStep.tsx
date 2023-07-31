@@ -120,7 +120,7 @@ const NearestStationStep = ({
     }
 
     if (spaceDetailLoading)
-        return <LoadingSpinner loadingText="Loading nearest stations" />;
+        return <LoadingSpinner loadingText="読み込み中..." />;
 
     return (
         <div className="">

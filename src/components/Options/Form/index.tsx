@@ -114,7 +114,7 @@ const AddOptionsForm = (props: TOptionFormProps) => {
     }, [confirmModal]);
 
     if (fetchingInitialData) {
-        return <LoadingSpinner loadingText="Loading option detail" />;
+        return <LoadingSpinner loadingText="読み込み中..." />;
     }
     return (
         <>

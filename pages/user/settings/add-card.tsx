@@ -37,7 +37,7 @@ const AddCard = ({ userSession }) => {
     }
 
     if (error) {
-        return <h3>An error occrred: {error.message} </h3>;
+        return <h3>エラーが発生しました: {error.message} </h3>;
     }
 
     return (

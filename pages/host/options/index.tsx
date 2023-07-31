@@ -138,10 +138,10 @@ const OptionList = ({ userSession }) => {
     let content;
 
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading options ..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
     if (error) {
-        content = <div>An error occurred: {error.message}</div>;
+        content = <div>エラーが発生しました: {error.message}</div>;
     }
 
     if (loadComplete && data) {

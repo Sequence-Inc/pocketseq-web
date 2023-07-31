@@ -139,7 +139,7 @@ const Plans = (props: IPlanFormProps) => {
     const { t } = useTranslation("adminhost");
 
     if (selectedPlan && fetchingPlanDetails)
-        return <LoadingSpinner loadingText="Loading Plans Data..." />;
+        return <LoadingSpinner loadingText="読み込み中..." />;
 
     return (
         <>

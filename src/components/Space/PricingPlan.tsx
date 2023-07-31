@@ -353,7 +353,7 @@ const PricePlanItem = ({ index, pricePlan, removePlan }) => {
                                     </div>
                                     <div className="mt-3 text-center sm:mt-5">
                                         {isLoading && (
-                                            <LoadingSpinner loadingText="Deleting..." />
+                                            <LoadingSpinner loadingText="読み込み中..." />
                                         )}
 
                                         {!isLoading && (

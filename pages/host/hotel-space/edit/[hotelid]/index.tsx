@@ -36,7 +36,7 @@ function EditHotelSpace({ userSession, activeIndex }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Hotel Space</title>
+                <title>宿泊施設</title>
             </Head>
 
             <div className="bg-white shadow mb-3 sm:mb-5">
