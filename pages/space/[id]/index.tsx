@@ -247,7 +247,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
     if (paymentMethodsError) {
         return (
             <div>
-                <h3>An error occurred: {paymentMethodsError.message}</h3>
+                <h3>エラーが発生しました: {paymentMethodsError.message}</h3>
                 <Link href="/">
                     <Button type="submit">Go Back</Button>
                 </Link>

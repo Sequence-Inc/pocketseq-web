@@ -16,6 +16,7 @@ import { GET_SEARCH_AREA } from "src/apollo/queries/search.queries";
 import { LoadingSpinner } from "../LoadingSpinner";
 import moment from "moment";
 import "moment/locale/ja";
+import { Moment } from "moment-timezone";
 
 moment.locale("ja");
 
@@ -36,8 +37,10 @@ export const SearchBoxNew = ({
 }) => {
     const [area, setArea] = useState<string>("");
     const [searchType, setSearchType] = useState<"space" | "hotel">("space");
-    const [checkInDate, setCheckInDate] = useState(null);
-    const [checkOutDate, setCheckOutDate] = useState(null);
+    const [checkInDate, setCheckInDate] = useState(moment().startOf("day"));
+    const [checkOutDate, setCheckOutDate] = useState(
+        moment().add(1, "day").startOf("day")
+    );
     const [noOfAdults, setNoOfAdults] = useState(1);
     const [noOfChild, setNoOfChild] = useState(0);
 
@@ -75,6 +78,7 @@ export const SearchBoxNew = ({
     }, [searchType]);
 
     const disabledDate = (current) => {
+        // console.log(current);
         // Can not select days before today and today
         return current && current < moment().endOf("day");
     };
@@ -217,6 +221,14 @@ export const SearchBoxNew = ({
         }
     };
 
+    const handleCheckIn = (date: Moment, close: any) => {
+        setCheckInDate(date);
+        if (checkOutDate.isBefore(date)) {
+            setCheckOutDate(date.clone().add(1, "day").startOf("day"));
+        }
+        close();
+    };
+
     return (
         <>
             {type === "primary" && (
@@ -351,10 +363,10 @@ export const SearchBoxNew = ({
                                                             checkInDate || null
                                                         }
                                                         onSelect={(date) => {
-                                                            setCheckInDate(
-                                                                date
+                                                            handleCheckIn(
+                                                                date,
+                                                                close
                                                             );
-                                                            close();
                                                         }}
                                                         disabledDate={
                                                             disabledDate
@@ -1015,10 +1027,10 @@ export const SearchBoxNew = ({
                                                             checkInDate || null
                                                         }
                                                         onSelect={(date) => {
-                                                            setCheckInDate(
-                                                                date
+                                                            handleCheckIn(
+                                                                date,
+                                                                close
                                                             );
-                                                            close();
                                                         }}
                                                         disabledDate={
                                                             disabledDate

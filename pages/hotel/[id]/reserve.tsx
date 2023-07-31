@@ -63,7 +63,7 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
     if (error) {
         return (
             <div>
-                <h3>An error occurred: {error.message}</h3>
+                <h3>エラーが発生しました: {error.message}</h3>
                 <Link href="/">
                     <Button type="submit">Go Back</Button>
                 </Link>

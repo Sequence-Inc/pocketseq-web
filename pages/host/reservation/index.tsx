@@ -292,10 +292,10 @@ const ReservationList = ({ userSession }) => {
 
     let content;
     if (loading) {
-        content = <LoadingSpinner loadingText="Loading reservations..." />;
+        content = <LoadingSpinner loadingText="読み込み中..." />;
     }
     if (error) {
-        content = <div>There was an error.</div>;
+        content = <div>エラーが発生しました</div>;
     }
 
     if (loadComplete) {

@@ -100,7 +100,7 @@ const AddRoomForm = ({
     );
 
     if (fetchingRoomDetails)
-        return <LoadingSpinner loadingText="Loading Room Details" />;
+        return <LoadingSpinner loadingText="読み込み中..." />;
 
     return (
         <form
