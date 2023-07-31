@@ -88,7 +88,6 @@ function EditHotelSpace({ userSession, activeIndex }) {
                             setActiveTab={setActiveTab}
                             activeTab={activeTab}
                             hotelId={data?.hotelById?.id || id}
-                            // initialValue={data?.hotelById?.rooms}
                         />
                     </TabPane>
                     <TabPane tab="料金設定" key="3">
