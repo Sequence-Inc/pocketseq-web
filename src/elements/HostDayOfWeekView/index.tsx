@@ -142,7 +142,12 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
         return plans
             .filter((_) => _.type === filter)
             .map((plan) => (
-                <PriceOverride plan={plan} filter="DAY_OF_WEEK" key={plan.id} />
+                <PriceOverride
+                    plan={plan}
+                    filter="DAY_OF_WEEK"
+                    key={plan.id}
+                    handleDelete={handleDeletePriceOverride}
+                />
             ));
     };
 
