@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Calendar } from "antd";
 import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import AlertModal from "src/components/AlertModal";
+import { ModalData, generateAlertModalContent } from "src/utils";
 
 const HotelCalendarView = ({
     priceScheme,
@@ -26,6 +28,22 @@ const HotelCalendarView = ({
 
     const [selectedPriceScheme, setSelectedPriceScheme] = useState(null);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     // Validate basicPriceSetting
     let hasNullPriceScheme = false;
     basicPriceSetting.map((scheme) => {
@@ -37,7 +55,7 @@ const HotelCalendarView = ({
         return (
             <div>
                 <h3 className="text-lg">
-                    には基本的な価格体系が正しく設定されていません。
+                    基本価格体系が正しく設定されていません
                 </h3>
                 <Link href={`/host/hotel-space/edit/${hotelId}`}>
                     <button className="font-bold text-lg bg-gray-100 border border-gray-300 shadow-sm py-1 px-4 mt-4 rounded">
@@ -214,12 +232,24 @@ const HotelCalendarView = ({
 
     const addOverRide = () => {
         if (!selectedDates) {
-            alert("Please select dates to override.");
+            // alert("Please select dates to override.");
+            setModalData({
+                intent: "ERROR",
+                title: "ご注意ください",
+                text: "上書きする日付を選択してください",
+            });
+            setIsModalOpen(true);
             return;
         }
 
         if (!selectedPriceScheme) {
-            alert("Please select price plan to override.");
+            // alert("Please select price plan to override.");
+            setModalData({
+                intent: "ERROR",
+                title: "ご注意ください",
+                text: "上書きするプランを選択してください",
+            });
+            setIsModalOpen(true);
             return;
         }
 
@@ -375,6 +405,18 @@ const HotelCalendarView = ({
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

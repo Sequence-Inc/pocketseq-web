@@ -3,17 +3,21 @@ import { LoadingSpinner } from "@comp";
 import { Container, HotelCalendarView } from "@element";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import {
     ADD_PLAN_PRICE_OVERRIDE,
     REMOVE_PLAN_PRICE_OVERRIDE,
     PLAN_AND_PLAN_OVERRIDE,
 } from "src/apollo/queries/hotel.queries";
+import AlertModal from "src/components/AlertModal";
 import HostLayout from "src/layouts/HostLayout";
-import { config } from "src/utils";
+import { ModalData, config, generateAlertModalContent } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
 const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
     const { data, loading, error } = useQuery(PLAN_AND_PLAN_OVERRIDE, {
         variables: {
             roomPlanId,
@@ -25,27 +29,68 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
 
     const [addPlanPriceOverride] = useMutation(ADD_PLAN_PRICE_OVERRIDE, {
         onCompleted(data) {
-            alert("Price override successfully added.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "料金上書きが追加されました",
+                text: data.addPriceOverrideInRoomPlan.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
             return false;
         },
         onError(error) {
-            alert("Error: " + error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
     const [removePlanPriceOverride] = useMutation(REMOVE_PLAN_PRICE_OVERRIDE, {
         onCompleted(data) {
-            alert("Price override successfully added.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "料金の上書きが削除されました",
+                text: data.removePriceOverrideFromRoomPlan.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
             return false;
         },
         onError(error) {
-            alert("Error: " + error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
 
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
     if (error) {
         return "Error: " + error?.message;
@@ -53,6 +98,8 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
 
     const addPriceOverride = (overrideData) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
             addPlanPriceOverride({
                 variables: {
                     roomPlanId,
@@ -60,29 +107,45 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
                 },
             });
         } catch (error) {
-            console.log(error);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
+        }
+    };
+
+    const doDeletePriceOverride = async (overrideId) => {
+        try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
+            removePlanPriceOverride({
+                variables: {
+                    roomPlanId,
+                    priceOverrideIds: [overrideId],
+                },
+            });
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         }
     };
 
     const deletePriceOverride = (overrideId) => {
-        if (
-            confirm(
-                "Are you sure you want to delete this override setting?"
-            ) === true
-        ) {
-            try {
-                removePlanPriceOverride({
-                    variables: {
-                        roomPlanId,
-                        priceOverrideIds: [overrideId],
-                    },
-                });
-                alert("Override removed successfully.");
-            } catch (error) {
-                console.log(error);
-                alert("Error: " + error.message);
-            }
-        }
+        setModalData({
+            intent: "DELETE_PRICE_OVERRIDE",
+            title: "料金上書きを消す？",
+            text: "この操作により、上書き情報が削除されます。この操作は元に戻すことができません。",
+            onConfirm: () => {
+                doDeletePriceOverride(overrideId);
+            },
+        });
+        setIsModalOpen(true);
     };
 
     const plan = data?.packagePlanById;
@@ -118,6 +181,18 @@ const DailyOverride = ({ userSession, packagePlanId, roomPlanId, hotelId }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

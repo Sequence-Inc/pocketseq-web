@@ -120,7 +120,7 @@ const Header = ({ userSession }) => {
                                     {/* Mobile menu button */}
                                     <Disclosure.Button className="inline-flex items-center justify-center p-2 text-white rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                                         <span className="sr-only">
-                                            Open main menu
+                                            メニューを開く
                                         </span>
                                         {open ? (
                                             <XIcon
@@ -199,14 +199,14 @@ const Header = ({ userSession }) => {
                                             <div>
                                                 <Menu.Button className="flex items-center p-1 text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary focus:ring-white">
                                                     <span className="sr-only">
-                                                        Open user menu
+                                                        メニューを開く
                                                     </span>
                                                     <img
                                                         className="w-8 h-8 mr-0 sm:mr-2 rounded-full"
                                                         src={profilePhoto}
                                                         alt={currentUser}
                                                     />
-                                                    <div className="hidden mr-0 sm:inline-block sm:mr-2 font-medium text-primary">
+                                                    <div className="hidden mr-0 sm:inline-block sm:mr-2 text-xs font-bold text-primary">
                                                         {currentUser}
                                                     </div>
                                                 </Menu.Button>

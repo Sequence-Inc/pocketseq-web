@@ -129,7 +129,11 @@ const Messages = ({ userSession, name, recipientIds, userId }) => {
     };
 
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     const activeRecipient = activeChat?.members?.filter(

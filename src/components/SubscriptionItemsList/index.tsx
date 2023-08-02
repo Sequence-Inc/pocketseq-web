@@ -1,4 +1,4 @@
-import { SearchResult } from "@comp";
+import { LoadingSpinner, SearchResult } from "@comp";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { SubscriptionCategoryType } from "src/apollo/queries/subscriptions/core.schema";
@@ -112,7 +112,7 @@ export const SubscriptionItemsList = ({
     if (!loadComplete) {
         return (
             <div id={category} className="text-center font-bold text-lg">
-                Loading...
+                <LoadingSpinner />
             </div>
         );
     }

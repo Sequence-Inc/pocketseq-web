@@ -1,24 +1,19 @@
-import {
-    MenuAlt2Icon
-} from '@heroicons/react/outline';
-import {
-    SearchIcon
-} from '@heroicons/react/solid';
+import { MenuAlt2Icon } from "@heroicons/react/outline";
 
 const Toolbar = ({ setSidebarOpen }) => {
     return (
         <div className="relative z-10 flex flex-shrink-0 h-16 bg-white border-b border-gray-200">
             <button
                 type="button"
-                className="px-4 text-gray-500 border-r border-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-900 lg:hidden"
+                className="px-4 text-gray-500 border-r border-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary lg:hidden"
                 onClick={() => setSidebarOpen(true)}
             >
-                <span className="sr-only">Open sidebar</span>
+                <span className="sr-only">メニューを開く</span>
                 <MenuAlt2Icon className="w-6 h-6" aria-hidden="true" />
             </button>
             <div className="flex justify-between flex-1 px-4">
                 <div className="flex flex-1">
-                    <form className="flex w-full lg:ml-0" action="#" method="GET">
+                    {/* <form className="flex w-full lg:ml-0" action="#" method="GET">
                         <label htmlFor="search-field" className="sr-only">
                             Search
                         </label>
@@ -34,19 +29,12 @@ const Toolbar = ({ setSidebarOpen }) => {
                                 name="search"
                             />
                         </div>
-                    </form>
+                    </form> */}
                 </div>
-                <div className="flex items-center ml-4 lg:ml-6">
-                    <button
-                        type="button"
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                    >
-                        Create
-                    </button>
-                </div>
+                <div className="flex items-center ml-4 lg:ml-6"></div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Toolbar;

@@ -31,7 +31,11 @@ const UserSettings = ({ userSession }) => {
     });
 
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (error) {

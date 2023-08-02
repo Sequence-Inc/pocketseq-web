@@ -131,7 +131,12 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
         }
     };
 
-    if (!initialLoadComplete) return <LoadingSpinner />;
+    if (!initialLoadComplete)
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
 
     const renderPricePlans = (plans, filter) => {
         return plans

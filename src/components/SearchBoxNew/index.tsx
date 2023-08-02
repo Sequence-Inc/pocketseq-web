@@ -181,7 +181,12 @@ export const SearchBoxNew = ({
     };
 
     const renderSearchArea = (close) => {
-        if (searchAreaLoading) return <LoadingSpinner />;
+        if (searchAreaLoading)
+            return (
+                <div className="my-20">
+                    <LoadingSpinner />
+                </div>
+            );
         if (searchAreaError) return <div>error...</div>;
 
         if (searchAreaList && searchAreaList.getSearchArea.length > 0) {

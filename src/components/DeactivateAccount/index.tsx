@@ -32,7 +32,11 @@ export const DeactivateAccount = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (error) {

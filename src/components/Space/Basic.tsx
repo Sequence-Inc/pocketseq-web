@@ -130,7 +130,9 @@ const Basic = ({
                 </div>
             </div>
             {spaceDetailLoading ? (
-                <LoadingSpinner />
+                <div className="my-20">
+                    <LoadingSpinner />
+                </div>
             ) : (
                 <form onSubmit={onSubmit}>
                     <div className="px-4 py-2 space-y-4 sm:px-6 sm:py-6">

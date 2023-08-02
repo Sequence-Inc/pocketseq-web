@@ -119,7 +119,11 @@ const HotelReservationById = ({ userSession, id }) => {
     // };
 
     if (reservationLoading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
     if (error) {
         console.log(error);

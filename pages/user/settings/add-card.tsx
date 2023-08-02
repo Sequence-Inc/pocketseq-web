@@ -33,7 +33,11 @@ const AddCard = ({ userSession }) => {
     } = useQuery(SETUP_INTENT, { fetchPolicy: "network-only" });
 
     if (setupIntentLoading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (error) {

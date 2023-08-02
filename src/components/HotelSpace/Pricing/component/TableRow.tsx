@@ -42,7 +42,12 @@ const ModalBody = ({ getValues, dirtyFields }) => {
     const formFields = useReduceObject(getValues(), Object.keys(dirtyFields));
 
     const content = useMemo(() => {
-        if (!Object.keys(formFields)?.length) return <LoadingSpinner />;
+        if (!Object.keys(formFields)?.length)
+            return (
+                <div className="my-20">
+                    <LoadingSpinner />
+                </div>
+            );
 
         return Object.keys(formFields).map((fieldKey, index) => {
             const { name } = InputFields.find((item) => item.key === fieldKey);

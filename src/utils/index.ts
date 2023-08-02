@@ -6,6 +6,7 @@ export * from "./classHelper";
 export * from "./auth";
 export * from "./stringHelper";
 export * from "./searchHelper";
+export * from "./alertModalHelper";
 
 export const config = {
     appName: "ポケットシーク",
