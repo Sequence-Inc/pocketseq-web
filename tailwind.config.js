@@ -16,9 +16,6 @@ module.exports = {
                 primaryHover: "#00968e",
                 primaryDark: "#017a74",
             },
-            fontFamily: {
-                sans: ["Inter var", ...fontFamily.sans],
-            },
             minWidth: {
                 10: "10rem",
             },
@@ -27,7 +24,7 @@ module.exports = {
                     "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
             },
             borderRadius: {
-                statiom: "6px",
+                station: "6px",
             },
         },
     },
