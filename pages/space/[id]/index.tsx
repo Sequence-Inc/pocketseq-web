@@ -257,7 +257,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
 
     if (paymentMethodsLoading) {
         return (
-            <div>
+            <div className="my-20">
                 <LoadingSpinner />
             </div>
         );

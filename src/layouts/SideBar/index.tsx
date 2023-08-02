@@ -23,7 +23,7 @@ const SideBar = ({ userSession, sidebarOpen, setSidebarOpen }) => {
                 <a
                     className={classNames(
                         isActiveNav(href)
-                            ? "bg-primaryDark text-white"
+                            ? "bg-primaryDark text-white hover:text-green-50"
                             : "text-gray-100 hover:bg-primaryHover hover:text-white",
                         "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                     )}
@@ -113,14 +113,14 @@ const SideBar = ({ userSession, sidebarOpen, setSidebarOpen }) => {
                                     <div className="mt-10">
                                         <div className="mt-2 space-y-1">
                                             <button
-                                                onClick={() => {
-                                                    signOut();
+                                                className="flex items-center w-full px-2 py-2 text-base font-medium text-green-100 rounded-md hover:text-white"
+                                                onClick={async () => {
+                                                    await signOut();
                                                 }}
-                                                className="flex items-center px-2 py-2 text-base font-medium text-green-100 rounded-md hover:bg-gray-700 hover:text-white"
                                             >
                                                 <LogoutIcon className="w-6 h-6 mr-3" />
                                                 <span className="truncate">
-                                                    Logout
+                                                    ログアウト
                                                 </span>
                                             </button>
                                         </div>
