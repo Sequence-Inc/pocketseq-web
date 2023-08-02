@@ -145,7 +145,11 @@ const ReserveSpaceModal = ({
                                             予約
                                         </h3>
 
-                                        {fetchingSpace && <LoadingSpinner />}
+                                        {fetchingSpace && (
+                                            <div className="my-20">
+                                                <LoadingSpinner />
+                                            </div>
+                                        )}
                                         {!fetchingSpace &&
                                             fetchingSpaceError && (
                                                 <div>

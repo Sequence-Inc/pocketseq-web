@@ -36,18 +36,14 @@ const ToastAlert = forwardRef(({ redirect }: any, ref) => {
                 <>
                     <div className="flex-shrink-0">
                         <ExclamationCircleIcon
-                            className="h-6 w-6 text-red-400"
+                            className="h-6 w-6 text-red-500"
                             aria-hidden="true"
                         />
                     </div>
                     <div className="ml-3 w-0 flex-1 pt-0.5">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-600">
                             {message || "Something went wrong"}
                         </div>
-                        {/* <div className="mt-1 text-sm text-gray-500">
-                                            Anyone with a link can now view this
-                                            file.
-                                        </div> */}
                     </div>
                 </>
             ),
@@ -56,12 +52,12 @@ const ToastAlert = forwardRef(({ redirect }: any, ref) => {
                 <>
                     <div className="flex-shrink-0">
                         <CheckCircleIcon
-                            className="h-6 w-6 text-green-400"
+                            className="h-6 w-6 text-green-600"
                             aria-hidden="true"
                         />
                     </div>
                     <div className="ml-3 w-0 flex-1 pt-0.5">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-600">
                             {message || "Action Successful"}
                         </div>
                     </div>

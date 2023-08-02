@@ -45,7 +45,11 @@ const ReservationById = ({ userSession, id }) => {
     const [addReview, { loading: addReviewLoading }] = useMutation(ADD_REVIEW);
 
     if (reservationLoading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
     if (error) {
         return <h3>Error</h3>;

@@ -267,13 +267,25 @@ const HostDayView = ({ plans, settings, spaceId }) => {
         }
     };
 
-    if (!initialLoadComplete) return <LoadingSpinner />;
+    if (!initialLoadComplete)
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
 
     const renderPricePlans = (plans, filter) => {
         return plans
             .filter((_) => _.type === filter)
             .map((plan) => (
-                <PriceOverride plan={plan} filter="DAY_OF_WEEK" key={plan.id} />
+                <PriceOverride
+                    plan={plan}
+                    filter="DAY_OF_WEEK"
+                    key={plan.id}
+                    handleDelete={(id) => {
+                        console.log(id);
+                    }}
+                />
             ));
     };
 

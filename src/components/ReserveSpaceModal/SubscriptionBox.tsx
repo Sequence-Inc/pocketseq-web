@@ -22,7 +22,11 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     useSubscription,
 }: SubscriptionBoxProps) {
     if (fetchingSpace) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (!spaceDetails?.subcriptionPrice)

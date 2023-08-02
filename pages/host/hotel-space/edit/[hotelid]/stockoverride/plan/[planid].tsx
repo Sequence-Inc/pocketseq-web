@@ -4,16 +4,21 @@ import { Container, HotelCalendarViewStock } from "@element";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import {
     ADD_PLAN_STOCK_OVERRIDE,
     REMOVE_PLAN_STOCK_OVERRIDE,
     PLAN_AND_PLAN_STOCK_OVERRIDE,
 } from "src/apollo/queries/hotel.queries";
+import AlertModal from "src/components/AlertModal";
 import HostLayout from "src/layouts/HostLayout";
-import { config } from "src/utils";
+import { ModalData, config, generateAlertModalContent } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
 const DailyOverride = ({ userSession, planId, hotelId }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
     const { data, loading, error } = useQuery(PLAN_AND_PLAN_STOCK_OVERRIDE, {
         variables: {
             packagePlanId: planId,
@@ -24,21 +29,66 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
 
     const [addRoomStockOverride] = useMutation(ADD_PLAN_STOCK_OVERRIDE, {
         onCompleted(data) {
-            alert("Stock override successfully added.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "在庫の上書きが追加されました",
+                text: data.addStockOverrideInPackagePlan.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
             return false;
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
     const [removeRoomStockOverride] = useMutation(REMOVE_PLAN_STOCK_OVERRIDE, {
         onCompleted(data) {
-            alert("Stock override successfully deleted.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "在庫の上書きが削除されました",
+                text: data.removeStockOverrideFromPackagePlan.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
             return false;
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
 
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
     if (error) {
         return "Error: " + error?.message;
@@ -46,6 +96,9 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
 
     const addStockOverride = (overrideData) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
+
             addRoomStockOverride({
                 variables: {
                     packagePlanId: planId,
@@ -57,28 +110,28 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
             return false;
         } catch (error) {
             console.log(error);
-            alert("Error: " + error.message);
+            // alert("Error: " + error.message);
         }
     };
 
     const deleteStockOverride = (overrideId) => {
-        if (
-            confirm(
-                "Are you sure you want to delete this override setting?"
-            ) === true
-        ) {
-            try {
+        setModalData({
+            intent: "DELETE_PRICE_OVERRIDE",
+            title: "在庫の上書きを消す？",
+            text: "この操作により、上書き情報が削除されます。この操作は元に戻すことができません。",
+            onConfirm: () => {
+                setModalData({ ...modalData, intent: "LOADING" });
+                setIsModalOpen(true);
+
                 removeRoomStockOverride({
                     variables: {
                         packagePlanId: planId,
                         stockOverrideIds: [overrideId],
                     },
                 });
-            } catch (error) {
-                console.log(error);
-                alert("Error: " + error.message);
-            }
-        }
+            },
+        });
+        setIsModalOpen(true);
     };
 
     const plan = data?.packagePlanById;
@@ -88,14 +141,14 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
         <HostLayout userSession={userSession}>
             <Head>
                 <title>
-                    Plan Stock Override | {plan.name} | {config.appName}
+                    プラン在庫上書き | {plan.name} | {config.appName}
                 </title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 ">
                 <div className="bg-white rounded-lg shadow-lg px-6 py-8 pt-4">
                     <div className="w-full space-y-3">
                         <h2 className="text-lg text-gray-600 font-bold border-b border-gray-100 pb-4">
-                            Stock Override {plan.name}
+                            プラン在庫上書き {plan.name}
                         </h2>
 
                         <HotelCalendarViewStock
@@ -107,6 +160,18 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

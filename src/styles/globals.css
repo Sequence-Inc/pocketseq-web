@@ -1,13 +1,15 @@
-@import url("https://rsms.me/inter/inter.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
+@layer base {
     body {
         font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic",
             "Hiragino Kaku Gothic ProN", "Hiragino Sans", "メイリオ", sans-serif;
     }
+}
+
+@layer components {
     h4 {
         @apply text-base font-bold leading-normal;
     }

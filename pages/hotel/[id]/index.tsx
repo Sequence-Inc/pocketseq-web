@@ -148,7 +148,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
     if (paymentMethodsLoading) {
         return (
-            <div>
+            <div className="my-20">
                 <LoadingSpinner />
             </div>
         );

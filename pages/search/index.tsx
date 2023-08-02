@@ -155,7 +155,11 @@ const Search = ({ userSession, availableSpaceTypes, search }) => {
     }, [searchParams]);
 
     if (!searchDataReceived) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     const { searchTitle, searchDescription } = query;

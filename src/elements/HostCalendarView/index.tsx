@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "antd/dist/antd.css";
-import { Calendar, Alert } from "antd";
+import { Calendar } from "antd";
 import moment, { Moment } from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
-import { FormatPrice, getTimeFromFloat, PriceFormatter } from "src/utils";
+import {
+    generateAlertModalContent,
+    getTimeFromFloat,
+    ModalData,
+    PriceFormatter,
+} from "src/utils";
 import { LoadingSpinner } from "@comp";
-import { Disclosure, Transition } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { daysOfWeek } from "src/components/DayOfWeekOverride";
 import {
     BusinessDaysManager,
@@ -24,6 +29,7 @@ import {
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import { TrashIcon } from "@heroicons/react/outline";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
+import AlertModal from "src/components/AlertModal";
 
 const { RangePicker } = DatePicker;
 
@@ -55,6 +61,9 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
     const [removeSpaceSettingOverride] = useMutation(
         REMOVE_SPACE_SETTING_OVERRIDE
     );
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
 
     useHotkeys("esc", () => {
         onClearRangeSelection();
@@ -134,6 +143,19 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
         }
     }, [selectedRangeStart, selectedRangeEnd]);
 
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     const onClearRangeSelection = () => {
         setSelectedRangeStart(undefined);
         setSelectedRangeEnd(undefined);
@@ -168,8 +190,15 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
     };
 
     const onPanelChange = (value, mode) => {
-        alert("This will change all selection.");
-        setPanelChanged(true);
+        setModalData({
+            intent: "PANEL_CHANGE",
+            title: "ご注意ください",
+            text: "この選択によりカレンダーが変更されます。",
+            onConfirm: () => {
+                setPanelChanged(true);
+            },
+        });
+        setIsModalOpen(true);
     };
 
     const fullCellRenderer = (value: Moment) => {
@@ -307,13 +336,23 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
         );
     };
 
-    if (!initialLoadComplete) return <LoadingSpinner />;
+    if (!initialLoadComplete)
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
 
-    const renderPricePlans = (plans, filter) => {
+    const renderPricePlans = (plans, filter, handleDelete) => {
         return plans
             .filter((_) => _.type === filter)
             .map((plan) => (
-                <PriceOverride plan={plan} filter="DATE_TIME" key={plan.id} />
+                <PriceOverride
+                    plan={plan}
+                    filter="DATE_TIME"
+                    key={plan.id}
+                    handleDelete={handleDelete}
+                />
             ));
     };
 
@@ -326,64 +365,147 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
 
     const addSettingOverride = async (setting) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
             const { data } = await settingOverrideMutation({
                 variables: {
                     spaceId,
                     spaceSetting: setting,
                 },
             });
-            alert(data.overrideSpaceSetting.result.message);
-            setShowAddSettingsForm(false);
-            setShowAddPriceForm(false);
+
+            setModalData({
+                intent: "SUCCESS",
+                title: "設定の上書きが追加されました",
+                text: data.overrideSpaceSetting.result.message,
+                onConfirm: () => {
+                    setShowAddSettingsForm(false);
+                    setShowAddPriceForm(false);
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         }
     };
-
     const addPriceOverride = async ({ pricePlanId, input }) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
             const { data } = await priceOverrideMutation({
                 variables: {
                     pricePlanId,
                     input,
                 },
             });
-            alert(data.addPricePlanOverride.result.message);
-            setShowAddSettingsForm(false);
-            setShowAddPriceForm(false);
+            // alert(data.addPricePlanOverride.result.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "価格上書きが追加されました",
+                text: data.addPricePlanOverride.result.message,
+                onConfirm: () => {
+                    setShowAddSettingsForm(false);
+                    setShowAddPriceForm(false);
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
         } catch (error) {
-            alert(error.message);
+            // alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
+        }
+    };
+
+    const doDeleteSettingOverride = async (id) => {
+        try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
+            const { data } = await removeSpaceSettingOverride({
+                variables: {
+                    id,
+                },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "価格上書きが削除されました",
+                text: data.removeSpaceSetting.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         }
     };
 
     const handleDeleteSettingOverride = async (id) => {
-        if (confirm("設定上書きを消す？")) {
-            try {
-                const { data } = await removeSpaceSettingOverride({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.removeSpaceSetting.message);
-            } catch (error) {
-                alert(error.message);
-            }
+        setModalData({
+            intent: "DELETE_PRICE_OVERRIDE",
+            title: "設定上書きを消す？",
+            text: "この操作により、上書き情報が削除されます。この操作は元に戻すことができません。",
+            onConfirm: () => {
+                doDeleteSettingOverride(id);
+            },
+        });
+        setIsModalOpen(true);
+    };
+
+    const doDeletePriceOverride = async (id) => {
+        try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
+            const { data } = await removeSpacePriceOverride({
+                variables: {
+                    id,
+                },
+            });
+            // alert(data.removePricePlanOverride.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "価格上書きが追加されました",
+                text: data.removePricePlanOverride.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            setIsModalOpen(true);
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         }
     };
 
     const handleDeletePriceOverride = async (id) => {
-        if (confirm("価格上書きを消す？")) {
-            try {
-                const { data } = await removeSpacePriceOverride({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.removePricePlanOverride.message);
-            } catch (error) {
-                alert(error.message);
-            }
-        }
+        setModalData({
+            intent: "DELETE_PRICE_OVERRIDE",
+            title: "価格上書きを消す？",
+            text: "この操作により、上書き情報が削除されます。この操作は元に戻すことができません。",
+            onConfirm: () => {
+                doDeletePriceOverride(id);
+            },
+        });
+        setIsModalOpen(true);
     };
 
     const currentSelection =
@@ -483,23 +605,47 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                             <h3 className="text-base font-bold text-gray-500">
                                 日対
                             </h3>
-                            {renderPricePlans(plans, "DAILY")}
+                            {renderPricePlans(
+                                plans,
+                                "DAILY",
+                                handleDeletePriceOverride
+                            )}
                         </div>
                         <div className="space-y-3 w-full">
                             <h3 className="text-base font-bold text-gray-500">
                                 時間対
                             </h3>
-                            {renderPricePlans(plans, "HOURLY")}
+                            {renderPricePlans(
+                                plans,
+                                "HOURLY",
+                                handleDeletePriceOverride
+                            )}
                         </div>
                         <div className="space-y-3 w-full">
                             <h3 className="text-base font-bold text-gray-500">
                                 分対
                             </h3>
-                            {renderPricePlans(plans, "MINUTES")}
+                            {renderPricePlans(
+                                plans,
+                                "MINUTES",
+                                handleDeletePriceOverride
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };
@@ -525,8 +671,8 @@ export const SettingsOverride = ({ setting, deleteSettingOverride }) => {
     const to = toDate ? moment(toDate) : null;
 
     const title = isDefault
-        ? "デフォルト"
-        : `上書き ${from.format("YYYY年MM月DD日")} 〜 ${to.format(
+        ? "基本設定"
+        : `設定上書き ${from.format("YYYY年MM月DD日")} 〜 ${to.format(
               "YYYY年MM月DD日"
           )}`;
     const openingTime = getTimeFromFloat(openingHr);
@@ -588,7 +734,9 @@ export const SettingsOverride = ({ setting, deleteSettingOverride }) => {
             <Disclosure>
                 <Disclosure.Button className="px-3 py-2 w-full hover:bg-gray-50 text-left">
                     <div className="text-gray-600 font-bold">{title}</div>
-                    <div className="text-gray-400 text-xs">{setting.id}</div>
+                    <div className="text-gray-400 text-xs uppercase mt-1">
+                        {setting.id}
+                    </div>
                 </Disclosure.Button>
 
                 <Disclosure.Panel className="border-t border-gray-200 text-gray-600">
@@ -698,29 +846,6 @@ export const SettingsOverrideForm = ({
         return current && current < moment().endOf("day");
     };
 
-    // const disabledDateTime = () => {
-    //     return {
-    //         disabledHours: () => range(0, 24).splice(4, 20),
-    //         disabledMinutes: () => range(30, 60),
-    //         disabledSeconds: () => [55, 56],
-    //     };
-    // };
-
-    // const disabledRangeTime = (_, type) => {
-    //     if (type === "start") {
-    //         return {
-    //             disabledHours: () => range(0, 60).splice(4, 20),
-    //             disabledMinutes: () => range(30, 60),
-    //             disabledSeconds: () => [55, 56],
-    //         };
-    //     }
-    //     return {
-    //         disabledHours: () => range(0, 60).splice(20, 4),
-    //         disabledMinutes: () => range(0, 31),
-    //         disabledSeconds: () => [55, 56],
-    //     };
-    // };
-
     const handleDateChange = (value) => {
         setSelectedRange(value);
     };
@@ -742,7 +867,7 @@ export const SettingsOverrideForm = ({
             breakToHr,
             closed,
             totalStock,
-            businessDays: type === "DAYS_OF_WEEK" ? businessDays : null,
+            businessDays: type === businessDays || undefined,
             fromDate: type === "DATE_TIME" ? selectedRange[0] : null,
             toDate: type === "DATE_TIME" ? selectedRange[1] : null,
         });
@@ -785,15 +910,6 @@ export const SettingsOverrideForm = ({
                 />
                 {!settings.closed && (
                     <>
-                        {type === "DATE_TIME" && (
-                            <BusinessDaysManager
-                                defaultValue={getValues("businessDays")}
-                                onSave={(value) => {
-                                    setValue("businessDays", value);
-                                }}
-                            />
-                        )}
-
                         <BusinessHourManager
                             defaultValue={{
                                 openingHr: getValues("openingHr"),
@@ -832,21 +948,21 @@ export const SettingsOverrideForm = ({
                     disabled={loading}
                     className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
-                    Cancel
+                    キャンセル
                 </button>
                 <button
                     onClick={() => handleSave()}
                     disabled={loading}
                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                    Save
+                    追加
                 </button>
             </div>
         </div>
     );
 };
 
-export const PriceOverride = ({ plan, filter }) => {
+export const PriceOverride = ({ plan, filter, handleDelete }) => {
     const { id, title, amount, overrides, duration, type } = plan;
 
     const filteredOverrides = overrides.filter((_) => _.type === filter);
@@ -893,6 +1009,7 @@ export const PriceOverride = ({ plan, filter }) => {
                             <OverrideItem
                                 key={override.id}
                                 override={override}
+                                handleDelete={handleDelete}
                             />
                         ))}
                     </div>
@@ -975,11 +1092,15 @@ export const PriceOverrideForm = ({
                 type: overrideType,
                 fromDate:
                     overrideType === "DATE_TIME"
-                        ? selectedRange[0].startOf("day").format("YYYY-MM-DD")
+                        ? selectedRange[0]
+                              .startOf("day")
+                              .format("YYYY-MM-DD HH:mm:ss")
                         : null,
                 toDate:
                     overrideType === "DATE_TIME"
-                        ? selectedRange[1].endOf("day").format("YYYY-MM-DD")
+                        ? selectedRange[1]
+                              .endOf("day")
+                              .format("YYYY-MM-DD HH:mm:ss")
                         : null,
                 daysOfWeek: overrideType === "DAY_OF_WEEK" ? daysOfWeek : null,
             },
@@ -1071,29 +1192,29 @@ export const PriceOverrideForm = ({
                     disabled={loading}
                     className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 >
-                    Cancel
+                    キャンセル
                 </button>
                 <button
                     onClick={() => handleSave()}
                     disabled={loading}
                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                    Save
+                    追加
                 </button>
             </div>
         </div>
     );
 };
 
-export const OverrideItem = ({ override }) => {
+export const OverrideItem = ({ override, handleDelete }) => {
     const { id, type, amount, daysOfWeek, fromDate, toDate } = override;
 
     const [removePriceOverride] = useMutation(REMOVE_PRICE_OVERRIDE);
 
     const from = fromDate
-        ? moment(fromDate).format("YYYY年MM月DD日 HH:MM")
+        ? moment(fromDate).format("YYYY年MM月DD日 HH:mm")
         : null;
-    const to = toDate ? moment(toDate).format("YYYY年MM月DD日 HH:MM") : null;
+    const to = toDate ? moment(toDate).format("YYYY年MM月DD日 HH:mm") : null;
 
     let fromToText = <>無し</>;
 
@@ -1121,29 +1242,15 @@ export const OverrideItem = ({ override }) => {
         });
     }
 
-    const removeOverride = async (id) => {
-        const confirmDelete = confirm("Are you sure you want to delete?");
-        if (confirmDelete) {
-            try {
-                const { data } = await removePriceOverride({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.removePricePlanOverride.message);
-            } catch (error) {
-                alert(error.message);
-            }
-        }
-    };
-
     return (
         <div className="px-3 py-3 hover:bg-gray-50 space-y-2">
             <div className="flex items-start">
                 <span className="inline-block w-16 text-gray-400 text-xs">
                     上書きID
                 </span>
-                <div className="inline-block text-xs text-gray-400">{id}</div>
+                <div className="inline-block text-xs text-gray-400 uppercase">
+                    {id}
+                </div>
             </div>
             <div className="flex items-start">
                 <span className="inline-block w-16 font-bold">予定</span>
@@ -1156,7 +1263,7 @@ export const OverrideItem = ({ override }) => {
             <div className="flex justify-center w-full text-center border-t pt-3">
                 <button
                     className="flex items-center  text-base text-red-500 hover:text-red-600"
-                    onClick={() => removeOverride(id)}
+                    onClick={() => handleDelete(id)}
                 >
                     <TrashIcon className="w-5 h-5 mr-1" /> 消す
                 </button>

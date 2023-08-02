@@ -4,16 +4,21 @@ import { Container, HotelCalendarViewStock } from "@element";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import {
     ADD_ROOM_STOCK_OVERRIDE,
     REMOVE_ROOM_STOCK_OVERRIDE,
     ROOM_AND_ROOM_OVERRIDE,
 } from "src/apollo/queries/hotel.queries";
+import AlertModal from "src/components/AlertModal";
 import HostLayout from "src/layouts/HostLayout";
-import { config } from "src/utils";
+import { ModalData, config, generateAlertModalContent } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
 const DailyOverride = ({ userSession, roomId, hotelId }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
     const { data, loading, error } = useQuery(ROOM_AND_ROOM_OVERRIDE, {
         variables: {
             roomId,
@@ -24,21 +29,66 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
 
     const [addRoomStockOverride] = useMutation(ADD_ROOM_STOCK_OVERRIDE, {
         onCompleted(data) {
-            alert("Stock override successfully added.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "在庫の上書きが追加されました",
+                text: data.addStockOverrideInHotelRoom.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
             return false;
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
     const [removeRoomStockOverride] = useMutation(REMOVE_ROOM_STOCK_OVERRIDE, {
         onCompleted(data) {
-            alert("Stock override successfully deleted.");
-            location.reload();
+            setModalData({
+                intent: "SUCCESS",
+                title: "在庫の上書きが削除されました",
+                text: data.removeStockOverrideFromHotelRoom.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
             return false;
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
         },
     });
 
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     if (loading) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
     if (error) {
         return "Error: " + error?.message;
@@ -46,6 +96,9 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
 
     const addStockOverride = (overrideData) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            setIsModalOpen(true);
+
             addRoomStockOverride({
                 variables: {
                     hotelRoomId: data?.hotelRoomById.id,
@@ -57,28 +110,27 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
             return false;
         } catch (error) {
             console.log(error);
-            alert("Error: " + error.message);
         }
     };
 
     const deleteStockOverride = (overrideId) => {
-        if (
-            confirm(
-                "Are you sure you want to delete this override setting?"
-            ) === true
-        ) {
-            try {
+        setModalData({
+            intent: "DELETE_PRICE_OVERRIDE",
+            title: "在庫の上書きを消す？",
+            text: "この操作により、上書き情報が削除されます。この操作は元に戻すことができません。",
+            onConfirm: () => {
+                setModalData({ ...modalData, intent: "LOADING" });
+                setIsModalOpen(true);
+
                 removeRoomStockOverride({
                     variables: {
                         hotelRoomId: data?.hotelRoomById.id,
                         stockOverrideIds: [overrideId],
                     },
                 });
-            } catch (error) {
-                console.log(error);
-                alert("Error: " + error.message);
-            }
-        }
+            },
+        });
+        setIsModalOpen(true);
     };
 
     const room = data?.hotelRoomById;
@@ -88,7 +140,7 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
         <HostLayout userSession={userSession}>
             <Head>
                 <title>
-                    Room Stock Override | {room.name} | {config.appName}
+                    部屋在庫上書き | {room.name} | {config.appName}
                 </title>
             </Head>
             <Container className="py-4 sm:py-6 lg:py-8 ">
@@ -107,6 +159,18 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

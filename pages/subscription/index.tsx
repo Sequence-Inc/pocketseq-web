@@ -75,27 +75,29 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div>
                     <div className="flex items-center justify-center space-x-2">
-                        <ShieldExclamationIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <div className=" text-base font-semibold  text-gray-600">
+                        <div className="text-red-400  p-1 border-2 rounded-full border-red-400">
+                            <ShieldExclamationIcon className="w-6 h-6" />
+                        </div>
+                        <div className=" text-base font-semibold  text-red-500">
                             ログインが必要です
                         </div>
                     </div>
                     <div className=" mt-4 text-center  space-y-4">
-                        <div className="text-sm">
-                            先にログインを行ってください
+                        <div className="text-sm text-gray-600">
+                            ログイン又はアカウントを登録して下さい
                         </div>
 
                         <div className="flex flex-col w-full justify-between  space-y-4 ">
                             <button
                                 type="button"
-                                className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                                className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-600 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-600 focus:z-10 sm:w-auto sm:px-8"
                                 onClick={redirectAuth}
                             >
                                 ログイン
                             </button>
 
                             <button
-                                className="text-blue-500 underline underline-offset-8"
+                                className="text-gray-500 hover:text-gray-700"
                                 onClick={redirectSignup}
                             >
                                 サインアップ
@@ -110,10 +112,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
-                        <HandIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 " />
-                        <div className=" text-base font-semibold  text-blue-600">
-                            読み込み中...
-                        </div>
+                        <LoadingSpinner />
                     </div>
                 </div>
             );
@@ -123,20 +122,22 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div>
                     <div className="flex items-center justify-center space-x-2">
-                        <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <div className=" text-base font-semibold  text-gray-600">
+                        <div className="text-red-400  p-1 border-2 rounded-full border-red-400">
+                            <HandIcon className="w-6 h-6" />
+                        </div>
+                        <div className=" text-base font-semibold  text-red-500">
                             エラーが発生しました
                         </div>
                     </div>
-                    <div className=" mt-4 text-center  space-y-4">
-                        <div className="text-sm">
+                    <div className=" mt-4 text-center space-y-4">
+                        <div className="text-sm text-gray-600">
                             お支払い方法を読み込めませんでした。
                             後でもう一度やり直してください。
                         </div>
 
                         <button
                             type="button"
-                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-600 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-600 focus:z-10 sm:w-auto sm:px-8"
                             onClick={() => setModalOpen(false)}
                         >
                             閉じる
@@ -150,19 +151,21 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div>
                     <div className="flex items-center justify-center space-x-2">
-                        <HandIcon className="text-red-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-500" />
-                        <div className=" text-base font-semibold  text-gray-600">
+                        <div className="text-red-400  p-1 border-2 rounded-full border-red-400">
+                            <HandIcon className="w-6 h-6" />
+                        </div>
+                        <div className=" text-base font-semibold  text-red-500">
                             エラーが発生しました
                         </div>
                     </div>
-                    <div className=" mt-4 text-center  space-y-4">
-                        <div className="text-sm">
+                    <div className=" mt-4 text-center space-y-4">
+                        <div className="text-sm text-gray-600">
                             既存の支払い方法が見つかりません。最初の設定画面で支払い方法を追加してください。
                         </div>
 
                         <button
                             type="button"
-                            className="relative w-1/2 mt-3 text-base  bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-900 focus:z-10 sm:w-auto sm:px-8"
+                            className="relative w-1/2 mt-3 text-base bg-secondary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-gray-600 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-600 focus:z-10 sm:w-auto sm:px-8"
                             onClick={redirectPaymentSource}
                         >
                             設定へ
@@ -176,19 +179,21 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
-                        <CheckIcon className="text-green-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-green-500" />
-                        <div className=" text-base font-semibold  text-gray-600">
+                        <div className="text-green-600  p-1 border-2 rounded-full border-green-600">
+                            <CheckIcon className="w-6 h-6" />
+                        </div>
+                        <div className=" text-base font-semibold text-green-700">
                             成功しました
                         </div>
                     </div>
                     <div className=" mt-4 text-center space-y-4">
-                        <div className="text-sm">
+                        <div className="text-sm text-gray-600">
                             サブスクリプションが成功しました
                         </div>
 
                         <button
                             type="button"
-                            className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                            className="relative w-1/2 mt-3 text-base  bg-primary rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary focus:z-10 sm:w-auto sm:px-8"
                             onClick={() => {
                                 setModalOpen(false);
                                 resetSubscription();
@@ -205,10 +210,7 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
-                        <CogIcon className="text-blue-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-600 animate-spin" />
-                        <div className=" text-base font-semibold  text-blue-600">
-                            購買中
-                        </div>
+                        <LoadingSpinner loadingText="購買中..." />
                     </div>
                 </div>
             );
@@ -218,8 +220,10 @@ export default function Home({ userSession, allSubscriptionProducts }) {
             return (
                 <div className="">
                     <div className="flex items-center justify-center space-x-2">
-                        <ExclamationIcon className="text-red-700 p-1 text-opacity-70 h-12 border-2 rounded-full border-red-600" />
-                        <div className=" text-base font-semibold  text-red-600">
+                        <div className="text-red-400  p-1 border-2 rounded-full border-red-400">
+                            <ExclamationIcon className="w-6 h-6" />
+                        </div>
+                        <div className=" text-base font-semibold  text-red-500">
                             既に登録済みです
                         </div>
                     </div>
@@ -227,18 +231,18 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                         {subscriptionFailed?.message ===
                         "You have already subscribed to rental-space subscription" ? (
                             <>
-                                <div>
+                                <div className="text-sm text-gray-600">
                                     このサブスクリプションに既に登録されています
                                 </div>
                                 <div className="flex flex-col space-y-4">
                                     <button
-                                        className="bg-purple-500 p-3 rounded-md text-sm text-white"
+                                        className="bg-primary p-3 rounded-md text-sm text-white"
                                         onClick={() => {
                                             redirectManageSubscription();
                                             resetSubscription();
                                         }}
                                     >
-                                        サブスクリプションを管理する
+                                        サブスクリプションを管理
                                     </button>
 
                                     <button
@@ -253,14 +257,14 @@ export default function Home({ userSession, allSubscriptionProducts }) {
                             </>
                         ) : (
                             <>
-                                <div className="text-sm">
+                                <div className="text-sm text-gray-600">
                                     サブスクリプションに失敗しました。
                                     もう一度お試しください。
                                 </div>
 
                                 <button
                                     type="button"
-                                    className="relative w-1/2 mt-3 text-base  bg-red-400 border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                                    className="relative w-1/2 mt-3 text-base  bg-primary rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary focus:z-10 sm:w-auto sm:px-8"
                                     onClick={() => {
                                         setModalOpen(false);
                                         resetSubscription();
@@ -278,17 +282,21 @@ export default function Home({ userSession, allSubscriptionProducts }) {
         return (
             <div className="">
                 <div className="flex items-center justify-center space-x-2">
-                    <ShoppingBagIcon className="text-blue-600 p-1 text-opacity-70 h-12 border-2 rounded-full border-blue-500" />
-                    <div className=" text-base font-semibold  text-gray-600">
+                    <div className="text-green-600  p-1 border-2 rounded-full border-green-600">
+                        <ShoppingBagIcon className="w-6 h-6" />
+                    </div>
+                    <div className=" text-base font-semibold text-green-700">
                         サブスクリプション
                     </div>
                 </div>
                 <div className=" mt-4 text-center space-y-4">
-                    <div className="text-sm">購買を希望しますか？</div>
+                    <div className="text-sm text-gray-600">
+                        購買を希望しますか？
+                    </div>
 
                     <button
                         type="button"
-                        className="relative w-1/2 mt-3 text-base  bg-primary border border-gray-200 rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-900 focus:z-10 sm:w-auto sm:px-8"
+                        className="relative w-1/2 mt-3 text-base  bg-primary rounded-md shadow-sm py-2 font-bold text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary focus:z-10 sm:w-auto sm:px-8"
                         onClick={handleSubscribe}
                     >
                         確認
@@ -354,7 +362,11 @@ export default function Home({ userSession, allSubscriptionProducts }) {
     console.log(spaceProducts, hotelProducts);
 
     if (!spaceProducts || !hotelProducts) {
-        return <LoadingSpinner />;
+        return (
+            <div className="my-20">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     const tabButtonClass = (a, b) => {
