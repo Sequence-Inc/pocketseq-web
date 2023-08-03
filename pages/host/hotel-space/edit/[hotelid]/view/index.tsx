@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { Container, GoogleMap } from "@element";
-import { CurrencyYenIcon } from "@heroicons/react/outline";
+import { useModalDialog } from "@hooks/useModalDialog";
 import moment from "moment";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
@@ -11,9 +11,9 @@ import {
     GET_HOTEL_BY_ID,
     PUBLISH_HOTEL,
 } from "src/apollo/queries/hotel.queries";
-import { durationSuffix } from "src/components/Space/PricingPlan";
+import AlertModal from "src/components/AlertModal";
 import HostLayout from "src/layouts/HostLayout";
-import { config, PriceFormatter } from "src/utils";
+import { config } from "src/utils";
 import requireAuth from "src/utils/authecticatedRoute";
 
 const DayOverride = ({ userSession, hotel }) => {
@@ -38,52 +38,63 @@ const DayOverride = ({ userSession, hotel }) => {
     );
     const [loading, setLoading] = useState(false);
 
-    const [publishHotel] = useMutation(PUBLISH_HOTEL);
+    const [publishHotel] = useMutation(PUBLISH_HOTEL, {
+        onCompleted(data) {
+            setModalData({
+                intent: "SUCCESS",
+                title: isPublished
+                    ? "サイト掲載不しました"
+                    : "サイト掲載しました",
+                text: data.publishHotel.message,
+                onConfirm: () => {
+                    setIsPublished(!isPublished);
+                },
+            });
+            openModal();
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
+        },
+    });
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const handlePublishUnpublish = async () => {
         setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+
         try {
-            if (isPublished) {
-                if (
-                    confirm(
-                        `Are you sure you want to unpublish hotel "${name}"`
-                    )
-                ) {
+            setModalData({
+                intent: "CONFIRM",
+                title: isPublished
+                    ? `${name}を非公開にしてもよろしいですか?`
+                    : `${name}を公開してもよろしいですか?`,
+                text: "",
+                onConfirm: async () => {
                     await publishHotel({
                         variables: {
                             id,
-                            publish: false,
-                        },
-                        onCompleted(data) {
-                            alert(data.publishHotel.message);
-                            setIsPublished(false);
-                        },
-                        onError(error) {
-                            alert(`Error: ${error.message}`);
+                            publish: !isPublished,
                         },
                     });
-                }
-            } else {
-                if (
-                    confirm(`Are you sure you want to publish hotel "${name}"`)
-                ) {
-                    await publishHotel({
-                        variables: {
-                            id,
-                            publish: true,
-                        },
-                        onCompleted(data) {
-                            alert(data.publishHotel.message);
-                            setIsPublished(true);
-                        },
-                        onError(error) {
-                            alert(`Error: ${error.message}`);
-                        },
-                    });
-                }
-            }
+                },
+            });
+            openModal();
         } catch (error) {
-            alert(error.message);
+            // alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -390,6 +401,18 @@ const DayOverride = ({ userSession, hotel }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

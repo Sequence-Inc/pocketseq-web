@@ -95,7 +95,7 @@ const PhotoUploadField = React.forwardRef<
             <label
                 htmlFor={id}
                 className={clsx(
-                    "block text-sm font-medium text-gray-700",
+                    "block text-sm font-bold text-gray-700",
                     singleRow ? "sm:text-right w-60" : ""
                 )}
             >
