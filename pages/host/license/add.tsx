@@ -8,16 +8,15 @@ import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Container } from "@element";
 import { useMutation } from "@apollo/client";
-import withAuth from "src/utils/withAuth";
-import { ADD_PHOTO_ID, HOST } from "../../../src/apollo/queries/host.queries";
 import axios from "axios";
-import router from "next/router";
 
 import useTranslation from "next-translate/useTranslation";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import { config } from "src/utils";
 import { GET_LICENSE_UPLOAD_TOKEN } from "src/apollo/queries/space.queries";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 export const licenseTypes = [
     {
@@ -66,10 +65,28 @@ const LicenseUpload = ({ userSession }) => {
 
     const { t } = useTranslation("adminhost");
 
-    const [mutate] = useMutation(GET_LICENSE_UPLOAD_TOKEN);
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
+    const [mutate] = useMutation(GET_LICENSE_UPLOAD_TOKEN, {
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
+            setLoading(false);
+        },
+    });
 
     const handleSelectPhoto = (event) => {
-        console.log("currently", photo);
         setPhoto([...photo, ...event.target.files]);
     };
 
@@ -79,22 +96,25 @@ const LicenseUpload = ({ userSession }) => {
     };
 
     const handleUpload = async () => {
-        if (!photo) {
-            alert("Please select a file to upload.");
+        if (!photo || photo.length === 0) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "アップロードするファイルを選択してください。",
+            });
+            openModal();
             return;
         }
+
         setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
         // get upload URL for all the photos
         const photos = photo.map((res) => ({ mime: res.type }));
-        const { data, errors } = await mutate({
+        const { data } = await mutate({
             variables: { input: { type, photos } },
         });
-        if (errors) {
-            console.log("Errors", errors);
-            alert("Error, " + errors);
-            setLoading(false);
-            return;
-        }
+
         if (data) {
             try {
                 await Promise.all(
@@ -108,11 +128,24 @@ const LicenseUpload = ({ userSession }) => {
                         axios.put(url, photo[index], options);
                     })
                 );
-                alert("License upload successful");
-                setPhoto([]);
+                // alert("License upload successful");
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "ライセンスがアップロードされました。",
+                    text: "",
+                    onConfirm: () => {
+                        setPhoto([]);
+                        window.history.back();
+                    },
+                });
+                openModal();
             } catch (err) {
-                console.log(err);
-                alert("Error, " + err.message);
+                setModalData({
+                    intent: "ERROR",
+                    title: "エラーが発生しました",
+                    text: err.message,
+                });
+                openModal();
             } finally {
                 setLoading(false);
             }
@@ -126,8 +159,6 @@ const LicenseUpload = ({ userSession }) => {
     const licenseTypeTitle = licenseTypes.filter(
         (license) => license.id === type
     )[0].title;
-
-    console.log(photo);
 
     let content = (
         <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -228,7 +259,7 @@ const LicenseUpload = ({ userSession }) => {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Upload license - {config.appName}</title>
+                <title>ライセンスのアップロード - {config.appName}</title>
             </Head>
 
             <Container className="py-4 space-y-8 sm:py-6 lg:py-8">
@@ -339,6 +370,18 @@ const LicenseUpload = ({ userSession }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

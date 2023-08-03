@@ -11,7 +11,8 @@ export type ModalIntent =
     | "SUCCESS"
     | "ERROR"
     | "PANEL_CHANGE"
-    | "DELETE_PRICE_OVERRIDE";
+    | "DELETE_PRICE_OVERRIDE"
+    | "CONFIRM";
 export type ModalData = {
     intent: ModalIntent;
     title?: string;
@@ -133,13 +134,40 @@ export const generateAlertModalContent = ({
                 </Button>
             </div>
         );
+    } else if (intent === "CONFIRM") {
+        modalHeader = (
+            <div className="text-yellow-400">
+                <ExclamationCircleIcon className="w-8 h-8" />
+            </div>
+        );
+        modalActions = (
+            <div className="flex space-x-4">
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        setIsModalOpen(false);
+                        onConfirm && onConfirm();
+                    }}
+                >
+                    Okay
+                </Button>
+                <Button
+                    onClick={() => {
+                        setIsModalOpen(false);
+                        setModalData(null);
+                    }}
+                >
+                    キャンセル
+                </Button>
+            </div>
+        );
     }
 
     if (title) {
         let titleColor = "text-primary";
         if (intent === "ERROR" || intent === "DELETE_PRICE_OVERRIDE") {
             titleColor = "text-red-500";
-        } else if (intent === "PANEL_CHANGE") {
+        } else if (intent === "PANEL_CHANGE" || intent === "CONFIRM") {
             titleColor = "text-yellow-500";
         }
         modalTitle = (
@@ -153,7 +181,7 @@ export const generateAlertModalContent = ({
                 {modalHeader}
                 {modalTitle}
             </div>
-            {title && <div className="text-center mt-4">{text}</div>}
+            {text && <div className="text-center mt-4">{text}</div>}
             {modalActions && <div className="mt-6">{modalActions}</div>}
         </div>
     );

@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
-import { LibraryIcon } from "@heroicons/react/outline";
 import { SPACE_TYPES } from "src/apollo/queries/admin.queries";
 import { classNames } from "src/utils";
 import { NetworkHelper } from "@comp";
@@ -16,13 +15,13 @@ const headers = [
         cellClass: "w-20",
     },
     {
-        name: "タイトル",
+        name: "スペースタイプ名",
         key: "title",
         headerClass: "text-left",
         cellClass: "text-left",
     },
     {
-        name: "デスクリプション",
+        name: "紹介文",
         key: "description",
         headerClass: "text-left",
         cellClass: "text-left",

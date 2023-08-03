@@ -1,9 +1,8 @@
 import Head from "next/head";
-import Link from "next/link";
 import { Switch } from "@headlessui/react";
 import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Container } from "@element";
 
 import {
@@ -12,28 +11,69 @@ import {
     PREFECTURE_BY_ID,
 } from "src/apollo/queries/admin.queries";
 import { NetworkHelper } from "@comp";
-import { classNames, config } from "src/utils";
+import {
+    ModalData,
+    classNames,
+    config,
+    generateAlertModalContent,
+} from "src/utils";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
+import AlertModal from "src/components/AlertModal";
+import { useMemo, useState } from "react";
 
 function PrefectureUpdate({ userSession, prefectureId }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
     // get data for accountID this
     const { data, loading, error } = useQuery(PREFECTURE_BY_ID, {
         variables: { id: prefectureId },
     });
+    const [updatePrefecture] = useMutation(UPDATE_PREFECTURE, {
+        refetchQueries: [{ query: PREFECTURES }],
+        onCompleted(data) {
+            setModalData({
+                intent: "SUCCESS",
+                title: "都道府県更新しました",
+                text: "都道府県更新しました",
+                onConfirm: () => {
+                    window.history.back();
+                },
+            });
+            setIsModalOpen(true);
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
+        },
+    });
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
 
     if (loading) return <NetworkHelper type="loading" />;
     if (error) return <NetworkHelper type="error" />;
 
     const { id, name, nameKana, nameRomaji, available } = data.prefectureById;
-    const [
-        updatePrefecture,
-        { data: enableData, loading: enableLoading, error: enableError },
-    ] = useMutation(UPDATE_PREFECTURE, {
-        refetchQueries: [{ query: PREFECTURES }],
-    });
 
     const toggleAvailable = (newAvailability) => {
+        setModalData({ ...modalData, intent: "LOADING" });
+        setIsModalOpen(true);
+
         updatePrefecture({
             variables: {
                 input: { id: parseInt(id, 10), available: newAvailability },
@@ -44,7 +84,7 @@ function PrefectureUpdate({ userSession, prefectureId }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Edit Prefecture - {config.appName}</title>
+                <title>都道府県編集 - {config.appName}</title>
             </Head>
             <div className="bg-white shadow">
                 <Container>
@@ -57,12 +97,12 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                                 </div> */}
                                 <div>
                                     <div className="flex items-center">
-                                        <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Edit Prefecture - {name}
+                                        <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-700 sm:leading-9 sm:truncate">
+                                            都道府県編集 - {name}
                                         </h1>
                                     </div>
                                     <div className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                                        <div className="flex items-center mt-3 text-sm font-medium text-gray-500 sm:mr-6 sm:mt-0">
+                                        <div className="flex items-center mt-3 text-sm font-bold text-gray-500 sm:mr-6 sm:mt-0">
                                             {nameRomaji}
                                         </div>
                                     </div>
@@ -78,8 +118,8 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                         <div className="px-4 py-5 sm:p-0">
                             <dl className="sm:divide-y sm:divide-gray-200">
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        Name
+                                    <dt className="text-sm font-bold text-gray-500">
+                                        名前
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {name}
@@ -88,8 +128,8 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                             </dl>
                             <dl className="sm:divide-y sm:divide-gray-200">
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        Name Kana
+                                    <dt className="text-sm font-bold text-gray-500">
+                                        フリガナ
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {nameKana}
@@ -98,8 +138,8 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                             </dl>
                             <dl className="sm:divide-y sm:divide-gray-200">
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        Name Romaji
+                                    <dt className="text-sm font-bold text-gray-500">
+                                        ローマ字
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         {nameRomaji}
@@ -108,8 +148,8 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                             </dl>
                             <dl className="sm:divide-y sm:divide-gray-200">
                                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500">
-                                        Available on {config.appName}
+                                    <dt className="text-sm font-bold text-gray-500">
+                                        利用可能
                                     </dt>
                                     <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                                         <Switch
@@ -142,6 +182,18 @@ function PrefectureUpdate({ userSession, prefectureId }) {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 }

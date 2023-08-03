@@ -11,11 +11,17 @@ import {
     SPACE_TYPES,
 } from "src/apollo/queries/admin.queries";
 import { NetworkHelper } from "@comp";
-import { classNames, config } from "src/utils";
-import { useState } from "react";
+import {
+    ModalData,
+    classNames,
+    config,
+    generateAlertModalContent,
+} from "src/utils";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
+import AlertModal from "src/components/AlertModal";
 
 function SpaceTypeUpdate({ userSession, spaceTypeId }) {
     // get data for accountID this
@@ -40,19 +46,69 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
     const [available, setAvailable] = useState(CS_available);
     const [networkRequestHappening, setNetworkRequestHappening] =
         useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
 
     const [updateBasic] = useMutation(UPDATE_SPACE_TYPE_BASIC, {
         refetchQueries: [{ query: SPACE_TYPES }],
+        onCompleted(data) {
+            setNetworkRequestHappening(false);
+            setModalData({
+                intent: "SUCCESS",
+                title: "スペースタイプを更新されました",
+                text: "スペースタイプを更新されました",
+                onConfirm: () => {
+                    window.history.back();
+                },
+            });
+            setIsModalOpen(true);
+        },
+        onError(error) {
+            setNetworkRequestHappening(false);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
+        },
     });
     const [updateWithPhoto] = useMutation(UPDATE_SPACE_TYPE_WITH_PHOTO, {
         refetchQueries: [{ query: SPACE_TYPES }],
+        onError(error) {
+            setNetworkRequestHappening(false);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
+        },
     });
+
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (title.trim() === "" || description.trim() === "") {
-            alert("Title or description can not be empty.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "スペースタイプ名又は紹介文を空にすることはできません。",
+            });
+            setIsModalOpen(true);
             return;
         }
         const basicInput = {
@@ -62,6 +118,8 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
             available,
         };
         setNetworkRequestHappening(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        setIsModalOpen(true);
         if (photo === null) {
             // call mutation with basic data only
             await updateBasic({ variables: { basicInput } });
@@ -85,10 +143,19 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                 console.log("uploading photo");
                 await axios.put(url, photo, options);
                 console.log("upload photo complete");
+
+                setNetworkRequestHappening(false);
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "スペースタイプを更新されました",
+                    text: "スペースタイプを更新されました",
+                    onConfirm: () => {
+                        window.history.back();
+                    },
+                });
+                setIsModalOpen(true);
             }
         }
-        setNetworkRequestHappening(false);
-        alert("Space Type successfully added.");
     };
 
     const currentPhoto = () => {
@@ -113,7 +180,7 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Edit Space Type - {config.appName}</title>
+                <title>スペースタイプ編集 - {config.appName}</title>
             </Head>
             <div className="bg-white shadow">
                 <Container>
@@ -127,7 +194,7 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Edit Space Type - {title}
+                                            スペースタイプ編集 - {title}
                                         </h1>
                                     </div>
                                     <div className="flex flex-col mt-6 sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -148,9 +215,9 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                             <div>
                                 <TextField
                                     value={title}
-                                    label="Title"
+                                    label="スペースタイプ名"
                                     // error={}
-                                    errorMessage="Title is required"
+                                    errorMessage="スペースタイプ名は必須です。"
                                     disabled={networkRequestHappening}
                                     onChange={(event) => {
                                         setTitle(event.target.value);
@@ -161,9 +228,9 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                             <div>
                                 <TextField
                                     value={description}
-                                    label="Description"
+                                    label="紹介文"
                                     // error={}
-                                    errorMessage="Description is required"
+                                    errorMessage="紹介文は必須です。"
                                     disabled={networkRequestHappening}
                                     onChange={(event) => {
                                         setDescription(event.target.value);
@@ -178,8 +245,8 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                                     </div>
                                 </div>
                                 <PhotoUploadField
-                                    label="Photo"
-                                    errorMessage="Photo is required"
+                                    label="画像"
+                                    errorMessage="画像は必須です。"
                                     disabled={networkRequestHappening}
                                     onChange={(photo) => setPhoto(photo)}
                                     singleRow
@@ -194,11 +261,11 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                                     <label
                                         htmlFor={id}
                                         className={classNames(
-                                            "block text-sm font-medium text-gray-700",
+                                            "block text-sm font-bold text-gray-700",
                                             "sm:text-right w-60"
                                         )}
                                     >
-                                        Available
+                                        利用可能
                                     </label>
                                     <div
                                         className={classNames(
@@ -239,13 +306,25 @@ function SpaceTypeUpdate({ userSession, spaceTypeId }) {
                                     disabled={networkRequestHappening}
                                     onClick={handleSubmit}
                                 >
-                                    Update Space Type
+                                    スペースタイプ更新
                                 </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 }

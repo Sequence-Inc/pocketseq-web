@@ -13,19 +13,19 @@ export const NetworkHelper = ({ type, message }: NetworkHelperProps): any => {
         case "loading":
             return (
                 <div className="w-full text-center py-20 text-gray-700">
-                    {message || "Loading..."}
+                    {message || "読み込み中..."}
                 </div>
             );
         case "no-data":
             return (
                 <div className="w-full text-center py-20 text-gray-700">
-                    {message || "データがありません"}
+                    {message || "データがありません。"}
                 </div>
             );
         case "error":
             return (
                 <div className="w-full text-center py-20 text-red-400">
-                    {message || "Error occurred."}
+                    {message || "エラーが発生しました。"}
                 </div>
             );
         default:
