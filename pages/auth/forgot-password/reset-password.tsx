@@ -12,9 +12,11 @@ import { RESET_PASSWORD } from "src/apollo/queries/auth.queries";
 import { getSession } from "next-auth/react";
 import { config } from "src/utils";
 import moment from "moment";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const schema = yup.object().shape({
-    password: yup.string().min(8).required(),
+    password: yup.string().min(6).required(),
     confirmPassword: yup
         .string()
         .oneOf([yup.ref("password"), null], "Passwords must match"),
@@ -23,6 +25,7 @@ const schema = yup.object().shape({
 const ResetPassword = ({ email, code, userSession }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+
     const {
         register,
         formState: { errors },
@@ -30,18 +33,45 @@ const ResetPassword = ({ email, code, userSession }) => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
     const [resetPassword, { loading: resetLoading }] = useMutation(
         RESET_PASSWORD,
         {
-            onError: (err) => alert(err?.message),
+            onError: (err) => {
+                setModalData({
+                    intent: "ERROR",
+                    title: "エラーが発生しました",
+                    text: err.message,
+                });
+                openModal();
+            },
             onCompleted: (data) => {
-                router.replace("/auth/login");
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "パスワード更新しました",
+                    text: "パスワード更新しました",
+                    onConfirm: () => {
+                        router.replace("/auth/login");
+                    },
+                });
+                openModal();
             },
         }
     );
 
     const onSubmit = async (formData) => {
         setIsLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
         const resetBody = {
             email,
             code: parseInt(code),
@@ -108,6 +138,18 @@ const ResetPassword = ({ email, code, userSession }) => {
                     Ltd.
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </AuthLayout>
     );
 };

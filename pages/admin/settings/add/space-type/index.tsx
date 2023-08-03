@@ -1,21 +1,16 @@
 import Head from "next/head";
-import Link from "next/link";
-import withAuth from "src/utils/withAuth";
 import HostLayout from "src/layouts/HostLayout";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Container, TextField, PhotoUploadField, Button } from "@element";
 
-import {
-    ADD_SPACE_TYPE,
-    SPACETYPE_BY_ID,
-} from "src/apollo/queries/admin.queries";
-import { NetworkHelper } from "@comp";
-import { classNames, config } from "src/utils";
-import { useState } from "react";
+import { ADD_SPACE_TYPE } from "src/apollo/queries/admin.queries";
+import { ModalData, config, generateAlertModalContent } from "src/utils";
+import { useMemo, useState } from "react";
 import { GET_ALL_SPACE_TYPES } from "src/apollo/queries/space.queries";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
+import AlertModal from "src/components/AlertModal";
 
 function SpaceTypeAdd({ userSession }) {
     const [title, setTitle] = useState("");
@@ -23,18 +18,41 @@ function SpaceTypeAdd({ userSession }) {
     const [photo, setPhoto] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
     const [addSpaceType, { error }] = useMutation(ADD_SPACE_TYPE);
+
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        setIsModalOpen(true);
+
         // check and prepare data
         if (
             title.trim() === "" ||
             description.trim() === "" ||
             photo === null
         ) {
-            alert("Error: All fields are necessary.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "すべての情報が必要です。",
+            });
+            setIsModalOpen(true);
             setLoading(false);
             return;
         }
@@ -54,29 +72,42 @@ function SpaceTypeAdd({ userSession }) {
         if (errors) {
             console.log("Errors", errors);
             // alert(errors.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            setIsModalOpen(true);
             setLoading(false);
+
             return;
         }
         if (data) {
-            console.log("finished request");
             const { url, mime } = data.addSpaceType.upload;
             const options = {
                 headers: {
                     "Content-Type": mime,
                 },
             };
-            console.log("uploading photo");
             await axios.put(url, photo, options);
-            console.log("upload photo complete");
+
+            setModalData({
+                intent: "SUCCESS",
+                title: "スペースタイプが追加されました",
+                text: data.addSpaceType.message,
+                onConfirm: () => {
+                    window.history.back();
+                },
+            });
+            setIsModalOpen(true);
             setLoading(false);
-            alert("Space Type successfully added.");
         }
     };
 
     return (
         <HostLayout userSession={userSession}>
             <Head>
-                <title>Add Space Type - {config.appName}</title>
+                <title>スペースタイプ登録 - {config.appName}</title>
             </Head>
             <div className="bg-white shadow">
                 <Container>
@@ -87,7 +118,7 @@ function SpaceTypeAdd({ userSession }) {
                                 <div>
                                     <div className="flex items-center">
                                         <h1 className="ml-3 text-2xl font-medium leading-7 text-gray-700 sm:leading-9 sm:truncate">
-                                            Add Space Type
+                                            スペースタイプ登録
                                         </h1>
                                     </div>
                                 </div>
@@ -103,9 +134,9 @@ function SpaceTypeAdd({ userSession }) {
                             <div>
                                 <TextField
                                     value={title}
-                                    label="Title"
+                                    label="スペースタイプ名"
                                     // error={}
-                                    errorMessage="Title is required"
+                                    errorMessage="スペースタイプ名は必須です。"
                                     disabled={loading}
                                     onChange={(event) => {
                                         setTitle(event.target.value);
@@ -116,9 +147,9 @@ function SpaceTypeAdd({ userSession }) {
                             <div>
                                 <TextField
                                     value={description}
-                                    label="Description"
+                                    label="紹介文"
                                     // error={}
-                                    errorMessage="Description is required"
+                                    errorMessage="紹介文は必須です。"
                                     disabled={loading}
                                     onChange={(event) => {
                                         setDescription(event.target.value);
@@ -128,9 +159,9 @@ function SpaceTypeAdd({ userSession }) {
                             </div>
                             <div>
                                 <PhotoUploadField
-                                    label="Photo"
+                                    label="画像"
                                     // error={}
-                                    errorMessage="Via is required"
+                                    errorMessage="画像は必須です。"
                                     disabled={loading}
                                     onChange={(photo) => setPhoto(photo)}
                                     singleRow
@@ -143,13 +174,25 @@ function SpaceTypeAdd({ userSession }) {
                                     disabled={loading}
                                     onClick={handleSubmit}
                                 >
-                                    Add Space Type
+                                    スペースタイプ追加
                                 </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 }

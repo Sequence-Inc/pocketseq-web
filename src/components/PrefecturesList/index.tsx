@@ -1,11 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
-import { LibraryIcon } from "@heroicons/react/outline";
-import {
-    AVAILABLE_PREFECTURES,
-    PREFECTURES,
-} from "src/apollo/queries/admin.queries";
+import { PREFECTURES } from "src/apollo/queries/admin.queries";
 import { classNames } from "src/utils";
 import { NetworkHelper } from "@comp";
 
@@ -68,7 +64,7 @@ export const PrefecturesList = () => {
                 return (
                     <Link href={`settings/edit/prefecture/${data.id}`}>
                         <a className="font-medium text-gray-500 hover:text-primary">
-                            Modify
+                            変更
                         </a>
                     </Link>
                 );

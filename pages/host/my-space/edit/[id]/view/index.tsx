@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { Container, GoogleMap } from "@element";
 import { CurrencyYenIcon } from "@heroicons/react/outline";
+import { useModalDialog } from "@hooks/useModalDialog";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import {
     GET_SPACE_BY_ID,
     PUBLISH_SPACE,
 } from "src/apollo/queries/space.queries";
+import AlertModal from "src/components/AlertModal";
 import { durationSuffix } from "src/components/Space/PricingPlan";
 import HostLayout from "src/layouts/HostLayout";
 import { config, PriceFormatter } from "src/utils";
@@ -36,30 +38,67 @@ const DayOverride = ({ userSession, currentSpace }) => {
     const [isPublished, setIsPublished] = useState(published);
     const [loading, setLoading] = useState(false);
 
-    const [publishSpace] = useMutation(PUBLISH_SPACE);
-    // const [unpublishSpace] = useMutation(PUBLISH_SPACE);
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
-    const handlePublishUnpublish = async () => {
-        setLoading(true);
-        try {
-            const confirmation = confirm(
-                `Are you sure you want to ${
-                    isPublished ? "unpublish" : "publish"
-                } this space "${name}"`
-            );
-            const { data } = await publishSpace({
-                variables: {
-                    id,
-                    publish: !isPublished,
+    const [publishSpace] = useMutation(PUBLISH_SPACE, {
+        onCompleted(data) {
+            setModalData({
+                intent: "SUCCESS",
+                title: isPublished
+                    ? "サイト掲載不しました"
+                    : "サイト掲載しました",
+                text: data.publishSpace.message,
+                onConfirm: () => {
+                    setIsPublished(!isPublished);
                 },
             });
-            alert(data.publishSpace.message);
-            setIsPublished(!isPublished);
-        } catch (error) {
-            alert(error.message);
-        } finally {
+            openModal();
             setLoading(false);
-        }
+        },
+        onError(error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
+            setLoading(false);
+        },
+    });
+
+    const doHandlePublishUnpublish = async () => {
+        setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+        publishSpace({
+            variables: {
+                id,
+                publish: !isPublished,
+            },
+        });
+    };
+
+    const handlePublishUnpublish = () => {
+        setModalData({
+            intent: "CONFIRM",
+            title: isPublished
+                ? `${name}を非公開にしてもよろしいですか?`
+                : `${name}を公開してもよろしいですか?`,
+            text: `Are you sure you want to ${
+                isPublished ? "unpublish" : "publish"
+            } this space "${name}"`,
+            onConfirm: async () => {
+                await doHandlePublishUnpublish();
+            },
+        });
+        openModal();
     };
 
     return (
@@ -226,6 +265,18 @@ const DayOverride = ({ userSession, currentSpace }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };
