@@ -71,7 +71,6 @@ function SpaceTypeAdd({ userSession }) {
 
         if (errors) {
             console.log("Errors", errors);
-            // alert(errors.message);
             setModalData({
                 intent: "ERROR",
                 title: "エラーが発生しました",

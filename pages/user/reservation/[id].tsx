@@ -21,6 +21,8 @@ import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/solid";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const ReservationById = ({ userSession, id }) => {
     const [open, setOpen] = useState(false);
@@ -43,6 +45,15 @@ const ReservationById = ({ userSession, id }) => {
 
     const [cancelReservation] = useMutation(CANCEL_RESERVATION);
     const [addReview, { loading: addReviewLoading }] = useMutation(ADD_REVIEW);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     if (reservationLoading) {
         return (
@@ -74,25 +85,48 @@ const ReservationById = ({ userSession, id }) => {
     const displayReviewForm =
         reservationEndDate.isBefore(moment()) && status === "RESERVED";
 
-    const handleCancel = async () => {
-        const choice = confirm(
-            "予約をキャンセルしてもよろしいですか？ キャンセル料が発生する場合がございます。"
-        );
-        if (choice) {
-            try {
-                const { data } = await cancelReservation({
-                    variables: { input: { reservationId: id } },
-                });
-                alert(`${data.cancelReservation.message}`);
-            } catch (error) {
-                alert(`Error! ${error.message}`);
-            }
-            refetch();
+    const doCancel = async () => {
+        try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
+
+            const { data } = await cancelReservation({
+                variables: { input: { reservationId: id } },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約をキャンセルされました",
+                text: data.cancelReservation.message,
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
+        refetch();
+    };
+
+    const handleCancel = async () => {
+        setModalData({
+            intent: "SUCCESS",
+            title: "予約をキャンセルしますか？",
+            text: "予約をキャンセルしてもよろしいですか？ キャンセル料が発生する場合がございます。",
+            onConfirm: () => {
+                doCancel();
+            },
+        });
+        openModal();
     };
 
     const handleAddReview = async () => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
+
             const { data } = await addReview({
                 variables: {
                     input: {
@@ -103,9 +137,19 @@ const ReservationById = ({ userSession, id }) => {
                 },
             });
             setOpen(false);
-            alert("レビューありがとうございます。");
+            setModalData({
+                intent: "SUCCESS",
+                title: "レビューありがとうございます。",
+                text: "",
+            });
+            openModal();
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -467,6 +511,18 @@ const ReservationById = ({ userSession, id }) => {
                     </div>
                 </Dialog>
             </Transition.Root>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

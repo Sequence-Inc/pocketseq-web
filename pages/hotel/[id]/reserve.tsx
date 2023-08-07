@@ -23,10 +23,21 @@ import {
 } from "src/apollo/queries/space.queries";
 import moment from "moment";
 import { durationSuffix } from "src/components/Space/PricingPlan";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [reservationComplete, setReservationComplete] = useState(null);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const startDateTime = moment(start);
     const endDateTime = moment(end);
@@ -50,7 +61,12 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
         try {
             await fetchPaymentMethods();
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -82,7 +98,12 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
     const handleReservation = async () => {
         try {
             if (!selectedPaymentMethod) {
-                alert("Select card for payment");
+                setModalData({
+                    intent: "ERROR",
+                    title: "エラーが発生しました",
+                    text: "支払い方法を選択してください。",
+                });
+                openModal();
                 return;
             }
             const { data } = await reserveSpace({
@@ -101,7 +122,12 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
             });
             setReservationComplete(data);
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -312,6 +338,18 @@ const Reserve = ({ space, start, end, duration, type, total, userSession }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </MainLayout>
     );
 };

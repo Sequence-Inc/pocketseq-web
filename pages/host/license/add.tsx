@@ -128,7 +128,6 @@ const LicenseUpload = ({ userSession }) => {
                         axios.put(url, photo[index], options);
                     })
                 );
-                // alert("License upload successful");
                 setModalData({
                     intent: "SUCCESS",
                     title: "ライセンスがアップロードされました。",

@@ -11,12 +11,22 @@ import {
     APPROVE_LICENSE,
     REJECT_LICENSE,
 } from "src/apollo/queries/admin.queries";
+import AlertModal from "../AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 export const LicenseInfo = ({ account, refetchAccount }) => {
     const [approveLicense] = useMutation(APPROVE_LICENSE);
     const [rejectLicense] = useMutation(REJECT_LICENSE);
     const [isOpen, setIsOpen] = useState(account.host.license.map(() => false));
     const [isLoading, setIsLoading] = useState(false);
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const { license } = account.host;
 
@@ -26,7 +36,7 @@ export const LicenseInfo = ({ account, refetchAccount }) => {
                 <div className="px-4 py-5 sm:p-0">
                     <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            No license
+                            ライセンスは提出されていません。
                         </div>
                     </dl>
                 </div>
@@ -36,20 +46,41 @@ export const LicenseInfo = ({ account, refetchAccount }) => {
 
     const handleReject = async (index, id, remarks) => {
         setIsLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+
         const data = await rejectLicense({ variables: { id, remarks } });
-        alert(data.data?.rejectLicense.message);
-        await refetchAccount();
-        setIsLoading(false);
-        handleClose(index);
+        setModalData({
+            intent: "SUCCESS",
+            title: "ライセンスが拒否されました",
+            text: data.data?.rejectLicense.message,
+            onConfirm: async () => {
+                await refetchAccount();
+                setIsLoading(false);
+                handleClose(index);
+            },
+        });
+        openModal();
     };
 
     const handleApprove = async (index, id) => {
         setIsLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+
         const data = await approveLicense({ variables: { id } });
-        alert(data.data?.approveLicense.message);
-        await refetchAccount();
-        setIsLoading(false);
-        handleClose(index);
+
+        setModalData({
+            intent: "SUCCESS",
+            title: "ライセンスが承認されました",
+            text: data.data?.approveLicense.message,
+            onConfirm: async () => {
+                await refetchAccount();
+                setIsLoading(false);
+                handleClose(index);
+            },
+        });
+        openModal();
     };
 
     const handleClose = (index) => {
@@ -153,6 +184,18 @@ export const LicenseInfo = ({ account, refetchAccount }) => {
                     </dl>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </>
     );
 };
