@@ -94,7 +94,6 @@ const DayOverride = ({ userSession, hotel }) => {
             });
             openModal();
         } catch (error) {
-            // alert(error.message);
         } finally {
             setLoading(false);
         }

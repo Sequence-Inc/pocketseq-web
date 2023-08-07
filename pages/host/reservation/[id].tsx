@@ -20,6 +20,8 @@ import {
     APPROVE_RESERVATION,
     CANCEL_RESERVATION_HOST,
 } from "src/apollo/queries/host.queries";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const ReservationById = ({ userSession, id }) => {
     const [open, setOpen] = useState(false);
@@ -47,15 +49,34 @@ const ReservationById = ({ userSession, id }) => {
         { loading: cancelReservationLoading, error: cancelReservationError },
     ] = useMutation(CANCEL_RESERVATION_HOST);
 
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
     const handleApprove = async (reservationId: string) => {
         try {
             await approveReservation({
                 variables: { reservationId },
             });
-            alert("Approved");
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約が承認されました",
+                text: "",
+            });
+            openModal();
             refetch();
         } catch (err) {
-            console.log(err);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: err.message,
+            });
+            openModal();
         }
     };
 
@@ -70,9 +91,19 @@ const ReservationById = ({ userSession, id }) => {
             });
             setOpen(false);
             refetch();
-            alert(data.cancelReservation.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "設定上書きが削除しました",
+                text: data.cancelReservation.message,
+            });
+            openModal();
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -84,7 +115,6 @@ const ReservationById = ({ userSession, id }) => {
         );
     }
     if (error) {
-        console.log(error);
         return <h3>Error: {error.message}</h3>;
     }
 
@@ -416,15 +446,21 @@ const ReservationById = ({ userSession, id }) => {
                                                                         .value
                                                                 );
                                                             if (value < 0) {
-                                                                alert(
-                                                                    "Cancel charge can not be less than 0%."
-                                                                );
+                                                                setModalData({
+                                                                    intent: "ERROR",
+                                                                    title: "エラーが発生しました",
+                                                                    text: "キャンセル料は0%未満にはできません。",
+                                                                });
+                                                                openModal();
                                                             } else if (
                                                                 value > 100
                                                             ) {
-                                                                alert(
-                                                                    "Cancel charge can not be more than 100%"
-                                                                );
+                                                                setModalData({
+                                                                    intent: "ERROR",
+                                                                    title: "エラーが発生しました",
+                                                                    text: "キャンセル料金は100％を超えることはできません。",
+                                                                });
+                                                                openModal();
                                                             } else {
                                                                 setCancelChargePercent(
                                                                     value
@@ -488,7 +524,7 @@ const ReservationById = ({ userSession, id }) => {
                                             );
                                         }}
                                     >
-                                        Cancel seservation
+                                        予約をキャンセルする
                                     </button>
                                     <button
                                         type="button"
@@ -497,7 +533,7 @@ const ReservationById = ({ userSession, id }) => {
                                         onClick={() => setOpen(false)}
                                         ref={cancelButtonRef}
                                     >
-                                        Do not cancel resrvation
+                                        予約をキャンセルしない
                                     </button>
                                 </div>
                             </div>
@@ -505,6 +541,18 @@ const ReservationById = ({ userSession, id }) => {
                     </div>
                 </Dialog>
             </Transition.Root>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

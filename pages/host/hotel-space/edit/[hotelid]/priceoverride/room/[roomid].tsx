@@ -115,9 +115,7 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                     priceOverride: overrideData,
                 },
             });
-        } catch (error) {
-            // alert("Error: " + error.message);
-        }
+        } catch (error) {}
     };
 
     const doDeletePriceOverride = (overrideId) => {
@@ -130,10 +128,7 @@ const DailyOverride = ({ userSession, roomId, hotelId }) => {
                     priceOverrideIds: [overrideId],
                 },
             });
-        } catch (error) {
-            console.log(error);
-            // alert("Error: " + error.message);
-        }
+        } catch (error) {}
     };
 
     const deletePriceOverride = (overrideId) => {

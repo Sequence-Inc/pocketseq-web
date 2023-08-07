@@ -16,12 +16,23 @@ import useTranslation from "next-translate/useTranslation";
 import { getSession } from "next-auth/react";
 import requireAuth from "src/utils/authecticatedRoute";
 import { config } from "src/utils";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const PhotoIdUpload = ({ userSession }) => {
     const [loading, setLoading] = useState(null);
     const [photo, setPhoto] = useState(null);
 
     const { t } = useTranslation("adminhost");
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const handleSelectPhoto = (event) => {
         const file = event.target.files[0];
@@ -40,15 +51,32 @@ const PhotoIdUpload = ({ userSession }) => {
                 await axios.put(url, photo, options);
                 setLoading(false);
                 setPhoto(null);
-                alert("Photo ID successfully uploaded.");
-                router.replace("/host");
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "分証明書がアップロードされました",
+                    text: "",
+                    onConfirm: () => {
+                        router.replace("/host");
+                    },
+                });
+                openModal();
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                setModalData({
+                    intent: "ERROR",
+                    title: "エラーが発生しました",
+                    text: error.message,
+                });
+                openModal();
             }
             // now upload the actual photo
         },
         onError: (err) => {
-            console.log(err);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: err.message,
+            });
+            openModal();
             setLoading(false);
         },
         refetchQueries: [{ query: HOST, fetchPolicy: "network-only" }],
@@ -56,7 +84,12 @@ const PhotoIdUpload = ({ userSession }) => {
 
     const handleUpload = () => {
         if (!photo) {
-            alert("Please select a file to upload.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "アップロードするファイルを選択してください。",
+            });
+            openModal();
             return;
         }
         setLoading(true);
@@ -186,6 +219,18 @@ const PhotoIdUpload = ({ userSession }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

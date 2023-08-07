@@ -463,7 +463,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                 thirtyMinuteAmount === 0 &&
                 fortyFiveMinuteAmount === 0
             ) {
-                alert("Please select at least one price plan.");
+                alert("料金プランを選択してください。");
                 setLoading(false);
                 return;
             }
@@ -558,7 +558,7 @@ export const useBasicSpace = (fn, selectedSpaceId) => {
                 ];
 
                 await Promise.all(updateMutations);
-                alert("successfully updated!!");
+                alert("スペースを更新しました。");
             } else {
                 // add new!
                 const addSpacesData = await mutate({

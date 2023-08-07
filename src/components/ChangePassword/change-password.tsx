@@ -2,6 +2,8 @@ import { useMutation } from "@apollo/client";
 import { Button, TextField } from "@element";
 import { useCallback, useState } from "react";
 import { UPDATE_PASSWORD } from "src/apollo/queries/user.queries";
+import AlertModal from "../AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 type Errors = {
     currentPassword: boolean;
@@ -21,6 +23,15 @@ export const ChangePassword = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const [updatePassword] = useMutation(UPDATE_PASSWORD);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const handleSubmit = useCallback(async () => {
         let hasError = false;
@@ -60,6 +71,8 @@ export const ChangePassword = () => {
         // all good
         try {
             setLoading(true);
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
             const result = await updatePassword({
                 variables: {
                     input: {
@@ -69,13 +82,23 @@ export const ChangePassword = () => {
                 },
             });
             if (result.data?.changePassword?.message) {
-                alert(
-                    result.data?.changePassword?.message ||
-                        "Password changed successfully."
-                );
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "パスワードが変更されました",
+                    text: result.data?.changePassword?.message,
+                    onConfirm: () => {
+                        window.location.reload();
+                    },
+                });
+                openModal();
             }
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         } finally {
             setLoading(false);
             setCurrentPassword("");
@@ -145,6 +168,18 @@ export const ChangePassword = () => {
                     />
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment, useRef } from "react";
 import { useMutation } from "@apollo/client";
-import { Button, HostCalendarView, Select, TextField } from "@element";
+import { Button, Select, TextField } from "@element";
 import { ExclamationIcon, PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { DatePicker } from "antd";
@@ -16,6 +16,8 @@ import moment, { Moment } from "moment";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { PriceFormatter } from "src/utils";
 import { useGetInitialSpace } from "@hooks/useAddSpace";
+import AlertModal from "../AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const planTypes = [
     { title: "DAILY", label: "日" },
@@ -57,6 +59,15 @@ IOtherSpacesProps) => {
         useMutation(REMOVE_PRICING_PLAN);
 
     const { t } = useTranslation("adminhost");
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const setSeparatePlans = (mergedPlans) => {
         const defaultPlans = [];
@@ -119,7 +130,12 @@ IOtherSpacesProps) => {
                 setSeparatePlans([...newDefaultPlans, ...newPlans]);
             }
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         } finally {
             setLoading(false);
         }
@@ -274,6 +290,18 @@ IOtherSpacesProps) => {
                     </>
                 )}
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };
@@ -504,10 +532,24 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
 
     const { t } = useTranslation("adminhost");
 
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
     const handleSubmit = async () => {
         setLoading(true);
         if (!title || !type || !amount || parseInt(amount) <= 0 || !duration) {
-            alert("Please provide title, plan type, price and duration.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "必要な情報をすべて入力してください",
+            });
+            openModal();
             setLoading(false);
             return;
         }
@@ -528,7 +570,12 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
                     : null,
             });
         } catch (error) {
-            alert(`Error! ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
             setLoading(false);
         }
     };
@@ -729,6 +776,18 @@ const PricePlanForm = ({ addPlan, closeForm, addError }) => {
                     </Button>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

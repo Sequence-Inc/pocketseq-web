@@ -232,7 +232,6 @@ const HotelCalendarView = ({
 
     const addOverRide = () => {
         if (!selectedDates) {
-            // alert("Please select dates to override.");
             setModalData({
                 intent: "ERROR",
                 title: "ご注意ください",
@@ -243,7 +242,6 @@ const HotelCalendarView = ({
         }
 
         if (!selectedPriceScheme) {
-            // alert("Please select price plan to override.");
             setModalData({
                 intent: "ERROR",
                 title: "ご注意ください",

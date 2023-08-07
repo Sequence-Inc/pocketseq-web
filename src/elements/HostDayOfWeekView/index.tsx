@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Calendar } from "antd";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { LoadingSpinner } from "@comp";
 import { useMutation } from "@apollo/client";
@@ -21,6 +20,8 @@ import DaysOfWeekOverride, {
     DaysOfWeekProps,
 } from "src/components/DayOfWeekOverride";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -49,6 +50,15 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
     const [removeSpaceSettingOverride] = useMutation(
         REMOVE_SPACE_SETTING_OVERRIDE
     );
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     useHotkeys("esc", () => {
         onClearRangeSelection();
@@ -160,35 +170,66 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
 
     const addSettingOverride = async (setting) => {
         try {
-            console.log(setting);
-            return;
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
+
             const { data } = await settingOverrideMutation({
                 variables: {
                     spaceId,
                     spaceSetting: setting,
                 },
             });
-            alert(data.overrideSpaceSetting.result.message);
+
+            setModalData({
+                intent: "SUCCESS",
+                title: "設定上書きが追加されました",
+                text: data.overrideSpaceSetting.result.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
             setShowAddSettingsForm(false);
             setShowAddPriceForm(false);
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
     const addPriceOverride = async ({ pricePlanId, input }) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
+
             const { data } = await priceOverrideMutation({
                 variables: {
                     pricePlanId,
                     input,
                 },
             });
-            alert(data.addPricePlanOverride.result.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "価格上書きが追加されました",
+                text: data.addPricePlanOverride.result.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
             setShowAddSettingsForm(false);
             setShowAddPriceForm(false);
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -342,33 +383,99 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
         return finalData;
     };
 
+    const doDeleteSettingOverride = async (id) => {
+        try {
+            const { data } = await removeSpaceSettingOverride({
+                variables: {
+                    id,
+                },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "設定上書きが削除しました",
+                text: data.removeSpaceSetting.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
+        }
+    };
+
     const handleDeleteSettingOverride = async (id) => {
-        if (confirm("設定上書きを消す？")) {
-            try {
-                const { data } = await removeSpaceSettingOverride({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.removeSpaceSetting.message);
-            } catch (error) {
-                alert(error.message);
-            }
+        setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+
+        try {
+            setModalData({
+                intent: "CONFIRM",
+                title: `設定上書きを消す？`,
+                text: "",
+                onConfirm: async () => {
+                    await doDeleteSettingOverride(id);
+                },
+            });
+            openModal();
+        } catch (error) {
+        } finally {
+            setLoading(false);
+            closeModal();
+        }
+    };
+
+    const doDeletePriceOverride = async (id) => {
+        try {
+            const { data } = await removeSpacePriceOverride({
+                variables: {
+                    id,
+                },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "価格上書きが削除しました",
+                text: data.removePricePlanOverride.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
     const handleDeletePriceOverride = async (id) => {
-        if (confirm("価格上書きを消す？")) {
-            try {
-                const { data } = await removeSpacePriceOverride({
-                    variables: {
-                        id,
-                    },
-                });
-                alert(data.removePricePlanOverride.message);
-            } catch (error) {
-                alert(error.message);
-            }
+        setLoading(true);
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+
+        try {
+            setModalData({
+                intent: "CONFIRM",
+                title: `価格上書きを消す？`,
+                text: "",
+                onConfirm: async () => {
+                    await doDeletePriceOverride(id);
+                },
+            });
+            openModal();
+        } catch (error) {
+        } finally {
+            setLoading(false);
+            closeModal();
         }
     };
 
@@ -478,6 +585,18 @@ const HostDayOfWeekView = ({ plans, settings, spaceId }) => {
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

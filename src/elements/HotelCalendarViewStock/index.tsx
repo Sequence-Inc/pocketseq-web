@@ -3,6 +3,8 @@ import { Calendar } from "antd";
 import moment from "moment-timezone";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
 import { TrashIcon } from "@heroicons/react/solid";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const HotelCalendarViewStock = ({
     defaultStock,
@@ -19,6 +21,15 @@ const HotelCalendarViewStock = ({
     const [selectedRangeEnd, setSelectedRangeEnd] = useState(undefined);
 
     const [selectedStock, setSelectedStock] = useState(defaultStock);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     useEffect(() => {
         const mappedOverrides = stockOverride.map((override) => {
@@ -176,12 +187,22 @@ const HotelCalendarViewStock = ({
 
     const addOverRide = () => {
         if (!selectedDates) {
-            alert("Please select dates to override.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "上書きを適用する日付を選択してください。",
+            });
+            openModal();
             return;
         }
 
         if (!selectedStock) {
-            alert("Please enter new stock to override.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "上書きするには新しい在庫を入力してください。",
+            });
+            openModal();
             return;
         }
 
@@ -331,6 +352,18 @@ const HotelCalendarViewStock = ({
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

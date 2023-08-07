@@ -1,14 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Calendar } from "antd";
 import moment, { Moment } from "moment";
 import { useHotkeys, isHotkeyPressed } from "react-hotkeys-hook";
-import {
-    generateAlertModalContent,
-    getTimeFromFloat,
-    ModalData,
-    PriceFormatter,
-} from "src/utils";
+import { getTimeFromFloat, PriceFormatter } from "src/utils";
 import { LoadingSpinner } from "@comp";
 import { Disclosure } from "@headlessui/react";
 import { daysOfWeek } from "src/components/DayOfWeekOverride";
@@ -30,6 +25,7 @@ import { durationSuffix } from "src/components/Space/PricingPlan";
 import { TrashIcon } from "@heroicons/react/outline";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
 import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const { RangePicker } = DatePicker;
 
@@ -62,8 +58,14 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
         REMOVE_SPACE_SETTING_OVERRIDE
     );
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalData, setModalData] = useState<ModalData | null>(null);
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     useHotkeys("esc", () => {
         onClearRangeSelection();
@@ -143,19 +145,6 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
         }
     }, [selectedRangeStart, selectedRangeEnd]);
 
-    const modalContent = useMemo(() => {
-        return generateAlertModalContent({
-            modalData,
-            setModalData,
-            setIsModalOpen,
-        });
-    }, [
-        modalData?.intent,
-        modalData?.text,
-        modalData?.title,
-        modalData?.onConfirm,
-    ]);
-
     const onClearRangeSelection = () => {
         setSelectedRangeStart(undefined);
         setSelectedRangeEnd(undefined);
@@ -198,7 +187,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 setPanelChanged(true);
             },
         });
-        setIsModalOpen(true);
+        openModal();
     };
 
     const fullCellRenderer = (value: Moment) => {
@@ -366,7 +355,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
     const addSettingOverride = async (setting) => {
         try {
             setModalData({ ...modalData, intent: "LOADING" });
-            setIsModalOpen(true);
+            openModal();
             const { data } = await settingOverrideMutation({
                 variables: {
                     spaceId,
@@ -384,27 +373,26 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                     window.location.reload();
                 },
             });
-            setIsModalOpen(true);
+            openModal();
         } catch (error) {
             setModalData({
                 intent: "ERROR",
                 title: "エラーが発生しました",
                 text: error.message,
             });
-            setIsModalOpen(true);
+            openModal();
         }
     };
     const addPriceOverride = async ({ pricePlanId, input }) => {
         try {
             setModalData({ ...modalData, intent: "LOADING" });
-            setIsModalOpen(true);
+            openModal();
             const { data } = await priceOverrideMutation({
                 variables: {
                     pricePlanId,
                     input,
                 },
             });
-            // alert(data.addPricePlanOverride.result.message);
             setModalData({
                 intent: "SUCCESS",
                 title: "価格上書きが追加されました",
@@ -415,22 +403,21 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                     window.location.reload();
                 },
             });
-            setIsModalOpen(true);
+            openModal();
         } catch (error) {
-            // alert(error.message);
             setModalData({
                 intent: "ERROR",
                 title: "エラーが発生しました",
                 text: error.message,
             });
-            setIsModalOpen(true);
+            openModal();
         }
     };
 
     const doDeleteSettingOverride = async (id) => {
         try {
             setModalData({ ...modalData, intent: "LOADING" });
-            setIsModalOpen(true);
+            openModal();
             const { data } = await removeSpaceSettingOverride({
                 variables: {
                     id,
@@ -444,14 +431,14 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                     window.location.reload();
                 },
             });
-            setIsModalOpen(true);
+            openModal();
         } catch (error) {
             setModalData({
                 intent: "ERROR",
                 title: "エラーが発生しました",
                 text: error.message,
             });
-            setIsModalOpen(true);
+            openModal();
         }
     };
 
@@ -464,19 +451,18 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 doDeleteSettingOverride(id);
             },
         });
-        setIsModalOpen(true);
+        openModal();
     };
 
     const doDeletePriceOverride = async (id) => {
         try {
             setModalData({ ...modalData, intent: "LOADING" });
-            setIsModalOpen(true);
+            openModal();
             const { data } = await removeSpacePriceOverride({
                 variables: {
                     id,
                 },
             });
-            // alert(data.removePricePlanOverride.message);
             setModalData({
                 intent: "SUCCESS",
                 title: "価格上書きが追加されました",
@@ -485,14 +471,14 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                     window.location.reload();
                 },
             });
-            setIsModalOpen(true);
+            openModal();
         } catch (error) {
             setModalData({
                 intent: "ERROR",
                 title: "エラーが発生しました",
                 text: error.message,
             });
-            setIsModalOpen(true);
+            openModal();
         }
     };
 
@@ -505,7 +491,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 doDeletePriceOverride(id);
             },
         });
-        setIsModalOpen(true);
+        openModal();
     };
 
     const currentSelection =
@@ -639,7 +625,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                 disableTitle={true}
                 disableDefaultIcon={true}
                 setOpen={() => {
-                    setIsModalOpen(false);
+                    closeModal();
                     setModalData(null);
                 }}
                 disableClose={true}
