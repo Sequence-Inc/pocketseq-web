@@ -13,9 +13,20 @@ import {
     APPROVE_ACCOUNT,
 } from "src/apollo/queries/admin.queries";
 import moment from "moment";
+import { useModalDialog } from "@hooks/useModalDialog";
+import AlertModal from "../AlertModal";
 
 export const HostAccountInfo = ({ account }) => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const router = useRouter();
     const {
@@ -42,20 +53,27 @@ export const HostAccountInfo = ({ account }) => {
         ],
     });
 
-    function closeModal() {
+    function _closeModal() {
         setIsOpen(false);
     }
 
-    function openModal() {
+    function _openModal() {
         setIsOpen(true);
     }
 
     async function handleApprove() {
         const { data } = await approveAccount({ variables: { accountId } });
-        closeModal();
+        _closeModal();
         if (data.approveAccount.message) {
-            alert(data.approveAccount.message);
-            router.push("/admin/hosts");
+            setModalData({
+                intent: "SUCCESS",
+                title: "アカウントが承認されました",
+                text: data.approveAccount.message,
+                onConfirm: () => {
+                    router.push("/admin/hosts");
+                },
+            });
+            openModal();
         }
     }
     function handleReject() {}
@@ -72,23 +90,26 @@ export const HostAccountInfo = ({ account }) => {
     let approveButton = null;
     let photoIdDialogContent = null;
     let photoIdVerifyContent = (
-        <div className="text-gray-500"> (Photo ID not provided yet!)</div>
+        <div className="text-gray-500">
+            {" "}
+            (写真付き身分証明書は提出されていません。)
+        </div>
     );
     if (!approved && photoId?.large?.url) {
         approveButton = (
             <Button
                 variant="primary"
                 className="w-auto ml-6"
-                onClick={openModal}
+                onClick={_openModal}
             >
-                Approve Host
+                ホストを承認する
             </Button>
         );
         photoIdDialogContent = (
             <PhotoIdDialog
                 photoId={photoId}
                 isOpen={isOpen}
-                onClose={closeModal}
+                onClose={_closeModal}
                 approve={handleApprove}
                 reject={handleReject}
             />
@@ -96,9 +117,9 @@ export const HostAccountInfo = ({ account }) => {
         photoIdVerifyContent = (
             <button
                 className="text-blue-500 hover:text-primary ml-4"
-                onClick={openModal}
+                onClick={_openModal}
             >
-                (Verify Photo ID)
+                (写真付き身分証明書を確認する)
             </button>
         );
     } else {
@@ -235,6 +256,18 @@ export const HostAccountInfo = ({ account }) => {
                     </dl>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </>
     );
 };

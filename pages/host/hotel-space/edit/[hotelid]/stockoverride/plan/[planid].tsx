@@ -105,13 +105,8 @@ const DailyOverride = ({ userSession, planId, hotelId }) => {
                     stockOverride: overrideData,
                 },
             });
-            // alert("Override added successfully.");
-            // location.reload();
             return false;
-        } catch (error) {
-            console.log(error);
-            // alert("Error: " + error.message);
-        }
+        } catch (error) {}
     };
 
     const deleteStockOverride = (overrideId) => {

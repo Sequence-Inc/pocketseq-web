@@ -17,6 +17,8 @@ import {
 } from "../HostCalendarView";
 import { daysOfWeek as DAYS } from "src/components/DayOfWeekOverride";
 import HourlyOverride, { HoursProps, Day } from "src/components/HourlyOverride";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const testData: HoursProps = [
     {
@@ -190,6 +192,15 @@ const HostDayView = ({ plans, settings, spaceId }) => {
     const [settingOverrideMutation] = useMutation(ADD_SETTING_OVERRIDE);
     const [priceOverrideMutation] = useMutation(ADD_PRICE_OVERRIDE);
 
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
     useHotkeys("esc", () => {
         onClearRangeSelection();
     });
@@ -298,33 +309,63 @@ const HostDayView = ({ plans, settings, spaceId }) => {
 
     const addSettingOverride = async (setting) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
             const { data } = await settingOverrideMutation({
                 variables: {
                     spaceId,
                     spaceSetting: setting,
                 },
             });
-            alert(data.overrideSpaceSetting.result.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "設定上書きが追加されました",
+                text: data.overrideSpaceSetting.result.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
             setShowAddSettingsForm(false);
             setShowAddPriceForm(false);
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
     const addPriceOverride = async ({ pricePlanId, input }) => {
         try {
+            setModalData({ ...modalData, intent: "LOADING" });
+            openModal();
             const { data } = await priceOverrideMutation({
                 variables: {
                     pricePlanId,
                     input,
                 },
             });
-            alert(data.addPricePlanOverride.result.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "料金上書きが追加されました",
+                text: data.addPricePlanOverride.result.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
             setShowAddSettingsForm(false);
             setShowAddPriceForm(false);
         } catch (error) {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
@@ -577,6 +618,18 @@ const HostDayView = ({ plans, settings, spaceId }) => {
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

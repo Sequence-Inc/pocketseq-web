@@ -20,6 +20,8 @@ import { config } from "src/utils";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { ChangePassword } from "src/components/ChangePassword";
 import { DeactivateAccount } from "@comp";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const UserSettings = ({ userSession }) => {
     const [profileLoading, setProfileLoading] = useState<boolean>(false);
@@ -46,11 +48,20 @@ const UserSettings = ({ userSession }) => {
         {
             onCompleted: (data) => {
                 refetchProfile();
-                alert(data.setDefaultPaymentMethod.message);
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "デフォルトの支払い方法が更新されました",
+                    text: data.setDefaultPaymentMethod.message,
+                });
                 setIsLoading(false);
             },
             onError: (error) => {
-                alert(`Error: ${error.message}`);
+                setModalData({
+                    intent: "ERROR",
+                    title: "エラーが発生しました",
+                    text: error.message,
+                });
+                openModal();
                 setIsLoading(false);
             },
         }
@@ -58,14 +69,32 @@ const UserSettings = ({ userSession }) => {
     const [removePaymentSource] = useMutation(REMOVE_PAYMENT_SOURCE, {
         onCompleted: (data) => {
             refetchProfile();
-            alert(data.removePaymentMethod.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "支払い方法が削除されました",
+                text: data.removePaymentMethod.message,
+            });
             setIsLoading(false);
         },
         onError: (error) => {
-            alert(`Error: ${error.message}`);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
             setIsLoading(false);
         },
     });
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     useEffect(() => {
         if (data?.myProfile) {
@@ -84,10 +113,20 @@ const UserSettings = ({ userSession }) => {
             input.id = data?.myProfile.id;
             const userProfileData = await mutate({ variables: { input } });
             if (userProfileData.data?.updateMyProfile) {
-                alert(userProfileData.data?.updateMyProfile.message);
+                setModalData({
+                    intent: "SUCCESS",
+                    title: "プロフィールが更新されました",
+                    text: userProfileData.data?.updateMyProfile.message,
+                });
+                openModal();
             }
         } catch (err) {
-            console.log(err);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: err.message,
+            });
+            openModal();
         } finally {
             setProfileLoading(false);
         }
@@ -130,34 +169,45 @@ const UserSettings = ({ userSession }) => {
     };
 
     const makeDefault = ({ last4, token }) => {
-        if (
-            confirm(
-                `このカードをデフォルトの支払い元に設定してもよろしいですか?`
-            )
-        ) {
-            setIsLoading(true);
-            makeDefaultPaymentSource({
-                variables: {
-                    paymentMethodId: token,
-                },
-            });
-        }
+        setModalData({
+            intent: "CONFIRM",
+            title: "このカードをデフォルトの支払い元に設定してもよろしいですか?",
+            text: "",
+            onConfirm: () => {
+                setIsLoading(true);
+                makeDefaultPaymentSource({
+                    variables: {
+                        paymentMethodId: token,
+                    },
+                });
+            },
+        });
+        openModal();
     };
     const removePaymentMethod = ({ token, last4, isDefault }) => {
         if (isDefault) {
-            alert(
-                "アカウントからデフォルト カードを削除することはできません。"
-            );
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "アカウントからデフォルトカードを削除することはできません。",
+            });
             return;
         }
-        if (confirm(`このカードを削除してもよろしいですか？`)) {
-            setIsLoading(true);
-            removePaymentSource({
-                variables: {
-                    paymentMethodId: token,
-                },
-            });
-        }
+
+        setModalData({
+            intent: "CONFIRM",
+            title: "このカードを削除してもよろしいですか？",
+            text: "",
+            onConfirm: () => {
+                setIsLoading(true);
+                removePaymentSource({
+                    variables: {
+                        paymentMethodId: token,
+                    },
+                });
+            },
+        });
+        openModal();
     };
 
     const renderPaymentMethods = () => {
@@ -353,6 +403,18 @@ const UserSettings = ({ userSession }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

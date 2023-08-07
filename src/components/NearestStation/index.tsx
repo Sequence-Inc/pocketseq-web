@@ -6,6 +6,8 @@ import {
     GET_PREFECTURES,
     GET_STATIONS,
 } from "src/apollo/queries/station.queries";
+import AlertModal from "../AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 export const NearestStation = ({ onAdd, closeForm }) => {
     const [loading, setLoading] = useState(false);
@@ -15,6 +17,15 @@ export const NearestStation = ({ onAdd, closeForm }) => {
     const [via, setVia] = useState("");
     const [time, setTime] = useState(0);
     const [exit, setExit] = useState("");
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const {
         data: prefectureData,
@@ -48,7 +59,12 @@ export const NearestStation = ({ onAdd, closeForm }) => {
             !time ||
             !exit
         ) {
-            alert("All information are required.");
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: "必要な情報をすべて入力してください。",
+            });
+            openModal();
             setLoading(false);
             return;
         }
@@ -191,6 +207,18 @@ export const NearestStation = ({ onAdd, closeForm }) => {
                     </Button>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

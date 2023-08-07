@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
+import React, { useState, Fragment, useRef } from "react";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
 import moment from "moment";
@@ -13,18 +13,16 @@ import { Dialog, Transition } from "@headlessui/react";
 import HostLayout from "src/layouts/HostLayout";
 import { Button, Container } from "@element";
 import requireAuth from "src/utils/authecticatedRoute";
-import { GET_RESERVATION_BY_ID } from "src/apollo/queries/space.queries";
 import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
-import {
-    APPROVE_RESERVATION,
-    CANCEL_RESERVATION_HOST,
-} from "src/apollo/queries/host.queries";
+import { CANCEL_RESERVATION_HOST } from "src/apollo/queries/host.queries";
 import {
     APPROVE_HOTEL_ROOM_RESERVATION,
     DENY_HOTEL_ROOM_RESERVATION,
     HOTEL_ROOM_RESERVATION_BY_ID,
 } from "src/apollo/queries/hotel.queries";
+import { useModalDialog } from "@hooks/useModalDialog";
+import AlertModal from "src/components/AlertModal";
 
 const HotelReservationById = ({ userSession, id }) => {
     const [open, setOpen] = useState(false);
@@ -54,69 +52,108 @@ const HotelReservationById = ({ userSession, id }) => {
         { loading: cancelReservationLoading, error: cancelReservationError },
     ] = useMutation(CANCEL_RESERVATION_HOST);
 
-    const handleApprove = async (reservationId: string) => {
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
+    const doApprove = async (reservationId: string) => {
         try {
-            if (
-                confirm(
-                    "Are you sure you want to allow this reservation requeset?"
-                )
-            ) {
-                await approveReservation({
-                    variables: { reservationId },
-                });
-                alert("Reservertaion Approved successfully.");
-                refetch();
-            }
-        } catch (err) {
-            console.log(err);
-            alert(`${err.message}`);
+            await approveReservation({
+                variables: { reservationId },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約が承認されました",
+                text: data.approveRoomReservation.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
     };
 
-    const handleDeny = React.useCallback(
-        async (hotelRoomReservationId: string) => {
-            try {
-                if (
-                    confirm(
-                        "Are you sure you want to deny this reservation request?"
-                    )
-                ) {
-                    await denyReservation({
-                        variables: {
-                            input: {
-                                hotelRoomReservationId,
-                                cancelCharge: cancelChargePercent,
-                                remarks: cancelRemarks,
-                            },
-                        },
-                    });
-                    setOpen(false);
-                    refetch();
-                    alert("Reservertaion Cancelled successfully.");
-                }
-            } catch (err) {
-                console.log(err);
-                alert(`Could not cancel reservation. ${err?.message || ""}`);
-            }
-        },
-        [cancelChargePercent, cancelRemarks]
-    );
+    const handleApprove = async (reservationId: string) => {
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+        try {
+            setModalData({
+                intent: "CONFIRM",
+                title: `予約リクエストを承認してもよろしいですか?`,
+                text: "",
+                onConfirm: async () => {
+                    await doApprove(reservationId);
+                },
+            });
+            openModal();
+        } catch (error) {
+        } finally {
+            closeModal();
+        }
+    };
 
-    // const handleReservationCancel = async (
-    //     reservationId,
-    //     cancelCharge,
-    //     remarks
-    // ) => {
-    //     try {
-    //         const { data } = await cancelReservation({
-    //             variables: { input: { reservationId, cancelCharge, remarks } },
-    //         });
-    //         setOpen(false);
-    //         alert(data.cancelReservation.message);
-    //     } catch (error) {
-    //         alert(`Error: ${error.message}`);
-    //     }
-    // };
+    const doDeny = async (hotelRoomReservationId: string) => {
+        try {
+            await denyReservation({
+                variables: {
+                    input: {
+                        hotelRoomReservationId,
+                        cancelCharge: cancelChargePercent,
+                        remarks: cancelRemarks,
+                    },
+                },
+            });
+            setOpen(false);
+            refetch();
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約リクエストが拒否されました",
+                text: data.cancelRoomReservation.message,
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
+        }
+    };
+
+    const handleDeny = async (hotelRoomReservationId: string) => {
+        setModalData({ ...modalData, intent: "LOADING" });
+        openModal();
+        try {
+            setModalData({
+                intent: "CONFIRM",
+                title: `予約リクエストを拒否しますか?`,
+                text: "",
+                onConfirm: async () => {
+                    await doDeny(hotelRoomReservationId);
+                },
+            });
+            openModal();
+        } catch (error) {
+        } finally {
+            closeModal();
+        }
+    };
 
     if (reservationLoading) {
         return (
@@ -126,7 +163,6 @@ const HotelReservationById = ({ userSession, id }) => {
         );
     }
     if (error) {
-        console.log(error);
         return <h3>Error: {error.message}</h3>;
     }
 
@@ -145,10 +181,6 @@ const HotelReservationById = ({ userSession, id }) => {
         reservee,
         transaction,
     } = hotelRoomReservationById;
-
-    console.log({
-        transaction: transaction.amount * (cancelChargePercent / 100),
-    });
 
     return (
         <HostLayout userSession={userSession}>
@@ -467,15 +499,21 @@ const HotelReservationById = ({ userSession, id }) => {
                                                                         .value
                                                                 );
                                                             if (value < 0) {
-                                                                alert(
-                                                                    "Cancel charge can not be less than 0%."
-                                                                );
+                                                                setModalData({
+                                                                    intent: "ERROR",
+                                                                    title: "エラーが発生しました",
+                                                                    text: "キャンセル料は0%未満にはできません。",
+                                                                });
+                                                                openModal();
                                                             } else if (
                                                                 value > 100
                                                             ) {
-                                                                alert(
-                                                                    "Cancel charge can not be more than 100%"
-                                                                );
+                                                                setModalData({
+                                                                    intent: "ERROR",
+                                                                    title: "エラーが発生しました",
+                                                                    text: "キャンセル料金は100％を超えることはできません。",
+                                                                });
+                                                                openModal();
                                                             } else {
                                                                 setCancelChargePercent(
                                                                     value
@@ -535,7 +573,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                             handleDeny(id);
                                         }}
                                     >
-                                        Cancel reservation
+                                        予約をキャンセルする
                                     </button>
                                     <button
                                         type="button"
@@ -544,7 +582,7 @@ const HotelReservationById = ({ userSession, id }) => {
                                         onClick={() => setOpen(false)}
                                         ref={cancelButtonRef}
                                     >
-                                        Do not cancel resrvation
+                                        予約をキャンセルしない
                                     </button>
                                 </div>
                             </div>
@@ -552,6 +590,18 @@ const HotelReservationById = ({ userSession, id }) => {
                     </div>
                 </Dialog>
             </Transition.Root>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

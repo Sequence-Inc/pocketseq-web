@@ -17,6 +17,8 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import moment from "moment";
 import "moment/locale/ja";
 import { Moment } from "moment-timezone";
+import { useModalDialog } from "@hooks/useModalDialog";
+import AlertModal from "../AlertModal";
 
 moment.locale("ja");
 
@@ -51,6 +53,15 @@ export const SearchBoxNew = ({
     } = useQuery(GET_SEARCH_AREA, { variables: { type: searchType } });
 
     const router = useRouter();
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     useEffect(() => {
         if (defaultValue) {
@@ -95,23 +106,21 @@ export const SearchBoxNew = ({
         // validate
         const errorList = [];
         if (!checkInDate) {
-            errorList.push("Please provide check in date");
+            errorList.push("チェックイン日を入力してください。");
         } else {
             if (searchType === "hotel" && !checkOutDate) {
-                errorList.push(
-                    "Please provide check out date for hotel reservation."
-                );
+                errorList.push("チェックアウト日を入力してください。");
             }
             if (checkOutDate) {
                 if (checkInDate.isAfter(checkOutDate)) {
                     errorList.push(
-                        "Check out date can not be before check in date."
+                        "チェックアウト日をチェックイン日より前にすることはできません。"
                     );
                 }
             }
         }
         if (noOfAdults < 1) {
-            errorList.push("Adult guest can not be less than 1.");
+            errorList.push("大人の宿泊人数は 1 名以上です。");
         }
         if (errorList.length === 0) {
             // search
@@ -137,7 +146,12 @@ export const SearchBoxNew = ({
                 });
             }
         } else {
-            alert(errorList.map((error) => `${error}\n`));
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: errorList.join("\n"),
+            });
+            openModal();
         }
     };
 
@@ -1075,6 +1089,18 @@ export const SearchBoxNew = ({
                     </Button>
                 </div>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </>
     );
 };

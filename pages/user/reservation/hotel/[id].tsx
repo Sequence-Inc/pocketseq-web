@@ -22,6 +22,8 @@ import { LoadingSpinner } from "src/components/LoadingSpinner";
 import { PriceFormatter } from "src/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { HOTEL_ROOM_RESERVATION_BY_ID } from "src/apollo/queries/hotel.queries";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const ReservationById = ({ userSession, id }) => {
     const [open, setOpen] = useState(false);
@@ -44,6 +46,15 @@ const ReservationById = ({ userSession, id }) => {
 
     const [cancelRoomReservation] = useMutation(CANCEL_ROOM_RESERVATION);
     const [addReview, { loading: addReviewLoading }] = useMutation(ADD_REVIEW);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     if (reservationLoading) {
         return (
@@ -76,40 +87,42 @@ const ReservationById = ({ userSession, id }) => {
     const displayReviewForm =
         reservationEndDate.isBefore(moment()) && status === "RESERVED";
 
-    const handleCancel = async () => {
-        const choice = confirm(
-            "Are you sure you want to cancel this reservation? Cancellation fee may apply!"
-        );
-        if (choice) {
-            try {
-                const { data } = await cancelRoomReservation({
-                    variables: { input: { hotelRoomReservationId: id } },
-                });
-                alert(`Reservation cancelled!`);
-            } catch (error) {
-                alert(`Error! ${error.message}`);
-            }
-            refetch();
+    const doCancel = async () => {
+        try {
+            const { data } = await cancelRoomReservation({
+                variables: { input: { hotelRoomReservationId: id } },
+            });
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約がキャンセルされました。",
+                text: "",
+                onConfirm: () => {
+                    window.location.reload();
+                },
+            });
+            openModal();
+        } catch (error) {
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
         }
+        refetch();
     };
 
-    // const handleAddReview = async () => {
-    //     try {
-    //         const { data } = await addReview({
-    //             variables: {
-    //                 input: {
-    //                     spaceId: space.id,
-    //                     rating: ratings,
-    //                     comment: commentText,
-    //                 },
-    //             },
-    //         });
-    //         setOpen(false);
-    //         alert("Successfully added review.");
-    //     } catch (error) {
-    //         alert(`Error: ${error.message}`);
-    //     }
-    // };
+    const handleCancel = async () => {
+        setModalData({
+            intent: "CONFIRM",
+            title: "予約をキャンセルする",
+            text: "予約をキャンセルしてもよろしいですか? キャンセル料がかかる場合もございます！",
+            onConfirm: () => {
+                doCancel();
+            },
+        });
+        openModal();
+    };
 
     return (
         <HostLayout userSession={userSession}>
@@ -138,29 +151,7 @@ const ReservationById = ({ userSession, id }) => {
                     </div>
                 </Container>
             </div>
-            {/* <Container className="py-4 sm:py-6 lg:py-8">
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div className="flex items-center justify-between px-4 py-5 sm:px-6">
-                        <div>
-                            <h3 className="text-lg leading-6 font-bold text-gray-700">
-                                Add review
-                            </h3>
-                            <div className="mt-1 max-w-2xl text-sm text-gray-500">
-                                Tell us about your experience
-                            </div>
-                        </div>
-                        <div>
-                            <Button
-                                type="button"
-                                variant="primary"
-                                onClick={() => setOpen(true)}
-                            >
-                                Add review
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </Container> */}
+
             <Container className="py-4 sm:py-6 lg:py-8">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
@@ -474,6 +465,18 @@ const ReservationById = ({ userSession, id }) => {
                     </div>
                 </Dialog>
             </Transition.Root>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

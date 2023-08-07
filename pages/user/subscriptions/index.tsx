@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusIcon, ScaleIcon } from "@heroicons/react/outline";
 import HostLayout from "src/layouts/HostLayout";
 import Head from "next/head";
 import { Container } from "@element";
@@ -13,6 +12,8 @@ import {
 } from "src/apollo/queries/subscriptions/queries";
 import moment from "moment-timezone";
 import { LoadingSpinner } from "@comp";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const UserSettings = ({ userSession }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,15 +21,34 @@ const UserSettings = ({ userSession }) => {
     const { data, loading, error, refetch } = useQuery(MY_SUBSCRIPTIONS);
     const [cancelSubscription] = useMutation(CANCEL_SUBSCRIPTION, {
         onCompleted: (data) => {
-            alert(data.cancelSubscription.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "サブスクリプションがキャンセルされました",
+                text: data.cancelSubscription.message,
+            });
+            openModal();
             refetch();
             setIsLoading(false);
         },
         onError: (error) => {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
             setIsLoading(false);
         },
     });
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     if (loading) {
         return (
@@ -45,16 +65,16 @@ const UserSettings = ({ userSession }) => {
     const { mySubscriptions } = data;
 
     const _cancelSubscription = ({ name, priceType, type, id }) => {
-        if (
-            confirm(
-                `Are you sure you want to unsubscribe ${
-                    type === "hotel" ? "宿泊" : "レンタルスペース"
-                } subscription ${name} ${priceType}?`
-            )
-        ) {
-            setIsLoading(true);
-            cancelSubscription({ variables: { id } });
-        }
+        setModalData({
+            intent: "CONFIRM",
+            title: "サブスクリプションをキャンセルする",
+            text: `購読を解除してもよろしいですか?`,
+            onConfirm: () => {
+                setIsLoading(true);
+                cancelSubscription({ variables: { id } });
+            },
+        });
+        openModal();
     };
 
     const renderStatus = ({
@@ -208,6 +228,18 @@ const UserSettings = ({ userSession }) => {
                     </div>
                 </div>
             </Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };

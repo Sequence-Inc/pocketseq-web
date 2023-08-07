@@ -16,6 +16,8 @@ import { LoadingSpinner } from "@comp";
 import { CalendarIcon } from "@heroicons/react/outline";
 import { config, reservationStatusJapanify } from "src/utils";
 import Link from "next/link";
+import AlertModal from "src/components/AlertModal";
+import { useModalDialog } from "@hooks/useModalDialog";
 
 const noOfItems = 10;
 
@@ -39,6 +41,15 @@ const ReservationList = ({ userSession }) => {
 
     const [approveReservation] = useMutation(APPROVE_RESERVATION);
     const [approveHotelReservation] = useMutation(APPROVE_HOTEL_RESERVATION);
+
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
 
     const keys = [
         { name: "施設名", key: "space" },
@@ -70,10 +81,20 @@ const ReservationList = ({ userSession }) => {
             const resp = await approveReservation({
                 variables: { reservationId },
             });
-            alert(resp.data?.approveReservation.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約が承認されました。",
+                text: resp.data?.approveReservation.message,
+            });
+            openModal();
             refetch();
         } catch (err) {
-            console.log(err);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: err.message,
+            });
+            openModal();
         }
     };
     const handleHotelApprove = async (reservationId: string) => {
@@ -81,10 +102,20 @@ const ReservationList = ({ userSession }) => {
             const resp = await approveHotelReservation({
                 variables: { reservationId },
             });
-            alert(resp.data?.approveRoomReservation.message);
+            setModalData({
+                intent: "SUCCESS",
+                title: "予約が承認されました。",
+                text: resp.data?.approveRoomReservation.message,
+            });
+            openModal();
             refetch();
         } catch (err) {
-            alert("Error: " + err?.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: err.message,
+            });
+            openModal();
         }
     };
 
@@ -355,6 +386,18 @@ const ReservationList = ({ userSession }) => {
                 </Container>
             </div>
             <Container className="py-4 sm:py-6 lg:py-8">{content}</Container>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </HostLayout>
     );
 };
