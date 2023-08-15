@@ -227,15 +227,15 @@ const UserSettings = ({ userSession }) => {
                 return (
                     <div
                         key={index}
-                        className="flex items-center justify-between px-6 py-4 bg-gray-50 text-gray-700 rounded-lg shadow text-base space-x-4"
+                        className="flex items-center justify-between px-6 py-3 bg-gray-50 text-gray-700 rounded-lg shadow text-base space-x-4"
                     >
-                        <div className="flex items-center flex-1 font-mono">
+                        <div className="flex items-center flex-1 font-mono text-sm">
                             <span className="inline-block mr-5">
                                 {cardIcon(card.brand)}
                             </span>
                             **** **** **** {card.last4} ({expMonth}/{expYear})
                         </div>
-                        <div>
+                        <div className="text-xs">
                             {card.isDefault ? (
                                 "デフォルトカード"
                             ) : (
@@ -244,7 +244,7 @@ const UserSettings = ({ userSession }) => {
                                     onClick={() => {
                                         makeDefault(card);
                                     }}
-                                    className="font-bold text-primary"
+                                    className=" text-primary hover:text-primaryHover"
                                 >
                                     デフォルトにする
                                 </button>
@@ -256,7 +256,7 @@ const UserSettings = ({ userSession }) => {
                                 e.preventDefault();
                                 removePaymentMethod(card);
                             }}
-                            className="font-bold text-red-500 hover:text-red-700"
+                            className="text-sm font-bold text-red-500 hover:text-red-700"
                         >
                             削除
                         </button>
@@ -394,7 +394,7 @@ const UserSettings = ({ userSession }) => {
                         <div className="w-full font-bold flex align-baseline justify-between">
                             <div>アカウントを削除</div>
                             <div className="inline-block ml-4 font-normal text-red-500 text-sm">
-                                ※警告！ この操作は元に戻せません。
+                                ※この操作は元には戻せません。
                             </div>
                         </div>
                     </h3>
