@@ -29,7 +29,7 @@ const deactivationReason = [
 
 export const DeactivateAccount = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const [selectedReason, setSelectedReason] = useState("");
+    const [selectedReason, setSelectedReason] = useState<string[]>([]);
     const [otherReason, setOtherReason] = useState("");
     const [password, setPassword] = useState<string>("");
 
@@ -75,7 +75,7 @@ export const DeactivateAccount = () => {
             return;
         }
 
-        if (!selectedReason || selectedReason === "") {
+        if (selectedReason.length === 0) {
             setModalData({
                 intent: "ERROR",
                 title: "エラー",
@@ -85,7 +85,7 @@ export const DeactivateAccount = () => {
             return;
         }
 
-        if (selectedReason === "その他" && otherReason.trim() === "") {
+        if (selectedReason.includes("その他") && otherReason.trim() === "") {
             setModalData({
                 intent: "ERROR",
                 title: "エラー",
@@ -102,26 +102,21 @@ export const DeactivateAccount = () => {
         });
         openModal();
 
+        const reason = selectedReason.includes("その他")
+            ? `${selectedReason
+                  .filter((value) => value !== "その他")
+                  .join("、")}、${otherReason}`
+            : `${selectedReason.join("、")}`;
+
         deactivate({
             variables: {
                 input: {
                     password,
-                    reason:
-                        selectedReason === "その他"
-                            ? otherReason.trim()
-                            : selectedReason,
+                    reason,
                 },
             },
         });
     };
-
-    // if (loading) {
-    //     return (
-    //         <div className="my-20">
-    //             <LoadingSpinner />
-    //         </div>
-    //     );
-    // }
 
     return (
         <div className="space-y-4 max-w-md mx-auto">
@@ -135,16 +130,19 @@ export const DeactivateAccount = () => {
                             <div>
                                 <label className="flex cursor-pointer text-gray-600">
                                     <input
-                                        type="radio"
+                                        type="checkbox"
                                         name="deactivationReason"
                                         value={value}
                                         checked={
-                                            value === selectedReason
+                                            selectedReason.includes(value)
                                                 ? true
                                                 : false
                                         }
                                         onClick={() => {
-                                            setSelectedReason(value);
+                                            setSelectedReason([
+                                                ...selectedReason,
+                                                value,
+                                            ]);
                                         }}
                                         className="mr-2"
                                         disabled={loading}
@@ -154,7 +152,7 @@ export const DeactivateAccount = () => {
                             </div>
                         ))}
                     </div>
-                    {selectedReason === "その他" && (
+                    {selectedReason.includes("その他") && (
                         <div>
                             <textarea
                                 value={otherReason}
