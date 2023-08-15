@@ -48,6 +48,16 @@ function AdminDashboard({ userSession }) {
                 />
             ),
         },
+        {
+            title: "退会済み",
+            component: (
+                <AccountsList
+                    filterOptions={{
+                        deactivated: true,
+                    }}
+                />
+            ),
+        },
     ]);
 
     return (

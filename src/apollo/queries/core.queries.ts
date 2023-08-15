@@ -130,6 +130,8 @@ export const USER_ACCOUNT = `
         }
         approved
         suspended
+        deactivated
+        deactivationReason
         createdAt
         updatedAt
     }
@@ -157,6 +159,8 @@ export const COMPANY_ACCOUNT = `
         }
         approved
         suspended
+        deactivated
+        deactivationReason
         createdAt
         updatedAt
     }

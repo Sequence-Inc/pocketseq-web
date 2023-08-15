@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { LibraryIcon, PencilAltIcon, PlusIcon } from "@heroicons/react/outline";
 import { ACCOUNTS } from "src/apollo/queries/admin.queries";
 import { classNames } from "src/utils";
 import Link from "next/link";
 import { NetworkHelper } from "@comp";
+import useTranslation from "next-translate/useTranslation";
 
-const RecordsPerPage = 50;
+const noOfItems = 20;
 
 const headers = [
     // { name: "ID", key: "id", headerClass: "text-center", cellClass: "text-left" },
@@ -44,17 +44,47 @@ const headers = [
 
 export const AccountsList = ({ filterOptions }) => {
     const [page, setPage] = useState(0);
+    const [skip, setSkip] = useState(0);
 
-    const { approved, suspended, profileTypes, roles } = filterOptions;
+    const { t } = useTranslation("adminhost");
 
-    const { data, loading, error } = useQuery(ACCOUNTS, {
+    const { approved, suspended, deactivated, profileTypes, roles } =
+        filterOptions;
+
+    const { data, loading, error, refetch } = useQuery(ACCOUNTS, {
         variables: {
-            filters: { approved, suspended, profileTypes, roles },
-            paginate: { take: RecordsPerPage, skip: RecordsPerPage * page },
+            filters: { approved, suspended, deactivated, profileTypes, roles },
+            paginate: { take: noOfItems, skip: noOfItems * page },
         },
         fetchPolicy: "network-only",
         errorPolicy: "ignore",
     });
+
+    const handlePaginate = React.useCallback(
+        (type: "next" | "prev") => {
+            const hasNext = data?.allAccounts?.paginationInfo?.hasNext;
+            const hasPrevious = data?.allAccounts?.paginationInfo?.hasPrevious;
+
+            if (type === "next" && hasNext) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip + noOfItems,
+                    },
+                });
+                setSkip(skip + noOfItems);
+            } else if (type === "prev" && hasPrevious) {
+                refetch({
+                    paginate: {
+                        take: noOfItems,
+                        skip: skip - noOfItems,
+                    },
+                });
+                setSkip(skip - noOfItems);
+            }
+        },
+        [data]
+    );
 
     if (loading) return <NetworkHelper type="loading" />;
 
@@ -124,6 +154,8 @@ export const AccountsList = ({ filterOptions }) => {
         }
     };
 
+    const paginate = data?.allAccounts?.paginationInfo;
+
     return (
         <>
             <div className="flex flex-col mt-2">
@@ -178,25 +210,41 @@ export const AccountsList = ({ filterOptions }) => {
                         aria-label="Pagination"
                     >
                         <div className="hidden sm:block">
-                            <div className="text-sm text-gray-700">
+                            {/* <div className="text-sm text-gray-700">
                                 Showing <span className="font-medium">1</span>{" "}
                                 to <span className="font-medium">10</span> of{" "}
                                 <span className="font-medium">20</span> results
-                            </div>
+                            </div> */}
                         </div>
                         <div className="flex justify-between flex-1 sm:justify-end">
-                            <a
-                                href="#"
-                                className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                            <button
+                                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${
+                                    !paginate?.hasPrevious &&
+                                    `disabled:bg-gray-100 disabled:cursor-not-allowed`
+                                }`}
+                                disabled={!paginate?.hasPrevious}
+                                type="button"
+                                onClick={() => {
+                                    handlePaginate("prev");
+                                }}
                             >
-                                Previous
-                            </a>
-                            <a
-                                href="#"
-                                className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                                {t("previous-page")}
+                            </button>
+                            <button
+                                className={`relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50
+                                        ${
+                                            !paginate?.hasNext &&
+                                            `disabled:bg-gray-100 disabled:cursor-not-allowed`
+                                        }
+                                        `}
+                                disabled={!paginate?.hasNext}
+                                type="button"
+                                onClick={() => {
+                                    handlePaginate("next");
+                                }}
                             >
-                                Next
-                            </a>
+                                {t("next-page")}
+                            </button>
                         </div>
                     </nav>
                 </div>

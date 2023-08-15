@@ -7,7 +7,6 @@ import moment from "moment";
 import React from "react";
 
 export const BasicAccountInfo = ({ account }) => {
-    console.log(account);
     const {
         __typename,
         id,
@@ -24,6 +23,8 @@ export const BasicAccountInfo = ({ account }) => {
         roles,
         approved,
         suspended,
+        deactivated,
+        deactivationReason,
         createdAt,
         updatedAt,
     } = account;
@@ -195,6 +196,29 @@ export const BasicAccountInfo = ({ account }) => {
                                     <div className="flex items-center text-primary text-sm">
                                         <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
                                         Not suspended
+                                    </div>
+                                )}
+                            </dd>
+                        </div>
+                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">
+                                退会処理
+                            </dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                {deactivated ? (
+                                    <div className="text-sm">
+                                        <div className="flex items-center text-red-500 text-sm">
+                                            <XCircleIcon className="w-5 h-5 text-red-500 mr-1" />
+                                            退会済み
+                                        </div>
+                                        <div className="text-gray-400 mt-2">
+                                            退会理由：{deactivationReason}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center text-primary text-sm">
+                                        <CheckCircleIcon className="w-5 h-5 text-primary mr-1" />
+                                        Not deactivated
                                     </div>
                                 )}
                             </dd>
