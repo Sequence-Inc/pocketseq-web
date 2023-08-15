@@ -139,10 +139,21 @@ export const DeactivateAccount = () => {
                                                 : false
                                         }
                                         onClick={() => {
-                                            setSelectedReason([
-                                                ...selectedReason,
-                                                value,
-                                            ]);
+                                            if (
+                                                selectedReason.includes(value)
+                                            ) {
+                                                setSelectedReason(
+                                                    selectedReason.filter(
+                                                        (reason) =>
+                                                            value !== reason
+                                                    )
+                                                );
+                                            } else {
+                                                setSelectedReason([
+                                                    ...selectedReason,
+                                                    value,
+                                                ]);
+                                            }
                                         }}
                                         className="mr-2"
                                         disabled={loading}
