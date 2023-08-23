@@ -95,7 +95,7 @@ const AlertModal = (props: IAlertModalProps) => {
                                         {!disableTitle && (
                                             <Dialog.Title
                                                 as="h3"
-                                                className="text-lg leading-6 font-medium text-gray-900"
+                                                className="text-md leading-6 font-medium text-gray-700"
                                             >
                                                 {title || "Alert"}
                                             </Dialog.Title>

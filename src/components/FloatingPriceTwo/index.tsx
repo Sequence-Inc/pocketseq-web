@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Price } from "@element";
-import { InformationCircleIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
-import { ISpace, ISpacePricePlan } from "src/types/timebookTypes";
+import {
+    ISetting,
+    ISpace,
+    ISpacePricePlan,
+    TSpacePrice,
+} from "src/types/timebookTypes";
 
 import { DatePicker } from "antd";
-import Link from "next/link";
 import moment, { Moment } from "moment";
 import { durationSuffix } from "../Space/PricingPlan";
 import { PriceFormatter } from "src/utils/priceFormatter";
@@ -17,23 +20,32 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
 import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
+import { getApplicableSettings } from "src/utils/dateHelper";
 
-const options = {
-    DAILY: Array.from({ length: 30 }).map((_, index) => index + 1),
-    HOURLY: Array.from({ length: 24 }).map((_, index) => index + 1),
-    MINUTES: [5, 10, 15, 30, 45],
+const numbersFromOneTo = (count: number) =>
+    Array.from({ length: count }).map((_, index) => index + 1);
+
+type PricePlanTypes = {
+    [K in TSpacePrice]: {
+        value: K;
+        label: string;
+    };
 };
 
-type DurationType = "DAILY" | "HOURLY" | "MINUTES";
+const MINUTES_OPTIONS = [5, 10, 15, 30, 45];
+
+const PRICE_PLAN_TYPES: PricePlanTypes = {
+    DAILY: { value: "DAILY", label: "日" },
+    HOURLY: { value: "HOURLY", label: "時間" },
+    MINUTES: { value: "MINUTES", label: "分" },
+};
 
 export const FloatingPriceTwo = ({
-    availableHours = [...Array(25).keys()],
     pricePlans,
     space,
     handleReserve,
     cancelPolicy,
 }: {
-    availableHours?: number[];
     pricePlans: ISpacePricePlan[];
     space: ISpace;
     handleReserve: (data: TUseCalculateSpacePriceProps) => void;
@@ -43,11 +55,8 @@ export const FloatingPriceTwo = ({
     const [hour, setHour] = useState(8);
     const [minute, setMinute] = useState(0);
 
-    const [duration, setDuration] = useState(options["DAILY"][0]);
-    const [durationType, setDurationType] = useState<DurationType>("DAILY");
-    const [durationOptions, setDurationOptions] = useState(options["DAILY"]);
-
-    const [showCheckInTime, setShowCheckInTime] = useState(false);
+    const [duration, setDuration] = useState<number>();
+    const [durationType, setDurationType] = useState<TSpacePrice>();
 
     const [startDateTime, setStartDateTime] = useState<Moment>();
     const [endDateTime, setEndDateTime] = useState<Moment>();
@@ -57,91 +66,75 @@ export const FloatingPriceTwo = ({
     const [
         getApplicablePricePlans,
         { loading: isLoadingPrices, data: applicablePP },
-    ] = useLazyQuery(GET_PRICE_PLANS);
-
-    useEffect(() => {
-        if (durationType === "HOURLY" || durationType === "MINUTES") {
-            setShowCheckInTime(true);
-        } else {
-            setShowCheckInTime(false);
-        }
+    ] = useLazyQuery(GET_PRICE_PLANS, {
+        nextFetchPolicy: "network-only",
+        onError: (error) => {
+            alert(error.message);
+            setStart(null);
+        },
     });
 
     useEffect(() => {
-        setDurationOptions(options[durationType]);
-        if (durationType === "MINUTES") {
-            if (
-                duration !== 5 &&
-                duration !== 10 &&
-                duration !== 15 &&
-                duration !== 30 &&
-                duration !== 45
-            ) {
-                setDuration(5);
-            }
-        } else if (durationType === "HOURLY" && duration > 24) {
-            setDuration(1);
-        } else if (durationType === "DAILY" && duration > 30) {
-            setDuration(1);
-        }
+        const _durationType = _pricePlansOptions()[0] || null;
+        setDurationType(() => _durationType);
+    }, []);
+
+    useEffect(() => {
+        // get duration options
+        const defaultSetting = space.settings.filter(
+            ({ isDefault }) => isDefault
+        )[0];
+        const _durationOptions = _getDurationOptions();
+        const _checkInOptions = _getCheckInTimeOptions();
+
+        setHour(() => _checkInOptions[0] || defaultSetting.openingHr);
+        setDuration(() => _durationOptions[0]);
     }, [durationType]);
 
     useEffect(() => {
         if (start) {
-            setStartDateTime(
-                getStartDateTime(start, durationType, hour, minute)
-            );
+            const startDateTime = getStartDateTime(start, hour, minute);
+            setStartDateTime(() => startDateTime);
         }
     }, [start, duration, durationType, hour, minute]);
 
     useEffect(() => {
-        if (startDateTime) {
-            const endDateTime = getEndDateTime(
-                startDateTime,
+        if (durationType && duration && start) {
+            const { startDateTime } = _getStartEndDateTime({
+                start,
+                hour,
+                minute,
                 duration,
-                durationType
-            );
-            setEndDateTime(endDateTime);
-            const start =
-                durationType === "DAILY" ? startDateTime : startDateTime;
-            if (durationType === "DAILY") {
-                getApplicablePricePlans({
-                    variables: {
-                        input: {
-                            fromDateTime: start.unix() * 1000,
-                            duration,
-                            durationType,
-                            spaceId: space.id,
-                        },
+                durationType,
+            });
+
+            getApplicablePricePlans({
+                variables: {
+                    input: {
+                        fromDateTime: startDateTime.toDate(),
+                        duration,
+                        durationType,
+                        spaceId: space.id,
                     },
-                });
-            } else if (endDateTime) {
-                getApplicablePricePlans({
-                    variables: {
-                        input: {
-                            fromDateTime: start.unix() * 1000,
-                            duration,
-                            durationType,
-                            spaceId: space.id,
-                        },
-                    },
-                });
-            }
+                },
+            });
         }
-    }, [startDateTime, duration, durationType]);
+    }, [duration, durationType, start, hour, minute]);
 
     useEffect(() => {
-        setApplicablePricePlans(applicablePP?.getApplicablePricePlans);
+        setApplicablePricePlans(() => applicablePP?.getApplicablePricePlans);
     }, [applicablePP]);
 
     const price = FormatPrice("HOURLY", pricePlans, true, true);
 
     const initialPricingDetail = () => {
-        let content = <div>Not enough infomation!</div>;
+        let content = <div>予約する日付を選択して下さい</div>;
 
         if (isLoadingPrices) {
             content = (
-                <div className="text-center text-gray-500 py-4">Loading...</div>
+                <div className="text-center text-gray-500 py-4">
+                    読み込み中...
+                </div>
             );
             return content;
         }
@@ -155,24 +148,31 @@ export const FloatingPriceTwo = ({
 
             const pricePlans = plans as any[];
 
+            const { startDateTime, endDateTime } = _getStartEndDateTime({
+                start,
+                duration,
+                durationType,
+                hour,
+                minute,
+            });
+
+            const dateTimeFormatterString =
+                durationType === "DAILY" ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm";
+
             content = (
                 <div className="text-gray-600 pt-4">
                     <div className="mt-1 text-base">
                         <span className="inline-block w-40 font-bold">
                             チェックイン:
                         </span>
-                        {durationType === "DAILY"
-                            ? startDateTime?.startOf("day").format("YYYY-MM-DD")
-                            : startDateTime?.format("YYYY-MM-DD HH:mm")}
+                        {startDateTime?.format(dateTimeFormatterString)}
                     </div>
 
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
                             チェックアウト:
                         </span>
-                        {durationType === "DAILY"
-                            ? endDateTime?.format("YYYY-MM-DD")
-                            : endDateTime?.format("YYYY-MM-DD HH:mm")}
+                        {endDateTime?.format(dateTimeFormatterString)}
                     </div>
                     <div className="mt-2 text-base">
                         <span className="inline-block w-40 font-bold">
@@ -249,20 +249,11 @@ export const FloatingPriceTwo = ({
         return content;
     };
 
-    const params = toBase64(
-        JSON.stringify({
-            start: startDateTime,
-            end: endDateTime,
-            duration,
-            type: durationType,
-        })
-    );
-    const url = `?data=${params}`;
-
     const initiateReserve = useCallback(() => {
-        const start = durationType === "DAILY" ? startDateTime : startDateTime;
+        const _start = getStartDateTime(start, hour, minute);
+
         handleReserve({
-            fromDateTime: start.unix() * 1000,
+            fromDateTime: _start.unix() * 1000,
             duration,
             durationType,
             spaceId: space.id,
@@ -289,14 +280,160 @@ export const FloatingPriceTwo = ({
         }
     };
 
+    const _pricePlansOptions = useCallback(
+        () =>
+            pricePlans.reduce((acc: TSpacePrice[], { type }) => {
+                const spacePriceType: TSpacePrice = type as TSpacePrice;
+                if (!acc.includes(spacePriceType)) {
+                    return [...acc, spacePriceType];
+                } else {
+                    return acc;
+                }
+            }, []),
+        [pricePlans]
+    );
+
+    const _getApplicableSettings = useCallback(() => {
+        const { settings } = space;
+
+        // get default setting
+        const defaultSetting: ISetting[] = settings.filter(
+            ({ isDefault }) => isDefault
+        );
+
+        let applicableSettings: ISetting[] = defaultSetting;
+
+        // Check applicable settings
+        if (start && durationType && duration) {
+            const _durationType =
+                durationType === "DAILY"
+                    ? "days"
+                    : durationType === "HOURLY"
+                    ? "hours"
+                    : "minutes";
+            const from = start;
+            const to = start.clone().add(duration, _durationType);
+            const filteredSettings = getApplicableSettings(settings, {
+                from,
+                to,
+            });
+
+            if (filteredSettings.length > 0) {
+                applicableSettings = filteredSettings;
+            }
+        }
+        return applicableSettings;
+    }, [start, durationType, duration]);
+
+    const _getDurationOptions = useCallback(() => {
+        // get default setting
+        const type = durationType; // get duration type from state
+
+        if (type === "DAILY") {
+            return numbersFromOneTo(14);
+        } else if (type === "MINUTES") {
+            return MINUTES_OPTIONS;
+        }
+
+        const applicableSettings = _getApplicableSettings();
+        let maxOpeningHour = 24;
+        applicableSettings.map((setting) => {
+            const { openingHr, closingHr, breakFromHr, breakToHr } = setting;
+
+            if (breakFromHr && breakToHr) {
+                const firstShift = breakFromHr - openingHr;
+                const secondShift = closingHr - breakToHr;
+
+                if (firstShift < maxOpeningHour) {
+                    maxOpeningHour = firstShift;
+                } else if (secondShift < maxOpeningHour) {
+                    maxOpeningHour = secondShift;
+                }
+            } else {
+                const fullDayShit = closingHr - openingHr;
+                if (fullDayShit < maxOpeningHour) {
+                    maxOpeningHour = fullDayShit;
+                }
+            }
+        });
+
+        return numbersFromOneTo(maxOpeningHour);
+    }, [pricePlans, durationType, start, duration]);
+
+    const _getCheckInTimeOptions = useCallback(() => {
+        if (durationType === "DAILY") {
+            return [];
+        }
+
+        const applicableSettings = _getApplicableSettings();
+
+        let holiday = true;
+        let openingHour = 24;
+        let closingHour = 0;
+        applicableSettings.map(({ closed, openingHr, closingHr }) => {
+            if (!closed) {
+                holiday = false;
+            }
+            if (openingHr < openingHour) {
+                openingHour = openingHr;
+            }
+            if (closingHr > closingHour) {
+                closingHour = closingHr;
+            }
+        });
+
+        // If there's no available days then return blank array
+        if (holiday) return [];
+
+        // prepare hours from opening & closing hours
+        let options = [];
+        for (let i = openingHour; i <= closingHour; i++) {
+            options.push(i);
+        }
+        return options;
+    }, [durationType, start, duration]);
+
+    const _getStartEndDateTime = useCallback(
+        ({
+            start,
+            hour,
+            minute,
+            duration,
+            durationType,
+        }: {
+            start: moment.Moment;
+            hour: number;
+            minute: number;
+            duration: number;
+            durationType: TSpacePrice;
+        }) => {
+            let startDateTime = getStartDateTime(start, hour, minute);
+            if (durationType === "DAILY") {
+                startDateTime = startDateTime.clone().startOf("day");
+            }
+            const endDateTime = getEndDateTime(
+                startDateTime,
+                duration,
+                durationType
+            );
+            return { startDateTime, endDateTime };
+        },
+        [start, hour, minute, duration, durationType]
+    );
+
+    const showCheckInTime = ["HOURLY", "MINUTES"].includes(durationType)
+        ? true
+        : false;
+
+    const _durationOptions = _getDurationOptions();
+    const _checkInOptions = _getCheckInTimeOptions();
+
     return (
-        <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky lg:w-96 md:top-20">
+        <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky md:top-20">
             <div className="relative p-5 space-y-4 border border-gray-200 rounded-lg">
                 {/* price row */}
                 <div className="flex justify-between">
                     <Price amount={price} />
-                    {/* <div className="text-sm text-gray-600">¥ 10,392/日</div> */}
-                    {/* {startDateTime?.format("YYYY-MM-DD HH:mm")} */}
                 </div>
                 {/* date and time row */}
                 <div className="">
@@ -306,9 +443,9 @@ export const FloatingPriceTwo = ({
                     <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                         <DatePicker
                             onChange={(date) => setStart(date)}
-                            // placeholderText="日時を追加"
                             disabledDate={disabledDate}
                             bordered={false}
+                            value={start || null}
                             className="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md shadow-sm hover:cursor-pointer"
                         />
                     </div>
@@ -325,26 +462,29 @@ export const FloatingPriceTwo = ({
                                 setDuration(parseInt(event.target.value))
                             }
                         >
-                            {durationOptions.map((_) => {
-                                return (
-                                    <option key={_} value={_}>
-                                        {_}
-                                    </option>
-                                );
-                            })}
+                            {_durationOptions?.length > 0 &&
+                                _durationOptions.map((duration, index) => {
+                                    return (
+                                        <option key={index} value={duration}>
+                                            {duration}
+                                        </option>
+                                    );
+                                })}
                         </select>
                         <select
                             className="text-sm border-0 outline-none"
                             value={durationType}
                             onChange={(event) =>
                                 setDurationType(
-                                    event.target.value as DurationType
+                                    event.target.value as TSpacePrice
                                 )
                             }
                         >
-                            <option value="DAILY">日</option>
-                            <option value="HOURLY">時間</option>
-                            <option value="MINUTES">分</option>
+                            {_pricePlansOptions().map((_duration, index) => (
+                                <option value={_duration} key={index}>
+                                    {PRICE_PLAN_TYPES[_duration].label}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -359,10 +499,12 @@ export const FloatingPriceTwo = ({
                                 onChange={(event) =>
                                     setHour(parseInt(event.target.value))
                                 }
-                                className="border-0 py-1"
+                                className="text-sm border-0 outline-none"
                             >
-                                {availableHours?.map((value) => (
-                                    <option value={`${value}`}>{value}</option>
+                                {_checkInOptions?.map((option, index) => (
+                                    <option key={index} value={option}>
+                                        {option < 10 ? `0${option}` : option}
+                                    </option>
                                 ))}
                             </select>
                             時
@@ -371,10 +513,10 @@ export const FloatingPriceTwo = ({
                                 onChange={(event) =>
                                     setMinute(parseInt(event.target.value))
                                 }
-                                className="border-0 py-1"
+                                className="text-sm border-0 outline-none"
                             >
-                                <option value="0">0</option>
-                                <option value="5">5</option>
+                                <option value="0">00</option>
+                                <option value="5">05</option>
                                 <option value="10">10</option>
                                 <option value="15">15</option>
                                 <option value="20">20</option>
@@ -409,14 +551,14 @@ export const FloatingPriceTwo = ({
                             キャンセルポリシー
                             {/* {cancelPolicy.name} */}
                         </h2>
-                        <ul>
+                        <ul className="space-y-1">
                             {[...cancelPolicy.rates]
                                 .sort((a, b) => a.beforeHours - b.beforeHours)
                                 .map((policy, index) => {
                                     return (
                                         <li
                                             key={index}
-                                            className="text-base flex justify-between w-full"
+                                            className="text-sm flex justify-between w-full"
                                         >
                                             <div>
                                                 {hoursAsCancelPolicyDuration(
@@ -447,20 +589,14 @@ export const FloatingPriceTwo = ({
 
 export const getStartDateTime = (
     start: Moment,
-    durationType: DurationType,
     hour: number,
     minute: number
 ) => {
-    const startDay = moment(start).format("YYYY-MM-DD");
-
-    if (durationType !== "DAILY") {
-        return moment(startDay)
-            .startOf("day")
-            .add(hour, "hours")
-            .add(minute, "minutes");
-    } else {
-        return moment(startDay, "YYYY-MM-DD").startOf("day");
-    }
+    return start
+        .clone()
+        .startOf("day")
+        .add(hour, "hours")
+        .add(minute, "minutes");
 };
 
 export const getEndDateTime = (
@@ -468,9 +604,12 @@ export const getEndDateTime = (
     duration,
     durationType
 ) => {
-    const startDT = moment(startDateTime);
+    const startDT = moment(startDateTime).clone();
     if (durationType === "DAILY") {
-        return startDT.add(duration, "d");
+        if (duration === 1) {
+            return startDT.endOf("d");
+        }
+        return startDT.add(duration - 1, "d").endOf("d");
     } else if (durationType === "HOURLY") {
         return startDT.add(duration, "hour");
     } else if (durationType === "MINUTES") {
@@ -491,8 +630,4 @@ export const timeDifference = (startDateTime, endDateTime, durationType) => {
         return difference.asMinutes();
     }
     return difference;
-};
-
-const fixDateFormat = (date: Moment) => {
-    return moment(date, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:00");
 };

@@ -89,11 +89,11 @@ const DayOverride = ({ userSession, currentSpace }) => {
         setModalData({
             intent: "CONFIRM",
             title: isPublished
-                ? `${name}を非公開にしてもよろしいですか?`
-                : `${name}を公開してもよろしいですか?`,
-            text: `Are you sure you want to ${
-                isPublished ? "unpublish" : "publish"
-            } this space "${name}"`,
+                ? `「${name}」を非公開しますか?`
+                : `「${name}」を公開しますか?`,
+            text: `「${name}」施設をサイトに${
+                isPublished ? "非公開" : "公開"
+            } してもよろしいですか?`,
             onConfirm: async () => {
                 await doHandlePublishUnpublish();
             },
