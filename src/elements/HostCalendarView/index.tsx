@@ -133,14 +133,26 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
             const start = moment(selectedRangeStart);
             const end = moment(selectedRangeEnd);
 
-            const numberOfDays = end.diff(start, "days");
             let newDates = [];
-            for (let i = 0; i <= numberOfDays; i++) {
-                const newDate = moment(start, "YYYY-MM-DD")
-                    .add(i, "days")
-                    .format("YYYY-MM-DD");
-                newDates.push(newDate);
+
+            const differenceInDays = end
+                .endOf("day")
+                .diff(start.startOf("day"), "days");
+            const differenceInHours = end
+                .endOf("day")
+                .diff(start.startOf("day"), "hours");
+
+            if (differenceInDays > 0) {
+                for (let i = 0; i <= differenceInDays; i++) {
+                    const newDate = moment(start, "YYYY-MM-DD")
+                        .add(i, "days")
+                        .format("YYYY-MM-DD");
+                    newDates.push(newDate);
+                }
+            } else if (differenceInHours > 0) {
+                newDates.push(start.format("YYYY-MM-DD"));
             }
+
             setSelectedDates([...selectedDates, ...newDates]);
         }
     }, [selectedRangeStart, selectedRangeEnd]);
@@ -497,7 +509,7 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
     const currentSelection =
         selectedDates.length > 1
             ? [selectedDates[0], selectedDates[selectedDates.length - 1]]
-            : null;
+            : [selectedDates[0]];
 
     return (
         <div className="select-none space-y-4">
@@ -540,7 +552,10 @@ const HostCalendarView = ({ plans, settings, spaceId }) => {
                             currentSelection={currentSelection}
                             defaultSetting={defaultSetting}
                             onCancel={() => setShowAddSettingsForm(false)}
-                            onSave={(value) => addSettingOverride(value)}
+                            onSave={(value) => {
+                                // console.log(value);
+                                addSettingOverride(value);
+                            }}
                             loading={loading}
                             type="DATE_TIME"
                         />
@@ -791,14 +806,28 @@ export const SettingsOverrideForm = ({
     type: "DATE_TIME" | "DAYS_OF_WEEK";
 }) => {
     const [settings, setSettings] = useState(defaultSetting);
-    const [selectedRange, setSelectedRange] = useState<[Moment, Moment]>([
-        currentSelection && currentSelection[0]
-            ? moment(currentSelection[0])
-            : moment().add(1, "d"),
-        currentSelection && currentSelection[1]
-            ? moment(currentSelection[1])
-            : moment().add(8, "d"),
-    ]);
+    const [selectedRange, setSelectedRange] = useState<
+        [Moment, Moment] | null
+    >();
+
+    useEffect(() => {
+        let startDate = moment().startOf("day");
+        let endDate = moment().endOf("day");
+
+        const [start, end] = currentSelection;
+
+        if (!start && !end) {
+            return;
+        } else if (start) {
+            startDate = moment(start).startOf("day");
+            if (!end) {
+                endDate = moment(start).endOf("day");
+            } else {
+                endDate = moment(end).endOf("day");
+            }
+        }
+        setSelectedRange([startDate, endDate]);
+    }, []);
 
     useEffect(() => {
         if (currentSelection) {
@@ -814,9 +843,11 @@ export const SettingsOverrideForm = ({
     };
 
     const setValue = (key, value) => {
-        let newSetting = { ...settings };
-        newSetting[key] = value;
-        setSettings(newSetting);
+        setSettings((settings) => {
+            const newSetting = { ...settings };
+            newSetting[key] = value;
+            return newSetting;
+        });
     };
 
     const range = (start, end) => {
@@ -837,26 +868,19 @@ export const SettingsOverrideForm = ({
     };
 
     const handleSave = () => {
-        const {
-            closingHr,
-            openingHr,
-            breakFromHr,
-            breakToHr,
-            closed,
-            totalStock,
-            businessDays,
-        } = settings;
-        onSave({
-            closingHr,
-            openingHr,
-            breakFromHr,
-            breakToHr,
-            closed,
-            totalStock,
-            businessDays: type === businessDays || undefined,
-            fromDate: type === "DATE_TIME" ? selectedRange[0] : null,
-            toDate: type === "DATE_TIME" ? selectedRange[1] : null,
-        });
+        const newSettingData = {
+            ...settings,
+            businessDays: type === settings.businessDays || undefined,
+            fromDate:
+                type === "DATE_TIME" ? selectedRange[0].startOf("day") : null,
+            toDate: type === "DATE_TIME" ? selectedRange[1].endOf("day") : null,
+        };
+
+        delete newSettingData.id;
+        delete newSettingData.__typename;
+        delete newSettingData.isDefault;
+
+        onSave(newSettingData);
     };
 
     return (
@@ -904,6 +928,7 @@ export const SettingsOverrideForm = ({
                                 breakToHr: getValues("breakToHr"),
                             }}
                             onSave={(value) => {
+                                console.log("BusinessHourManager", value);
                                 const {
                                     openingHr,
                                     closingHr,

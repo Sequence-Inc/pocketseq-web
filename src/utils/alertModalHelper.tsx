@@ -171,7 +171,7 @@ export const generateAlertModalContent = ({
             titleColor = "text-yellow-500";
         }
         modalTitle = (
-            <h3 className={`text-base font-semibold ${titleColor}`}>{title}</h3>
+            <div className={`text-sm font-semibold ${titleColor}`}>{title}</div>
         );
     }
 

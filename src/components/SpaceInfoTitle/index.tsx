@@ -29,7 +29,7 @@ export const SpaceInfoTitle = ({
     return (
         <>
             <h2 className="mb-3 text-xl font-medium text-gray-700">{name}</h2>
-            <div className="flex flex-col space-y-2 md:space-x-3 md:space-y-0 md:items-center md:flex-row">
+            <div className="flex flex-col space-y-2 sm:space-x-3 sm:space-y-0 sm:items-center sm:flex-row">
                 <div className="flex space-x-3">
                     <Rating />
                     <div className="text-sm">
@@ -74,7 +74,6 @@ export const SpaceInfoTitle = ({
                         key={index}
                         Icon={TagIcon}
                         iconStyle="text-gray-400"
-                        textStyle="text-sm text-gray-500"
                         numberOfLines={1}
                     >
                         <Link
@@ -88,7 +87,9 @@ export const SpaceInfoTitle = ({
                                 },
                             }}
                         >
-                            {title}
+                            <a className="text-sm text-gray-500 hover:text-gray-700">
+                                {title}
+                            </a>
                         </Link>
                     </Tag>
                 ))}

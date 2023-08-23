@@ -27,6 +27,21 @@ export interface ISpace {
         lat: number;
         lng: number;
     };
+    settings: ISetting[];
+}
+
+export interface ISetting {
+    breakFromHr: number;
+    breakToHr: number;
+    businessDays: number[];
+    closed: boolean;
+    closingHr: number;
+    fromDate: string | null;
+    id: string;
+    isDefault: boolean;
+    openingHr: number;
+    toDate: string | null;
+    totalStock: number;
 }
 
 export interface IAddress {
@@ -55,7 +70,7 @@ export interface IStation {
     stationName: string;
 }
 
-export type TSpacePrice = "HOURLY" | "DAILY";
+export type TSpacePrice = "HOURLY" | "DAILY" | "MINUTES";
 
 export interface ISpacePricePlan {
     id?: string | number;
