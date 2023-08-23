@@ -548,7 +548,6 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     </div>
                     <div className="hidden lg:block lg:w-96">
                         <FloatingPriceTwo
-                            availableHours={wantedHours}
                             pricePlans={pricePlans}
                             space={space}
                             handleReserve={handleReserve}
