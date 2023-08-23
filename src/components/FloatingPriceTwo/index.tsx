@@ -111,7 +111,7 @@ export const FloatingPriceTwo = ({
             getApplicablePricePlans({
                 variables: {
                     input: {
-                        fromDateTime: startDateTime.toDate(),
+                        fromDateTime: startDateTime.unix() * 1000,
                         duration,
                         durationType,
                         spaceId: space.id,
