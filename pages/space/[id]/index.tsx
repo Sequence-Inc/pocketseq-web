@@ -321,7 +321,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                     progressContent={
                         <>
                             <div className="flex items-center justify-center space-x-2">
-                                <Spinner message="Reserving Space." />
+                                <Spinner message="読み込み中" />
                             </div>
                         </>
                     }
@@ -371,7 +371,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
 
                             <span className="flex items-center justify-center space-x-2">
                                 <div className="text-gray-600   text-sm text-center">
-                                    Price not covered by subscription
+                                    サブスクリプション価格には含まれない金額
                                 </div>
                                 {reservationSuccessData?.reserveSpace
                                     ?.amount && (
@@ -456,7 +456,11 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                     type="button"
                                     variant="primary"
                                     className="inline-block"
-                                    onClick={() => signIn("credentials")}
+                                    onClick={() => {
+                                        signIn("credentials", {
+                                            callbackUrl: `/space/${space.id}`,
+                                        });
+                                    }}
                                 >
                                     ログイン
                                 </Button>
