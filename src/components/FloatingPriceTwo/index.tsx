@@ -250,10 +250,16 @@ export const FloatingPriceTwo = ({
     };
 
     const initiateReserve = useCallback(() => {
-        const _start = getStartDateTime(start, hour, minute);
+        const { startDateTime } = _getStartEndDateTime({
+            start,
+            hour,
+            minute,
+            duration,
+            durationType,
+        });
 
         handleReserve({
-            fromDateTime: _start.unix() * 1000,
+            fromDateTime: startDateTime.unix() * 1000,
             duration,
             durationType,
             spaceId: space.id,
