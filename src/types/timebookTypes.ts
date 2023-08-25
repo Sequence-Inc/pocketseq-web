@@ -28,6 +28,19 @@ export interface ISpace {
         lng: number;
     };
     settings: ISetting[];
+    cancelPolicy: ICancelPolicy;
+}
+
+export interface ICancelPolicy {
+    id: string;
+    name: string;
+    description: string;
+    rates: ICancelPolicyRate[];
+}
+
+export interface ICancelPolicyRate {
+    beforeHours: number;
+    percentage: number;
 }
 
 export interface ISetting {

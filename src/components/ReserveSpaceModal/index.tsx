@@ -14,6 +14,8 @@ import { PriceFormatter } from "src/utils";
 import { useQuery } from "@apollo/client";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 import SubsciptionBox from "./SubscriptionBox";
+import { TSpacePrice } from "@appTypes/timebookTypes";
+import { getEndDateTime } from "../FloatingPriceTwo";
 
 interface IReserveSpaceModal {
     reservationData: TUseCalculateSpacePriceProps;
@@ -103,9 +105,24 @@ const ReserveSpaceModal = ({
         userSession,
     ]);
 
-    const taxCalculated = priceData?.total
-        ? Math.ceil(priceData?.total - Math.ceil(priceData?.total / 1.1))
-        : 0;
+    const amountBeforeTax = priceData?.total / 1.1;
+    const taxAmount = priceData?.total - amountBeforeTax;
+
+    const toDateTime =
+        reservationData?.fromDateTime &&
+        reservationData?.durationType &&
+        reservationData?.duration
+            ? getEndDateTime(
+                  reservationData?.fromDateTime,
+                  reservationData?.duration,
+                  reservationData?.durationType
+              )
+            : null;
+
+    const dateTimeFormat =
+        reservationData?.durationType === "DAILY"
+            ? "YYYY-MM-DD"
+            : "YYYY-MM-DD, hh:mm a";
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -132,7 +149,7 @@ const ReserveSpaceModal = ({
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="relative bg-white rounded-lg px-4 sm:px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:min-h-full sm:mx-20 sm:p-6">
+                            <div className="relative bg-white rounded-lg px-4 sm:px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-4xl sm:min-h-full sm:mx-20 sm:p-6">
                                 <div>
                                     <div className="mt-3 text-left text-lg space-y-6 text-gray-700 sm:mt-5">
                                         <button
@@ -153,15 +170,14 @@ const ReserveSpaceModal = ({
                                         {!fetchingSpace &&
                                             fetchingSpaceError && (
                                                 <div>
-                                                    Could not load space
-                                                    details. Please try again
-                                                    later
+                                                    データを取得できませんでした。
+                                                    もう一度試してください。
                                                 </div>
                                             )}
                                         {!fetchingSpace &&
                                             !fetchingSpaceError && (
-                                                <div className="grid gap-y-4 gap-x-0 sm:gap-x-8 grid-cols-1 sm:grid-cols-3">
-                                                    <div className="space-y-5 text-base sm:text-lg sm:col-span-2">
+                                                <div className="grid gap-y-4 gap-x-0 sm:gap-x-8 grid-cols-1 sm:grid-cols-2">
+                                                    <div className="space-y-5 text-base">
                                                         <div className="flex items-start justify-between">
                                                             <div>
                                                                 <h5 className="font-bold">
@@ -209,14 +225,20 @@ const ReserveSpaceModal = ({
                                                                         moment(
                                                                             reservationData?.fromDateTime
                                                                         ).format(
-                                                                            "YYYY-MM-DD"
+                                                                            dateTimeFormat
                                                                         )}
-                                                                    ,{" "}
-                                                                    {reservationData?.fromDateTime &&
-                                                                        moment(
-                                                                            reservationData?.fromDateTime
-                                                                        ).format(
-                                                                            "hh:mm a"
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-start justify-between">
+                                                            <div>
+                                                                <h5 className="font-bold">
+                                                                    チェックアウト
+                                                                </h5>
+                                                                <div className="text-gray-500">
+                                                                    {toDateTime &&
+                                                                        toDateTime.format(
+                                                                            dateTimeFormat
                                                                         )}
                                                                 </div>
                                                             </div>
@@ -343,9 +365,7 @@ const ReserveSpaceModal = ({
                                                                                                 {!paymentTerm && (
                                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
                                                                                                         <div className="text-sm text-gray-500">
-                                                                                                            No
-                                                                                                            additional
-                                                                                                            charge
+                                                                                                            追加料金は一切かかりません。
                                                                                                         </div>
                                                                                                     </span>
                                                                                                 )}
@@ -439,7 +459,7 @@ const ReserveSpaceModal = ({
                                                                                         additionalfield?.quantity) /
                                                                                         1.1
                                                                                 ) ||
-                                                                                "No Charge";
+                                                                                "無料";
                                                                             return (
                                                                                 <div
                                                                                     className="flex items-center justify-between"
@@ -447,19 +467,20 @@ const ReserveSpaceModal = ({
                                                                                         index
                                                                                     }
                                                                                 >
-                                                                                    <span className="flex space-x-2 items-end">
-                                                                                        <div>
+                                                                                    <div className="flex items-baseline flex-grow mr-2">
+                                                                                        <div className="flex-grow">
                                                                                             {
                                                                                                 additionalfield?.name
                                                                                             }
                                                                                         </div>
 
-                                                                                        <div className="text-gray-400 text-sm">
+                                                                                        <div className="text-gray-500">
+                                                                                            　×　
                                                                                             {
                                                                                                 additionalfield?.quantity
                                                                                             }
                                                                                         </div>
-                                                                                    </span>
+                                                                                    </div>
                                                                                     <div
                                                                                         className={`${
                                                                                             optionsCharge ===
@@ -479,9 +500,10 @@ const ReserveSpaceModal = ({
                                                                 <div>税金</div>
 
                                                                 <div>
-                                                                    {PriceFormatter(
-                                                                        taxCalculated
-                                                                    )}
+                                                                    {priceData &&
+                                                                        PriceFormatter(
+                                                                            taxAmount
+                                                                        )}
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3 text-base">
@@ -523,15 +545,14 @@ const ReserveSpaceModal = ({
                                                                             ></path>
                                                                         </svg>
                                                                         <span className="text-gray-400 text-lg">
-                                                                            Calculating
-                                                                            Price
+                                                                            価格の計算中
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             ))}
                                                         <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                                                             <div className="font-bold">
-                                                                適用されるサブスクリプション:
+                                                                サブスクリプション
                                                             </div>
                                                             <hr />
                                                             <SubsciptionBox
@@ -555,22 +576,6 @@ const ReserveSpaceModal = ({
                                                                 }
                                                             />
                                                         </div>
-
-                                                        {/* {hasSpaceSubscriptions && (
-                                                        <div className="border border-gray-300 shadow-sm px-3 rounded-lg space-y-5 mt-4">
-                                                            <SwitchField
-                                                                className="my-2"
-                                                                label="Use Subsciption"
-                                                                onChange={(
-                                                                    val
-                                                                ) =>
-                                                                    setSubscription(
-                                                                        val
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
-                                                    )} */}
                                                     </div>
                                                     <div className="space-y-5 sm:col-span-2">
                                                         <div className="border-t border-gray-300 h-0 max-h-0"></div>

@@ -1,10 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { Button } from "@element";
-import {
-    CheckIcon,
-    InformationCircleIcon,
-    SelectorIcon,
-} from "@heroicons/react/outline";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
 
 import { DatePicker } from "antd";
@@ -14,9 +10,13 @@ import moment, { Moment } from "moment";
 import { useLazyQuery } from "@apollo/client";
 import { Listbox, Transition } from "@headlessui/react";
 import { CALCULATE_ROOM_PLAN_PRICE } from "src/apollo/queries/hotel.queries";
-import { hoursAsCancelPolicyDuration, PriceFormatter } from "src/utils";
-
-// type DurationType = "DAILY" | "HOURLY" | "MINUTES";
+import {
+    generateAlertModalContent,
+    hoursAsCancelPolicyDuration,
+    ModalData,
+    PriceFormatter,
+} from "src/utils";
+import AlertModal from "../AlertModal";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -32,6 +32,23 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
     const [guestPanelOpen, setGuestPanelOpen] = useState(false);
     const [price, setPrice] = useState(null);
     const [noOfNight, setNoOfNight] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<ModalData | null>(null);
+
+    const modalContent = useMemo(() => {
+        return generateAlertModalContent({
+            modalData,
+            setModalData,
+            setIsModalOpen,
+        });
+    }, [
+        modalData?.intent,
+        modalData?.text,
+        modalData?.title,
+        modalData?.onConfirm,
+    ]);
+
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current < moment().endOf("day");
@@ -656,6 +673,18 @@ export const FloatingPriceThree = ({ plans, currentPlan, reserve }) => {
                     <span>シェア</span>
                 </Button>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    setIsModalOpen(false);
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };

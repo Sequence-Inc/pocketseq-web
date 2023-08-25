@@ -20,7 +20,7 @@ import {
     PriceFormatter,
     publicImage,
 } from "src/utils";
-import { IRating } from "src/types/timebookTypes";
+import { IRating, ISetting, ISpace } from "src/types/timebookTypes";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import PaymentMethods from "src/components/PaymentMethods";
@@ -37,20 +37,11 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import ProgressModal from "src/components/ProgressModal";
 import { RecommendationGrid } from "src/components/RecommendationGrid";
-
-type TDefaultSettings = {
-    id?: string;
-    totalStock?: string;
-    isDefault?: string;
-    closed?: string;
-    businessDays?: string;
-    openingHr?: string;
-    closingHr?: string;
-    breakFromHr?: string;
-    breakToHr?: string;
-    fromDate?: string;
-    toDate?: string;
-};
+import moment from "moment-timezone";
+import {
+    decimalHoursToTimeString,
+    mapDaysOfWeekFromIndex,
+} from "src/utils/dateHelper";
 
 const ContentSection = ({
     title,
@@ -72,10 +63,18 @@ const ContentSection = ({
     );
 };
 
-const SpaceDetail = ({ spaceId, space, userSession }) => {
+const SpaceDetail = ({
+    spaceId,
+    space,
+    userSession,
+}: {
+    spaceId: string;
+    space: ISpace;
+    userSession: any;
+}) => {
     const id = spaceId;
 
-    const [defaultSettings, setDefaultSettings] = useState<TDefaultSettings>();
+    const [defaultSettings, setDefaultSettings] = useState<ISetting>();
     const [wantedHours, setWantedHours] = useState<number[]>();
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
@@ -168,10 +167,10 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                 key={`${plan.type}-${index}`}
                 className="flex justify-between px-5 py-4 my-4 text-xl text-gray-800 border border-gray-100 bg-gray-50 rounded-xl"
             >
-                <h3>{plan.title}</h3>
+                <h3 className="text-base text-gray-700">{plan.title}</h3>
                 <div>
                     {PriceFormatter(plan.amount)}
-                    <span className="text-base text-gray-700">
+                    <span className="text-sm text-gray-700">
                         /{plan.duration}
                         {durationSuffix(plan.type)}
                     </span>
@@ -274,6 +273,9 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
             }
         }
     };
+
+    const defaultSetting =
+        space.settings.filter(({ isDefault }) => isDefault)[0] ?? null;
 
     return (
         <MainLayout userSession={userSession}>
@@ -449,21 +451,33 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             </div>
                         ) : (
                             <div>
-                                <div className="font-bold text-center mb-4">
-                                    ログインして下さい
+                                <div className="max-w-md mx-auto">
+                                    <div className="font-bold text-center mb-4">
+                                        ログイン又はアカウント登録して下さい
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="primary"
+                                        className="inline-block mb-3"
+                                        onClick={() => {
+                                            signIn("credentials", {
+                                                callbackUrl: `/space/${space.id}`,
+                                            });
+                                        }}
+                                    >
+                                        ログイン
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        className="inline-block"
+                                        onClick={() => {
+                                            router.push("/auth/register");
+                                        }}
+                                    >
+                                        アカウント登録
+                                    </Button>
                                 </div>
-                                <Button
-                                    type="button"
-                                    variant="primary"
-                                    className="inline-block"
-                                    onClick={() => {
-                                        signIn("credentials", {
-                                            callbackUrl: `/space/${space.id}`,
-                                        });
-                                    }}
-                                >
-                                    ログイン
-                                </Button>
                             </div>
                         )}
                     </div>
@@ -495,6 +509,60 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                             title="スペースについて"
                             description={description}
                         />
+                        {defaultSetting && (
+                            <>
+                                <div className="w-full my-6 border-t border-gray-300" />
+                                {/* Settings */}
+                                <div className="space-y-2 text-gray-700">
+                                    <div className="flex">
+                                        <div className="w-20 mr-4">営業日:</div>
+                                        <div>
+                                            {defaultSetting.businessDays
+                                                .map((day) =>
+                                                    mapDaysOfWeekFromIndex(day)
+                                                )
+                                                .join("・")}
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div className="w-20 mr-4">
+                                            営業時間:
+                                        </div>
+                                        <div>
+                                            {decimalHoursToTimeString(
+                                                defaultSetting.openingHr
+                                            )}
+                                            〜
+                                            {decimalHoursToTimeString(
+                                                defaultSetting.closingHr
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex">
+                                        <div className="w-20 mr-4">
+                                            休憩時間:
+                                        </div>
+                                        <div>
+                                            {defaultSetting.breakFromHr &&
+                                            defaultSetting.breakToHr ? (
+                                                <>
+                                                    {decimalHoursToTimeString(
+                                                        defaultSetting.breakFromHr
+                                                    )}
+                                                    〜
+                                                    {decimalHoursToTimeString(
+                                                        defaultSetting.breakToHr
+                                                    )}
+                                                </>
+                                            ) : (
+                                                "無し"
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="w-full my-6 border-t border-gray-200" />
                         {/* host profile */}
                         <div className="space-y-6 sm:flex sm:space-y-0 items-center">
@@ -507,7 +575,7 @@ const SpaceDetail = ({ spaceId, space, userSession }) => {
                                 className="w-auto px-4 h-9"
                                 onClick={sendMessage}
                             >
-                                Send Message
+                                メッセージをする
                             </Button>
                         </div>
 
