@@ -33,7 +33,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
     if (!spaceDetails?.plan?.subcriptionPrice)
         return (
             <div className="text-sm">
-                Subscription not applicable to this hotel room.
+                この施設にはサブスクリプション適用されません。
             </div>
         );
     if (!hasHotelSubscriptions) {
@@ -54,7 +54,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 />
 
                 <div className="text-sm">
-                    You subscription is already fully utilized.
+                    サブスクリプションは完全に活用されています。
                 </div>
             </>
         );
@@ -71,14 +71,16 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     hasHotelSubscriptions={hasHotelSubscriptions}
                 />
                 <div className="w-full flex items-center  space-x-4">
-                    <div className="text-sm font-bold">Use Subscription</div>
+                    <div className="text-sm font-bold">
+                        サブスクリプションを利用しますか？
+                    </div>
                     <SwitchField
                         className="my-2"
                         onChange={(val) => setSubscription(val)}
                     />
                 </div>
                 <div className=" text-sm font-semibold">
-                    Your subscription can be applied.
+                    サブスクリプションを適用できます。
                 </div>
             </>
         );
@@ -93,7 +95,10 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     hasHotelSubscriptions={hasHotelSubscriptions}
                 />
                 <div className="w-full flex items-center  space-x-4">
-                    <div className="text-sm font-bold">Use Subscription</div>
+                    <div className="text-sm font-bold">
+                        {" "}
+                        サブスクリプションを利用しますか？
+                    </div>
                     <SwitchField
                         className="my-2"
                         disabled
@@ -101,7 +106,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     />
                 </div>
                 <div className=" text-sm font-semibold">
-                    Your subscription does not cover for this space.
+                    ご利用されたサブスクリプションプランはこの施設に適用できません。
                 </div>
             </>
         );
