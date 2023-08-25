@@ -14,6 +14,8 @@ import { PriceFormatter } from "src/utils";
 import { useQuery } from "@apollo/client";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 import SubsciptionBox from "./SubscriptionBox";
+import { TSpacePrice } from "@appTypes/timebookTypes";
+import { getEndDateTime } from "../FloatingPriceTwo";
 
 interface IReserveSpaceModal {
     reservationData: TUseCalculateSpacePriceProps;
@@ -106,6 +108,21 @@ const ReserveSpaceModal = ({
     const amountBeforeTax = priceData?.total / 1.1;
     const taxAmount = priceData?.total - amountBeforeTax;
 
+    const toDateTime =
+        reservationData?.fromDateTime &&
+        reservationData?.durationType &&
+        reservationData?.duration
+            ? getEndDateTime(
+                  reservationData?.fromDateTime,
+                  reservationData?.duration,
+                  reservationData?.durationType
+              )
+            : null;
+
+    const dateTimeFormat =
+        reservationData?.durationType === "DAILY"
+            ? "YYYY-MM-DD"
+            : "YYYY-MM-DD, hh:mm a";
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -132,7 +149,7 @@ const ReserveSpaceModal = ({
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="relative bg-white rounded-lg px-4 sm:px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:min-h-full sm:mx-20 sm:p-6">
+                            <div className="relative bg-white rounded-lg px-4 sm:px-10 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-4xl sm:min-h-full sm:mx-20 sm:p-6">
                                 <div>
                                     <div className="mt-3 text-left text-lg space-y-6 text-gray-700 sm:mt-5">
                                         <button
@@ -159,8 +176,8 @@ const ReserveSpaceModal = ({
                                             )}
                                         {!fetchingSpace &&
                                             !fetchingSpaceError && (
-                                                <div className="grid gap-y-4 gap-x-0 sm:gap-x-8 grid-cols-1 sm:grid-cols-3">
-                                                    <div className="space-y-5 text-base sm:text-lg sm:col-span-2">
+                                                <div className="grid gap-y-4 gap-x-0 sm:gap-x-8 grid-cols-1 sm:grid-cols-2">
+                                                    <div className="space-y-5 text-base">
                                                         <div className="flex items-start justify-between">
                                                             <div>
                                                                 <h5 className="font-bold">
@@ -208,14 +225,20 @@ const ReserveSpaceModal = ({
                                                                         moment(
                                                                             reservationData?.fromDateTime
                                                                         ).format(
-                                                                            "YYYY-MM-DD"
+                                                                            dateTimeFormat
                                                                         )}
-                                                                    ,{" "}
-                                                                    {reservationData?.fromDateTime &&
-                                                                        moment(
-                                                                            reservationData?.fromDateTime
-                                                                        ).format(
-                                                                            "hh:mm a"
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-start justify-between">
+                                                            <div>
+                                                                <h5 className="font-bold">
+                                                                    チェックアウト
+                                                                </h5>
+                                                                <div className="text-gray-500">
+                                                                    {toDateTime &&
+                                                                        toDateTime.format(
+                                                                            dateTimeFormat
                                                                         )}
                                                                 </div>
                                                             </div>

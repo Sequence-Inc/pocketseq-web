@@ -44,10 +44,35 @@ export const getApplicableSettings = (
 };
 
 export const decimalHoursToTimeString = (duration: number): string => {
-    const _ = moment.duration(duration, "hours"); //
-    return `${prefixTimeValueWithZero(_.hours())}:${prefixTimeValueWithZero(
-        _.minutes()
+    const hours = durationToTimeDigit(Math.floor(duration), "hours");
+    const minutes = durationToTimeDigit(duration % 1, "minutes");
+    return `${prefixTimeValueWithZero(hours)}:${prefixTimeValueWithZero(
+        minutes
     )}`;
+};
+
+export const durationToTimeDigit = (
+    duration: number,
+    type: "hours" | "minutes"
+): number => {
+    const _ = moment.duration(duration, "hours");
+
+    if (type === "hours") {
+        return _.hours();
+    } else {
+        if (duration === 0) {
+            return 0;
+        }
+        return _.minutes();
+    }
+};
+
+export const durationToHours = (
+    time: number,
+    type: "hours" | "minutes"
+): number => {
+    const _ = moment.duration(time, type);
+    return _.asHours();
 };
 
 export const prefixTimeValueWithZero = (time: number): string => {

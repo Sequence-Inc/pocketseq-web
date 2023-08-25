@@ -4,6 +4,7 @@ import {
     ISpaceType,
     ISpacePricePlan,
     IPhoto,
+    TSpacePrice,
 } from "../types/timebookTypes";
 import { PriceFormatter } from "./priceFormatter";
 import { Moment } from "moment";
@@ -16,7 +17,7 @@ export const FormatShortAddress = (address: IAddress): string => {
     return `${address?.prefecture?.name}${address?.city}`;
 };
 
-type TPriceMode = "HOURLY" | "DAILY";
+type TPriceMode = Omit<TSpacePrice, "MINUTES">;
 export const FormatPrice = (
     mode: TPriceMode = "HOURLY",
     prices: ISpacePricePlan[],

@@ -28,7 +28,7 @@ export const SpaceInfoTitle = ({
         titleInfo;
     return (
         <>
-            <h2 className="mb-3 text-xl font-medium text-gray-700">{name}</h2>
+            <h2 className="mb-3 text-xl font-bold text-gray-700">{name}</h2>
             <div className="flex flex-col space-y-2 sm:space-x-3 sm:space-y-0 sm:items-center sm:flex-row">
                 <div className="flex space-x-3">
                     <Rating />
