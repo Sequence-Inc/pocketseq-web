@@ -9,6 +9,7 @@ import {
     renderPax,
 } from "src/utils";
 import { SearchResult } from "../GridViewSearch";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 export interface RecommendationGridProps {
     type: "HOTEL" | "SPACE";
@@ -44,11 +45,11 @@ export const RecommendationGrid = ({
         })();
     }, []);
 
-    let content = <span>Loading...</span>;
+    let content = <LoadingSpinner />;
 
     if (!loading) {
         if (data.length === 0) {
-            content = <span>No space available!</span>;
+            content = <div>No space available!</div>;
         } else {
             content = (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-4">
