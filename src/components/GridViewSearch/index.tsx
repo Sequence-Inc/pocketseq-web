@@ -1,3 +1,4 @@
+import { TSpacePrice } from "@appTypes/timebookTypes";
 import Link from "next/link";
 import React from "react";
 import { PriceFormatter } from "src/utils";
@@ -5,7 +6,7 @@ import { PriceFormatter } from "src/utils";
 export type SpacePricePlan = {
     amount: number;
     duration: number;
-    type: "HOURLY" | "DAILY" | "MINUTES";
+    type: TSpacePrice;
 };
 export type SearchResult = {
     id: string;

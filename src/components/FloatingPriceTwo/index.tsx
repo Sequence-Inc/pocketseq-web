@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Price } from "@element";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
 import {
+    ICancelPolicy,
     ISetting,
     ISpace,
     ISpacePricePlan,
@@ -20,7 +21,14 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
 import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
-import { getApplicableSettings } from "src/utils/dateHelper";
+import {
+    durationToHours,
+    durationToTimeDigit,
+    getApplicableSettings,
+    prefixTimeValueWithZero,
+} from "src/utils/dateHelper";
+import { useModalDialog } from "@hooks/useModalDialog";
+import AlertModal from "../AlertModal";
 
 const numbersFromOneTo = (count: number) =>
     Array.from({ length: count }).map((_, index) => index + 1);
@@ -33,6 +41,8 @@ type PricePlanTypes = {
 };
 
 const MINUTES_OPTIONS = [5, 10, 15, 30, 45];
+
+const TIME_MINUTES_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 const PRICE_PLAN_TYPES: PricePlanTypes = {
     DAILY: { value: "DAILY", label: "日" },
@@ -49,7 +59,7 @@ export const FloatingPriceTwo = ({
     pricePlans: ISpacePricePlan[];
     space: ISpace;
     handleReserve: (data: TUseCalculateSpacePriceProps) => void;
-    cancelPolicy: any;
+    cancelPolicy: ICancelPolicy;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -63,13 +73,27 @@ export const FloatingPriceTwo = ({
 
     const [applicablePricePlans, setApplicablePricePlans] = useState<any>();
 
+    const {
+        isModalOpen,
+        openModal,
+        closeModal,
+        setModalData,
+        modalContent,
+        modalData,
+    } = useModalDialog();
+
     const [
         getApplicablePricePlans,
         { loading: isLoadingPrices, data: applicablePP },
     ] = useLazyQuery(GET_PRICE_PLANS, {
         nextFetchPolicy: "network-only",
         onError: (error) => {
-            alert(error.message);
+            setModalData({
+                intent: "ERROR",
+                title: "エラーが発生しました",
+                text: error.message,
+            });
+            openModal();
             setStart(null);
         },
     });
@@ -81,13 +105,17 @@ export const FloatingPriceTwo = ({
 
     useEffect(() => {
         // get duration options
-        const defaultSetting = space.settings.filter(
-            ({ isDefault }) => isDefault
-        )[0];
+        const defaultSetting = _getDefaultSetting();
         const _durationOptions = _getDurationOptions();
-        const _checkInOptions = _getCheckInTimeOptions();
+        const _checkInOptions = _getTimeOptions();
 
-        setHour(() => _checkInOptions[0] || defaultSetting.openingHr);
+        const _hour: number =
+            _checkInOptions.businessHours[0] || defaultSetting.openingHr;
+
+        const { calculatedHour, calculatedMinute } =
+            _calculateCheckInHoursAndMinutes(_hour, minute);
+        setHour(() => calculatedHour);
+        setMinute(() => calculatedMinute);
         setDuration(() => _durationOptions[0]);
     }, [durationType]);
 
@@ -303,11 +331,9 @@ export const FloatingPriceTwo = ({
         const { settings } = space;
 
         // get default setting
-        const defaultSetting: ISetting[] = settings.filter(
-            ({ isDefault }) => isDefault
-        );
+        const defaultSetting: ISetting = _getDefaultSetting();
 
-        let applicableSettings: ISetting[] = defaultSetting;
+        let applicableSettings: ISetting[] = [defaultSetting];
 
         // Check applicable settings
         if (start && durationType && duration) {
@@ -338,37 +364,35 @@ export const FloatingPriceTwo = ({
         if (type === "DAILY") {
             return numbersFromOneTo(14);
         } else if (type === "MINUTES") {
-            return MINUTES_OPTIONS;
+            const optionsSet = new Set<number>(); // set to hold unique values
+            pricePlans.map((plan) => {
+                plan.type === "MINUTES" && optionsSet.add(plan.duration);
+            });
+            return Array.from(optionsSet).sort((a, b) => a - b); // returning array from optionsSet
         }
 
         const applicableSettings = _getApplicableSettings();
         let maxOpeningHour = 24;
         applicableSettings.map((setting) => {
-            const { openingHr, closingHr, breakFromHr, breakToHr } = setting;
+            const { openingHr, closingHr } = setting;
 
-            if (breakFromHr && breakToHr) {
-                const firstShift = breakFromHr - openingHr;
-                const secondShift = closingHr - breakToHr;
-
-                if (firstShift < maxOpeningHour) {
-                    maxOpeningHour = firstShift;
-                } else if (secondShift < maxOpeningHour) {
-                    maxOpeningHour = secondShift;
-                }
-            } else {
-                const fullDayShit = closingHr - openingHr;
-                if (fullDayShit < maxOpeningHour) {
-                    maxOpeningHour = fullDayShit;
-                }
+            const fullDayShit = closingHr - openingHr;
+            if (fullDayShit < maxOpeningHour) {
+                maxOpeningHour = fullDayShit;
             }
         });
 
         return numbersFromOneTo(maxOpeningHour);
     }, [pricePlans, durationType, start, duration]);
 
-    const _getCheckInTimeOptions = useCallback(() => {
+    const _getTimeOptions = useCallback(() => {
+        const result: { businessHours: number[]; breakHours: number[] } = {
+            businessHours: [],
+            breakHours: [],
+        };
+
         if (durationType === "DAILY") {
-            return [];
+            return result;
         }
 
         const applicableSettings = _getApplicableSettings();
@@ -376,27 +400,41 @@ export const FloatingPriceTwo = ({
         let holiday = true;
         let openingHour = 24;
         let closingHour = 0;
-        applicableSettings.map(({ closed, openingHr, closingHr }) => {
-            if (!closed) {
-                holiday = false;
+        let breakStart = 24;
+        let breakEnd = 0;
+        applicableSettings.map(
+            ({ closed, openingHr, closingHr, breakFromHr, breakToHr }) => {
+                if (!closed) {
+                    holiday = false;
+                }
+                if (openingHr < openingHour) {
+                    openingHour = openingHr;
+                }
+                if (closingHr > closingHour) {
+                    closingHour = closingHr;
+                }
+
+                if (breakFromHr < breakStart) {
+                    breakStart = breakFromHr;
+                }
+                if (breakToHr > breakEnd) {
+                    breakEnd = breakToHr;
+                }
             }
-            if (openingHr < openingHour) {
-                openingHour = openingHr;
-            }
-            if (closingHr > closingHour) {
-                closingHour = closingHr;
-            }
-        });
+        );
 
         // If there's no available days then return blank array
-        if (holiday) return [];
+        if (holiday) return result;
 
         // prepare hours from opening & closing hours
-        let options = [];
         for (let i = openingHour; i <= closingHour; i++) {
-            options.push(i);
+            result.businessHours.push(Math.floor(i));
         }
-        return options;
+        // let breakHours = [];
+        for (let i = breakStart; i < breakEnd; i++) {
+            result.breakHours.push(Math.floor(i));
+        }
+        return { ...result };
     }, [durationType, start, duration]);
 
     const _getStartEndDateTime = useCallback(
@@ -427,12 +465,71 @@ export const FloatingPriceTwo = ({
         [start, hour, minute, duration, durationType]
     );
 
+    const _getDefaultSetting = useCallback(() => {
+        return space.settings.filter(({ isDefault }) => isDefault)[0];
+    }, []);
+
+    const _calculateCheckInHoursAndMinutes = (
+        hour: number,
+        minute: number
+    ): {
+        calculatedHour: number;
+        calculatedMinute: number;
+    } => {
+        const result = {
+            calculatedHour: hour,
+            calculatedMinute: minute,
+        };
+
+        const minutesInDecimal = hour % 1;
+
+        if (minutesInDecimal === 0) {
+            result.calculatedHour = hour;
+            result.calculatedMinute = minute;
+        } else {
+            result.calculatedHour = Math.floor(hour);
+            result.calculatedMinute = durationToTimeDigit(
+                minutesInDecimal,
+                "minutes"
+            );
+        }
+
+        return result;
+    };
+
+    const _checkDisabledTimeOption = (currentOption: number): boolean => {
+        const { businessHours, breakHours } = _getTimeOptions();
+
+        if (breakHours.includes(currentOption)) {
+            return true;
+        }
+
+        if (durationType === "HOURLY") {
+            if (currentOption === businessHours[businessHours.length - 1]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const _checkDisabledMinuteOption = (currentOption: number): boolean => {
+        const { openingHr, closingHr } = _getDefaultSetting();
+        const selectedHour = durationToHours(hour, "hours");
+        const currentMinute = durationToHours(currentOption, "minutes");
+        const selectedTime = selectedHour + currentMinute;
+
+        return selectedTime < openingHr || selectedTime > closingHr
+            ? true
+            : false;
+    };
+
+    const { businessHours } = _getTimeOptions();
+
     const showCheckInTime = ["HOURLY", "MINUTES"].includes(durationType)
         ? true
         : false;
 
     const _durationOptions = _getDurationOptions();
-    const _checkInOptions = _getCheckInTimeOptions();
 
     return (
         <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky md:top-20">
@@ -462,7 +559,7 @@ export const FloatingPriceTwo = ({
                     </div>
                     <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                         <select
-                            className="text-sm border-0 outline-none"
+                            className="text-sm ring-0 border-0 outline-none focus:outline-none focus:border-none focus:ring-0"
                             value={duration}
                             onChange={(event) =>
                                 setDuration(parseInt(event.target.value))
@@ -478,7 +575,7 @@ export const FloatingPriceTwo = ({
                                 })}
                         </select>
                         <select
-                            className="text-sm border-0 outline-none"
+                            className="text-sm ring-0 border-0 outline-none focus:outline-none focus:border-none focus:ring-0"
                             value={durationType}
                             onChange={(event) =>
                                 setDurationType(
@@ -503,12 +600,20 @@ export const FloatingPriceTwo = ({
                             <select
                                 value={hour}
                                 onChange={(event) =>
-                                    setHour(parseInt(event.target.value))
+                                    setHour(
+                                        event.target.value as unknown as number
+                                    )
                                 }
-                                className="text-sm border-0 outline-none"
+                                className="text-sm ring-0 border-0 outline-none focus:outline-none focus:border-none focus:ring-0"
                             >
-                                {_checkInOptions?.map((option, index) => (
-                                    <option key={index} value={option}>
+                                {businessHours?.map((option, index) => (
+                                    <option
+                                        key={index}
+                                        value={option}
+                                        disabled={_checkDisabledTimeOption(
+                                            option
+                                        )}
+                                    >
                                         {option < 10 ? `0${option}` : option}
                                     </option>
                                 ))}
@@ -519,20 +624,21 @@ export const FloatingPriceTwo = ({
                                 onChange={(event) =>
                                     setMinute(parseInt(event.target.value))
                                 }
-                                className="text-sm border-0 outline-none"
+                                className="text-sm ring-0 border-0 outline-none focus:outline-none focus:border-none focus:ring-0"
                             >
-                                <option value="0">00</option>
-                                <option value="5">05</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                                <option value="20">20</option>
-                                <option value="25">25</option>
-                                <option value="30">30</option>
-                                <option value="35">35</option>
-                                <option value="40">40</option>
-                                <option value="45">45</option>
-                                <option value="50">50</option>
-                                <option value="55">55</option>
+                                {TIME_MINUTES_OPTIONS.map((_, index) => {
+                                    return (
+                                        <option
+                                            value={`${_}`}
+                                            key={index}
+                                            disabled={_checkDisabledMinuteOption(
+                                                _
+                                            )}
+                                        >
+                                            {prefixTimeValueWithZero(_)}
+                                        </option>
+                                    );
+                                })}
                             </select>
                             分
                         </div>
@@ -589,6 +695,18 @@ export const FloatingPriceTwo = ({
                     <span>シェア</span>
                 </Button>
             </div>
+            <AlertModal
+                isOpen={isModalOpen}
+                disableTitle={true}
+                disableDefaultIcon={true}
+                setOpen={() => {
+                    closeModal();
+                    setModalData(null);
+                }}
+                disableClose={true}
+            >
+                <div className="text-sm text-gray-500">{modalContent}</div>
+            </AlertModal>
         </div>
     );
 };
