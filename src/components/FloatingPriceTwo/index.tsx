@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Price } from "@element";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
 import {
@@ -105,7 +105,7 @@ export const FloatingPriceTwo = ({
 
     useEffect(() => {
         // get duration options
-        const defaultSetting = _getDefaultSetting();
+        const defaultSetting = _getDefaultSetting;
         const _durationOptions = _getDurationOptions();
         const _checkInOptions = _getTimeOptions();
 
@@ -301,11 +301,6 @@ export const FloatingPriceTwo = ({
         space?.id,
     ]);
 
-    const disabledDate = (current) => {
-        // Can not select days before today and today
-        return current && current < moment().endOf("day");
-    };
-
     const okayToBook = () => {
         if (durationType !== "DAILY") {
             return (startDateTime && start) || false;
@@ -329,9 +324,8 @@ export const FloatingPriceTwo = ({
 
     const _getApplicableSettings = useCallback(() => {
         const { settings } = space;
-
         // get default setting
-        const defaultSetting: ISetting = _getDefaultSetting();
+        const defaultSetting: ISetting = _getDefaultSetting;
 
         let applicableSettings: ISetting[] = [defaultSetting];
 
@@ -465,7 +459,7 @@ export const FloatingPriceTwo = ({
         [start, hour, minute, duration, durationType]
     );
 
-    const _getDefaultSetting = useCallback(() => {
+    const _getDefaultSetting = useMemo(() => {
         return space.settings.filter(({ isDefault }) => isDefault)[0];
     }, []);
 
@@ -513,7 +507,7 @@ export const FloatingPriceTwo = ({
     };
 
     const _checkDisabledMinuteOption = (currentOption: number): boolean => {
-        const { openingHr, closingHr } = _getDefaultSetting();
+        const { openingHr, closingHr } = _getDefaultSetting;
         const selectedHour = durationToHours(hour, "hours");
         const currentMinute = durationToHours(currentOption, "minutes");
         const selectedTime = selectedHour + currentMinute;
@@ -530,6 +524,45 @@ export const FloatingPriceTwo = ({
         : false;
 
     const _durationOptions = _getDurationOptions();
+
+    const _getHolidays = useMemo(() => {
+        const { businessDays } = _getDefaultSetting;
+        const { settings } = space;
+        const holidays: string[] = [];
+        settings.map(({ isDefault, closed, fromDate, toDate }) => {
+            if (!isDefault && closed) {
+                const from = fromDate
+                    ? moment(fromDate).subtract(1, "day").startOf("day")
+                    : moment().subtract(1, "day").startOf("day");
+                const to = toDate
+                    ? moment(toDate).endOf("day")
+                    : moment().add(6, "months").endOf("day");
+                console.log();
+                while (from.add(1, "days").diff(to) < 0) {
+                    holidays.push(from.clone().format("YYYY-MM-DD"));
+                }
+            }
+        });
+        console.log("Computed holidays");
+        return { businessDays, holidays };
+    }, []);
+
+    const disabledDate = (current) => {
+        // console.log(_getHolidays);
+        const { businessDays, holidays } = _getHolidays;
+
+        // get day of the week of current
+        const currentDay = current.day();
+        if (
+            !businessDays.includes(currentDay) ||
+            holidays.includes(current.format("YYYY-MM-DD"))
+        ) {
+            return true;
+        }
+
+        // Can not select days before today and today
+        return current && current < moment().endOf("day");
+    };
 
     return (
         <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky md:top-20">
