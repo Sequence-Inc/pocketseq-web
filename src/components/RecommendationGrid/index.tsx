@@ -49,7 +49,11 @@ export const RecommendationGrid = ({
 
     if (!loading) {
         if (data.length === 0) {
-            content = <div>No space available!</div>;
+            content = (
+                <div className="text-center">
+                    推奨事項が見つかりませんでした。
+                </div>
+            );
         } else {
             content = (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-4">
