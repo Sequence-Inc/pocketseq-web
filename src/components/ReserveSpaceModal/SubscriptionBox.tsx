@@ -31,9 +31,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
 
     if (!spaceDetails?.subcriptionPrice)
         return (
-            <div className="text-sm">
-                Subscription not applicable to this space.
-            </div>
+            <div className="text-sm">サブスクリプションは適用されません。</div>
         );
     if (!hasSpaceSubscriptions) {
         return (
@@ -70,7 +68,9 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 />
 
                 <div className="w-full flex items-center  space-x-4">
-                    <div className="text-sm">Use Subscription</div>
+                    <div className="text-sm">
+                        サブスクリプションを利用しますか？
+                    </div>
                     <SwitchField
                         className="my-2"
                         onChange={(val) => setSubscription(val)}
@@ -78,7 +78,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 </div>
 
                 <div className=" text-sm font-semibold">
-                    Your subscription can be applied.
+                    サブスクリプションを適用できます。
                 </div>
             </>
         );
@@ -94,7 +94,9 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                 />
 
                 <div className="w-full flex items-center  space-x-4">
-                    <div className="text-sm">Use Subscription</div>
+                    <div className="text-sm">
+                        サブスクリプションを利用しますか？
+                    </div>
                     <SwitchField
                         className="my-2"
                         disabled
@@ -102,7 +104,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     />
                 </div>
                 <div className=" text-sm font-semibold">
-                    Your subscription does not cover for this space.
+                    ご利用されたサブスクリプションプランはこの施設に適用できません。
                 </div>
             </>
         );

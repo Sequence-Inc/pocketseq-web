@@ -103,9 +103,9 @@ const ReserveSpaceModal = ({
         userSession,
     ]);
 
-    const taxCalculated = priceData?.total
-        ? Math.ceil(priceData?.total - Math.ceil(priceData?.total / 1.1))
-        : 0;
+    const amountBeforeTax = priceData?.total / 1.1;
+    const taxAmount = priceData?.total - amountBeforeTax;
+
     return (
         <Transition.Root show={showModal} as={Fragment}>
             <div className="relative z-10">
@@ -153,9 +153,8 @@ const ReserveSpaceModal = ({
                                         {!fetchingSpace &&
                                             fetchingSpaceError && (
                                                 <div>
-                                                    Could not load space
-                                                    details. Please try again
-                                                    later
+                                                    データを取得できませんでした。
+                                                    もう一度試してください。
                                                 </div>
                                             )}
                                         {!fetchingSpace &&
@@ -343,9 +342,7 @@ const ReserveSpaceModal = ({
                                                                                                 {!paymentTerm && (
                                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
                                                                                                         <div className="text-sm text-gray-500">
-                                                                                                            No
-                                                                                                            additional
-                                                                                                            charge
+                                                                                                            追加料金は一切かかりません。
                                                                                                         </div>
                                                                                                     </span>
                                                                                                 )}
@@ -439,7 +436,7 @@ const ReserveSpaceModal = ({
                                                                                         additionalfield?.quantity) /
                                                                                         1.1
                                                                                 ) ||
-                                                                                "No Charge";
+                                                                                "無料";
                                                                             return (
                                                                                 <div
                                                                                     className="flex items-center justify-between"
@@ -447,19 +444,20 @@ const ReserveSpaceModal = ({
                                                                                         index
                                                                                     }
                                                                                 >
-                                                                                    <span className="flex space-x-2 items-end">
-                                                                                        <div>
+                                                                                    <div className="flex items-baseline flex-grow mr-2">
+                                                                                        <div className="flex-grow">
                                                                                             {
                                                                                                 additionalfield?.name
                                                                                             }
                                                                                         </div>
 
-                                                                                        <div className="text-gray-400 text-sm">
+                                                                                        <div className="text-gray-500">
+                                                                                            　×　
                                                                                             {
                                                                                                 additionalfield?.quantity
                                                                                             }
                                                                                         </div>
-                                                                                    </span>
+                                                                                    </div>
                                                                                     <div
                                                                                         className={`${
                                                                                             optionsCharge ===
@@ -479,9 +477,10 @@ const ReserveSpaceModal = ({
                                                                 <div>税金</div>
 
                                                                 <div>
-                                                                    {PriceFormatter(
-                                                                        taxCalculated
-                                                                    )}
+                                                                    {priceData &&
+                                                                        PriceFormatter(
+                                                                            taxAmount
+                                                                        )}
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center justify-between font-bold border-t border-gray-300 pt-3 text-base">
@@ -523,15 +522,14 @@ const ReserveSpaceModal = ({
                                                                             ></path>
                                                                         </svg>
                                                                         <span className="text-gray-400 text-lg">
-                                                                            Calculating
-                                                                            Price
+                                                                            価格の計算中
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             ))}
                                                         <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                                                             <div className="font-bold">
-                                                                適用されるサブスクリプション:
+                                                                サブスクリプション
                                                             </div>
                                                             <hr />
                                                             <SubsciptionBox
@@ -555,22 +553,6 @@ const ReserveSpaceModal = ({
                                                                 }
                                                             />
                                                         </div>
-
-                                                        {/* {hasSpaceSubscriptions && (
-                                                        <div className="border border-gray-300 shadow-sm px-3 rounded-lg space-y-5 mt-4">
-                                                            <SwitchField
-                                                                className="my-2"
-                                                                label="Use Subsciption"
-                                                                onChange={(
-                                                                    val
-                                                                ) =>
-                                                                    setSubscription(
-                                                                        val
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
-                                                    )} */}
                                                     </div>
                                                     <div className="space-y-5 sm:col-span-2">
                                                         <div className="border-t border-gray-300 h-0 max-h-0"></div>

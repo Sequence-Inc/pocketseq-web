@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Price } from "@element";
 import { HeartIcon, ShareIcon } from "@heroicons/react/solid";
 import {
+    ICancelPolicy,
     ISetting,
     ISpace,
     ISpacePricePlan,
@@ -21,6 +22,8 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_PRICE_PLANS } from "src/apollo/queries/space.queries";
 import { TUseCalculateSpacePriceProps } from "@hooks/reserveSpace";
 import { getApplicableSettings } from "src/utils/dateHelper";
+import { max } from "date-fns";
+import { boolean } from "yup";
 
 const numbersFromOneTo = (count: number) =>
     Array.from({ length: count }).map((_, index) => index + 1);
@@ -49,7 +52,7 @@ export const FloatingPriceTwo = ({
     pricePlans: ISpacePricePlan[];
     space: ISpace;
     handleReserve: (data: TUseCalculateSpacePriceProps) => void;
-    cancelPolicy: any;
+    cancelPolicy: ICancelPolicy;
 }) => {
     const [start, setStart] = useState<Moment>();
     const [hour, setHour] = useState(8);
@@ -85,7 +88,7 @@ export const FloatingPriceTwo = ({
             ({ isDefault }) => isDefault
         )[0];
         const _durationOptions = _getDurationOptions();
-        const _checkInOptions = _getCheckInTimeOptions();
+        const _checkInOptions = _getTimeOptions();
 
         setHour(() => _checkInOptions[0] || defaultSetting.openingHr);
         setDuration(() => _durationOptions[0]);
@@ -350,7 +353,12 @@ export const FloatingPriceTwo = ({
                 const firstShift = breakFromHr - openingHr;
                 const secondShift = closingHr - breakToHr;
 
-                if (firstShift < maxOpeningHour) {
+                console.log(firstShift, secondShift);
+                if (firstShift === 0) {
+                    maxOpeningHour = secondShift;
+                } else if (secondShift === 0) {
+                    maxOpeningHour = firstShift;
+                } else if (firstShift < maxOpeningHour) {
                     maxOpeningHour = firstShift;
                 } else if (secondShift < maxOpeningHour) {
                     maxOpeningHour = secondShift;
@@ -363,12 +371,19 @@ export const FloatingPriceTwo = ({
             }
         });
 
+        console.log(applicableSettings, maxOpeningHour);
+
         return numbersFromOneTo(maxOpeningHour);
     }, [pricePlans, durationType, start, duration]);
 
-    const _getCheckInTimeOptions = useCallback(() => {
+    const _getTimeOptions = useCallback(() => {
+        const result: { businessHours: number[]; breakHours: number[] } = {
+            businessHours: [],
+            breakHours: [],
+        };
+
         if (durationType === "DAILY") {
-            return [];
+            return result;
         }
 
         const applicableSettings = _getApplicableSettings();
@@ -376,27 +391,41 @@ export const FloatingPriceTwo = ({
         let holiday = true;
         let openingHour = 24;
         let closingHour = 0;
-        applicableSettings.map(({ closed, openingHr, closingHr }) => {
-            if (!closed) {
-                holiday = false;
+        let breakStart = 24;
+        let breakEnd = 0;
+        applicableSettings.map(
+            ({ closed, openingHr, closingHr, breakFromHr, breakToHr }) => {
+                if (!closed) {
+                    holiday = false;
+                }
+                if (openingHr < openingHour) {
+                    openingHour = openingHr;
+                }
+                if (closingHr > closingHour) {
+                    closingHour = closingHr;
+                }
+
+                if (breakFromHr < breakStart) {
+                    breakStart = breakFromHr;
+                }
+                if (breakToHr > breakEnd) {
+                    breakEnd = breakToHr;
+                }
             }
-            if (openingHr < openingHour) {
-                openingHour = openingHr;
-            }
-            if (closingHr > closingHour) {
-                closingHour = closingHr;
-            }
-        });
+        );
 
         // If there's no available days then return blank array
-        if (holiday) return [];
+        if (holiday) return result;
 
         // prepare hours from opening & closing hours
-        let options = [];
         for (let i = openingHour; i <= closingHour; i++) {
-            options.push(i);
+            result.businessHours.push(i);
         }
-        return options;
+        // let breakHours = [];
+        for (let i = breakStart; i < breakEnd; i++) {
+            result.breakHours.push(i);
+        }
+        return result;
     }, [durationType, start, duration]);
 
     const _getStartEndDateTime = useCallback(
@@ -432,7 +461,23 @@ export const FloatingPriceTwo = ({
         : false;
 
     const _durationOptions = _getDurationOptions();
-    const _checkInOptions = _getCheckInTimeOptions();
+
+    const _checkDisabledTimeOption = (currentOption: number): boolean => {
+        const { businessHours, breakHours } = _getTimeOptions();
+
+        if (breakHours.includes(currentOption)) {
+            return true;
+        }
+
+        if (durationType === "HOURLY") {
+            if (currentOption === businessHours[businessHours.length - 1]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const { businessHours } = _getTimeOptions();
 
     return (
         <div className="no-scrollbar w-full max-h-screen overflow-y-scroll md:sticky md:top-20">
@@ -507,8 +552,14 @@ export const FloatingPriceTwo = ({
                                 }
                                 className="text-sm border-0 outline-none"
                             >
-                                {_checkInOptions?.map((option, index) => (
-                                    <option key={index} value={option}>
+                                {businessHours?.map((option, index) => (
+                                    <option
+                                        key={index}
+                                        value={option}
+                                        disabled={_checkDisabledTimeOption(
+                                            option
+                                        )}
+                                    >
                                         {option < 10 ? `0${option}` : option}
                                     </option>
                                 ))}

@@ -1,6 +1,17 @@
 import { ISetting } from "@appTypes/timebookTypes";
 import moment from "moment";
 
+export type DaysOfWeekJP = "日" | "月" | "火" | "水" | "木" | "金" | "土";
+export const daysOfWeekJP: DaysOfWeekJP[] = [
+    "日",
+    "月",
+    "火",
+    "水",
+    "木",
+    "金",
+    "土",
+];
+
 export interface DateRange {
     from: moment.Moment;
     to: moment.Moment;
@@ -30,4 +41,25 @@ export const getApplicableSettings = (
         };
         return dateRangesOverlap(settingDateRange, reservationDateRange);
     });
+};
+
+export const decimalHoursToTimeString = (duration: number): string => {
+    const _ = moment.duration(duration, "hours"); //
+    return `${prefixTimeValueWithZero(_.hours())}:${prefixTimeValueWithZero(
+        _.minutes()
+    )}`;
+};
+
+export const prefixTimeValueWithZero = (time: number): string => {
+    if (time < 10) {
+        return `0${time}`;
+    }
+    return `${time}`;
+};
+
+export const mapDaysOfWeekFromIndex = (dayIndex: number): DaysOfWeekJP => {
+    if (dayIndex > 6) {
+        return null;
+    }
+    return daysOfWeekJP[dayIndex];
 };
