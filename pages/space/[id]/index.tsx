@@ -333,16 +333,16 @@ const SpaceDetail = ({
                             <div className="flex items-center justify-center space-x-2">
                                 <CheckIcon className="text-green-600 w-10" />
                                 <div className="text-xl font-medium text-green-600">
-                                    Success
+                                    予約完了
                                 </div>
                             </div>
                             <div className="mt-4  space-x-2 space-y-2 ">
                                 <div className="text-gray-500 text-base text-center">
-                                    Successfully reserved space.
+                                    予約が完了しました。
                                 </div>
                                 <span className="flex items-center justify-center space-x-2">
                                     <div className="text-gray-600   text-sm text-center">
-                                        Transaction Id :
+                                        取引ID:
                                     </div>
                                     {reservationSuccessData?.reserveSpace && (
                                         <div className="text-gray-500  font-bold text-center">
@@ -357,7 +357,7 @@ const SpaceDetail = ({
                             </div>
                             <span className="flex items-center justify-center space-x-2">
                                 <div className="text-gray-600   text-sm text-center">
-                                    Subscriptions utilized (Units) :
+                                    利用されたサブスクリプション（単位）:
                                 </div>
                                 {reservationSuccessData?.reserveSpace
                                     ?.subscriptionUnit && (
@@ -366,7 +366,6 @@ const SpaceDetail = ({
                                             reservationSuccessData?.reserveSpace
                                                 ?.subscriptionUnit
                                         }
-                                        /night
                                     </div>
                                 )}
                             </span>
@@ -393,14 +392,13 @@ const SpaceDetail = ({
                             <div className="flex items-center justify-center space-x-3">
                                 <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
                                 <div className="text-xl font-medium text-red-600">
-                                    Error
+                                    エラーが発生しました
                                 </div>
                             </div>
                             <div className="mt-2 space-x-2 space-y-2 ">
                                 <div className="text-gray-500 text-base ">
                                     {reservationFailure?.message ||
-                                        `Could not reserve space. Please try again
-                                    later!`}
+                                        `予約できませんでした。 後でもう一度試してください。`}
                                 </div>
                             </div>
                         </div>

@@ -31,7 +31,9 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
 
     if (!spaceDetails?.subcriptionPrice)
         return (
-            <div className="text-sm">サブスクリプションは適用されません。</div>
+            <div className="text-sm">
+                この施設にはサブスクリプション適用されません。
+            </div>
         );
     if (!hasSpaceSubscriptions) {
         return (
@@ -50,7 +52,7 @@ const SubsciptionBox = React.memo(function MemoizedComponent({
                     hasSpaceSubscriptions={hasSpaceSubscriptions}
                 />
                 <div className="text-sm">
-                    You subscription is already fully utilized.
+                    サブスクリプションは完全に活用されています。
                 </div>
             </>
         );

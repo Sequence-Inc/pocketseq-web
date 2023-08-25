@@ -1,4 +1,4 @@
-import { Select, SwitchField } from "@element";
+import { Select } from "@element";
 import { Transition } from "@headlessui/react";
 import {
     useCalculateSpacePrice,
@@ -14,7 +14,6 @@ import { PriceFormatter } from "src/utils";
 import { useQuery } from "@apollo/client";
 import { MY_SUBSCRIPTIONS } from "src/apollo/queries/subscription/queries";
 import SubsciptionBox from "./SubscriptionBox";
-import { TSpacePrice } from "@appTypes/timebookTypes";
 import { getEndDateTime } from "../FloatingPriceTwo";
 
 interface IReserveSpaceModal {
@@ -484,7 +483,7 @@ const ReserveSpaceModal = ({
                                                                                     <div
                                                                                         className={`${
                                                                                             optionsCharge ===
-                                                                                                "No Charge" &&
+                                                                                                "無料" &&
                                                                                             "text-sm text-grey-400"
                                                                                         }`}
                                                                                     >
@@ -552,7 +551,7 @@ const ReserveSpaceModal = ({
                                                             ))}
                                                         <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-3 mt-4">
                                                             <div className="font-bold">
-                                                                サブスクリプション
+                                                                適用されるサブスクリプション
                                                             </div>
                                                             <hr />
                                                             <SubsciptionBox

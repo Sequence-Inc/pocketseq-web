@@ -1,16 +1,13 @@
 import {
-    SpaceUtilities,
     SpaceInfoBanner,
     SpaceInfoAccess,
-    SpaceInfoReviews,
     LoadingSpinner,
     HostProfile,
     RecommendationGrid,
 } from "@comp";
 import { Button, Container, Rating, Spinner, Tag } from "@element";
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MainLayout } from "@layout";
-import { StarIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import {
     config,
@@ -25,28 +22,18 @@ import { useRouter } from "next/router";
 import createApolloClient from "src/apollo/apolloClient";
 import { getSession, signIn } from "next-auth/react";
 import { FloatingPriceThree } from "src/components/FloatingPriceThree";
-import { durationSuffix } from "src/components/Space/PricingPlan";
-import {
-    GET_HOTEL_BY_ID,
-    RESERVE_HOTEL,
-} from "src/apollo/queries/hotel.queries";
+import { GET_HOTEL_BY_ID } from "src/apollo/queries/hotel.queries";
 import {
     LocationMarkerIcon,
-    CurrencyYenIcon,
     CheckIcon,
     ExclamationIcon,
 } from "@heroicons/react/outline";
-import { Rooms } from "src/components/HotelSpace";
-import { Dialog, Transition } from "@headlessui/react";
 import { GET_PAYMENT_SOURCES } from "src/apollo/queries/user.queries";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { ro } from "date-fns/locale";
+import { useLazyQuery } from "@apollo/client";
 import RequestReservationModal from "src/components/ReservationModal";
 import PaymentMethods from "src/components/PaymentMethods";
 import { useReserveHotel } from "@hooks/reserveHotel";
-import AlertModal from "src/components/AlertModal";
 import ProgressModal from "src/components/ProgressModal";
-import moment from "moment";
 
 const ContentSection = ({
     title,
@@ -319,16 +306,16 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                             <div className="flex items-center justify-center space-x-2">
                                 <CheckIcon className="text-green-600 w-10" />
                                 <div className="text-xl font-medium text-green-600">
-                                    Success
+                                    予約完了
                                 </div>
                             </div>
                             <div className="mt-4  space-x-2 space-y-2 ">
                                 <div className="text-gray-500 text-base text-center">
-                                    Successfully reserved hotel room.
+                                    予約が完了しました。
                                 </div>
                                 <span className="flex items-center justify-center space-x-2">
                                     <div className="text-gray-600   text-sm text-center">
-                                        Transaction Id :
+                                        取引ID:
                                     </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom && (
                                         <div className="text-gray-500  font-bold text-center">
@@ -343,7 +330,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
 
                                 <span className="flex items-center justify-center space-x-2">
                                     <div className="text-gray-600   text-sm text-center">
-                                        Subscriptions utilized (Units) :
+                                        利用されたサブスクリプション（単位）:
                                     </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom
                                         ?.subscriptionUnit && (
@@ -353,14 +340,14 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                                     ?.reserveHotelRoom
                                                     ?.subscriptionUnit
                                             }
-                                            /night
+                                            /日
                                         </div>
                                     )}
                                 </span>
 
                                 <span className="flex items-center justify-center space-x-2">
                                     <div className="text-gray-600   text-sm text-center">
-                                        Price not covered by subscription
+                                        サブスクリプション価格には含まれない金額
                                     </div>
                                     {reservedHotelSuccessData?.reserveHotelRoom
                                         ?.amount && (
@@ -381,13 +368,13 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                             <div className="flex items-center justify-center space-x-3">
                                 <ExclamationIcon className="text-red-600 w-14 border-2 border-red-400 rounded-full p-1" />
                                 <div className="text-xl font-medium text-red-600">
-                                    Error
+                                    エラーが発生しました
                                 </div>
                             </div>
                             <div className="mt-2 space-x-2 space-y-2 ">
                                 <div className="text-gray-500 text-base ">
-                                    Could not reserve space. Please try again
-                                    later!!!
+                                    予約できませんでした。
+                                    後でもう一度試してください。
                                 </div>
                             </div>
                         </div>
@@ -461,7 +448,7 @@ const SpaceDetail = ({ hotelId, hotel, userSession }) => {
                                 className="w-auto px-4 h-9"
                                 onClick={sendMessage}
                             >
-                                Send Message
+                                メッセージをする
                             </Button>
                         </div>
                         {/* divider */}
@@ -655,7 +642,6 @@ export async function getServerSideProps(context) {
         const userSession = await getSession(context);
         return { props: { hotelId: id, hotel: data.hotelById, userSession } };
     } catch (error) {
-        console.log(error);
         return { props: {} };
     }
 }

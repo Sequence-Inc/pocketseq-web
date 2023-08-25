@@ -369,9 +369,7 @@ const RequestReservationModal = ({
                                                                                 {!paymentTerm && (
                                                                                     <span className="font-normal leading-5 font-base flex space-x-1">
                                                                                         <div className="text-sm text-gray-500">
-                                                                                            No
-                                                                                            additional
-                                                                                            charge
+                                                                                            追加料金は一切かかりません。
                                                                                         </div>
                                                                                     </span>
                                                                                 )}
@@ -473,7 +471,7 @@ const RequestReservationModal = ({
                                                                     const optionsCharge =
                                                                         additionalfield?.additionalPrice *
                                                                             additionalfield?.quantity ||
-                                                                        "No Charge";
+                                                                        "無料";
                                                                     return (
                                                                         <div
                                                                             className="flex items-center justify-between"
@@ -498,12 +496,12 @@ const RequestReservationModal = ({
                                                                             <div
                                                                                 className={`${
                                                                                     optionsCharge ===
-                                                                                        "No Charge" &&
+                                                                                        "無料" &&
                                                                                     "text-sm text-grey-400"
                                                                                 }`}
                                                                             >
                                                                                 {optionsCharge ===
-                                                                                "No Charge"
+                                                                                "無料"
                                                                                     ? optionsCharge
                                                                                     : PriceFormatter(
                                                                                           optionsCharge /
@@ -557,8 +555,7 @@ const RequestReservationModal = ({
                                                                 ></path>
                                                             </svg>
                                                             <span className="text-gray-400 text-lg">
-                                                                Calculating
-                                                                Price
+                                                                価格の計算中
                                                             </span>
                                                         </div>
                                                     </div>
@@ -567,7 +564,6 @@ const RequestReservationModal = ({
                                                 <div className="border border-gray-300 shadow-sm px-3 py-3 rounded-lg space-y-5 mt-4">
                                                     <div className="font-bold">
                                                         適用されるサブスクリプション
-                                                        :
                                                     </div>
                                                     <hr />
                                                     <SubsciptionBox
