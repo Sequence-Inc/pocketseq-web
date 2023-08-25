@@ -543,7 +543,6 @@ export const FloatingPriceTwo = ({
                 }
             }
         });
-        console.log("Computed holidays");
         return { businessDays, holidays };
     }, []);
 
